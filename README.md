@@ -13,15 +13,15 @@ To add your own theming you will have to modify the php source.
 
 ##Whats done/todo:
 
-[X] Base PHP Engine
-[X] Markdown Page Reader
-[] Twitter/Social Intergration
-[X] Custom Module Support
-[] Template Modules
-[] Live Page Editor
-[] Comment System
-[] Preformance Fixes
-[] Security Fixes
+- [X] Base PHP Engine
+- [X] Markdown Page Reader
+- [] Twitter/Social Intergration
+- [X] Custom Module Support
+- [] Template Modules
+- [] Live Page Editor
+- [] Comment System
+- [] Preformance Fixes
+- [] Security Fixes
 
 ====
 ##Credit to
