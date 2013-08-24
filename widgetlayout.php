@@ -1,0 +1,3 @@
+<?
+echo "Using widgetlayout.php";
+?>
