@@ -3,8 +3,8 @@
 ?>
 <body>	
 <?
- include("toolkit.php"); 
  include("navbar.php"); 
+ include("toolkit.php"); 
  include("header.php");
  include("content.php"); ?>
   <script>
@@ -31,6 +31,6 @@
   <script>
     $(document).foundation();
   </script>
-</body>
 <?php include("footer.php"); ?>
+</body>
 </html>

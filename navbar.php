@@ -11,18 +11,25 @@
     <!-- Left Nav Section -->
     <ul class="left">
       <li class="divider"></li>
-	<?php foreach ($pages as $pageid => $page) { 
-	if($curpag_id == $pageid)
-	{
-		?><li class="active"><a href="#"><?php echo $page["name"] ?></a></li><?php
-	}
-	elseif(isset($page["isstatic"]))
-		if($page["isstatic"]) { ?>
+	<?php
+	foreach ($pages as $pageid => $page) { 
+	$arg_string = "";
+	$class = "";
+	if(isset($page["isstatic"]))
+		if($page["isstatic"]) {
+			if($curpag_id == $pageid){ $class = "active"; } //Add page to navbar
+			if(strpos($page["url"],".md")) { $navbar_type = "page"; } else { $navbar_type = "module"; $pageid = $page["url"]; }
+			if(isset($page["arguments"])){ foreach($page["arguments"] as $arg_name => $arg_value) { $arg_string = $arg_string . "&" . $arg_name . "=" . $arg_value; }  }?>
       <li class="divider"></li>
-      <li><a href="index.php?page=<?php echo $pageid ?>"><?php echo $page["name"] ?></a></li>
+      <li><a class="<? echo $class ?>" href="index.php?<? echo $navbar_type; ?>=<?php echo $pageid; echo $arg_string; ?>"><?php echo $page["name"]; ?></a></li>
 	<?php }} ?>
     </ul>
-
+    <ul class="right">
+	<? if($username == ""){?>
+	<li><a data-reveal-id="login-window">Login</a></li>
+	<? } else {?>
+	<li><a href="<? echo AppendParameter($currenturl,"logout","true"); ?>">Logout</a></li>
+	<?}?>
   </section>
  </ul>
 </nav>

@@ -1,36 +1,78 @@
 <?php
-function isCategory($page,$category)
-{
-	foreach($page["categorys"] as $key => $value)
-	{
-		if($value == $category){
-			return true;
-		}
-	}
-	return false;
-}
+include("core/functions.php");
+include("core/config.php");
 
-function ThrowError($reason,$errorcode = 42)
-{
-	$dump = array();
-	$dump[]= $reason;
-	$dump[] = $errorcode;
-	return $dump;
-}
-
-//Config
-$rooturl = "http://localhost/blogplatform/";
-$webname = "The Blog!";
-$plat_version = 0.01;
-session_start();
+//Variables
 $username = "";
-$homepage_php = "homefeed";
 
-if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
-	$username = "TheName";
+//Check For Existing Login
+if(isset($_SESSION["loggedin"]))
+{
+	if($_SESSION["loggedin"] == true)
+	{
+		$username = $_SESSION["username"];
+	}
 }
-else {
-	$username = "";
+
+if(isset($_GET["logout"]))
+{
+	$_SESSION['loggedin'] = false;
+	$_SESSION['username'] = "";
+	session_write_close();
+	session_destroy();
+	
+	//Strip logout=true off current url.
+	$currenturl = StripUrlParameter($currenturl,"logout");
+?>
+	<div data-alert class="alert-box success">
+	  Your have logged out.
+	  <a href="#" class="close">&times;</a>
+	</div>
+<?
+}
+if(isset($_GET['login']))
+{
+	if($_GET["login"] == "true")
+	{
+		//Strip login=true off current url.
+		$currenturl = StripUrlParameter($currenturl,"login");
+		?>
+		<div data-alert class="alert-box success">
+		  Welcome <? echo $username; ?>, Your login was Successful.
+		  <a href="#" class="close">&times;</a>
+		</div>
+		<?
+	}
+	else
+	{
+		if($_GET["lreason"] == "user")
+		{
+		?>
+			<div data-alert class="alert-box alert">
+			  Login Failed, Bad Username/Password
+			  <a href="#" class="close">&times;</a>
+			</div>
+		<?
+		}
+		elseif($_GET["lreason"] == "pass")
+		{
+		?>
+			<div data-alert class="alert-box alert">
+			  Login Failed, Bad Password.
+			  <a href="#" class="close">&times;</a>
+			</div>
+		<?
+		}
+		else
+		{
+		?>
+			<div data-alert class="alert-box alert">
+			 Login Failed, unspecified error.
+			  <a href="#" class="close">&times;</a>
+			</div>
+		<?
+		} 
+	}
 }
 
 //Get all avaliable pages.
@@ -39,15 +81,28 @@ $pages = array();
 while (false !== ($entry = readdir($dir))) {
     if(substr($entry,strlen($entry) - 5) == ".json"){
 	$newdata = json_decode(file_get_contents("pages/" . $entry),true);
+
+	if(!strpos($newdata["url"],".md"))
+	{	//PHP
+		$newdata["date"] = filemtime("modules/" . $newdata["url"] . ".php");
+		$newdata["ismodule"] = true;
+	}
+	else
+	{
+		//MD
+		$newdata["date"] = filemtime("pages/" . $newdata["url"]);
+		$newdata["ismodule"] = false;
+	}
+
 	if(isset($newdata["insertat"])){
 		$pages[$newdata["insertat"]] = $newdata;
+
 	}
 	else{
 		$pages[] = $newdata;
 	}
-	}
 }
-
+}
 $haspage = isset($_GET["page"]);
 $hasoverride = isset($_GET["module"]);
 
@@ -66,8 +121,16 @@ else if($hasoverride)
 else if($haspage)
 {
 	$curpag_id = $_GET["page"];
-	if($curpag_id < count($pages)){
-	$current_page = $pages[$curpag_id];
+	if($curpag_id < 0)
+	{
+		$error_dump = ThrowError("Page ID is less than 0, Could be a module?");
+		$hasoverride = true;
+		$haspage = false;
+		$curpag_id = -1;
+		$overridemodule = "error";
+	}	
+	elseif($curpag_id < count($pages)){
+		$current_page = $pages[$curpag_id];
 	}
 	else
 	{
@@ -76,6 +139,11 @@ else if($haspage)
 		$haspage = false;
 		$curpag_id = -1;
 		$overridemodule = "error";
+	}
+
+	if(!isset($current_page["locked"]))
+	{
+		$current_page["locked"] = false;
 	}
 }
 else
@@ -94,7 +162,7 @@ else
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <title><? echo $webname ?></title>
+  <title><? echo $webname; ?></title>
   <link rel="stylesheet" href="css/foundation.css">
   <script src="js/vendor/custom.modernizr.js"></script>
 </head>

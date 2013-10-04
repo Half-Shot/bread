@@ -1,19 +1,27 @@
 <?
 //Get needed modules
-if(isset($current_page)){
-	include("pagebuilder.php");
+if($haspage){
+	include("modules/pagebuilder.php");
 }
 elseif($hasoverride)
 {
-	if(file_exists($overridemodule . ".php"))
-		include($overridemodule . ".php");
+	if(strpos($overridemodule,".."))
+	{
+	$error_dump = ThrowError("You are trying to open files outside the modules directory. Smells like hacking to me.",004);
+	$hasoverride = true;
+	$haspage = false;
+	$curpag_id = -1;
+	$overridemodule = "error";
+	}
+	if(file_exists("modules/" . $overridemodule . ".php"))
+		include("modules/" . $overridemodule . ".php");
 	else{
 		$error_dump = ThrowError("This page dosn't exist, the module that is ". $overridemodule,002);
 		$hasoverride = true;
 		$haspage = false;
 		$curpag_id = -1;
 		$overridemodule = "error";
-		include($overridemodule . ".php");
+		include("modules/" . $overridemodule . ".php");
 	}
 }
 else
@@ -23,6 +31,6 @@ else
 	$haspage = false;
 	$curpag_id = -1;
 	$overridemodule = "error";
-	include($overridemodule . ".php");
+	include("modules/" . $overridemodule . ".php");
 }	
 ?>

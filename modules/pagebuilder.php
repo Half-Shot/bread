@@ -1,7 +1,16 @@
 <?
-//Librarys
-include("Michelf/Markdown.php");
+
+if(strpos($current_page["url"],".md") == false)
+{
+	//Page is in PHP format, it should NOT have got here.
+	$error_dump = ThrowError("Your trying to read a module as a markdown document.");
+	include("error.php");
+	return;
+}
+
+
 $pageraw = file_get_contents("pages/" . $current_page["url"]);
+include("Michelf/Markdown.php");
 $html = Markdown::defaultTransform($pageraw);
 ?>
 
@@ -60,6 +69,6 @@ foreach($pagetags as $line)
 <div class="row">
   <div class="small-4 large-4 columns">Written by <? echo $current_page["author"] ?></div>
   <div class="small-4 large-4 columns">Comment system goes here.</div>
-  <div class="small-4 large-4 columns">Last updated at <? echo date("F j, Y, g:i a",filemtime("pages/" . $current_page["url"]));?></div>
+  <div class="small-4 large-4 columns">Last updated at <? echo date("F j, Y, g:i a",$current_page["date"]);?></div>
 </div>
 </div>

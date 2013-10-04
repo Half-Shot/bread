@@ -9,7 +9,16 @@ The aims of the project are to:
 	* Be so easy to set up that anyone could run a blog within 2 minutes.
 
 The project also makes extensive use of foundation 4. 
-To add your own theming you will have to modify the php source.
+To add your own theming you will have to modify the php source. *This will be changed at a later date ;)*
+
+##Usage
+
+Although we do not reccomend usage just yet as there is a state of flux in the space-time continuium and
+as such we think its best to wait a few more revisions until the security is bolted down and an editor is added.
+
+If you want to try it then *check through the core/config.php file to make changes.*
+
+Have fun and remember if you want fixes/features, you MUST add issues to git.
 
 ##Whats done/todo:
 
