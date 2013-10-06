@@ -35,19 +35,31 @@ function GetRequestTime()
 
 function StripUrlParameter($url,$param)
 {
-	$url_data = parse_url($url);
+	$urldata = parse_url($url);
+
+	if(isset($urldata["query"]))
+		parse_str($urldata["query"],$qdata);
+	else
+		$qdata = array();
+
+	unset($qdata[$param]);
+	$urldata["query"] = http_build_query($qdata);
+	$url = build_url($urldata);
+	if(empty($qdata))
+		$url = substr($url,0,-1);
+        return $url;
 }
+
 function AppendParameter($url,$param,$var)
 {
-     $url_data = parse_url($url);
-     if(!isset($url_data["query"]))
-         $url_data["query"]="";
-
-     $params = array();
-     parse_str($url_data['query'], $params);
-     $params[$param] = $var;   
-     $url_data['query'] = http_build_query($params);
-     return build_url($url_data);
+	$urldata = parse_url($url);
+	if(isset($urldata["query"]))
+		parse_str($urldata["query"],$qdata);
+	else
+		$qdata = array();
+	$qdata[$param] = $var;
+	$urldata["query"] = http_build_query($qdata);
+	return build_url($urldata);
 }
 
 

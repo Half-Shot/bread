@@ -5,14 +5,6 @@ include("core/config.php");
 //Variables
 $username = "";
 
-//Check For Existing Login
-if(isset($_SESSION["loggedin"]))
-{
-	if($_SESSION["loggedin"] == true)
-	{
-		$username = $_SESSION["username"];
-	}
-}
 
 if(isset($_GET["logout"]))
 {
@@ -30,6 +22,16 @@ if(isset($_GET["logout"]))
 	</div>
 <?
 }
+
+//Check For Existing Login
+if(isset($_SESSION["loggedin"]))
+{
+	if($_SESSION["loggedin"] == true)
+	{
+		$username = $_SESSION["username"];
+	}
+}
+
 if(isset($_GET['login']))
 {
 	if($_GET["login"] == "true")

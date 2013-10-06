@@ -15,7 +15,7 @@ if(!isset($_REQUEST["user"]) || !isset($_REQUEST["pass"]) || !isset($_REQUEST["p
 
 $username = $_REQUEST["user"];
 $pass = $_REQUEST["pass"];
-$lastlocation = $_REQUEST["page"];
+$res_url = $_REQUEST["page"];
 //Do SQLite Connection
 $db = new PDO("sqlite:../" . $databasefile);
 
@@ -29,23 +29,28 @@ $query = $db->query($statement);
 $result = $query->fetchAll(0);
 if(!$result)
 {
-	$res_url = "login=false&lreason=user";
+	$res_url = AppendParameter($res_url,"login","false");
+	$res_url = AppendParameter($res_url,"lreason","user");
 }
 else
 {
 	if($pass == $result[0]["pass"])
 	{
-		$res_url = "login=true";
+		$res_url = AppendParameter($res_url,"login","true");
 		$_SESSION['username'] = $username;
 		$_SESSION['loggedin'] = true;
 	}
 	else
 	{
-		$res_url = "login=false&lreason=pass";
+		$res_url = AppendParameter($res_url,"login","false");
+		$res_url = AppendParameter($res_url,"lreason","pass");
 	}
 	 
 }
-$header = "../" . $lastlocation . "?"  . $res_url;
+//Clean logout
+$res_url = StripUrlParameter($res_url,"logout"); print_r($res_url); echo "\n";
+
+$header = "../" . $res_url;
 $header_str = "Location: " . $header;
 header($header_str);
 ?>
