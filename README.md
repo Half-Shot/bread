@@ -37,8 +37,9 @@ Have fun and remember if you want fixes/features, you MUST add issues to git.
 
 Here are the people that made bread possible.
 
-###Created By: 
-	Will Hunt
+	Michelf Fortin - Markdown PHP
+	Foundation 4 Team - The standard UI
+	
 ###Using:
 	Twitter-PHP : https://github.com/dg/twitter-php
 	Michelf-Markdown : https://github.com/michelf/php-markdown
