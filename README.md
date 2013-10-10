@@ -3,10 +3,10 @@ bread
 ##Info
 A plain blogging platform making use of markdown and php.
 The aims of the project are to:
-	* To be able to edit websites as you view them, and update them live.
-	* Be a light engine that doesn't lean towards either too many features or overkill preformance
-	* Have a easy to understand php structure that people can edit and write modules with.
-	* Be so easy to set up that anyone could run a blog within 2 minutes.
+* To be able to edit websites as you view them, and update them live.
+* Be a light engine that doesn't lean towards either too many features or overkill preformance
+* Have a easy to understand php structure that people can edit and write modules with.
+* Be so easy to set up that anyone could run a blog within 2 minutes.
 
 The project also makes extensive use of foundation 4. 
 To add your own theming you will have to modify the php source. *This will be changed at a later date ;)*
@@ -37,8 +37,10 @@ Have fun and remember if you want fixes/features, you MUST add issues to git.
 
 Here are the people that made bread possible.
 
-###Created By: 
-	Will Hunt
+	Michelf Fortin - Markdown PHP
+	Foundation 4 Team - The standard UI
+	
 ###Using:
 	Twitter-PHP : https://github.com/dg/twitter-php
 	Michelf-Markdown : https://github.com/michelf/php-markdown
+

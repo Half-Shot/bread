@@ -31,52 +31,6 @@ if(isset($_SESSION["loggedin"]))
 		$username = $_SESSION["username"];
 	}
 }
-
-if(isset($_GET['login']))
-{
-	if($_GET["login"] == "true")
-	{
-		//Strip login=true off current url.
-		$currenturl = StripUrlParameter($currenturl,"login");
-		?>
-		<div data-alert class="alert-box success">
-		  Welcome <? echo $username; ?>, Your login was Successful.
-		  <a href="#" class="close">&times;</a>
-		</div>
-		<?
-	}
-	else
-	{
-		if($_GET["lreason"] == "user")
-		{
-		?>
-			<div data-alert class="alert-box alert">
-			  Login Failed, Bad Username/Password
-			  <a href="#" class="close">&times;</a>
-			</div>
-		<?
-		}
-		elseif($_GET["lreason"] == "pass")
-		{
-		?>
-			<div data-alert class="alert-box alert">
-			  Login Failed, Bad Password.
-			  <a href="#" class="close">&times;</a>
-			</div>
-		<?
-		}
-		else
-		{
-		?>
-			<div data-alert class="alert-box alert">
-			 Login Failed, unspecified error.
-			  <a href="#" class="close">&times;</a>
-			</div>
-		<?
-		} 
-	}
-}
-
 //Get all avaliable pages.
 $dir = opendir('pages');
 $pages = array();
@@ -166,5 +120,7 @@ else
   <meta name="viewport" content="width=device-width">
   <title><? echo $webname; ?></title>
   <link rel="stylesheet" href="css/foundation.css">
+  <link rel="stylesheet" href="css/bread.css">
+  <link rel="stylesheet" href="fonts/foundation-icons.css">
   <script src="js/vendor/custom.modernizr.js"></script>
 </head>

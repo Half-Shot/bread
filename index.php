@@ -28,6 +28,7 @@
   <script src="js/foundation/foundation.interchange.js"></script>
   <script src="js/foundation/foundation.placeholder.js"></script>
   <script src="js/foundation/foundation.abide.js"></script>
+  <script src="js/bread.js"></script>
   <script>
     $(document).foundation();
   </script>
