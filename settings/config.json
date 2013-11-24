@@ -1,0 +1,26 @@
+{
+	"core":{
+		"version":0.06,
+		"rooturl":"http://localhost/will/bread/",
+		"databasefile":"tables.db",
+		"homepage":"homepage",
+		"logto":"/tmp/breadlog",
+		"debug":true,
+		"banhammer":false
+		},
+	"strings":{
+		"sitename":"The Bakery"
+		},
+	"bans":["127.0.0.1"],
+	"directorys":{
+		"system-modules":"./modules",
+		"system-settings":"./settings",
+		"user-modules":"./user/modules",
+		"user-themes":"./user/themes",
+		"user-resource":"./user/resource",
+		"user-media":"./content/media",
+		"user-pages":"./content/pages",
+		"user-posts":"./content/posts",
+		"system-temp":"./temp"
+		}
+}

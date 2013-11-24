@@ -4,9 +4,10 @@ bread
 A plain blogging platform making use of markdown and php.
 The aims of the project are to:
 * To be able to edit websites as you view them, and update them live.
-* Be a light engine that doesn't lean towards either too many features or overkill preformance
+* Be a light engine that doesn't lean towards either too many features or overkill preformance.
 * Have a easy to understand php structure that people can edit and write modules with.
 * Be so easy to set up that anyone could run a blog within 2 minutes.
+* Opensource and enjoyable to use.
 
 The project also makes extensive use of foundation 4. 
 To add your own theming you will have to modify the php source. *This will be changed at a later date ;)*

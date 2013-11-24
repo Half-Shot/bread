@@ -1,0 +1,16 @@
+{
+	"theme":
+	{
+		"name":"theme-vanilla",
+		"humanname":"Vanilla Bread",
+		"description":"A simplistic theme for testing bread.",
+		"version":"0.01",
+		"author":"Half-Shot",
+		"e-mail":"half-shot@molrams.com",
+		"requires":[""]
+	},
+	"module":
+	{
+		"permissions":["read:user/resource"]
+	}
+}

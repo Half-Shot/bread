@@ -1,0 +1,9 @@
+Bread System Order:
+	System Startup.
+	Run anything periodic.
+	Load theme engine.
+	Decide on current task. e.g. "DrawSystemMenu", "DrawPage"
+	
+	Load module configuration files.
+	
+	
