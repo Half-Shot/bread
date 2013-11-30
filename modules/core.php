@@ -1,5 +1,5 @@
 <?php
-
+namespace Bread;
 //---
 //Configuration Load
 //---

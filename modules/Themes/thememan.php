@@ -1,5 +1,5 @@
 <?php
-namespace Themes;
+namespace Bread\Themes;
 class ThemeManager
 {
 	private $themes;

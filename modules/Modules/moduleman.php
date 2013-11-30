@@ -1,5 +1,5 @@
 <?php
-namespace Modules;
+namespace Bread\Modules;
 class ModuleManager
 {
 	private $modules;
@@ -21,8 +21,7 @@ class ModuleManager
 			throw new Exception('Cannot register module. Module config not found');
 		}
 		$tmp = file_get_contents($jsonfile);
-		//Check through 
-		
+		//Check through 		
 	}
 
 }

@@ -1,5 +1,5 @@
 <?php
-namespace Structures;
+namespace Bread\Structures;
 class BreadRequestData
 {
 	public $command; #BreadRequestCommand
