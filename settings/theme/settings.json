@@ -1,6 +1,14 @@
 {
+	"themes":
+	{
+		"VanillaBread":
+		{
+			"config-path":"VanillaBread//theme.json",
+			"use-for":["all"]
+		}
+	},
 	"theme-settings":
 	{
-		"theme-file":"VanillaBread/theme.json"
+		
 	}
 }

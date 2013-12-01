@@ -8,6 +8,16 @@ class ModuleManager
 		$modules = array();
 	}
 
+	function LoadThemeManagerSettings($filepath)
+	{
+		if(!file_exists($filepath))
+		{
+			throw new \Exception('Cannot load themes. Manager Settings file not found');
+		}
+		$tmp = file_get_contents($filepath);
+		$this->configuration = json_decode($tmp,true);
+	}
+
 	function RegisterModule($ModuleName,$jsonfile)
 	{
 		if(in_array($ModuleName,$modules))
