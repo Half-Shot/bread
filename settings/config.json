@@ -6,7 +6,7 @@
 		"homepage":"homepage",
 		"logto":"/tmp/breadlog",
 		"debug":true,
-		"banhammer":false
+		"banhammer":true
 		},
 	"strings":{
 		"sitename":"The Bakery"
@@ -17,6 +17,7 @@
 		"system-settings":"./settings",
 		"user-modules":"./user/modules",
 		"user-themes":"./user/themes",
+		"user-layouts":"./user/layouts",
 		"user-resource":"./user/resource",
 		"user-media":"./content/media",
 		"user-pages":"./content/pages",

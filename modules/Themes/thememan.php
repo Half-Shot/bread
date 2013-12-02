@@ -1,5 +1,6 @@
 <?php
 namespace Bread\Themes;
+use Bread\Site as Site;
 class ThemeManager
 {
 	private $themes;
@@ -25,7 +26,16 @@ class ThemeManager
 		$this->configuration = json_decode($tmp,true);
 		if($this->configuration == NULL)
 			throw new \Exception('Cannot load themes. Manager Settings has invalid JSON.');
-
+	}
+	
+	function LoadLayouts()
+	{
+	    $layouts = $this->configuration["settings"]["layouts"];
+	    foreach($layouts as $layouttype => $layoutpath)
+	    {
+	       $layouts[$layouttype] = simplexml_load_file(Site::Configuration()["directorys"]["user-layouts"]. "/"  . $layoutpath);
+	        break;
+	    }
 	}
 
 	function RegisterTheme($themeconfig)
@@ -45,7 +55,7 @@ class ThemeManager
 			throw new \Exception('Cannot load theme. Theme data has missing required properties.');
 		}
 		$Theme = $JSON["theme"];
-
+        
 	}
 }
 ?>

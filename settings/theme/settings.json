@@ -7,8 +7,11 @@
 			"use-for":["all"]
 		}
 	},
-	"theme-settings":
+	"settings":
 	{
-		
+		"layouts":{
+            "master":"default//page-layout.xml"
+		}
+
 	}
 }

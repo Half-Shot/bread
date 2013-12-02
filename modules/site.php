@@ -1,10 +1,14 @@
 <?php
 namespace Bread;
+use Bread\Structures\BreadRequestData as BreadRequestData;
+use Bread\Structures\BreadRequestCommand as BreadRequestCommand;
 class Site
 {
 	private static $Configuration;
 	public static $ThemeManager;
 	public static $ModuleManager;
+	public static $TimeStarted;
+	public static $HTMLCode;
 	public static function LoadConfig($configurl)
 	{
 		$tmp = file_get_contents($configurl);
@@ -94,11 +98,28 @@ class Site
 		self::$ModuleManager = new Modules\ModuleManager();
 
 		self::$ThemeManager->LoadThemeManagerSettings(self::$Configuration["directorys"]["system-settings"] . "/theme/settings.json");
+	    self::$ThemeManager->LoadLayouts();
 	}
 	
-	public static function DrawSite()
+	public static function ProcessRequest(BreadRequestData $requestData)
 	{
-
+	    Site::$HTMLCode = "<html><marquee>Entire Website</marquee></html>";
+	    //Process request
+	    
+	    //Load required modules only.
+	    
+	    //Load required themes only.
+	    
+	    //Draw required layout.
+	    
+	    echo Site::$HTMLCode;
+	}
+	
+	public static function ExampleRequest()
+	{
+	    $requestType = BreadRequestCommand::$RawPage;
+	    $request = new BreadRequestData($requestType);
+	    return $request;
 	}
 }
 ?>
