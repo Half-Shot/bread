@@ -10,7 +10,7 @@
 	"settings":
 	{
 		"layouts":{
-            "master":"default//page-layout.xml"
+            		"master":"default//page-layout.xml"
 		}
 
 	}

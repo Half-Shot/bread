@@ -26,6 +26,11 @@ class ThemeManager
 		$this->configuration = json_decode($tmp,true);
 		if($this->configuration == NULL)
 			throw new \Exception('Cannot load themes. Manager Settings has invalid JSON.');
+
+		foreach ($this->configuration["themes"] as $theme)
+		{
+			$this->RegisterTheme(Site::Configuration()["directorys"]["user-themes"]. "/" . $theme["config-path"]);
+		}
 	}
 	
 	function LoadLayouts()

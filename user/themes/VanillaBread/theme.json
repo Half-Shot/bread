@@ -7,7 +7,8 @@
 		"version":"0.01",
 		"author":"Half-Shot",
 		"e-mail":"half-shot@molrams.com",
-		"requires":[""]
+		"requires":[""],
+		"entryclass":"VanillaTheme"
 	},
 	"module":
 	{

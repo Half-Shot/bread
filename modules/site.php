@@ -9,6 +9,7 @@ class Site
 	public static $ModuleManager;
 	public static $TimeStarted;
 	public static $HTMLCode;
+	public static $Logger;
 	public static function LoadConfig($configurl)
 	{
 		$tmp = file_get_contents($configurl);
@@ -17,11 +18,15 @@ class Site
 			throw new \Exception($tmp . " could not be loaded. Game Over!");
 		}
 		self::$Configuration = json_decode($tmp,true);
+		if(!self::$Configuration)
+		{
+			throw new \Exception("Configuration could be <b>read</b> but not be <b>loaded</b>. Game Over!");
+			die();
+		}
 	}
 
 	public static function Configuration()
 	{
-
 		return self::$Configuration;
 	}
 
@@ -44,7 +49,7 @@ class Site
 		{
 			//Check for banned user.
 			$uip = $_SERVER["REMOTE_ADDR"];
-			foreach ($Configuration["bans"] as $banneduser)
+			foreach (self::$Configuration["bans"] as $banneduser)
 			{	
 				if($banneduser == $uip){
 					echo "BANNED, Get Lost!";
@@ -70,8 +75,14 @@ class Site
 			else if(file_exists($fullpath))
 			{
 				require_once($fullpath);
+				Site::$Logger->writeMessage("Loaded core file " . $fullpath);
 			}
 		}
+	}
+
+	public static function SetupLogging()
+	{
+		self::$Logger = new Logger(self::$Configuration["core"]["logto"]);
 	}
 
 	public static function CheckClasses()
@@ -98,12 +109,16 @@ class Site
 		self::$ModuleManager = new Modules\ModuleManager();
 
 		self::$ThemeManager->LoadThemeManagerSettings(self::$Configuration["directorys"]["system-settings"] . "/theme/settings.json");
-	    self::$ThemeManager->LoadLayouts();
+		self::$ThemeManager->LoadLayouts();
+
+		
+
 	}
 	
 	public static function ProcessRequest(BreadRequestData $requestData)
 	{
 	    Site::$HTMLCode = "<html><marquee>Entire Website</marquee></html>";
+	    
 	    //Process request
 	    
 	    //Load required modules only.
@@ -121,5 +136,60 @@ class Site
 	    $request = new BreadRequestData($requestType);
 	    return $request;
 	}
+
+	public static function Cleanup()
+	{
+		self::$Logger->closeStream();
+	}
+}
+
+class Logger
+{
+    const FILEMODE = "w";
+    public $logPath = "NOLOG";
+    public $errorStack = array();
+    public $messageStack = array();
+    private $fileStream;
+    function __construct($filepath)
+    {
+	if($filepath == "")
+		return;
+        $this->logPath = $filepath;
+        try
+        {
+            $this->fileStream = fopen($this->logPath,self::FILEMODE);
+	    self::writeMessage("Opened Logger");
+        }
+        catch(Exception $ex)
+        {
+            throw new Exception("Couldn't write a new log file. File name " . $this->logPath);
+        }
+    }
+    
+    function writeMessage($message)
+    {
+	if($this->logPath == "NOLOG")
+		return;
+        $msg = "[MSG][" . (time() - Site::$TimeStarted) . "]" . $message . "\n";
+        fwrite($this->fileStream,$msg);
+        fflush($this->fileStream);
+    }
+    
+    function writeError($message,$severity)
+    {
+	if($this->logPath == "NOLOG")
+		return;
+        $msg = "[ERR " . $severity ."][" . time() - Site::$TimeStarted . "]" . $message . "\n";
+        fwrite($this->fileStream,$msg);
+        fflush($this->fileStream);
+    }
+    
+    function closeStream()
+    {
+	if($this->logPath == "NOLOG")
+		return;
+        self::writeMessage("Closing Log");
+        fclose($this->fileStream);
+    }
 }
 ?>

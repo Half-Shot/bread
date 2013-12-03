@@ -4,14 +4,14 @@
 		"rooturl":"http://localhost/will/bread/",
 		"databasefile":"tables.db",
 		"homepage":"homepage",
-		"logto":"/tmp/breadlog",
+		"logto":"./temp/breadlog",
 		"debug":true,
 		"banhammer":true
 		},
 	"strings":{
 		"sitename":"The Bakery"
 		},
-	"bans":["127.0.0.1"],
+	"bans":[],
 	"directorys":{
 		"system-modules":"./modules",
 		"system-settings":"./settings",

@@ -7,8 +7,10 @@ Site::$TimeStarted = time();
 Site::ShowDebug(true);
 Site::LoadConfig($BREAD_CONFIGURL);
 Site::CheckBans();
+Site::SetupLogging();
 Site::LoadClasses(Site::Configuration()["directorys"]["system-modules"]);
 Site::CheckClasses();
 Site::SetupManagers();//Last step to have a fully set up site.
 Site::ProcessRequest(Site::ExampleRequest());//Draw the site. We are done here.
+Site::Cleanup();
 ?>
