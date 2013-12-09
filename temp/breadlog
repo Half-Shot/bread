@@ -1,0 +1,14 @@
+[MSG][0]Opened Logger
+[MSG][0]Loaded core file ./modules/Modules/moduleman.php
+[MSG][0]Loaded core file ./modules/Structures/BreadRequest.php
+[MSG][0]Loaded core file ./modules/Themes/theme.php
+[MSG][0]Loaded core file ./modules/Themes/thememan.php
+[MSG][0]Loaded core file ./modules/functions.php
+[MSG][0]Beginning build of page
+[MSG][0]Request data:
+Bread\Structures\BreadRequestData::__set_state(array(
+   'command' => 'RawPage',
+   'module' => NULL,
+   'sourcename' => NULL,
+))
+[MSG][0]Closing Log

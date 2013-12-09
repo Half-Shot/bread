@@ -6,6 +6,7 @@
 		"homepage":"homepage",
 		"logto":"./temp/breadlog",
 		"debug":true,
+		"cache":true,
 		"banhammer":true
 		},
 	"strings":{

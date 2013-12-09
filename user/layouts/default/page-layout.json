@@ -1,6 +1,6 @@
 {
 "name": "Default Layout",
-"css-file": "page-layout.css",
+"css":["default/page-layout.css"],
 "elements": [
     {
         "name": "navbar",

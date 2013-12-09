@@ -7,11 +7,12 @@
 		"version":"0.01",
 		"author":"Half-Shot",
 		"e-mail":"half-shot@molrams.com",
-		"requires":[""],
-		"entryclass":"VanillaTheme"
+		"requires":[""]
 	},
 	"module":
 	{
-		"permissions":["read:user/resource"]
+		"permissions":["read:user/resource"],
+		"entryclass":"VanillaBreadTheme",
+		"entryfile":"VanillaBread/module/theme.php"
 	}
 }

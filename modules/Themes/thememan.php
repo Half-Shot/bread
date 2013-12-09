@@ -6,9 +6,10 @@ class ThemeManager
 	private $themes;
 	private $layouts;
 	private $configuration = "";
+	public $SelectedThemeData;
 	public $SelectedTheme;
 	public $SelectedLayout;
-	public $CSS = "";
+	public $CSSLines = "";
 	function __construct()
 	{
 		$themes = array();
@@ -25,16 +26,16 @@ class ThemeManager
 	{
 		if(!file_exists($filepath))
 		{
-			throw new \Exception('Cannot load themes. Manager Settings file not found');
+			Site::$Logger->writeError('Cannot load themes. Manager Settings file not found',1,True);
 		}
 		$tmp = file_get_contents($filepath);
 		$this->configuration = json_decode($tmp,true);
 		if($this->configuration == NULL)
-			throw new \Exception('Cannot load themes. Manager Settings has invalid JSON.');
+			Site::$Logger->writeError('Cannot load themes. Manager Settings has invalid JSON.',1,True);
 
 		foreach ($this->configuration["themes"] as $theme)
 		{
-			$this->RegisterTheme(Site::Configuration()["directorys"]["user-themes"]. "/" . $theme["config-path"]);
+			$this->RegisterTheme(Site::Configuration()["directorys"]["user-themes"]. "/" . $theme["config-path"],$theme["use-for"]);
 		}
 	}
 	
@@ -44,45 +45,41 @@ class ThemeManager
 	    foreach($layouts as $layouttype => $layoutpath)
 	    {
 		$JSON = json_decode(file_get_contents(Site::Configuration()["directorys"]["user-layouts"]. "/"  . $layoutpath));
-		echo "<pre>";
-		print_r($JSON);
-		echo "</pre>";
 	        $this->layouts[$layouttype] = $JSON;
 	    }
 	}
 
-	function RegisterTheme($themeconfig)
+	function RegisterTheme($themeconfig,$usage)
 	{
 		//Parse config file
 		//TODO: Sort out all that jazz about module permissions which is used in themes.
 		if(!file_exists($themeconfig))
-		{
-			throw new \Exception('Cannot register theme. Theme config not found');
-		}
+			Site::$Logger->writeError('Cannot register theme. Theme config not found',1,True);
+
 		$tmp = file_get_contents($themeconfig);
 		$JSON = json_decode($tmp,true);
-		if($this->configuration == NULL)
-			throw new \Exception('Cannot load theme. Theme data has invalid JSON.');
 
-		if($JSON["theme"] == NULL)
-		{
-			throw new \Exception('Cannot load theme. Theme data has missing required properties.');
-		}
-		$this->themes[] = $JSON["theme"];
+		if($this->configuration == NULL)
+			Site::$Logger->writeError('Cannot load theme. Theme data has invalid JSON.',1,True);
+
+		if($JSON["theme"] == NULL || $JSON["module"] == NULL)
+			Site::$Logger->writeError('Cannot load theme. Theme data has missing required properties.',1,True);
+
+		foreach($usage as $uses)
+			$this->themes[$uses] = $JSON;
 	}
 
 	///Requests the theme that should be used for the request.
 	function SelectTheme($RequestType)
 	{
-		foreach ($this->configuration["themes"] as $theme)
+		foreach ($this->themes as $usage => $theme)
 		{
-			foreach ($theme["use-for"] as $usage)
-			{
 				if($usage == $RequestType or $usage == "all"){
-					$this->SelectedTheme = $theme;
+					$this->SelectedThemeData = $theme;
+					require_once(Site::Configuration()["directorys"]["user-themes"]. "/" . $theme["module"]["entryfile"]);
+					$this->SelectedTheme = new $theme["module"]["entryclass"]();
 					return True;
 				}
-			}
 		}
 		return False;
 	}
@@ -109,41 +106,30 @@ class ThemeManager
 	//Returns array with [div tag] => module
 	function ReadElementsFromLayout($Layout)
 	{
-		foreach($Layout->element as $element)
+		$IsRoot = ($Layout == $this->SelectedLayout);
+
+		if($IsRoot)
+		{
+			if(!isset($Layout->elements))//No enclosed elements.
+				Site::$Logger->writeError("Layout contains no elements, page cannot be built.",1,True);
+			if(!isset($Layout->css))
+				Site::$Logger->writeError("Layout contains no css files, page cannot be built.",1,True);
+		}
+		if(!isset($Layout->elements))//No enclosed elements.
+			return;
+
+		foreach($Layout->elements as $element)
 		{
 			$this->ReadElementsFromLayout($element);
 		}
 		//Do some drawing
-		if($Layout == $this->SelectedLayout) //Is not root.
-			return;	
-		//Parse this element
-		//Build CSS
-		$CSS = "";
-		//Build a CSS listing
-		$CSS .= "\n";
-		$CSS .= "#" . $Layout->attributes()["name"];
-		$CSS .= "{";
+		if(!$IsRoot)
+			return;
 
-		if(isset($Layout->dimensions))
+		foreach($Layout->css as $cssfilepath)
 		{
-			$CSS .= "width:" . $Layout->dimensions->width;
-			if(substr($Layout->dimensions->width,-1) != "%") //Percentages
-				$CSS .= "px";
-
-			$CSS .= ';';
-			$CSS .= "height:" . $Layout->dimensions->height;
-			if(substr($Layout->dimensions->height,-1) != "%") //Percentages
-				$CSS .= "px";
-			$CSS .= ';';
+			$this->CSSLines .= "<link rel='stylesheet' type='text/css' href='" . Site::Configuration()["directorys"]["user-layouts"]. "/"  . $cssfilepath . "'>";
 		}
-
-		if(isset($Layout->dimensions))
-		{
-			echo "Hi";
-		}
-
-		$CSS .= "}";
-		echo $CSS . "<br>";
 	}
 }
 ?>

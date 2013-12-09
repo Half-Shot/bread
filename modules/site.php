@@ -95,13 +95,13 @@ class Site
 		foreach($RequiredModules as $ModuleName)
 		{
 			if(!class_exists($ModuleName)){
-				throw new \Exception("Bread is missing " . $ModuleName);
+				Site::$Logger->writeError("Bread is missing module " . $ModuleName,0,True);
 				$Failed = true;
 			}
 		}
 		if($Failed)
 		{
-			throw new \Exception("Some core modules could not be found, please redownload them from the repository.");
+			throw new Site::$Logger->writeError("Some core modules could not be found, please redownload them from the repository.",0,true);
 			die();
 		}
 	}
@@ -118,23 +118,46 @@ class Site
 
 	}
 	
+	public static function ProcessMetadata(BreadRequestData $requestData)
+	{
+		//Probably gonna need a module for this.
+		$Metadata  = "<meta>";
+		$Metadata .= '<meta name="description" content="Free Web tutorials">';
+		$Metadata .= '<meta name="keywords" content="HTML,CSS,XML,JavaScript">';
+		$Metadata .= '<meta name="author" content="Hege Refsnes">';
+		$Metadata .= '<meta charset="UTF-8">';
+		$Metadata .= "</meta>";
+		return $Metadata;
+	}
+	
 	public static function ProcessRequest(BreadRequestData $requestData)
 	{
+	    Site::$HTMLCode .= "<!DOCTYPE html>\n<html>"; //Obviously.
 	    Site::$Logger->writeMessage("Beginning build of page");
 	    Site::$Logger->writeMessage("Request data:\n" . var_export($requestData,True));
 	    //Process request
 	    if(!Site::$ThemeManager->SelectTheme($requestData->command))
 	    {
-		Site::$Logger->writeError("Couldn't select theme from request.",0);
+		Site::$Logger->writeError("Couldn't select theme from request.",0,True);
 		die();
 	    }
 
 	    if(!Site::$ThemeManager->SelectLayout($requestData->command))
 	    {
-		Site::$Logger->writeError("Couldn't select layout from request.",0);
+		Site::$Logger->writeError("Couldn't select layout from request.",0,True);
 		die();
 	    }
 	    Site::$ThemeManager->ReadElementsFromLayout(Site::$ThemeManager->SelectedLayout);
+
+	    Site::$HTMLCode .= "<head>";
+	    Site::$HTMLCode .= Site::$ThemeManager->SelectedTheme->HeaderInfomation();
+	    Site::$HTMLCode .= Site::$ThemeManager->CSSLines;
+	    Site::$HTMLCode .= Site::ProcessMetadata($requestData);
+	    Site::$HTMLCode .= "</head>";
+	    Site::$HTMLCode .= "<body>";
+	    
+	    Site::$HTMLCode .= "</body>";
+	    Site::$HTMLCode .= "</html>";
 	    echo Site::$HTMLCode;
 	}
 	
@@ -183,13 +206,15 @@ class Logger
         fflush($this->fileStream);
     }
     
-    function writeError($message,$severity)
+    function writeError($message,$severity,$throw = False)
     {
 	if($this->logPath == "NOLOG")
 		return;
         $msg = "[ERR " . $severity ."][" . (time() - Site::$TimeStarted) . "]" . $message . "\n";
         fwrite($this->fileStream,$msg);
         fflush($this->fileStream);
+	if($throw)
+		throw new \Exception($message);
     }
     
     function closeStream()
