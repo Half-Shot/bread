@@ -5,11 +5,14 @@ use Bread\Structures\BreadRequestCommand as BreadRequestCommand;
 class Site
 {
 	private static $Configuration;
+
 	public static $ThemeManager;
 	public static $ModuleManager;
-	public static $TimeStarted;
-	public static $HTMLCode;
 	public static $Logger;
+	public static $TimeStarted;
+
+	public static $HTMLCode;
+
 	public static function LoadConfig($configurl)
 	{
 		$tmp = file_get_contents($configurl);
@@ -117,22 +120,27 @@ class Site
 	
 	public static function ProcessRequest(BreadRequestData $requestData)
 	{
-	    Site::$HTMLCode = "<html><marquee>Entire Website</marquee></html>";
-	    
+	    Site::$Logger->writeMessage("Beginning build of page");
+	    Site::$Logger->writeMessage("Request data:\n" . var_export($requestData,True));
 	    //Process request
-	    
-	    //Load required modules only.
-	    
-	    //Load required themes only.
-	    
-	    //Draw required layout.
-	    
+	    if(!Site::$ThemeManager->SelectTheme($requestData->command))
+	    {
+		Site::$Logger->writeError("Couldn't select theme from request.",0);
+		die();
+	    }
+
+	    if(!Site::$ThemeManager->SelectLayout($requestData->command))
+	    {
+		Site::$Logger->writeError("Couldn't select layout from request.",0);
+		die();
+	    }
+	    Site::$ThemeManager->ReadElementsFromLayout(Site::$ThemeManager->SelectedLayout);
 	    echo Site::$HTMLCode;
 	}
 	
 	public static function ExampleRequest()
 	{
-	    $requestType = BreadRequestCommand::$RawPage;
+	    $requestType = "RawPage";
 	    $request = new BreadRequestData($requestType);
 	    return $request;
 	}
@@ -179,7 +187,7 @@ class Logger
     {
 	if($this->logPath == "NOLOG")
 		return;
-        $msg = "[ERR " . $severity ."][" . time() - Site::$TimeStarted . "]" . $message . "\n";
+        $msg = "[ERR " . $severity ."][" . (time() - Site::$TimeStarted) . "]" . $message . "\n";
         fwrite($this->fileStream,$msg);
         fflush($this->fileStream);
     }

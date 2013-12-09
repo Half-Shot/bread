@@ -1,7 +1,7 @@
 {
 	"themes":
 	{
-		"VanillaBread":
+		"theme-vanilla":
 		{
 			"config-path":"VanillaBread//theme.json",
 			"use-for":["all"]
@@ -10,7 +10,7 @@
 	"settings":
 	{
 		"layouts":{
-            		"master":"default//page-layout.xml"
+            		"master":"default//page-layout.json"
 		}
 
 	}

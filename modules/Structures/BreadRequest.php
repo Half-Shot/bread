@@ -24,12 +24,4 @@ class BreadRequestData
 #	    self::$sourcename = $SourceName;
 #	}
 }
-
-class BreadRequestCommand
-{
-	static $SystemMenu = 0;
-	static $LoginPage  = 1;
-	static $RawPage    = 2;
-	static $Module     = 3;
-}
 ?>

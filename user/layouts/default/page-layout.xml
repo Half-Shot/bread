@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <layout> <!-- Start your layout with this !-->
-	<element name="Navigation Bar" description="Top of the page, ideal for navbars."> <!-- Each 'element' (area for a module) should tagged like so. !-->
+	<element name="navbar" hname="Navigation Bar" description="Top of the page, ideal for navbars."> <!-- Each 'element' (area for a module) should tagged like so. !-->
 		<module>bread-navbar</module> 
 		<!-- Module to be placed (name of the module please). 
 		     If the module isn't found then the element will 
@@ -24,7 +24,7 @@
 			<scroll>True</scroll> <!-- Scroll with the browser!-->
 		</position>
 	</element>
-	<element name="Page Contents" description="Middle section where contents will be placed.">
+	<element name="contents" hname="Page Contents" description="Middle section where contents will be placed.">
 		<module>bread-pagebuilder</module>
 		<dimensions>
 			<width>80%</width>
@@ -37,12 +37,12 @@
 			</margin>
 		</position>
 	</element>
-	<element name="Footer" description="Good place for copyright or author name.">
+	<element name="footer" hname="Footer" description="Good place for copyright or author name.">
 		<module>bread-rawhtml</module>
-		<dimesions>
+		<dimensions>
 			<width>100%</width>
 			<height>5%</height>
-		</dimesions>	
+		</dimensions>	
 		<position>
 			<keepto>bottom</keepto>
 		</position>

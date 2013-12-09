@@ -1,0 +1,24 @@
+{
+"name": "Default Layout",
+"css-file": "page-layout.css",
+"elements": [
+    {
+        "name": "navbar",
+        "human": "Navigation Bar",
+        "description": "Top of the page, ideal for navbars.",
+        "module": "bread-navbar"
+    },
+    {
+        "name": "contents",
+        "human": "Page Contents",
+        "description": "Middle section where contents will be placed.",
+        "module": "bread-pagebuilder"
+    },
+    {
+        "name": "footer",
+        "human": "Footer",
+        "description": "Good place for copyright or author name.",
+        "module": "bread-rawhtml"
+    }
+]
+}

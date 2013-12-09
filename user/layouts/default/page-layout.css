@@ -1,0 +1,28 @@
+#navbar
+{
+	width:100%;
+	height:10%;
+
+	position:absolute;
+	left:0;
+	top:0;
+}
+
+#contents
+{
+	width:80%;
+	height:90%;
+
+	position:absolute;
+	margin:5%;
+}
+
+#footer
+{
+	width:100%;
+	height:5%;
+
+	position:absolute;
+	left:0px;
+	top:0px;
+}
