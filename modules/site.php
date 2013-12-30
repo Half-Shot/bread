@@ -111,8 +111,10 @@ class Site
 		self::$ThemeManager = new Themes\ThemeManager();
 		self::$ModuleManager = new Modules\ModuleManager();
 
-		self::$ThemeManager->LoadThemeManagerSettings(self::$Configuration["directorys"]["system-settings"] . "/theme/settings.json");
+		self::$ThemeManager->LoadSettings(self::$Configuration["directorys"]["system-settings"] . "/theme/settings.json");
 		self::$ThemeManager->LoadLayouts();
+
+		self::$ModuleManager = new Modules\ModuleManager();
 
 		
 
@@ -192,15 +194,12 @@ class Logger
 	if($filepath == "")
 		return;
         $this->logPath = $filepath;
-        try
-        {
             $this->fileStream = fopen($this->logPath,self::FILEMODE);
+	    if(!$this->fileStream){
+		$this->fileStream = fopen("php://temp",self::FILEMODE);// No writing possible
+		trigger_error("Couldn't write a new log file. File name " . $this->logPath, E_USER_ERROR);
+	    }
 	    self::writeMessage("Opened Logger");
-        }
-        catch(Exception $ex)
-        {
-            throw new Exception("Couldn't write a new log file. File name " . $this->logPath);
-        }
     }
     
     function writeMessage($message)

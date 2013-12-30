@@ -9,7 +9,7 @@ class ModuleManager
 		$modules = array();
 	}
 
-	function LoadThemeManagerSettings($filepath)
+	function LoadSettings($filepath)
 	{
 		if(!file_exists($filepath))
 		{

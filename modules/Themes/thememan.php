@@ -27,7 +27,7 @@ class ThemeManager
 		return $this->configuration;
 	}
 
-	function LoadThemeManagerSettings($filepath)
+	function LoadSettings($filepath)
 	{
 		if(!file_exists($filepath))
 		{
