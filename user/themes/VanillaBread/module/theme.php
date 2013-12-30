@@ -10,7 +10,7 @@ class VanillaBreadTheme extends Bread\Themes\Theme
 
 	function HeaderInfomation()
 	{
-		$HTMLCode = "<!-- Header Stuff from Vanilla -->";
+		$HTMLCode = "<!-- Header Stuff from Vanilla -->\n";
 		return $HTMLCode;
 	}
 

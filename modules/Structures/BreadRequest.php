@@ -2,7 +2,7 @@
 namespace Bread\Structures;
 class BreadRequestData
 {
-	public $command; #BreadRequestCommand
+	public $command;
 	public $module;
 	public $sourcename; # E.g PageID, MenuID
 	

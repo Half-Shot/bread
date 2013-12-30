@@ -12,7 +12,7 @@ class Site
 	public static $TimeStarted;
 
 	public static $HTMLCode;
-
+	public static $BodyCode;
 	public static function LoadConfig($configurl)
 	{
 		$tmp = file_get_contents($configurl);
@@ -132,32 +132,38 @@ class Site
 	
 	public static function ProcessRequest(BreadRequestData $requestData)
 	{
-	    Site::$HTMLCode .= "<!DOCTYPE html>\n<html>"; //Obviously.
+	    switch($requestData->command){
+	    	case "module":
+			break;
+	    	case "page":
+			break;
+		default:
+			Site::$Logger->writeMessage("Unknown request command -> " . $requestData->command);
+			break;
+	    }
+	    //Draw
+	    Site::$HTMLCode .= "<!DOCTYPE html>\n<html>\n"; //Obviously.
 	    Site::$Logger->writeMessage("Beginning build of page");
 	    Site::$Logger->writeMessage("Request data:\n" . var_export($requestData,True));
 	    //Process request
-	    if(!Site::$ThemeManager->SelectTheme($requestData->command))
-	    {
+	    if(!Site::$ThemeManager->SelectTheme($requestData->command)){
 		Site::$Logger->writeError("Couldn't select theme from request.",0,True);
-		die();
 	    }
-
-	    if(!Site::$ThemeManager->SelectLayout($requestData->command))
-	    {
+	    if(!Site::$ThemeManager->SelectLayout($requestData->command)){
 		Site::$Logger->writeError("Couldn't select layout from request.",0,True);
-		die();
 	    }
-	    Site::$ThemeManager->ReadElementsFromLayout(Site::$ThemeManager->SelectedLayout);
 
-	    Site::$HTMLCode .= "<head>";
-	    Site::$HTMLCode .= Site::$ThemeManager->SelectedTheme->HeaderInfomation();
+	    Site::$ThemeManager->ReadElementsFromLayout(Site::$ThemeManager->Theme["layout"]);#Build layout into HTML
+	    Site::$HTMLCode .= "<head>\n";
+
+	    Site::$HTMLCode .= Site::$ThemeManager->Theme["class"]->HeaderInfomation();
 	    Site::$HTMLCode .= Site::$ThemeManager->CSSLines;
 	    Site::$HTMLCode .= Site::ProcessMetadata($requestData);
-	    Site::$HTMLCode .= "</head>";
-	    Site::$HTMLCode .= "<body>";
-	    
-	    Site::$HTMLCode .= "</body>";
-	    Site::$HTMLCode .= "</html>";
+	    Site::$HTMLCode .= "</head>\n";
+	    Site::$HTMLCode .= "<body>\n";
+	    Site::$HTMLCode .= Site::$BodyCode;
+	    Site::$HTMLCode .= "</body>\n";
+	    Site::$HTMLCode .= "</html>\n";
 	    echo Site::$HTMLCode;
 	}
 	
