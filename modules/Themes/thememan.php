@@ -47,7 +47,7 @@ class ThemeManager
 	//Adds to the layouts variable.
 	function LoadLayouts()
 	{
-	    $layouts_cfg = $this->configuration["settings"]["layouts"];
+	    $layouts_cfg = $this->configuration["layouts"];
 	    foreach($layouts_cfg as $layouttype => $layoutpath)
 	    {
 	    	$layout = array();

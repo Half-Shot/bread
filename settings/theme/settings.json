@@ -7,11 +7,9 @@
 			"use-for":["all"]
 		}
 	},
-	"settings":
-	{
-		"layouts":{
-            		"master":"default//page-layout.json"
-		}
-
+	"layouts":{
+        	"master":"default//page-layout.json"
+	},
+	"settings":{
 	}
 }

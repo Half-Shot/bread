@@ -4,10 +4,9 @@ File Structure
 ###[NOTE] This is not acutally set in stone or even being used yet. This file is a planning file.
 
 The file structure that is in the process of being adopted.
-The system itself is based on a GNU/Linux distrobutions filesystem.
+The system itself is loosely based on a Linux filesystem.
 You can modify the code yourself to change the filesystem but it is recommended that you do NOT for the reason that this breaks any modules developed for Bread unless you modify them too.
 We made this decision to use Linux because its a cool operating system and much more secure than any other.
-
 
 
 #####index.php

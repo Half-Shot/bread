@@ -114,7 +114,8 @@ class Site
 		self::$ThemeManager->LoadSettings(self::$Configuration["directorys"]["system-settings"] . "/theme/settings.json");
 		self::$ThemeManager->LoadLayouts();
 
-		self::$ModuleManager = new Modules\ModuleManager();
+		self::$ModuleManager->LoadSettings(self::$Configuration["directorys"]["system-settings"] . "/theme/settings.json");
+		self::$ModuleManager->LoadModules();
 
 		
 

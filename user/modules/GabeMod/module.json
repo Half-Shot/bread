@@ -1,0 +1,5 @@
+{
+		"permissions":["read:user/resource"],
+		"entryclass":"GabeMod",
+		"entryfile":"GabeMod/gabe.php"
+}
