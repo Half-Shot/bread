@@ -14,10 +14,10 @@ class Module
 
 	}
 
+    #Don't actually use this function, this is just a template.
 	function FireEvent($eventData)
 	{
 
 	}
-
 }
 ?>

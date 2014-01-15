@@ -5,6 +5,7 @@
 [MSG][0]Loaded core file ./modules/Themes/theme.php
 [MSG][0]Loaded core file ./modules/Themes/thememan.php
 [MSG][0]Loaded core file ./modules/functions.php
+[MSG][0]Registered module GabeMod
 [MSG][0]Unknown request command -> RawPage
 [MSG][0]Beginning build of page
 [MSG][0]Request data:
@@ -13,4 +14,5 @@ Bread\Structures\BreadRequestData::__set_state(array(
    'module' => NULL,
    'sourcename' => NULL,
 ))
+[MSG][0]Memory Used: 512kb
 [MSG][0]Closing Log

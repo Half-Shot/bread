@@ -14,7 +14,7 @@
 	"id": "contents",
         "human": "Page Contents",
         "description": "Middle section where contents will be placed.",
-        "module": "bread-pagebuilder"
+        "module": "GabeMod"
     },
     {
         "name": "footer",

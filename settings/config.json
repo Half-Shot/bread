@@ -1,6 +1,6 @@
 {
 	"core":{
-		"version":0.06,
+		"version":0.07,
 		"rooturl":"http://localhost/will/bread/",
 		"databasefile":"tables.db",
 		"homepage":"homepage",
@@ -16,6 +16,7 @@
 	"directorys":{
 		"system-modules":"./modules",
 		"system-settings":"./settings",
+		"settings-moduleloadlist":"./settings/modules/modlist.json",
 		"user-modules":"./user/modules",
 		"user-themes":"./user/themes",
 		"user-layouts":"./user/layouts",

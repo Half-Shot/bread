@@ -132,8 +132,14 @@ class ThemeManager
 		}
 		else
 		{
-			Site::$BodyCode .= "<div id='" . $Layout->id ."'>Drawing element from layout: " .$Layout->human . "</div>\n";
-				return;
+			Site::$BodyCode .= "<div id='" . $Layout->id ."'>"; //Start div tag.
+			$moduleReturn = Site::$ModuleManager->HookSpecifedModuleEvent("DrawModule",$Layout->module); //Module return
+			if($moduleReturn != False){
+			    //Return value.
+			    Site::$BodyCode .= $moduleReturn;
+			}
+			Site::$BodyCode .= "</div>\n";
+			return;
 		}
 		
 		//Draw enclosed elements.
@@ -142,8 +148,6 @@ class ThemeManager
 		$elements = $Layout["JSON"]->elements;
 		foreach($elements as $element)
 			$this->ReadElementsFromLayout($element);
-
-
 	}
 }
 ?>

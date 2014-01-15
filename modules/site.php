@@ -114,8 +114,8 @@ class Site
 		self::$ThemeManager->LoadSettings(self::$Configuration["directorys"]["system-settings"] . "/theme/settings.json");
 		self::$ThemeManager->LoadLayouts();
 
-		self::$ModuleManager->LoadSettings(self::$Configuration["directorys"]["system-settings"] . "/theme/settings.json");
-		self::$ModuleManager->LoadModules();
+		self::$ModuleManager->LoadSettings(self::$Configuration["directorys"]["system-settings"] . "/modules/settings.json");
+		self::$ModuleManager->LoadModulesFromConfig(self::$Configuration["directorys"]["system-settings"] . "/modules/modlist.json");
 
 		
 
@@ -135,6 +135,8 @@ class Site
 	
 	public static function ProcessRequest(BreadRequestData $requestData)
 	{
+	    #Load required modules.
+	    self::$ModuleManager->LoadRequiredModules($requestData);
 	    switch($requestData->command){
 	    	case "module":
 			break;
