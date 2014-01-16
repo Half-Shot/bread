@@ -13,6 +13,7 @@ class ModuleManager
 		$this->modules = array();
 		$this->moduleList = array();
 		$this->moduleConfig = array();
+		$this->events = array();
 	}
 
 	function LoadSettings($filepath)
@@ -69,8 +70,8 @@ class ModuleManager
 		    $class = $jsonArray["namespace"] . "\\" . $jsonArray["entryclass"];
 		}
 		$this->moduleConfig[$jsonArray["name"]] = $jsonArray;
-		$this->modules[$jsonArray["name"]] = new $class($this);
-
+		$this->modules[$jsonArray["name"]] = new $class($this,$ModuleName);
+		$this->modules[$jsonArray["name"]]->RegisterEvents();
 	}
 	
 	function RegisterEvent($moduleName,$eventName,$function)
@@ -82,17 +83,25 @@ class ModuleManager
 	    }
 	}
 	
-	function HookEvent($eventName)
+	function HookEvent($eventName,$arguments)
 	{
 	    $returnData = array();
+		if(!array_key_exists($eventName,$this->events))
+	        return False; //Event not used.
+	    foreach($this->events[$eventName] as $module)
+		{
+			$function = $this->events[$eventName][$module];
+			$this->modules[$modules]->$function($arguments);
+		}
 	    return "We hooked :P";
 	}
 	
-	function HookSpecifedModuleEvent($eventName,$moduleName)
+	function HookSpecifedModuleEvent($eventName,$moduleName,$arguments)
 	{
-	    if(!array_key_exists($moduleName,$this->modules))
+		if(!array_key_exists($moduleName,$this->modules))
 	        return False; //Module not found.
-	    return $this->modules[$moduleName]->$eventName(NULL);
+	    $function = $this->events[$eventName][$moduleName];
+	    return $this->modules[$moduleName]->$function($arguments);
 	}
 }
 ?>

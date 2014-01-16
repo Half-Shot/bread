@@ -1,7 +1,0 @@
-{
-        "name":"GabeMod",
-		"permissions":["read:user/resource"],
-		"loadFor":["everything"],
-		"entryclass":"GabeMod",
-		"entryfile":"GabeMod/gabe.php"
-}

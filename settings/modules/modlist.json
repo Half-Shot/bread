@@ -1,7 +1,7 @@
 {
 	"enabled":
 	[
-		"GabeMod/module.json"
+		"ExampleModule/module.json"
 	],
 	"blacklisted":
 	[

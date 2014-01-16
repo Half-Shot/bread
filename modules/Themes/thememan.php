@@ -133,7 +133,13 @@ class ThemeManager
 		else
 		{
 			Site::$BodyCode .= "<div id='" . $Layout->id ."'>"; //Start div tag.
-			$moduleReturn = Site::$ModuleManager->HookSpecifedModuleEvent("DrawModule",$Layout->module); //Module return
+			$event = "DrawModule"; //Standard module draw function.
+			$arguments = array();
+			if(isset($Layout->event))
+				$event = $Layout->event;
+			if(isset($Layout->arguments))
+				$arguments = $Layout->arguments;
+			$moduleReturn = Site::$ModuleManager->HookSpecifedModuleEvent($event,$Layout->module,$arguments); //Module returns html data hopefully.
 			if($moduleReturn != False){
 			    //Return value.
 			    Site::$BodyCode .= $moduleReturn;

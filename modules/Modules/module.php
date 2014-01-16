@@ -2,11 +2,12 @@
 namespace Bread\Modules;
 class Module
 {
-	private $modules;
-	private $events;
-	function __construct()
+    private $manager;
+	private $name;
+	function __construct($manager,$name)
 	{
-		
+		$this->manager = $manager;
+		$this->name = $name;
 	}
 
 	function RegisterEvents()

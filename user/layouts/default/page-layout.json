@@ -14,7 +14,12 @@
 	"id": "contents",
         "human": "Page Contents",
         "description": "Middle section where contents will be placed.",
-        "module": "GabeMod"
+        "module": "ExampleModule",
+        "event":"Bread.DrawModule",
+        "arguments":
+        {
+			"gabesize":"10"
+        }
     },
     {
         "name": "footer",
