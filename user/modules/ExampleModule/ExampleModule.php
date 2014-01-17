@@ -2,12 +2,9 @@
 namespace Bread\Modules;
 class ExampleModule extends Module
 {
-    private $manager;
-	private $name;
 	function __construct($manager,$name)
 	{
-		$this->manager = $manager;
-		$this->name = $name;
+		parent::__construct($manager,$name);
 	}
 
 	function RegisterEvents()

@@ -1,5 +1,5 @@
 {
-	"theme":
+	"module":
 	{
 		"name":"theme-vanilla",
 		"humanname":"Vanilla Bread",
@@ -7,12 +7,10 @@
 		"version":"0.01",
 		"author":"Half-Shot",
 		"e-mail":"half-shot@molrams.com",
-		"requires":[""]
-	},
-	"module":
-	{
+		"requires":[""],
 		"permissions":["read:user/resource"],
 		"entryclass":"VanillaBreadTheme",
-		"entryfile":"VanillaBread/module/theme.php"
+		"entryfile":"VanillaBread/module/theme.php",
+		"css":["http://fonts.googleapis.com/css?family=Ledger"]
 	}
 }

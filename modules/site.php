@@ -152,16 +152,14 @@ class Site
 	    Site::$Logger->writeMessage("Request data:\n" . var_export($requestData,True));
 	    //Process request
 	    if(!Site::$ThemeManager->SelectTheme($requestData->command)){
-		Site::$Logger->writeError("Couldn't select theme from request.",0,True);
+			Site::$Logger->writeError("Couldn't select theme from request.",0,True);
 	    }
 	    if(!Site::$ThemeManager->SelectLayout($requestData->command)){
-		Site::$Logger->writeError("Couldn't select layout from request.",0,True);
+			Site::$Logger->writeError("Couldn't select layout from request.",0,True);
 	    }
 
 	    Site::$ThemeManager->ReadElementsFromLayout(Site::$ThemeManager->Theme["layout"]);#Build layout into HTML
 	    Site::$HTMLCode .= "<head>\n";
-
-	    Site::$HTMLCode .= Site::$ThemeManager->Theme["class"]->HeaderInfomation();
 	    Site::$HTMLCode .= Site::$ThemeManager->CSSLines;
 	    Site::$HTMLCode .= Site::ProcessMetadata($requestData);
 	    Site::$HTMLCode .= "</head>\n";

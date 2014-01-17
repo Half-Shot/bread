@@ -7,7 +7,8 @@ class ThemeManager
 	private $themes;
 	private $layouts;
 	private $configuration = "";
-
+	private $cssFiles;
+	
 	#Selected Items
 	public $Theme;
 	public $Layout;
@@ -15,11 +16,12 @@ class ThemeManager
 
 	function __construct()
 	{
-		$themes = array();
-		$layouts = array();
-		$Theme = array();
-		$Layout = array();
-		$configuration = "";
+		$this->themes = array();
+		$this->layouts = array();
+		$this->Theme = array();
+		$this->Layout = array();
+		$this->cssFiles = array();
+		$this->configuration = array();
 	}
 
 	public static function Configuration()
@@ -51,11 +53,11 @@ class ThemeManager
 	    foreach($layouts_cfg as $layouttype => $layoutpath)
 	    {
 	    	$layout = array();
-		$layout["JSON"] = json_decode(file_get_contents(Site::Configuration()["directorys"]["user-layouts"]. "/"  . $layoutpath));
-		$layout["abs_path"] = Site::Configuration()["directorys"]["user-layouts"]. "/"  . $layoutpath;
-		$layout["path"] = $layoutpath;
-		$layout["type"] = $layouttype;
-	        $this->layouts[] = $layout;
+			$layout["JSON"] = json_decode(file_get_contents(Site::Configuration()["directorys"]["user-layouts"]. "/"  . $layoutpath));
+			$layout["abs_path"] = Site::Configuration()["directorys"]["user-layouts"]. "/"  . $layoutpath;
+			$layout["path"] = $layoutpath;
+			$layout["type"] = $layouttype;
+			$this->layouts[] = $layout;
 	    }
 	}
 
@@ -72,7 +74,7 @@ class ThemeManager
 		if($theme["JSON"] == NULL)
 			Site::$Logger->writeError('Cannot load theme. Theme data has invalid JSON.',1,True);
 
-		if($theme["JSON"]["theme"] == NULL || $theme["JSON"]["module"] == NULL)
+		if($theme["JSON"] == NULL)
 			Site::$Logger->writeError('Cannot load theme. Theme data has missing required properties.',1,True);
 
 		foreach($usage as $uses)
@@ -85,9 +87,13 @@ class ThemeManager
 		foreach ($this->themes as $usage => $theme)
 		{
 				if($usage == $RequestType or $usage == "all"){
-					$this->Theme["data"] = $theme;
-					require_once(Site::Configuration()["directorys"]["user-themes"]. "/" . $theme["module"]["entryfile"]);
-					$this->Theme["class"] = new $theme["module"]["entryclass"]();
+					$this->Theme["data"] = $theme["module"];
+					require_once(Site::Configuration()["directorys"]["user-themes"]. "/" . $this->Theme["data"]["entryfile"]);
+					$this->Theme["class"] = new $this->Theme["data"]["entryclass"](Site::$ModuleManager,$this->Theme["data"]["name"]);
+					if(isset($this->Theme["data"]["css"])){
+						$this->cssFiles = array_merge($this->cssFiles,$this->Theme["data"]["css"]); //Add some css files.
+					}
+					Site::$ModuleManager->RegisterSelectedTheme();
 					return True;
 				}
 		}
@@ -114,6 +120,23 @@ class ThemeManager
 
 	//Returns nothing but reads from layout and does all the calling to modules
 	//and adds CSS Files. Yes, this is the biggy.
+	
+	function BuildCSS()
+	{
+		foreach($this->cssFiles as $cssfilepath)
+		{
+			$isRemote = (mb_substr($cssfilepath, 0, 4) == "http");
+			if(!$isRemote){
+				$cssfilepath = Site::Configuration()["directorys"]["user-layouts"]. "/"  . $cssfilepath;
+			}
+			else
+			{
+				Site::$Logger->writeError("Couldn't resolve CSS to be local or external (" . $cssfilepath .")", 5, false);
+			}
+			$this->CSSLines .= "<link rel='stylesheet' type='text/css' href='" . $cssfilepath . "'>\n";
+		}
+	}
+	
 	function ReadElementsFromLayout($Layout)
 	{
 		$IsRoot = ($Layout == $this->Theme["layout"]);
@@ -124,11 +147,8 @@ class ThemeManager
 				Site::$Logger->writeError("Layout contains no elements, page cannot be built.",1,True);
 			if(!isset($Layout["JSON"]->css))
 				Site::$Logger->writeError("Layout contains no css files, page cannot be built.",1,True);
-			$css_files = $Layout["JSON"]->css;
-			foreach($css_files as $cssfilepath)
-			{
-				$this->CSSLines .= "<link rel='stylesheet' type='text/css' href='" . Site::Configuration()["directorys"]["user-layouts"]. "/"  . $cssfilepath . "'>\n";
-			}
+			$this->cssFiles = array_merge($this->cssFiles,$Layout["JSON"]->css);
+			$this->BuildCSS();
 		}
 		else
 		{
@@ -139,7 +159,11 @@ class ThemeManager
 				$event = $Layout->event;
 			if(isset($Layout->arguments))
 				$arguments = $Layout->arguments;
-			$moduleReturn = Site::$ModuleManager->HookSpecifedModuleEvent($event,$Layout->module,$arguments); //Module returns html data hopefully.
+			if(isset($Layout->module))
+				$moduleReturn = Site::$ModuleManager->HookSpecifedModuleEvent($event,$Layout->module,$arguments); //Module returns html data hopefully.
+			else
+				$moduleReturn = Site::$ModuleManager->HookEvent($event,$arguments)[0];
+			
 			if($moduleReturn != False){
 			    //Return value.
 			    Site::$BodyCode .= $moduleReturn;

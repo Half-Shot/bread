@@ -20,7 +20,7 @@ class ModuleManager
 	{
 		if(!file_exists($filepath))
 		{
-			Site::$Logger->writeError('Cannot load themes. Manager Settings file not found');
+			Site::$Logger->writeError('Cannot load modules. Manager Settings file not found');
 		}
 		$tmp = file_get_contents($filepath);
 		$this->configuration = json_decode($tmp,true);
@@ -30,7 +30,7 @@ class ModuleManager
 	{
 		if(!file_exists($filepath))
 		{
-			Site::$Logger->writeError('Cannot load themes. Manager Settings file not found');
+			Site::$Logger->writeError('Cannot load modules. Manager Settings file not found');
 		}
 		$tmp = file_get_contents($filepath);
 		$mods = json_decode($tmp,true);
@@ -47,7 +47,6 @@ class ModuleManager
 		    if( in_array("everything",$config["loadFor"]) or in_array($request->$command,$config["loadFor"]))
 		    {
 		        #Load it!
-		        
 		        $this->RegisterModule($config);
 		    }
 		    
@@ -74,13 +73,31 @@ class ModuleManager
 		$this->modules[$jsonArray["name"]]->RegisterEvents();
 	}
 	
+	function RegisterSelectedTheme()
+	{
+		if(!isset(Site::$ThemeManager->Theme["data"]))
+		{
+			Site::$Logger->writeMessage("Warning: RegisterSelectedTheme called to early, no theme selected.");
+		}
+		$jsonArray = Site::$ThemeManager->Theme["data"];
+		if(isset($jsonArray["namespace"])){
+		    $namespace = $jsonArray["namespace"];
+		    $class = $jsonArray["namespace"] . "\\" . $jsonArray["entryclass"];
+		}
+		$this->moduleConfig[$jsonArray["name"]] = $jsonArray;
+		$this->modules[$jsonArray["name"]] = Site::$ThemeManager->Theme["class"];
+		$this->modules[$jsonArray["name"]]->RegisterEvents();
+
+	}
+	
 	function RegisterEvent($moduleName,$eventName,$function)
 	{
-	    if(!array_key_exists($eventName,$this->events))
-	    {
+	    if(!array_key_exists($eventName,$this->events)){
 	        $this->events[$eventName] = array();
-	        $this->events[$eventName][$moduleName] = $function;
-	    }
+		}
+		
+	    $this->events[$eventName][$moduleName] = $function;
+
 	}
 	
 	function HookEvent($eventName,$arguments)
@@ -88,12 +105,11 @@ class ModuleManager
 	    $returnData = array();
 		if(!array_key_exists($eventName,$this->events))
 	        return False; //Event not used.
-	    foreach($this->events[$eventName] as $module)
+	    foreach($this->events[$eventName] as $module => $function)
 		{
-			$function = $this->events[$eventName][$module];
-			$this->modules[$modules]->$function($arguments);
+			$returnData[] = $this->modules[$module]->$function($arguments);
 		}
-	    return "We hooked :P";
+	    return $returnData;
 	}
 	
 	function HookSpecifedModuleEvent($eventName,$moduleName,$arguments)

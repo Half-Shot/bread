@@ -7,7 +7,7 @@
 	"id": "navbar",
         "human": "Navigation Bar",
         "description": "Top of the page, ideal for navbars.",
-        "module": "bread-navbar"
+        "event":"Theme.DrawNavbar"
     },
     {
         "name": "contents",
@@ -26,7 +26,7 @@
 	"id": "footer",
         "human": "Footer",
         "description": "Good place for copyright or author name.",
-        "module": "bread-rawhtml"
+        "event": "Theme.DrawFooter"
     }
 ]
 }

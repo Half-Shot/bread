@@ -2,8 +2,8 @@
 namespace Bread\Modules;
 class Module
 {
-    private $manager;
-	private $name;
+    protected $manager;
+	protected $name;
 	function __construct($manager,$name)
 	{
 		$this->manager = $manager;
