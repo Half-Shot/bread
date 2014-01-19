@@ -1,7 +1,0 @@
-{
-        "name":"ExampleModule",
-		"permissions":["read:user/resource"],
-		"loadFor":["everything"],
-		"entryclass":"ExampleModule",
-		"entryfile":"ExampleModule/ExampleModule.php"
-}
