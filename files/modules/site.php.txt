@@ -26,56 +26,47 @@ class Site
 	private static $configuration;
 
         /**
-        * The global theme manager.
+        * The global theme manager. There is only one ThemeManager and this
+        * is it.
         * @var ThemeManager
         */
 	public static $themeManager;
         
         /**
-        * The global module manager.
+        * The global module manager.There is only one ModuleManager and this
+        * is it.
         * @var ModuleManager
-        * @static
-        * @access public
         */
 	public static $moduleManager;
         
         /**
         * The global Logger which logs messages and throws errors.
         * @var Logger
-        * @static
-        * @access public
         */
-	public static $logger;
+	public static $Logger;
         
         /**
         * Time of request.
         * @var integer
-        * @static
-        * @access public
         */
 	public static $timeStarted;
 
         /**
-        * HTML used in the end site.
+        * HTML used in the end site. Unable to modify outside site.
         * @var string
-        * @static
-        * @access private
         */
 	private static $htmlcode = "";
         
         /**
-        * Main code used in the body of the site.
+        * Main code used in the body of the site. Modified via AddToBodyCode
+        * @see Site::AddToBodyCode()
         * @var string
-        * @static
-        * @access private
         */
 	private static $bodycode = "";
         
         //Getters Setters
         /**
-         * Get the configuration.
-         * @access public
-         * @static
+         * Get the configuration file that loads when bread starts.
          * @return array The configuration of the site
          */
         public static function Configuration()
@@ -83,11 +74,23 @@ class Site
 		return static::$configuration;
 	}
         
+        /**
+         * Add some code to the document body. For scripts and header infomation
+         * checkout HEADERINFOMETHODGOESHERE
+         * @param string $code
+         */
         public static function AddToBodyCode($code)
         {
             
         }
-        
+        /**
+         * The first stage of any bread site. This method loads a json config file
+         * into $configuration. If this method fails then the site will not start.
+         * @todo This is likley to change when the new settings manager is implemented.
+         * @param string $configurl The url to load the config from.
+         * @throws \Exception
+         * @see Site::$configuration
+         */
 	public static function LoadConfig($configurl)
 	{
 		$tmp = file_get_contents($configurl);
@@ -99,10 +102,13 @@ class Site
 		if(!static::$configuration)
 		{
 			throw new \Exception("Configuration could be <b>read</b> but not be <b>loaded</b>. Game Over!");
-			die();
 		}
 	}
-
+        /**
+         * Enables/Disables Debug Statements. Very useful for a developer
+         * such as yourself. Starts disabled.
+         * @param Boolean $enable Toggle
+         */
 	public static function ShowDebug($enable)
 	{
 		if($enable)
@@ -116,6 +122,12 @@ class Site
 			ini_set('display_errors', 0);
 		}
 	}
+        /**
+         * A simple ban-by-ip system which will be swapped out in the future.
+         * Looks inside our loaded config and if its a banned ip then the site will cease.
+         * A really horrible ban
+         * @todo Hook Ban System 
+         */
 	public static function CheckBans()
 	{
 		if(static::$configuration["core"]["banhammer"])
@@ -131,8 +143,13 @@ class Site
 			}
 		}
 	}
-
-	public static function LoadClasses($directory)
+        /**
+         * Loads core modules from a directory ($directory).
+         * Its probably best to not place anything in this directory
+         * or you will fear the wrath of bread.
+         * @param string $directory Relative/Fullpath to load classes from.
+         */
+	public static function LoadCoreModules($directory)
 	{
 		$files = preg_grep('/^([^.])/',scandir($directory));
 		foreach($files as $file) //Ignore dot files.
@@ -143,7 +160,7 @@ class Site
 
 			if(is_dir($fullpath))
 			{
-				static::LoadClasses($fullpath);
+				static::LoadCoreModules($fullpath);
 			}
 			else if(file_exists($fullpath))
 			{
@@ -152,13 +169,22 @@ class Site
 			}
 		}
 	}
-
+        /**
+         * Creates a new logger for error reporting.
+         * @see Site::$Logger
+         */
 	public static function SetupLogging()
 	{
 		static::$Logger = new Logger(static::$configuration["core"]["logto"]);
 	}
-
-	public static function CheckClasses()
+        /**
+         * Checks each module in the core modules that were previously loaded from
+         * LoadCoreModules() and if any are missing then bread will throw an error.
+         * The file it checks will be inside the root settings directory called 'coremodulecheck.json'
+         * @throws Exception
+         * @see Site::LoadCoreModules()
+         */
+	public static function CheckCoreModules()
 	{
 		$RequiredModules = json_decode(file_get_contents(static::$configuration["directorys"]["system-settings"] . "/coremodulecheck.json"),true)["checklist"];
 		$Failed = false;
@@ -171,42 +197,62 @@ class Site
 		}
 		if($Failed)
 		{
-			throw new Site::$Logger->writeError("Some core modules could not be found, please redownload them from the repository.",0,true);
+			Site::$Logger->writeError("Some core modules could not be found, please redownload them from the repository.",0,true);
 			die();
 		}
 	}
-
+        /**
+         * Sets up all managers that bread uses.
+         * This is currently:
+         *  ThemeManager
+         *  ModuleManager
+         * It also loads settings and configuration files for managers.
+         * @see Site::$themeManager
+         * @see Site::$moduleManager
+         */
 	public static function SetupManagers()
 	{
-		static::$ThemeManager = new Themes\ThemeManager();
-		static::$ModuleManager = new Modules\ModuleManager();
+		static::$themeManager = new Themes\ThemeManager();
+		static::$moduleManager = new Modules\ModuleManager();
 
-		static::$ThemeManager->LoadSettings(static::$configuration["directorys"]["system-settings"] . "/theme/settings.json");
-		static::$ThemeManager->LoadLayouts();
+		static::$themeManager->LoadSettings(static::$configuration["directorys"]["system-settings"] . "/theme/settings.json");
+		static::$themeManager->LoadLayouts();
 
-		static::$ModuleManager->LoadSettings(static::$configuration["directorys"]["system-settings"] . "/modules/settings.json");
-		static::$ModuleManager->LoadModulesFromConfig(static::$configuration["directorys"]["system-settings"] . "/modules/modlist.json");
+		static::$moduleManager->LoadSettings(static::$configuration["directorys"]["system-settings"] . "/modules/settings.json");
+		static::$moduleManager->LoadModulesFromConfig(static::$configuration["directorys"]["system-settings"] . "/modules/modlist.json");
 
 		
 
 	}
-	
+	/**
+         * Creates metadata tags for the header. This function calls moduleman
+         * and asks all applicable modules to add metadata structures.
+         * @param BreadRequestData $requestData The request structure generated.
+         */
 	public static function ProcessMetadata(BreadRequestData $requestData)
 	{
-		//Probably gonna need a module for this.
 		$Metadata  = "<meta>";
-		$Metadata .= '<meta name="description" content="Free Web tutorials">';
-		$Metadata .= '<meta name="keywords" content="HTML,CSS,XML,JavaScript">';
-		$Metadata .= '<meta name="author" content="Hege Refsnes">';
-		$Metadata .= '<meta charset="UTF-8">';
+                
+                //HookEvent returns an array of results.
+                foreach(static::$moduleManager->HookEvent("Bread.Metadata") as $data)
+                    $Metadata .= $data;
+                
 		$Metadata .= "</meta>";
 		return $Metadata;
 	}
-	
+	/**
+         * This is the big one. It generates the page when all of bread is ready.
+         * It also loads 3 important functions which determine what modules, themes
+         * and layouts to load.
+         * @param BreadRequestData $requestData The request structure generated.
+         * @see ModuleManager::LoadRequiredModules()
+         * @see ThemeManager::SelectTheme()
+         * @see ThemeManager::SelectLayout()
+         */
 	public static function ProcessRequest(BreadRequestData $requestData)
 	{
-	    #Load required modules.
-	    static::$ModuleManager->LoadRequiredModules($requestData);
+	    //Load required modules.
+	    static::$moduleManager->LoadRequiredModules($requestData);
 	    switch($requestData->command){
 	    	case "module":
 			break;
@@ -217,42 +263,52 @@ class Site
 			break;
 	    }
 	    //Draw
-	    Site::$HTMLCode .= "<!DOCTYPE html>\n<html>\n"; //Obviously.
+	    Site::$htmlcode .= "<!DOCTYPE html>\n<html>\n"; //Obviously.
 	    Site::$Logger->writeMessage("Beginning build of page");
 	    Site::$Logger->writeMessage("Request data:\n" . var_export($requestData,True));
 	    //Process request
-	    if(!Site::$ThemeManager->SelectTheme($requestData->command)){
+	    if(!Site::$themeManager->SelectTheme($requestData->command)){
 			Site::$Logger->writeError("Couldn't select theme from request.",0,True);
 	    }
-	    if(!Site::$ThemeManager->SelectLayout($requestData->command)){
+	    if(!Site::$themeManager->SelectLayout($requestData->command)){
 			Site::$Logger->writeError("Couldn't select layout from request.",0,True);
 	    }
 
-	    Site::$ThemeManager->ReadElementsFromLayout(Site::$ThemeManager->Theme["layout"]);#Build layout into HTML
-	    Site::$HTMLCode .= "<head>\n";
-	    Site::$HTMLCode .= Site::$ThemeManager->CSSLines;
-	    Site::$HTMLCode .= Site::ProcessMetadata($requestData);
-	    Site::$HTMLCode .= "</head>\n";
-	    Site::$HTMLCode .= "<body>\n";
-	    Site::$HTMLCode .= Site::$BodyCode;
-	    Site::$HTMLCode .= "</body>\n";
-	    Site::$HTMLCode .= "</html>\n";
-	    echo Site::$HTMLCode;
+	    Site::$themeManager->ReadElementsFromLayout(Site::$themeManager->Theme["layout"]);#Build layout into HTML
+	    Site::$htmlcode .= "<head>\n";
+	    Site::$htmlcode .= Site::$themeManager->CSSLines;
+	    Site::$htmlcode .= Site::ProcessMetadata($requestData);
+	    Site::$htmlcode .= "</head>\n";
+	    Site::$htmlcode .= "<body>\n";
+	    Site::$htmlcode .= Site::$bodycode;
+	    Site::$htmlcode .= "</body>\n";
+	    Site::$htmlcode .= "</html>\n";
+	    echo Site::$htmlcode;
 	}
 	
+        /**
+         * A fake, example request that is used for early stage debugging.
+         * @see BreadRequestData
+         */
 	public static function ExampleRequest()
 	{
 	    $requestType = "RawPage";
 	    $request = new BreadRequestData($requestType);
 	    return $request;
 	}
-
+        /**
+         * Closes the logger and gives any modules a chance to clean up their work
+         * by calling "Bread.Cleanup".
+         */
 	public static function Cleanup()
 	{
+                static::$moduleManager->HookEvent("Bread.Cleanup");//Broadcast that we are cleaning up.
 		static::$Logger->closeStream();
 	}
 }
-
+/**
+ * A class that logs
+ */
 class Logger
 {
     const FILEMODE = "w";
@@ -277,7 +333,7 @@ class Logger
     {
 	if($this->logPath == "NOLOG")
 		return;
-        $msg = "[MSG][" . (time() - Site::$TimeStarted) . "]" . $message . "\n";
+        $msg = "[MSG][" . (time() - Site::$timeStarted) . "]" . $message . "\n";
         fwrite($this->fileStream,$msg);
         fflush($this->fileStream);
     }
@@ -286,7 +342,7 @@ class Logger
     {
 	if($this->logPath == "NOLOG")
 		return;
-        $msg = "[ERR " . $severity ."][" . (time() - Site::$TimeStarted) . "]" . $message . "\n";
+        $msg = "[ERR " . $severity ."][" . (time() - Site::$timeStarted) . "]" . $message . "\n";
         fwrite($this->fileStream,$msg);
         fflush($this->fileStream);
 	if($throw)
@@ -302,4 +358,3 @@ class Logger
     }
 }
 ?>
-

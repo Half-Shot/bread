@@ -89,11 +89,11 @@ class ThemeManager
 				if($usage == $RequestType or $usage == "all"){
 					$this->Theme["data"] = $theme["module"];
 					require_once(Site::Configuration()["directorys"]["user-themes"]. "/" . $this->Theme["data"]["entryfile"]);
-					$this->Theme["class"] = new $this->Theme["data"]["entryclass"](Site::$ModuleManager,$this->Theme["data"]["name"]);
+					$this->Theme["class"] = new $this->Theme["data"]["entryclass"](Site::$moduleManager,$this->Theme["data"]["name"]);
 					if(isset($this->Theme["data"]["css"])){
 						$this->cssFiles = array_merge($this->cssFiles,$this->Theme["data"]["css"]); //Add some css files.
 					}
-					Site::$ModuleManager->RegisterSelectedTheme();
+					Site::$moduleManager->RegisterSelectedTheme();
 					return True;
 				}
 		}
@@ -160,9 +160,9 @@ class ThemeManager
 			if(isset($Layout->arguments))
 				$arguments = $Layout->arguments;
 			if(isset($Layout->module))
-				$moduleReturn = Site::$ModuleManager->HookSpecifedModuleEvent($event,$Layout->module,$arguments); //Module returns html data hopefully.
+				$moduleReturn = Site::$moduleManager->HookSpecifedModuleEvent($event,$Layout->module,$arguments); //Module returns html data hopefully.
 			else
-				$moduleReturn = Site::$ModuleManager->HookEvent($event,$arguments)[0];
+				$moduleReturn = Site::$moduleManager->HookEvent($event,$arguments)[0];
 			
 			if($moduleReturn != False){
 			    //Return value.

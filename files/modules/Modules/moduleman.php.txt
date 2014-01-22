@@ -75,17 +75,17 @@ class ModuleManager
 	
 	function RegisterSelectedTheme()
 	{
-		if(!isset(Site::$ThemeManager->Theme["data"]))
+		if(!isset(Site::$themeManager->Theme["data"]))
 		{
 			Site::$Logger->writeMessage("Warning: RegisterSelectedTheme called to early, no theme selected.");
 		}
-		$jsonArray = Site::$ThemeManager->Theme["data"];
+		$jsonArray = Site::$themeManager->Theme["data"];
 		if(isset($jsonArray["namespace"])){
 		    $namespace = $jsonArray["namespace"];
 		    $class = $jsonArray["namespace"] . "\\" . $jsonArray["entryclass"];
 		}
 		$this->moduleConfig[$jsonArray["name"]] = $jsonArray;
-		$this->modules[$jsonArray["name"]] = Site::$ThemeManager->Theme["class"];
+		$this->modules[$jsonArray["name"]] = Site::$themeManager->Theme["class"];
 		$this->modules[$jsonArray["name"]]->RegisterEvents();
 
 	}

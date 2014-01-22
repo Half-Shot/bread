@@ -139,28 +139,28 @@
                                 <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-2116407532"></a>
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1533359720"></a>
                                 <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
             </div>
-            <div id="namespace-2116407532" class="accordion-body collapse in">
+            <div id="namespace-1533359720" class="accordion-body collapse in">
                 <div class="accordion-inner">
 
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-193858734"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-988744847"></a>
                                 <a href="../namespaces/Bread.html" style="margin-left: 30px; padding-left: 0">Bread</a>
             </div>
-            <div id="namespace-193858734" class="accordion-body collapse ">
+            <div id="namespace-988744847" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-753179550"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-260460928"></a>
                                 <a href="../namespaces/Bread.Structures.html" style="margin-left: 30px; padding-left: 0">Structures</a>
             </div>
-            <div id="namespace-753179550" class="accordion-body collapse ">
+            <div id="namespace-260460928" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -175,10 +175,10 @@
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-473246274"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-813333967"></a>
                                 <a href="../namespaces/Bread.Modules.html" style="margin-left: 30px; padding-left: 0">Modules</a>
             </div>
-            <div id="namespace-473246274" class="accordion-body collapse ">
+            <div id="namespace-813333967" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -195,10 +195,10 @@
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-702536671"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1887129420"></a>
                                 <a href="../namespaces/Bread.Themes.html" style="margin-left: 30px; padding-left: 0">Themes</a>
             </div>
-            <div id="namespace-702536671" class="accordion-body collapse ">
+            <div id="namespace-1887129420" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -270,9 +270,9 @@ where possible.</p>
                                                                     <a href="../classes/Bread.Site.html#method_LoadConfig" class="">LoadConfig()</a><br />
                                                                     <a href="../classes/Bread.Site.html#method_ShowDebug" class="">ShowDebug()</a><br />
                                                                     <a href="../classes/Bread.Site.html#method_CheckBans" class="">CheckBans()</a><br />
-                                                                    <a href="../classes/Bread.Site.html#method_LoadClasses" class="">LoadClasses()</a><br />
+                                                                    <a href="../classes/Bread.Site.html#method_LoadCoreModules" class="">LoadCoreModules()</a><br />
                                                                     <a href="../classes/Bread.Site.html#method_SetupLogging" class="">SetupLogging()</a><br />
-                                                                    <a href="../classes/Bread.Site.html#method_CheckClasses" class="">CheckClasses()</a><br />
+                                                                    <a href="../classes/Bread.Site.html#method_CheckCoreModules" class="">CheckCoreModules()</a><br />
                                                                     <a href="../classes/Bread.Site.html#method_SetupManagers" class="">SetupManagers()</a><br />
                                                                     <a href="../classes/Bread.Site.html#method_ProcessMetadata" class="">ProcessMetadata()</a><br />
                                                                     <a href="../classes/Bread.Site.html#method_ProcessRequest" class="">ProcessRequest()</a><br />
@@ -282,7 +282,7 @@ where possible.</p>
                             <section class="span4">
                                                                     <a href="../classes/Bread.Site.html#property_themeManager" class="">$themeManager</a><br />
                                                                     <a href="../classes/Bread.Site.html#property_moduleManager" class="">$moduleManager</a><br />
-                                                                    <a href="../classes/Bread.Site.html#property_logger" class="">$logger</a><br />
+                                                                    <a href="../classes/Bread.Site.html#property_Logger" class="">$Logger</a><br />
                                                                     <a href="../classes/Bread.Site.html#property_timeStarted" class="">$timeStarted</a><br />
                                                             </section>
                             <section class="span4">
@@ -374,7 +374,8 @@ where possible.</p>
             <article class="property">
                 <h3 class="public ">$themeManager</h3>
                 <pre class="signature">$themeManager : \Bread\ThemeManager</pre>
-                <p><em>The global theme manager.</em></p>
+                <p><em>The global theme manager. There is only one ThemeManager and this
+is it.</em></p>
                 
 
 
@@ -399,7 +400,8 @@ where possible.</p>
             <article class="property">
                 <h3 class="public ">$moduleManager</h3>
                 <pre class="signature">$moduleManager : \Bread\ModuleManager</pre>
-                <p><em>The global module manager.</em></p>
+                <p><em>The global module manager.There is only one ModuleManager and this
+is it.</em></p>
                 
 
 
@@ -413,25 +415,17 @@ where possible.</p>
                                                             </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            static
-                        </th>
-                        <td>
-                                                            
-
-                                                    </td>
-                    </tr>
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
                             </table>
         </aside>
     </div>
 
                                     <div class="row-fluid">
         <div class="span8 content class">
-            <a id="property_logger" name="property_logger" class="anchor"></a>
+            <a id="property_Logger" name="property_Logger" class="anchor"></a>
             <article class="property">
-                <h3 class="public ">$logger</h3>
-                <pre class="signature">$logger : \Bread\Logger</pre>
+                <h3 class="public ">$Logger</h3>
+                <pre class="signature">$Logger : \Bread\Logger</pre>
                 <p><em>The global Logger which logs messages and throws errors.</em></p>
                 
 
@@ -446,15 +440,7 @@ where possible.</p>
                                                             </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            static
-                        </th>
-                        <td>
-                                                            
-
-                                                    </td>
-                    </tr>
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
                             </table>
         </aside>
     </div>
@@ -479,15 +465,7 @@ where possible.</p>
                                                             </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            static
-                        </th>
-                        <td>
-                                                            
-
-                                                    </td>
-                    </tr>
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
                             </table>
         </aside>
     </div>
@@ -531,7 +509,7 @@ where possible.</p>
             <article class="property">
                 <h3 class="private ">$htmlcode</h3>
                 <pre class="signature">$htmlcode : string</pre>
-                <p><em>HTML used in the end site.</em></p>
+                <p><em>HTML used in the end site. Unable to modify outside site.</em></p>
                 
 
 
@@ -545,15 +523,7 @@ where possible.</p>
                                                             </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            static
-                        </th>
-                        <td>
-                                                            
-
-                                                    </td>
-                    </tr>
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
                             </table>
         </aside>
     </div>
@@ -564,7 +534,7 @@ where possible.</p>
             <article class="property">
                 <h3 class="private ">$bodycode</h3>
                 <pre class="signature">$bodycode : string</pre>
-                <p><em>Main code used in the body of the site.</em></p>
+                <p><em>Main code used in the body of the site. Modified via AddToBodyCode</em></p>
                 
 
 
@@ -575,18 +545,12 @@ where possible.</p>
         <aside class="span4 detailsbar">
             <h1><i class="icon-arrow-down"></i></h1>
                         <dl>
-                                                            </dl>
+                                                                            <dt>See also</dt>
+                                                                <dd><a href="../classes/Bread.Site.html#method_AddToBodyCode"><span class="namespace-wrapper"></span></a></dd>
+                                                                </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            static
-                        </th>
-                        <td>
-                                                            
-
-                                                    </td>
-                    </tr>
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
                             </table>
         </aside>
     </div>
@@ -605,7 +569,7 @@ where possible.</p>
                 <h3 class="public ">Configuration()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
                 <pre class="signature" style="margin-right: 54px;">Configuration() : array</pre>
-                <p><em>Get the configuration.</em></p>
+                <p><em>Get the configuration file that loads when bread starts.</em></p>
                 
 
 
@@ -624,15 +588,7 @@ where possible.</p>
                                                                             </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            static
-                        </th>
-                        <td>
-                                                            
-
-                                                    </td>
-                    </tr>
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
                             </table>
         </aside>
     </div>
@@ -643,15 +599,16 @@ where possible.</p>
             <article class="method">
                 <h3 class="public ">AddToBodyCode()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">AddToBodyCode( <span class="argument">$code</span>)</pre>
-                <p><em></em></p>
+                <pre class="signature" style="margin-right: 54px;">AddToBodyCode(string <span class="argument">$code</span>)</pre>
+                <p><em>Add some code to the document body. For scripts and header infomation
+checkout HEADERINFOMETHODGOESHERE</em></p>
                 
 
 
                                     <h4>Parameters</h4>
                     <table class="table table-condensed table-hover">
                                                     <tr>
-                                <td></td>
+                                <td>string</td>
                                 <td>$code</td>
                                 <td>
 </td>
@@ -679,21 +636,28 @@ where possible.</p>
             <article class="method">
                 <h3 class="public ">LoadConfig()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">LoadConfig( <span class="argument">$configurl</span>)</pre>
-                <p><em></em></p>
+                <pre class="signature" style="margin-right: 54px;">LoadConfig(string <span class="argument">$configurl</span>)</pre>
+                <p><em>The first stage of any bread site. This method loads a json config file
+into $configuration. If this method fails then the site will not start.</em></p>
                 
 
 
                                     <h4>Parameters</h4>
                     <table class="table table-condensed table-hover">
                                                     <tr>
-                                <td></td>
+                                <td>string</td>
                                 <td>$configurl</td>
-                                <td>
+                                <td><p>The url to load the config from.</p>
 </td>
                             </tr>
                                             </table>
                 
+                                    <h4>Throws</h4>
+                    <dl>
+                                                    <dt>\Exception</dt>
+                            <dd>
+</dd>
+                                                                    </dl>
                 
                             </article>
         </div>
@@ -701,10 +665,20 @@ where possible.</p>
             <h1><i class="icon-arrow-down"></i></h1>
                             <span class="label label-info">static</span>
                                                             <dl>
-                                                                            </dl>
+                                                                                            <dt>See also</dt>
+                                                                <dd><a href="../classes/Bread.Site.html#property_configuration"><span class="namespace-wrapper"></span></a></dd>
+                                                                </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                            <p>This is likley to change when the new settings manager is implemented.</p>
+
+                                                    </td>
+                    </tr>
                             </table>
         </aside>
     </div>
@@ -715,17 +689,18 @@ where possible.</p>
             <article class="method">
                 <h3 class="public ">ShowDebug()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">ShowDebug( <span class="argument">$enable</span>)</pre>
-                <p><em></em></p>
+                <pre class="signature" style="margin-right: 54px;">ShowDebug(Boolean <span class="argument">$enable</span>)</pre>
+                <p><em>Enables/Disables Debug Statements. Very useful for a developer
+such as yourself. Starts disabled.</em></p>
                 
 
 
                                     <h4>Parameters</h4>
                     <table class="table table-condensed table-hover">
                                                     <tr>
-                                <td></td>
+                                <td>Boolean</td>
                                 <td>$enable</td>
-                                <td>
+                                <td><p>Toggle</p>
 </td>
                             </tr>
                                             </table>
@@ -752,8 +727,9 @@ where possible.</p>
                 <h3 class="public ">CheckBans()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
                 <pre class="signature" style="margin-right: 54px;">CheckBans()</pre>
-                <p><em></em></p>
-                
+                <p><em>A simple ban-by-ip system which will be swapped out in the future.</em></p>
+                <p>Looks inside our loaded config and if its a banned ip then the site will cease.
+A really horrible ban</p>
 
 
                 
@@ -767,28 +743,37 @@ where possible.</p>
                                                                             </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                            <p>Hook Ban System</p>
+
+                                                    </td>
+                    </tr>
                             </table>
         </aside>
     </div>
 
                                     <div class="row-fluid">
         <div class="span8 content class">
-            <a id="method_LoadClasses" name="method_LoadClasses" class="anchor"></a>
+            <a id="method_LoadCoreModules" name="method_LoadCoreModules" class="anchor"></a>
             <article class="method">
-                <h3 class="public ">LoadClasses()</h3>
+                <h3 class="public ">LoadCoreModules()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">LoadClasses( <span class="argument">$directory</span>)</pre>
-                <p><em></em></p>
-                
+                <pre class="signature" style="margin-right: 54px;">LoadCoreModules(string <span class="argument">$directory</span>)</pre>
+                <p><em>Loads core modules from a directory ($directory).</em></p>
+                <p>Its probably best to not place anything in this directory
+or you will fear the wrath of bread.</p>
 
 
                                     <h4>Parameters</h4>
                     <table class="table table-condensed table-hover">
                                                     <tr>
-                                <td></td>
+                                <td>string</td>
                                 <td>$directory</td>
-                                <td>
+                                <td><p>Relative/Fullpath to load classes from.</p>
 </td>
                             </tr>
                                             </table>
@@ -815,7 +800,7 @@ where possible.</p>
                 <h3 class="public ">SetupLogging()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
                 <pre class="signature" style="margin-right: 54px;">SetupLogging()</pre>
-                <p><em></em></p>
+                <p><em>Creates a new logger for error reporting.</em></p>
                 
 
 
@@ -827,7 +812,9 @@ where possible.</p>
             <h1><i class="icon-arrow-down"></i></h1>
                             <span class="label label-info">static</span>
                                                             <dl>
-                                                                            </dl>
+                                                                                            <dt>See also</dt>
+                                                                <dd><a href="../classes/Bread.Site.html#property_Logger"><span class="namespace-wrapper"></span></a></dd>
+                                                                </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
                                     <tr><td colspan="2"><em>None found</em></td></tr>
@@ -837,16 +824,23 @@ where possible.</p>
 
                                     <div class="row-fluid">
         <div class="span8 content class">
-            <a id="method_CheckClasses" name="method_CheckClasses" class="anchor"></a>
+            <a id="method_CheckCoreModules" name="method_CheckCoreModules" class="anchor"></a>
             <article class="method">
-                <h3 class="public ">CheckClasses()</h3>
+                <h3 class="public ">CheckCoreModules()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">CheckClasses()</pre>
-                <p><em></em></p>
-                
+                <pre class="signature" style="margin-right: 54px;">CheckCoreModules()</pre>
+                <p><em>Checks each module in the core modules that were previously loaded from
+LoadCoreModules() and if any are missing then bread will throw an error.</em></p>
+                <p>The file it checks will be inside the root settings directory called 'coremodulecheck.json'</p>
 
 
                 
+                                    <h4>Throws</h4>
+                    <dl>
+                                                    <dt>\Bread\Exception</dt>
+                            <dd>
+</dd>
+                                                                    </dl>
                 
                             </article>
         </div>
@@ -854,7 +848,9 @@ where possible.</p>
             <h1><i class="icon-arrow-down"></i></h1>
                             <span class="label label-info">static</span>
                                                             <dl>
-                                                                            </dl>
+                                                                                            <dt>See also</dt>
+                                                                <dd><a href="../classes/Bread.Site.html#method_LoadCoreModules"><span class="namespace-wrapper"></span></a></dd>
+                                                                </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
                                     <tr><td colspan="2"><em>None found</em></td></tr>
@@ -869,8 +865,11 @@ where possible.</p>
                 <h3 class="public ">SetupManagers()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
                 <pre class="signature" style="margin-right: 54px;">SetupManagers()</pre>
-                <p><em></em></p>
-                
+                <p><em>Sets up all managers that bread uses.</em></p>
+                <p>This is currently:
+ ThemeManager
+ ModuleManager
+It also loads settings and configuration files for managers.</p>
 
 
                 
@@ -881,7 +880,10 @@ where possible.</p>
             <h1><i class="icon-arrow-down"></i></h1>
                             <span class="label label-info">static</span>
                                                             <dl>
-                                                                            </dl>
+                                                                                            <dt>See also</dt>
+                                                                <dd><a href="../classes/Bread.Site.html#property_themeManager"><span class="namespace-wrapper"></span></a></dd>
+                                            <dd><a href="../classes/Bread.Site.html#property_moduleManager"><span class="namespace-wrapper"></span></a></dd>
+                                                                </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
                                     <tr><td colspan="2"><em>None found</em></td></tr>
@@ -896,7 +898,8 @@ where possible.</p>
                 <h3 class="public ">ProcessMetadata()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
                 <pre class="signature" style="margin-right: 54px;">ProcessMetadata(\Bread\Structures\BreadRequestData <span class="argument">$requestData</span>)</pre>
-                <p><em></em></p>
+                <p><em>Creates metadata tags for the header. This function calls moduleman
+and asks all applicable modules to add metadata structures.</em></p>
                 
 
 
@@ -905,7 +908,7 @@ where possible.</p>
                                                     <tr>
                                 <td><a href="../classes/Bread.Structures.BreadRequestData.html">\Bread\Structures\BreadRequestData</a></td>
                                 <td>$requestData</td>
-                                <td>
+                                <td><p>The request structure generated.</p>
 </td>
                             </tr>
                                             </table>
@@ -932,8 +935,9 @@ where possible.</p>
                 <h3 class="public ">ProcessRequest()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
                 <pre class="signature" style="margin-right: 54px;">ProcessRequest(\Bread\Structures\BreadRequestData <span class="argument">$requestData</span>)</pre>
-                <p><em></em></p>
-                
+                <p><em>This is the big one. It generates the page when all of bread is ready.</em></p>
+                <p>It also loads 3 important functions which determine what modules, themes
+and layouts to load.</p>
 
 
                                     <h4>Parameters</h4>
@@ -941,7 +945,7 @@ where possible.</p>
                                                     <tr>
                                 <td><a href="../classes/Bread.Structures.BreadRequestData.html">\Bread\Structures\BreadRequestData</a></td>
                                 <td>$requestData</td>
-                                <td>
+                                <td><p>The request structure generated.</p>
 </td>
                             </tr>
                                             </table>
@@ -953,7 +957,11 @@ where possible.</p>
             <h1><i class="icon-arrow-down"></i></h1>
                             <span class="label label-info">static</span>
                                                             <dl>
-                                                                            </dl>
+                                                                                            <dt>See also</dt>
+                                                                <dd><a href=""><span class="namespace-wrapper"></span></a></dd>
+                                            <dd><a href=""><span class="namespace-wrapper"></span></a></dd>
+                                            <dd><a href=""><span class="namespace-wrapper"></span></a></dd>
+                                                                </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
                                     <tr><td colspan="2"><em>None found</em></td></tr>
@@ -968,7 +976,7 @@ where possible.</p>
                 <h3 class="public ">ExampleRequest()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
                 <pre class="signature" style="margin-right: 54px;">ExampleRequest()</pre>
-                <p><em></em></p>
+                <p><em>A fake, example request that is used for early stage debugging.</em></p>
                 
 
 
@@ -980,7 +988,9 @@ where possible.</p>
             <h1><i class="icon-arrow-down"></i></h1>
                             <span class="label label-info">static</span>
                                                             <dl>
-                                                                            </dl>
+                                                                                            <dt>See also</dt>
+                                                                <dd><a href="../classes/Bread.Structures.BreadRequestData.html"><span class="namespace-wrapper"></span></a></dd>
+                                                                </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
                                     <tr><td colspan="2"><em>None found</em></td></tr>
@@ -995,7 +1005,8 @@ where possible.</p>
                 <h3 class="public ">Cleanup()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
                 <pre class="signature" style="margin-right: 54px;">Cleanup()</pre>
-                <p><em></em></p>
+                <p><em>Closes the logger and gives any modules a chance to clean up their work
+by calling &quot;Bread.Cleanup&quot;.</em></p>
                 
 
 
@@ -1065,7 +1076,7 @@ where possible.</p>
                 <section class="span10 offset1">
                     <hr />
                     Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on January 19th, 2014 at 17:29.
+                    on January 22nd, 2014 at 20:26.
                 </section>
             </section>
         </section>
