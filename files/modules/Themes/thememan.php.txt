@@ -74,31 +74,45 @@ class ThemeManager
 		if($theme["JSON"] == NULL)
 			Site::$Logger->writeError('Cannot load theme. Theme data has invalid JSON.',1,True);
 
-		if($theme["JSON"] == NULL)
+		if($theme["JSON"] == NULL){
 			Site::$Logger->writeError('Cannot load theme. Theme data has missing required properties.',1,True);
-
-		foreach($usage as $uses)
+                }
+		foreach($usage as $uses){
 			$this->themes[$uses] = $theme["JSON"];
+                }
 	}
 
 	///Requests the theme that should be used for the request.
 	function SelectTheme($RequestType)
 	{
+                //If a module wants to force override a theme, it can from this call.
+                $moduleResults = Site::$moduleManager->HookEvent("Bread.SelectTheme",NULL);
+                if($moduleResults)
+                {
+                    return SetTheme($moduleResults[0]["theme"]);
+                    
+                }
+                //Else we just shift through the list of themes.
 		foreach ($this->themes as $usage => $theme)
 		{
-				if($usage == $RequestType or $usage == "all"){
-					$this->Theme["data"] = $theme["module"];
-					require_once(Site::Configuration()["directorys"]["user-themes"]. "/" . $this->Theme["data"]["entryfile"]);
-					$this->Theme["class"] = new $this->Theme["data"]["entryclass"](Site::$moduleManager,$this->Theme["data"]["name"]);
-					if(isset($this->Theme["data"]["css"])){
-						$this->cssFiles = array_merge($this->cssFiles,$this->Theme["data"]["css"]); //Add some css files.
-					}
-					Site::$moduleManager->RegisterSelectedTheme();
-					return True;
-				}
+                    if($usage == $RequestType or $usage == "all"){
+                        return SetTheme($theme);
+                    }
 		}
 		return False;
 	}
+        
+        function SetTheme($suggestedTheme)
+        {
+            $this->Theme["data"] = $suggestedTheme["module"];
+            require_once(Site::Configuration()["directorys"]["user-themes"]. "/" . $this->Theme["data"]["entryfile"]);
+            $this->Theme["class"] = new $this->Theme["data"]["entryclass"](Site::$moduleManager,$this->Theme["data"]["name"]);
+            if(isset($this->Theme["data"]["css"])){
+                    $this->cssFiles = array_merge($this->cssFiles,$this->Theme["data"]["css"]); //Add some css files.
+            }
+            Site::$moduleManager->RegisterSelectedTheme();
+            return True;
+        }
 
 	///Requests the layout that should be used for the page request.
 	function SelectLayout($RequestType)

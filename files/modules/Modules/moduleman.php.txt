@@ -109,6 +109,9 @@ class ModuleManager
 		{
 			$returnData[] = $this->modules[$module]->$function($arguments);
 		}
+            if(!array_filter($returnData)){
+                return False;
+            }
 	    return $returnData;
 	}
 	

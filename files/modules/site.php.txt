@@ -307,51 +307,98 @@ class Site
 	}
 }
 /**
- * A class that logs
+ * A class that logs important infomation and also throws errors for bread.
+ * The log file can be found in /temp/breadlog. This can be changed in settings.
+ * The main logger is to be found in Site::$Logger.
+ * @see Site::$Logger
  */
 class Logger
 {
     const FILEMODE = "w";
-    public $logPath = "NOLOG";
-    public $errorStack = array();
-    public $messageStack = array();
+    private $logpath = "NOLOG";
+    private $errorstack = array();
+    private $messagestack = array();
     private $fileStream;
-    function __construct($filepath)
+    
+    /**
+     * Gets the messages passed to the logger since startup.
+     * @return array
+     */
+    function getMessagesstack()
     {
-	if($filepath == "")
-		return;
-        $this->logPath = $filepath;
-            $this->fileStream = fopen($this->logPath,static::FILEMODE);
-	    if(!$this->fileStream){
-		$this->fileStream = fopen("php://temp",static::FILEMODE);// No writing possible
-		trigger_error("Couldn't write a new log file. File name " . $this->logPath, E_USER_ERROR);
-	    }
-	    static::writeMessage("Opened Logger");
+        return $messagestack;
     }
     
+    /**
+     * Gets the errors passed to the logger since startup.
+     * @return array
+     */
+    function getErrorstack()
+    {
+        return $errorstack;
+    }
+    
+    /**
+     * Creates a new Logger object. 
+     * Throws an error if the logger can't create a file.
+     * Leave a blank string if you do not want to log to a file.
+     * @param string $filepath File name to log to.
+     * @return False
+     */
+    function __construct($filepath)
+    {
+        if($filepath == "")
+		$this->logpath == "NOLOG";
+        $this->logpath = $filepath;
+        $this->fileStream = fopen($this->logpath,static::FILEMODE);
+        if(!$this->fileStream){
+            $this->fileStream = fopen("php://temp",static::FILEMODE);// No writing possible
+            trigger_error("Couldn't write a new log file. File name " . $this->logpath, E_USER_ERROR);
+        }
+        static::writeMessage("Opened Logger");
+    }
+    /**
+     * Write some infomation to the log stack. Purely for debugging or user info
+     * if the message is a potential problem, use Logger->writeError.
+     * @see Logger::writeError()
+     * @param string $message Message to be written
+     */
     function writeMessage($message)
     {
-	if($this->logPath == "NOLOG")
+	if($this->logpath == "NOLOG")
 		return;
+        $messageStack[time() - Site::$timeStarted] = $message;
         $msg = "[MSG][" . (time() - Site::$timeStarted) . "]" . $message . "\n";
         fwrite($this->fileStream,$msg);
         fflush($this->fileStream);
     }
     
+    /**
+     * Write an error to the log stack. If the message is just infomation,
+     * use Logger->writeMessage. 
+     * @see Logger::writeMessage()
+     * @param string $message Message to be written
+     * @param integer $severity Severity of the error
+     * @param bool $throw Should the logger throw an error
+     * @throws \Exception
+     */
     function writeError($message,$severity,$throw = False)
     {
-	if($this->logPath == "NOLOG")
+	if($this->logpath == "NOLOG")
 		return;
+        $errorStack[time() - Site::$timeStarted] = $message;
         $msg = "[ERR " . $severity ."][" . (time() - Site::$timeStarted) . "]" . $message . "\n";
         fwrite($this->fileStream,$msg);
         fflush($this->fileStream);
 	if($throw)
 		throw new \Exception($message);
     }
-    
+    /**
+     * Close the stream to the filestream. Also writes a closing statement.
+     */
     function closeStream()
     {
-	if($this->logPath == "NOLOG")
+	if($this->logpath == "NOLOG")
 		return;
         static::writeMessage("Closing Log");
         fclose($this->fileStream);
