@@ -13,6 +13,7 @@ Bread\Structures\BreadRequestData::__set_state(array(
    'module' => NULL,
    'sourcename' => NULL,
 ))
+[MSG][0]Registered theme theme-vanilla
 [ERR 5][0]Couldn't resolve CSS to be local or external (http://fonts.googleapis.com/css?family=Ledger)
-[MSG][0]Memory Used: 461.5390625kb
+[MSG][0]Memory Used: 479.546875kb
 [MSG][0]Closing Log
