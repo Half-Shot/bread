@@ -119,7 +119,7 @@ class ModuleManager
 	
 	function HookSpecifedModuleEvent($eventName,$moduleName,$arguments)
 	{
-		if(!array_key_exists($moduleName,$this->modules))
+            if(!array_key_exists($moduleName,$this->modules))
 	        return False; //Module not found.
 	    $function = $this->events[$eventName][$moduleName];
 	    return $this->modules[$moduleName]->$function($arguments);

@@ -63,7 +63,11 @@ class Site
         * @var string
         */
 	private static $bodycode = "";
-        
+        /**
+         * Is the site in debug Mode
+         * @var bool 
+         */
+        private static $isdebug = False;
         //Getters Setters
         /**
          * Get the configuration file that loads when bread starts.
@@ -73,6 +77,14 @@ class Site
 	{
 		return static::$configuration;
 	}
+         /**
+         * Is the site in debug mode?
+         * @return bool DebugOn
+         */
+        public static function isDebug()
+        {
+            return static::$isdebug;
+        }
         
         /**
          * Add some code to the document body. For scripts and header infomation
@@ -111,6 +123,7 @@ class Site
          */
 	public static function ShowDebug($enable)
 	{
+                static::$isdebug = $enable;
 		if($enable)
 		{
 			error_reporting(E_ALL);
@@ -307,6 +320,29 @@ class Site
                 static::$moduleManager->HookEvent("Bread.Cleanup",NULL);//Broadcast that we are cleaning up.
 		static::$Logger->closeStream();
 	}
+        
+        public static function ResolvePath($path)
+        {
+            //Example Path /settings/modules/modlist.json
+            $parts = explode("/", $path);
+            foreach($parts as $i => $part)
+            {
+                //If it matches a directory, use it.
+                //We will use $DIRNAME
+                if($part == "")
+                    continue;
+                if($part[0] == "%"){
+                   $dir = substr($part, 1,strlen($part) - 1);
+                   if(isset(static::$configuration["directorys"][$dir])){
+                       $realdir = static::$configuration["directorys"][$dir];
+                       $parts[$i] = $realdir;
+                   }
+                }
+                      
+            }
+            //Returns whatever we changed.
+            return implode("/",$parts);
+        }
 }
 /**
  * A class that logs important infomation and also throws errors for bread.

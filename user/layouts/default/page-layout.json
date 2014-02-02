@@ -7,6 +7,7 @@
 	"id": "navbar",
         "human": "Navigation Bar",
         "description": "Top of the page, ideal for navbars.",
+        "tag":"header",
         "event":"Theme.DrawNavbar"
     },
     {
@@ -16,6 +17,11 @@
         "description": "Middle section where contents will be placed.",
         "module": "ExampleModule",
         "event":"Bread.DrawModule",
+        "tag":"section",
+        "attributes":
+        {
+            "dessert":"cake"
+        },
         "arguments":
         {
 			"gabesize":"10"
@@ -26,6 +32,7 @@
 	"id": "footer",
         "human": "Footer",
         "description": "Good place for copyright or author name.",
+        "tag":"footer",
         "event": "Theme.DrawFooter"
     }
 ]

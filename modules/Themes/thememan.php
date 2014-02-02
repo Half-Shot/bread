@@ -11,7 +11,6 @@ class ThemeManager
 	
 	#Selected Items
 	public $Theme;
-	public $Layout;
 	public $CSSLines = "";
 
 	function __construct()
@@ -143,10 +142,6 @@ class ThemeManager
 			if(!$isRemote){
 				$cssfilepath = Site::Configuration()["directorys"]["user-layouts"]. "/"  . $cssfilepath;
 			}
-			else
-			{
-				Site::$Logger->writeError("Couldn't resolve CSS to be local or external (" . $cssfilepath .")", 5, false);
-			}
 			$this->CSSLines .= "<link rel='stylesheet' type='text/css' href='" . $cssfilepath . "'>\n";
 		}
 	}
@@ -154,7 +149,6 @@ class ThemeManager
 	function ReadElementsFromLayout($Layout)
 	{
 		$IsRoot = ($Layout == $this->Theme["layout"]);
-		
 		if($IsRoot)
 		{
 			if(!isset($Layout["JSON"]->elements))//No enclosed elements.
@@ -163,35 +157,88 @@ class ThemeManager
 				Site::$Logger->writeError("Layout contains no css files, page cannot be built.",1,True);
 			$this->cssFiles = array_merge($this->cssFiles,$Layout["JSON"]->css);
 			$this->BuildCSS();
-		}
-		else
-		{
-			Site::AddToBodyCode("<div id='" . $Layout->id ."'>"); //Start div tag.
-			$event = "DrawModule"; //Standard module draw function.
-			$arguments = array();
-			if(isset($Layout->event))
-				$event = $Layout->event;
-			if(isset($Layout->arguments))
-				$arguments = $Layout->arguments;
-			if(isset($Layout->module))
-				$moduleReturn = Site::$moduleManager->HookSpecifedModuleEvent($event,$Layout->module,$arguments); //Module returns html data hopefully.
-			else
-				$moduleReturn = Site::$moduleManager->HookEvent($event,$arguments)[0];
-			
-			if($moduleReturn != False){
-			    //Return value.
-			    Site::AddToBodyCode($moduleReturn);
-			}
-			Site::AddToBodyCode("</div>\n");
-			return;
-		}
+		}    
+                else
+                {
+                        $element = $this->ExamineElement($Layout);
+                        if($element != False)
+                        {
+                            //Build tag.
+                            $tagStart = "<" . $element["tag"];
+                            foreach($element["attributes"] as $key => $data)
+                            {
+                                $tagStart .= " " . $key . "=" . "'" . $data . "'";
+                            }
+                            $tagStart .= ">";
+                            Site::AddToBodyCode($tagStart);
+                            if(\is_array($element["guts"])){
+                                foreach($element["guts"] as $bodycode)
+                                {
+                                     Site::AddToBodyCode($bodycode);
+                                }
+                            }
+                            else {
+                                Site::AddToBodyCode($element["guts"]);
+                            }
+                            Site::AddToBodyCode("</". $element["tag"] .">\n");
+                            return;
+                        }
+                }
 		
 		//Draw enclosed elements.
-		if(!isset($Layout["JSON"]->elements))//No enclosed elements.
+		if(!\is_array($Layout))//No enclosed elements.
 			return;
 		$elements = $Layout["JSON"]->elements;
 		foreach($elements as $element)
 			$this->ReadElementsFromLayout($element);
 	}
+        /**
+         * Checks for missing propertys to the element AND
+         * any hacks that might be injected.
+         * @param array $element Element to scan for hacks
+         * @return array Returns a array to be drawn.
+         */
+        function ExamineElement($element)
+        {
+            $returnedElement = array();
+            //Defaults
+            $returnedElement["event"] = "Bread.DrawModule"; //Standard module draw function.
+            $returnedElement["arguments"] = array();
+            $returnedElement["attributes"] = array();
+            $returnedElement["tag"] = "div";
+            $returnedElement["id"] = False;
+            foreach($returnedElement as $key => $default){
+                    if(isset($element->$key)){
+                        $returnedElement[$key] = $element->$key;
+                    }    
+            }
+            
+            //Check tag for hacks
+            if(!\ctype_alpha($returnedElement["tag"]))
+            {
+                //Non alpha chars in tag name. KILL
+                Site::$Logger->writeError("Layout " . $this->Theme["layout"]["JSON"]->name . " has problems. Not drawing problematic tag " . $element->name, 8);
+                return False;
+            }
+            
+            
+            if(isset($element->module))
+            {
+                    $returnedElement["guts"] = Site::$moduleManager->HookSpecifedModuleEvent($returnedElement["event"],$element->module,$returnedElement["arguments"]);
+            }
+            else
+            {
+                    $returnedElement["guts"] = Site::$moduleManager->HookEvent($returnedElement["event"],$returnedElement["arguments"]);
+            }
+            
+            if(!$returnedElement["guts"])
+            {
+                if(Site::isDebug()){
+                    $returnedElement["guts"] = "This module didn't generate for whatever reason. You need to fix it. See the source of this page to get the module details.";
+                }
+                else {$returnedElement["guts"] = "";}
+            }
+            return $returnedElement;
+        }
 }
 ?>
