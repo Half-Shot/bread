@@ -1,6 +1,7 @@
 [MSG][0]Opened Logger
 [MSG][0]Loaded core file ./modules/Modules/module.php
 [MSG][0]Loaded core file ./modules/Modules/moduleman.php
+[MSG][0]Loaded core file ./modules/Settings/SettingsManager.php
 [MSG][0]Loaded core file ./modules/Structures/BreadRequest.php
 [MSG][0]Loaded core file ./modules/Themes/thememan.php
 [MSG][0]Loaded core file ./modules/functions.php
@@ -14,5 +15,5 @@ Bread\Structures\BreadRequestData::__set_state(array(
    'sourcename' => NULL,
 ))
 [MSG][0]Registered theme theme-vanilla
-[MSG][0]Memory Used: 495.8984375kb
-[MSG][0]Closing Log
+[MSG][0]Memory Used: 545.6484375kb
+[ERR 1][0]Couldn't write json to file. path: './settings/modules/settings.json'

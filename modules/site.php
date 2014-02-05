@@ -40,6 +40,13 @@ class Site
 	public static $moduleManager;
         
         /**
+         * The global settings manager. Although advanced modules may wish to
+         * use their own SettingsManager instance, this is the one most will use.
+         * @var SettingsManager
+         */
+        public static $settingsManager;
+        
+        /**
         * The global Logger which logs messages and throws errors.
         * @var Logger
         */
@@ -227,14 +234,14 @@ class Site
 	{
 		static::$themeManager = new Themes\ThemeManager();
 		static::$moduleManager = new Modules\ModuleManager();
-
+                static::$settingsManager = new Settings\SettingsManager();
+                
 		static::$themeManager->LoadSettings(static::$configuration["directorys"]["system-settings"] . "/theme/settings.json");
 		static::$themeManager->LoadLayouts();
 
 		static::$moduleManager->LoadSettings(static::$configuration["directorys"]["system-settings"] . "/modules/settings.json");
 		static::$moduleManager->LoadModulesFromConfig(static::$configuration["directorys"]["system-settings"] . "/modules/modlist.json");
 
-		
 
 	}
 	/**
@@ -318,6 +325,7 @@ class Site
 	public static function Cleanup()
 	{
                 static::$moduleManager->HookEvent("Bread.Cleanup",NULL);//Broadcast that we are cleaning up.
+                static::$settingsManager->SaveChanges(); //Save all changes.
 		static::$Logger->closeStream();
 	}
         
@@ -418,9 +426,10 @@ class Logger
      * @param string $message Message to be written
      * @param integer $severity Severity of the error
      * @param bool $throw Should the logger throw an error
+     * @param string $exception The Exception class to throw.
      * @throws \Exception
      */
-    function writeError($message,$severity,$throw = False)
+    function writeError($message,$severity = -1,$throw = False,$exception = "\Exception")
     {
 	if($this->logpath == "NOLOG")
 		return;
@@ -429,7 +438,7 @@ class Logger
         fwrite($this->fileStream,$msg);
         fflush($this->fileStream);
 	if($throw)
-		throw new \Exception($message);
+            throw new $exception($message);
     }
     /**
      * Close the stream to the filestream. Also writes a closing statement.

@@ -18,23 +18,20 @@ class ModuleManager
 
 	function LoadSettings($filepath)
 	{
-		if(!file_exists($filepath))
-		{
-			Site::$Logger->writeError('Cannot load modules. Manager Settings file not found');
-		}
-		$tmp = file_get_contents($filepath);
-		$this->configuration = json_decode($tmp,true);
+		$this->configuration = Site::$settingsManager->RetriveSettings($filepath);
 	}
 
 	function LoadModulesFromConfig($filepath)
 	{
-		if(!file_exists($filepath))
-		{
-			Site::$Logger->writeError('Cannot load modules. Manager Settings file not found');
-		}
-		$tmp = file_get_contents($filepath);
-		$mods = json_decode($tmp,true);
-		$this->moduleList = array_merge($this->moduleList,$mods);
+                $mods = Site::$settingsManager->RetriveSettings($filepath);
+                if(!array_key_exists("enabled", $this->moduleList))
+                    $this->moduleList["enabled"] = array();
+                
+                if(!array_key_exists("blacklisted", $this->moduleList))
+                    $this->moduleList["blacklisted"] = array();              
+                
+		$this->moduleList["enabled"] = array_merge($this->moduleList["enabled"],$mods->enabled);
+                $this->moduleList["blacklisted"] = array_merge($this->moduleList["blacklisted"],$mods->blacklisted);
 	}
 	
 	#Only load modules we need.
@@ -42,7 +39,7 @@ class ModuleManager
 	{
 	    foreach($this->moduleList["enabled"] as $module)
 	    {
-	        $tmp = file_get_contents(Site::Configuration()["directorys"]["user-modules"] . "/" . $module);
+                    $tmp = file_get_contents(Site::Configuration()["directorys"]["user-modules"] . "/" . $module);
 		    $config = json_decode($tmp,true);
 		    if( in_array("everything",$config["loadFor"]) or in_array($request->$command,$config["loadFor"]))
 		    {
@@ -55,7 +52,7 @@ class ModuleManager
 
 	function RegisterModule($jsonArray)
 	{
-	    $ModuleName = $jsonArray["name"];
+                $ModuleName = $jsonArray["name"];
 		if(array_key_exists($ModuleName,$this->modules))
 			Site::$Logger->writeError('Cannot register module. Module already exists');
 		
