@@ -6,14 +6,18 @@
 [MSG][0]Loaded core file ./modules/Themes/thememan.php
 [MSG][0]Loaded core file ./modules/functions.php
 [MSG][0]Registered module ExampleModule
-[MSG][0]Unknown request command -> RawPage
 [MSG][0]Beginning build of page
 [MSG][0]Request data:
 Bread\Structures\BreadRequestData::__set_state(array(
-   'command' => 'RawPage',
-   'module' => NULL,
-   'sourcename' => NULL,
+   'requestType' => 'all',
+   'layout' => 0,
+   'theme' => 0,
+   'arguments' => 
+  array (
+    'BASEURL' => '/devbread/index.php',
+    'page' => '1',
+  ),
 ))
 [MSG][0]Registered theme theme-vanilla
-[MSG][0]Memory Used: 545.6484375kb
+[MSG][0]Memory Used: 566.2109375kb
 [ERR 1][0]Couldn't write json to file. path: './settings/modules/settings.json'

@@ -41,7 +41,7 @@ class ModuleManager
 	    {
                     $tmp = file_get_contents(Site::Configuration()["directorys"]["user-modules"] . "/" . $module);
 		    $config = json_decode($tmp,true);
-		    if( in_array("everything",$config["loadFor"]) or in_array($request->$command,$config["loadFor"]))
+		    if(in_array("everything",$config["loadFor"]) or in_array($request->request,$config["loadFor"]))
 		    {
 		        #Load it!
 		        $this->RegisterModule($config);

@@ -1,9 +1,8 @@
 {
 	"core":{
-		"version":0.07,
+		"version":0.08,
 		"rooturl":"http://localhost/will/bread/",
 		"databasefile":"tables.db",
-		"homepage":"homepage",
 		"logto":"./temp/breadlog",
 		"debug":true,
 		"cache":true,
@@ -13,6 +12,10 @@
 		"sitename":"The Bakery"
 		},
 	"bans":[],
+        "default":{
+            "layout":"homepage",
+            "module":false
+         },
 	"directorys":{
 		"system-modules":"./modules",
 		"system-settings":"./settings",

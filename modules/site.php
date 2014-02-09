@@ -80,6 +80,7 @@ class Site
          * Get the configuration file that loads when bread starts.
          * @return array The configuration of the site
          */
+        private static $Request = NULL;
         public static function Configuration()
 	{
 		return static::$configuration;
@@ -91,6 +92,16 @@ class Site
         public static function isDebug()
         {
             return static::$isdebug;
+        }
+        /**
+         * Get the data parsed from the input url, useful for modules.
+         * Set in Site::DigestRequest()
+         * @see Site::DigestRequest()
+         * @return Bread\Structures\BreadRequestData The requested data by the user.
+         */
+        public static function getRequest()
+        {
+            return static::$Request;
         }
         
         /**
@@ -154,10 +165,10 @@ class Site
 		{
 			//Check for banned user.
 			$uip = $_SERVER["REMOTE_ADDR"];
-			foreach (static::$configuration["bans"] as $banneReadElementsFromLayoutduser)
+			foreach (static::$configuration["bans"] as $banneduser)
 			{	
 				if($banneduser == $uip){
-					echo "BANNED, Get Lost!";
+                                        http_response_code(401); //Be really mean. 404s should deter people.
 					die(); //Don't give it any more processing time, we are done here.
 				}
 			}
@@ -262,6 +273,23 @@ class Site
 		$Metadata .= "</meta>";
 		return $Metadata;
 	}
+        
+        public static function DigestRequest()
+        {
+            $requestObject = new BreadRequestData();
+            $URL = $_SERVER['REQUEST_URI'];
+            $Params = Site::DigestURL($URL);
+            
+            if(array_key_exists("theme", $Params))
+                $requestObject->theme = $Params["theme"];
+            if(array_key_exists("layout", $Params))
+                $requestObject->layout = $Params["layout"];
+            if(array_key_exists("request", $Params))
+                $requestObject->requestType = $Params["module"];
+            $requestObject->arguments = $Params;
+            static::$Request = $requestObject;
+        }
+        
 	/**
          * This is the big one. It generates the page when all of bread is ready.
          * It also loads 3 important functions which determine what modules, themes
@@ -271,28 +299,21 @@ class Site
          * @see ThemeManager::SelectTheme()
          * @see ThemeManager::SelectLayout()
          */
-	public static function ProcessRequest(BreadRequestData $requestData)
+	public static function ProcessRequest()
 	{
+            $requestData = static::$Request;
 	    //Load required modules.
 	    static::$moduleManager->LoadRequiredModules($requestData);
-	    switch($requestData->command){
-	    	case "module":
-			break;
-	    	case "page":
-			break;
-		default:
-			Site::$Logger->writeMessage("Unknown request command -> " . $requestData->command);
-			break;
-	    }
+	    
 	    //Draw
 	    Site::$htmlcode .= "<!DOCTYPE html>\n<html>\n"; //Obviously.
 	    Site::$Logger->writeMessage("Beginning build of page");
 	    Site::$Logger->writeMessage("Request data:\n" . var_export($requestData,True));
 	    //Process request
-	    if(!Site::$themeManager->SelectTheme($requestData->command)){
+	    if(!Site::$themeManager->SelectTheme($requestData)){
 			Site::$Logger->writeError("Couldn't select theme from request.",0,True);
 	    }
-	    if(!Site::$themeManager->SelectLayout($requestData->command)){
+	    if(!Site::$themeManager->SelectLayout($requestData)){
 			Site::$Logger->writeError("Couldn't select layout from request.",0,True);
 	    }
 
@@ -314,8 +335,7 @@ class Site
          */
 	public static function ExampleRequest()
 	{
-	    $requestType = "RawPage";
-	    $request = new BreadRequestData($requestType);
+	    $request = BreadRequestData;
 	    return $request;
 	}
         /**
@@ -350,6 +370,35 @@ class Site
             }
             //Returns whatever we changed.
             return implode("/",$parts);
+        }
+        /**
+         * Converts a URL into a array of parameters and the base url.
+         * @param type $url
+         */
+        public static function DigestURL($url)
+        {
+            
+            $parts = \explode("?",$url);
+            $baseURL = $parts[0];
+            if(count($parts) > 1){
+                $parts = \explode("&",$parts[1]);
+            }
+            $returnedArray = array();
+            $returnedArray["BASEURL"] = $baseURL;
+            foreach($parts as $part)
+            {
+               $pair = \explode("=",$part);
+               if(count($pair) > 1)
+                $returnedArray[$pair[0]] = $pair[1];
+               else
+                $returnedArray[$pair[0]] = False;
+            }
+            return $returnedArray;
+        }
+        
+        public static function CondenseURLParams($baseurl,$params)
+        {
+            
         }
 }
 /**

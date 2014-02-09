@@ -81,24 +81,49 @@ class ThemeManager
                 }
 	}
 
+        
+        function GetCompatibleThemes($RequestType)
+        {
+                $return = array();
+            	foreach ($this->themes as $usage => $theme)
+		{
+                    if($usage == $RequestType or $usage == "all"){
+                        $return[] = $theme;
+                    }
+		}
+                return $return;
+        }
+        
+        function GetCompatibleLayouts($RequestType)
+        {
+                $return = array();
+            	foreach ($this->layouts as $usage => $layout)
+		{
+                    if($usage == $RequestType or $usage == "all"){
+                        $return[] = $layout;
+                    }
+		}
+                return $return;
+        }
+        
 	///Requests the theme that should be used for the request.
-	function SelectTheme($RequestType)
+	function SelectTheme($Request)
 	{
                 //If a module wants to force override a theme, it can from this call.
                 $moduleResults = Site::$moduleManager->HookEvent("Bread.SelectTheme",NULL);
                 if($moduleResults)
                 {
                     return $this->SetTheme($moduleResults[0]["theme"]);
-                    
                 }
-                //Else we just shift through the list of themes.
-		foreach ($this->themes as $usage => $theme)
-		{
-                    if($usage == $RequestType or $usage == "all"){
-                        return $this->SetTheme($theme);
-                    }
-		}
-		return False;
+                //If a request wants to override the theme
+                $themeToUse = $Request->theme;
+                $themes = $this->GetCompatibleThemes($Request->requestType);
+                if(count($themes) < $themeToUse + 1)
+                    Site::$Logger->writeError ("No compatible theme could be found for the request!", 10);
+                $theme = $themes[$themeToUse];
+                //Set the theme.
+                $this->SetTheme($theme);
+		return True;
 	}
         
         function SetTheme($suggestedTheme)
@@ -114,21 +139,25 @@ class ThemeManager
         }
 
 	///Requests the layout that should be used for the page request.
-	function SelectLayout($RequestType)
+	function SelectLayout($Request)
 	{
-		foreach ($this->layouts as $layoutType => $layoutJSON)
-		{
-			if($layoutType == $RequestType){
-				$this->Theme["layout"] = $layoutJSON;
-				return True;
-			}
-		}
-		if(isset($this->layouts["master"]))
-		{
-			$this->Theme["layout"] = $this->layouts["master"];
-			return True;
-		}
-		return False;
+            //If a module wants to force override a theme, it can from this call.
+            $moduleResults = Site::$moduleManager->HookEvent("Bread.SelectLayout",NULL);
+            if($moduleResults)
+            {
+                $layout = ($moduleResults[0]["layout"]);
+                $this->Theme["layout"] = $layout;
+                return True;
+            }
+            //If a request wants to override the theme
+            $layoutToUse = $Request->layout;
+            $layouts = $this->GetCompatibleLayouts($Request->requestType);
+            if(count($layouts) < $layoutToUse + 1)
+                Site::$Logger->writeError ("No compatible theme could be found for the request!", 10);
+            $layout = $layouts[$layoutToUse];
+            //Set the theme.
+            $this->Theme["layout"] = $layout;
+            return True;
 	}
 
 	//Returns nothing but reads from layout and does all the calling to modules
