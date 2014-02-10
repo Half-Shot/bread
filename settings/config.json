@@ -17,16 +17,16 @@
             "module":false
          },
 	"directorys":{
-		"system-modules":"./modules",
-		"system-settings":"./settings",
-		"settings-moduleloadlist":"./settings/modules/modlist.json",
-		"user-modules":"./user/modules",
-		"user-themes":"./user/themes",
-		"user-layouts":"./user/layouts",
-		"user-resource":"./user/resource",
-		"user-media":"./content/media",
-		"user-pages":"./content/pages",
-		"user-posts":"./content/posts",
-		"system-temp":"./temp"
+		"system-modules":"modules",
+		"system-settings":"settings",
+		"settings-moduleloadlist":"settings/modules/modlist.json",
+		"user-modules":"user/modules",
+		"user-themes":"user/themes",
+		"user-layouts":"user/layouts",
+		"user-resource":"user/resource",
+		"user-media":"content/media",
+		"user-pages":"content/pages",
+		"user-posts":"content/posts",
+		"system-temp":"temp"
 		}
 }

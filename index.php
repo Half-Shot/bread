@@ -9,12 +9,11 @@ use Bread\Site as Site;
 $BREAD_CONFIGURL = "settings/config.json";
 $BREAD_SITEMODFILE = "modules/site.php";
 include($BREAD_SITEMODFILE);
-Site::$timeStarted = time();
 Site::ShowDebug(true);
 Site::LoadConfig($BREAD_CONFIGURL);
 Site::CheckBans();
 Site::SetupLogging();
-Site::LoadCoreModules(Site::Configuration()["directorys"]["system-modules"]);
+Site::LoadCoreModules(Site::ResolvePath("%system-modules"));
 Site::DigestRequest();
 Site::CheckCoreModules();
 Site::SetupManagers();//Last step to have a fully set up site.

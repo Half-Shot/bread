@@ -41,7 +41,7 @@ class ThemeManager
 
 		foreach ($this->configuration["themes"] as $theme)
 		{
-			$this->RegisterTheme(Site::Configuration()["directorys"]["user-themes"]. "/" . $theme["config-path"],$theme["use-for"]);
+			$this->RegisterTheme(Site::ResolvePath("%user-themes"). "/" . $theme["config-path"],$theme["use-for"]);
 		}
 	}
 
@@ -52,8 +52,8 @@ class ThemeManager
 	    foreach($layouts_cfg as $layouttype => $layoutpath)
 	    {
 	    	$layout = array();
-			$layout["JSON"] = json_decode(file_get_contents(Site::Configuration()["directorys"]["user-layouts"]. "/"  . $layoutpath));
-			$layout["abs_path"] = Site::Configuration()["directorys"]["user-layouts"]. "/"  . $layoutpath;
+			$layout["JSON"] = json_decode(file_get_contents(Site::ResolvePath("%user-layouts"). "/"  . $layoutpath));
+			$layout["abs_path"] = Site::ResolvePath("%user-layouts") . "/"  . $layoutpath;
 			$layout["path"] = $layoutpath;
 			$layout["type"] = $layouttype;
 			$this->layouts[] = $layout;
@@ -129,7 +129,7 @@ class ThemeManager
         function SetTheme($suggestedTheme)
         {
             $this->Theme["data"] = $suggestedTheme["module"];
-            require_once(Site::Configuration()["directorys"]["user-themes"]. "/" . $this->Theme["data"]["entryfile"]);
+            require_once(Site::ResolvePath("%user-themes"). "/" . $this->Theme["data"]["entryfile"]);
             $this->Theme["class"] = new $this->Theme["data"]["entryclass"](Site::$moduleManager,$this->Theme["data"]["name"]);
             if(isset($this->Theme["data"]["css"])){
                     $this->cssFiles = array_merge($this->cssFiles,$this->Theme["data"]["css"]); //Add some css files.
@@ -169,7 +169,7 @@ class ThemeManager
 		{
 			$isRemote = (mb_substr($cssfilepath, 0, 4) == "http");
 			if(!$isRemote){
-				$cssfilepath = Site::Configuration()["directorys"]["user-layouts"]. "/"  . $cssfilepath;
+				$cssfilepath = Site::ResolvePath("%user-layouts"). "/"  . $cssfilepath;
 			}
 			$this->CSSLines .= "<link rel='stylesheet' type='text/css' href='" . $cssfilepath . "'>\n";
 		}

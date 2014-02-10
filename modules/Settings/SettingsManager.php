@@ -38,9 +38,43 @@ class SettingsManager {
      * @var array
      */
     private $settings;
-    
+    const SAVEMODE = 0755;
     function __construct() {
         $this->settings = array();
+    }
+    /**
+     * Creates a settings folder for your module or just returns the path.
+     * You will also want to create settings files.
+     * PLEASE use module names and not anything else.
+     * @param string $dirname The module name.
+     * @see $this::CreateSettingsFile()
+     * @todo Add a secure way to lock settings files.
+     */
+    function CreateModDir($dirname)
+    {
+        $dirname = Site::ResolvePath("%system-settings") . "/" . $dirname . "/";
+        if(!file_exists($dirname)){
+            mkdir($dirname);
+            chmod($dirname, $this::SAVEMODE);
+        }
+        return $dirname;
+    }
+    
+    /**
+     * Creates a new settings file, sets the permissions and uses the specified template. If the file exists then returns False, else True.
+     * @param string $filename Filename. Not relative (use CreateModInfo to get the directory).
+     * @param stdClass $template Specify a template to use for the settings file. Could be a included json file with your module (must be decoded as a class).
+     * @see $this::CreateModDir()
+     */
+    function CreateSettingsFiles($filename,$template)
+    {
+        if(file_exists($filename))
+            return False;
+        file_put_contents($filename, '');
+        $this->settings[$filename] = $template;
+        chmod($filename, $this::SAVEMODE);
+        $this->SaveSetting($this->settings[$filename],$filename,True); //Save to be safe.
+        return True;
     }
     
     /**
@@ -77,9 +111,15 @@ class SettingsManager {
     public static function GetJsonObject($path)
     {
         $contents = \file_get_contents($path);
-        if(!$contents)
+      
+        if($contents == "")
+        {
+            Site::$Logger->writeMessage("Settings file is empty (" . $path . "), this could be a bug or there really isn't any settings yet.'");
+            $contents = "{}"; //The equivalent of a empty file but cleaner.
+        }
+        if($contents == FALSE)
            Site::$Logger->writeError ("Couldn't open path '" . $path . "' for parsing settings.", 1, True, "Bread\Settings\FileNotFoundException");
-
+        
         $jsonObj = \json_decode($contents);
         if($jsonObj == NULL)
            Site::$Logger->writeError ("Couldn't parse file '" . $path . "' for reading settings.", 1, True, "Bread\Settings\FailedToParseException");   
@@ -98,14 +138,21 @@ class SettingsManager {
         return $obj;
     }
     
+    /**
+     * Saves all the settings files currently open.
+     */
     public function SaveChanges()
     {
-        foreach($this->settings as $path => $obj)
-        {
-            $string = $this->CompileJson($obj);
-            $worked = \file_put_contents($path, $string);
-            if($worked == False)    
-                Site::$Logger->writeError ("Couldn't write json to file. path: '" . $path . "'", 1, True, "Bread\Settings\FileNotWrittenException");                  
+        foreach($this->settings as $path => $obj){
+            $this->SaveSetting($obj,$path,False); //Don't throw on such a large operation.
         }
+    }
+    
+    public function SaveSetting($object,$path,$shouldThrow = True)
+    {
+         $string = $this->CompileJson($object);
+         $worked = \file_put_contents($path, $string);
+         if($worked == False)    
+             Site::$Logger->writeError ("Couldn't write json to file. path: '" . $path . "'", 1, $shouldThrow, "Bread\Settings\FileNotWrittenException");                  
     }
 }

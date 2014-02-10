@@ -51,12 +51,6 @@ class Site
         * @var Logger
         */
 	public static $Logger;
-        
-        /**
-        * Time of request.
-        * @var integer
-        */
-	public static $timeStarted;
 
         /**
         * HTML used in the end site. Unable to modify outside site.
@@ -66,7 +60,7 @@ class Site
         
         /**
         * Main code used in the body of the site. Modified via AddToBodyCode
-        * @see Site::AddToBodyCode()
+        * @see static::AddToBodyCode()
         * @var string
         */
 	private static $bodycode = "";
@@ -95,8 +89,8 @@ class Site
         }
         /**
          * Get the data parsed from the input url, useful for modules.
-         * Set in Site::DigestRequest()
-         * @see Site::DigestRequest()
+         * Set in static::DigestRequest()
+         * @see static::DigestRequest()
          * @return Bread\Structures\BreadRequestData The requested data by the user.
          */
         public static function getRequest()
@@ -119,7 +113,7 @@ class Site
          * @todo This is likley to change when the new settings manager is implemented.
          * @param string $configurl The url to load the config from.
          * @throws \Exception
-         * @see Site::$configuration
+         * @see static::$configuration
          */
 	public static function LoadConfig($configurl)
 	{
@@ -196,13 +190,13 @@ class Site
 			else if(file_exists($fullpath))
 			{
 				require_once($fullpath);
-				Site::$Logger->writeMessage("Loaded core file " . $fullpath);
+				static::$Logger->writeMessage("Loaded core file " . $fullpath);
 			}
 		}
 	}
         /**
          * Creates a new logger for error reporting.
-         * @see Site::$Logger
+         * @see static::$Logger
          */
 	public static function SetupLogging()
 	{
@@ -213,22 +207,22 @@ class Site
          * LoadCoreModules() and if any are missing then bread will throw an error.
          * The file it checks will be inside the root settings directory called 'coremodulecheck.json'
          * @throws Exception
-         * @see Site::LoadCoreModules()
+         * @see static::LoadCoreModules()
          */
 	public static function CheckCoreModules()
 	{
-		$RequiredModules = json_decode(file_get_contents(static::$configuration["directorys"]["system-settings"] . "/coremodulecheck.json"),true)["checklist"];
+		$RequiredModules = json_decode(file_get_contents(static::ResolvePath("%system-settings") . "/coremodulecheck.json"),true)["checklist"];
 		$Failed = false;
 		foreach($RequiredModules as $ModuleName)
 		{
 			if(!class_exists($ModuleName)){
-				Site::$Logger->writeError("Bread is missing module " . $ModuleName,0,True);
+				static::$Logger->writeError("Bread is missing module " . $ModuleName,0,True);
 				$Failed = true;
 			}
 		}
 		if($Failed)
 		{
-			Site::$Logger->writeError("Some core modules could not be found, please redownload them from the repository.",0,true);
+			static::$Logger->writeError("Some core modules could not be found, please redownload them from the repository.",0,true);
 			die();
 		}
 	}
@@ -238,22 +232,21 @@ class Site
          *  ThemeManager
          *  ModuleManager
          * It also loads settings and configuration files for managers.
-         * @see Site::$themeManager
-         * @see Site::$moduleManager
+         * @see static::$themeManager
+         * @see static::$moduleManager
          */
 	public static function SetupManagers()
 	{
-		static::$themeManager = new Themes\ThemeManager();
-		static::$moduleManager = new Modules\ModuleManager();
-                static::$settingsManager = new Settings\SettingsManager();
-                
-		static::$themeManager->LoadSettings(static::$configuration["directorys"]["system-settings"] . "/theme/settings.json");
-		static::$themeManager->LoadLayouts();
+            $path = static::ResolvePath("%system-settings");
+            static::$themeManager = new Themes\ThemeManager();
+            static::$moduleManager = new Modules\ModuleManager();
+            static::$settingsManager = new Settings\SettingsManager();
 
-		static::$moduleManager->LoadSettings(static::$configuration["directorys"]["system-settings"] . "/modules/settings.json");
-		static::$moduleManager->LoadModulesFromConfig(static::$configuration["directorys"]["system-settings"] . "/modules/modlist.json");
+            static::$themeManager->LoadSettings($path . "/theme/settings.json");
+            static::$themeManager->LoadLayouts();
 
-
+            static::$moduleManager->LoadSettings($path . "/modules/settings.json");
+            static::$moduleManager->LoadModulesFromConfig($path . "/modules/modlist.json");
 	}
 	/**
          * Creates metadata tags for the header. This function calls moduleman
@@ -278,7 +271,7 @@ class Site
         {
             $requestObject = new BreadRequestData();
             $URL = $_SERVER['REQUEST_URI'];
-            $Params = Site::DigestURL($URL);
+            $Params = static::DigestURL($URL);
             
             if(array_key_exists("theme", $Params))
                 $requestObject->theme = $Params["theme"];
@@ -302,31 +295,32 @@ class Site
 	public static function ProcessRequest()
 	{
             $requestData = static::$Request;
+            
 	    //Load required modules.
 	    static::$moduleManager->LoadRequiredModules($requestData);
-	    
+	    static::$moduleManager->HookEvent("Bread.ProcessRequest",NULL);
 	    //Draw
-	    Site::$htmlcode .= "<!DOCTYPE html>\n<html>\n"; //Obviously.
-	    Site::$Logger->writeMessage("Beginning build of page");
-	    Site::$Logger->writeMessage("Request data:\n" . var_export($requestData,True));
+	    static::$htmlcode .= "<!DOCTYPE html>\n<html>\n"; //Obviously.
+	    static::$Logger->writeMessage("Beginning build of page");
+	    static::$Logger->writeMessage("Request data:\n" . var_export($requestData,True));
 	    //Process request
-	    if(!Site::$themeManager->SelectTheme($requestData)){
-			Site::$Logger->writeError("Couldn't select theme from request.",0,True);
+	    if(!static::$themeManager->SelectTheme($requestData)){
+			static::$Logger->writeError("Couldn't select theme from request.",0,True);
 	    }
-	    if(!Site::$themeManager->SelectLayout($requestData)){
-			Site::$Logger->writeError("Couldn't select layout from request.",0,True);
+	    if(!static::$themeManager->SelectLayout($requestData)){
+			static::$Logger->writeError("Couldn't select layout from request.",0,True);
 	    }
 
-	    Site::$themeManager->ReadElementsFromLayout(Site::$themeManager->Theme["layout"]);#Build layout into HTML
-	    Site::$htmlcode .= "<head>\n";
-	    Site::$htmlcode .= Site::$themeManager->CSSLines;
-	    Site::$htmlcode .= Site::ProcessMetadata($requestData);
-	    Site::$htmlcode .= "</head>\n";
-	    Site::$htmlcode .= "<body>\n";
-	    Site::$htmlcode .= Site::$bodycode;
-	    Site::$htmlcode .= "</body>\n";
-	    Site::$htmlcode .= "</html>\n";
-	    echo Site::$htmlcode;
+	    static::$themeManager->ReadElementsFromLayout(static::$themeManager->Theme["layout"]);#Build layout into HTML
+	    static::$htmlcode .= "<head>\n";
+	    static::$htmlcode .= static::$themeManager->CSSLines;
+	    static::$htmlcode .= static::ProcessMetadata($requestData);
+	    static::$htmlcode .= "</head>\n";
+	    static::$htmlcode .= "<body>\n";
+	    static::$htmlcode .= static::$bodycode;
+	    static::$htmlcode .= "</body>\n";
+	    static::$htmlcode .= "</html>\n";
+	    echo static::$htmlcode;
 	}
 	
         /**
@@ -400,12 +394,22 @@ class Site
         {
             
         }
+        
+        /**
+         * Gets the seconds of time since PHP got the request.
+         * @param int $dec The decimal time to account to.
+         * @return float Microsecond Time.
+         */
+        public static function GetTimeSinceStart($dec = 3)
+        {
+            return round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], $dec, PHP_ROUND_HALF_UP);
+        }
 }
 /**
  * A class that logs important infomation and also throws errors for bread.
  * The log file can be found in /temp/breadlog. This can be changed in settings.
- * The main logger is to be found in Site::$Logger.
- * @see Site::$Logger
+ * The main logger is to be found in static::$Logger.
+ * @see static::$Logger
  */
 class Logger
 {
@@ -462,8 +466,9 @@ class Logger
     {
 	if($this->logpath == "NOLOG")
 		return;
-        $messageStack[time() - Site::$timeStarted] = $message;
-        $msg = "[MSG][" . (time() - Site::$timeStarted) . "]" . $message . "\n";
+        $time = Site::GetTimeSinceStart();
+        $messageStack[$time] = $message;
+        $msg = "[MSG][" . $time . "]" . $message . "\n";
         fwrite($this->fileStream,$msg);
         fflush($this->fileStream);
     }
@@ -482,8 +487,9 @@ class Logger
     {
 	if($this->logpath == "NOLOG")
 		return;
-        $errorStack[time() - Site::$timeStarted] = $message;
-        $msg = "[ERR " . $severity ."][" . (time() - Site::$timeStarted) . "]" . $message . "\n";
+        $time = Site::GetTimeSinceStart();
+        $errorStack[$time] = $message;
+        $msg = "[ERR " . $severity ."][" . ($time) . "]" . $message . "\n";
         fwrite($this->fileStream,$msg);
         fflush($this->fileStream);
 	if($throw)

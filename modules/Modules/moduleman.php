@@ -39,7 +39,7 @@ class ModuleManager
 	{
 	    foreach($this->moduleList["enabled"] as $module)
 	    {
-                    $tmp = file_get_contents(Site::Configuration()["directorys"]["user-modules"] . "/" . $module);
+                    $tmp = file_get_contents(Site::ResolvePath("%user-modules") . "/" . $module);
 		    $config = json_decode($tmp,true);
 		    if(in_array("everything",$config["loadFor"]) or in_array($request->request,$config["loadFor"]))
 		    {
@@ -58,7 +58,7 @@ class ModuleManager
 		
 		Site::$Logger->writeMessage('Registered module ' . $ModuleName);
 		//Stupid PHP cannot validate files without running command trickery.
-		include_once(Site::Configuration()["directorys"]["user-modules"] . "/" . $jsonArray["entryfile"]);
+		include_once(Site::ResolvePath("%user-modules") . "/" . $jsonArray["entryfile"]);
 		//Modules should be inside the namespace Bread\Modules but can differ if need be.
 		$class = 'Bread\Modules\\'  . $jsonArray["entryclass"];
 		if(isset($jsonArray["namespace"])){

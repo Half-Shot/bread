@@ -1,0 +1,7 @@
+{
+        "name":"BreadPageSystem",
+		"permissions":["read:user/resource"],
+		"loadFor":["everything"],
+		"entryclass":"BreadPageSystem",
+		"entryfile":"BreadPageSystem/BreadPageSystem.php"
+}

@@ -18,10 +18,6 @@
         "module": "ExampleModule",
         "event":"Bread.DrawModule",
         "tag":"section",
-        "attributes":
-        {
-            "dessert":"cake"
-        },
         "arguments":
         {
 			"gabesize":"10"

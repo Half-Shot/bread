@@ -37,7 +37,7 @@ class VanillaBreadTheme extends Bread\Modules\Module
 
 	function DrawNavbar()
 	{
-		$HTMLCode = "";
+		$HTMLCode = "lulwaht";
 		return $HTMLCode;
 	}
 

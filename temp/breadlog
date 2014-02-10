@@ -1,13 +1,14 @@
-[MSG][0]Opened Logger
-[MSG][0]Loaded core file ./modules/Modules/module.php
-[MSG][0]Loaded core file ./modules/Modules/moduleman.php
-[MSG][0]Loaded core file ./modules/Settings/SettingsManager.php
-[MSG][0]Loaded core file ./modules/Structures/BreadRequest.php
-[MSG][0]Loaded core file ./modules/Themes/thememan.php
-[MSG][0]Loaded core file ./modules/functions.php
-[MSG][0]Registered module ExampleModule
-[MSG][0]Beginning build of page
-[MSG][0]Request data:
+[MSG][0.001]Opened Logger
+[MSG][0.002]Loaded core file modules/Modules/module.php
+[MSG][0.002]Loaded core file modules/Modules/moduleman.php
+[MSG][0.003]Loaded core file modules/Settings/SettingsManager.php
+[MSG][0.003]Loaded core file modules/Structures/BreadRequest.php
+[MSG][0.004]Loaded core file modules/Themes/thememan.php
+[MSG][0.004]Loaded core file modules/functions.php
+[MSG][0.005]Registered module ExampleModule
+[MSG][0.005]Registered module BreadPageSystem
+[MSG][0.005]Beginning build of page
+[MSG][0.005]Request data:
 Bread\Structures\BreadRequestData::__set_state(array(
    'requestType' => 'all',
    'layout' => 0,
@@ -15,9 +16,9 @@ Bread\Structures\BreadRequestData::__set_state(array(
    'arguments' => 
   array (
     'BASEURL' => '/devbread/index.php',
-    'page' => '1',
+    '/devbread/index.php' => false,
   ),
 ))
-[MSG][0]Registered theme theme-vanilla
-[MSG][0]Memory Used: 566.2109375kb
-[ERR 1][0]Couldn't write json to file. path: './settings/modules/settings.json'
+[MSG][0.005]Registered theme theme-vanilla
+[MSG][0.006]Memory Used: 588.734375kb
+[MSG][0.006]Closing Log
