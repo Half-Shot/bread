@@ -262,10 +262,7 @@ class ThemeManager
             
             if(!$returnedElement["guts"])
             {
-                if(Site::isDebug()){
-                    $returnedElement["guts"] = "This module didn't generate for whatever reason. You need to fix it. See the source of this page to get the module details.";
-                }
-                else {$returnedElement["guts"] = "";}
+                $returnedElement["guts"] = "";
             }
             return $returnedElement;
         }

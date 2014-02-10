@@ -8,7 +8,11 @@
         "human": "Navigation Bar",
         "description": "Top of the page, ideal for navbars.",
         "tag":"header",
-        "event":"Theme.DrawNavbar"
+        "event":"Theme.DrawNavbar",
+        "arguments":
+        {
+		"Home":"http://www.google.co.uk"
+        }
     },
     {
         "name": "contents",
@@ -20,7 +24,7 @@
         "tag":"section",
         "arguments":
         {
-			"gabesize":"10"
+		"gabesize":"10"
         }
     },
     {

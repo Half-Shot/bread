@@ -7,8 +7,9 @@
 [MSG][0.004]Loaded core file modules/functions.php
 [MSG][0.005]Registered module ExampleModule
 [MSG][0.005]Registered module BreadPageSystem
-[MSG][0.005]Beginning build of page
-[MSG][0.005]Request data:
+[MSG][0.007]BPS: Built Page Index!
+[MSG][0.007]Beginning build of page
+[MSG][0.007]Request data:
 Bread\Structures\BreadRequestData::__set_state(array(
    'requestType' => 'all',
    'layout' => 0,
@@ -19,6 +20,6 @@ Bread\Structures\BreadRequestData::__set_state(array(
     '/devbread/index.php' => false,
   ),
 ))
-[MSG][0.005]Registered theme theme-vanilla
-[MSG][0.006]Memory Used: 588.734375kb
-[MSG][0.006]Closing Log
+[MSG][0.007]Registered theme theme-vanilla
+[MSG][0.007]Memory Used: 710.46875kb
+[MSG][0.008]Closing Log
