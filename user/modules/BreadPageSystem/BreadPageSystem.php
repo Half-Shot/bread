@@ -40,12 +40,14 @@ class BreadPageSystem extends Module
         
         function BuildIndex()
         {
+            $this->settings->Pageindex = array();//Wipe array, we are rebuilding it.
             foreach(new \recursiveIteratorIterator( new \recursiveDirectoryIterator($this->settings->Pagedir)) as $file)
             {
                 if(pathinfo($file->getFilename())['extension'] == "json")
                 {
                     $path = $file->getPathname();
-                    $this->settings->Pageindex[$path] = Site::$settingsManager->RetriveSettings($path,True);
+                    $pageData = Site::$settingsManager->RetriveSettings($path,True);
+                    $this->settings->Pageindex[$path] = $pageData;
                 }
             }
             $this->settings->BuildTime = time();

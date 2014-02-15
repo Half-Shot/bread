@@ -159,22 +159,47 @@ class ThemeManager
             $this->Theme["layout"] = $layout;
             return True;
 	}
-
-	//Returns nothing but reads from layout and does all the calling to modules
-	//and adds CSS Files. Yes, this is the biggy.
-	
+        /**
+         * Looks for a CSS file in the common user paths.
+         * Ordered by layout, theme and resource.
+         * Useful for layouts overriding.
+         * @param type $filepath
+         * @return string
+         * @throws Exception
+         */
+        function FindLocalCSSFile($filepath)
+        {
+                if(mb_substr($filepath, 0, 4) == "http")//Is remote.
+                    return $filepath;
+                $path = Site::ResolvePath("%user-layouts/" . $filepath);
+                if(file_exists($path))
+                    return $path;
+                $path = Site::ResolvePath("%user-themes/" . $filepath);
+                if(file_exists($path))
+                    return $path; 
+                $path = Site::ResolvePath("%user-resource/" . $filepath);
+                if(file_exists($path))
+                    return $path;
+                throw new \Exception;
+        }
+        
 	function BuildCSS()
 	{
-		foreach($this->cssFiles as $cssfilepath)
+		foreach($this->cssFiles as $filepath)
 		{
-			$isRemote = (mb_substr($cssfilepath, 0, 4) == "http");
-			if(!$isRemote){
-				$cssfilepath = Site::ResolvePath("%user-layouts"). "/"  . $cssfilepath;
-			}
-			$this->CSSLines .= "<link rel='stylesheet' type='text/css' href='" . $cssfilepath . "'>\n";
+                    try {
+                        $cssfilepath = $this->FindLocalCSSFile($filepath);
+                    } catch (\Exception $exc) {
+                        Site::$Logger->writeError("Failed to find CSS File '" . $filepath .", ignoring.'", 2, false);
+                        continue;
+                    }
+                    
+                    $this->CSSLines .= "<link rel='stylesheet' type='text/css' href='" . $cssfilepath . "'>\n";
 		}
 	}
 	
+	//Returns nothing but reads from layout and does all the calling to modules
+	//and adds CSS Files. Yes, this is the biggy.
 	function ReadElementsFromLayout($Layout)
 	{
 		$IsRoot = ($Layout == $this->Theme["layout"]);
@@ -189,6 +214,9 @@ class ThemeManager
 		}    
                 else
                 {
+                        /**
+                         * @todo Fix code to use stdClass and not arrays.
+                         */
                         $element = $this->ExamineElement($Layout);
                         if($element != False)
                         {
@@ -198,6 +226,11 @@ class ThemeManager
                             {
                                 $tagStart .= " " . $key . "=" . "'" . $data . "'";
                             }
+                            if(isset($element["id"]))
+                                $tagStart .= " id='" . $element["id"] . "'";
+                            //Not including name, but leaving it here for the future.
+                            //if(isset($element["name"]))
+                            //    $tagStart .= "name=" . $element["name"];
                             $tagStart .= ">";
                             Site::AddToBodyCode($tagStart);
                             if(\is_array($element["guts"])){

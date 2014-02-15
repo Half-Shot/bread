@@ -11,6 +11,6 @@
 		"permissions":["read:user/resource"],
 		"entryclass":"VanillaBreadTheme",
 		"entryfile":"VanillaBread/module/theme.php",
-		"css":["http://fonts.googleapis.com/css?family=Ledger"]
+		"css":["http://fonts.googleapis.com/css?family=Ledger","VanillaBread/css/vanillasheet.css"]
 	}
 }
