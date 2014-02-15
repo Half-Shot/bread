@@ -18,23 +18,20 @@ class ModuleManager
 
 	function LoadSettings($filepath)
 	{
-		if(!file_exists($filepath))
-		{
-			Site::$Logger->writeError('Cannot load modules. Manager Settings file not found');
-		}
-		$tmp = file_get_contents($filepath);
-		$this->configuration = json_decode($tmp,true);
+		$this->configuration = Site::$settingsManager->RetriveSettings($filepath);
 	}
 
 	function LoadModulesFromConfig($filepath)
 	{
-		if(!file_exists($filepath))
-		{
-			Site::$Logger->writeError('Cannot load modules. Manager Settings file not found');
-		}
-		$tmp = file_get_contents($filepath);
-		$mods = json_decode($tmp,true);
-		$this->moduleList = array_merge($this->moduleList,$mods);
+                $mods = Site::$settingsManager->RetriveSettings($filepath);
+                if(!array_key_exists("enabled", $this->moduleList))
+                    $this->moduleList["enabled"] = array();
+                
+                if(!array_key_exists("blacklisted", $this->moduleList))
+                    $this->moduleList["blacklisted"] = array();              
+                
+		$this->moduleList["enabled"] = array_merge($this->moduleList["enabled"],$mods->enabled);
+                $this->moduleList["blacklisted"] = array_merge($this->moduleList["blacklisted"],$mods->blacklisted);
 	}
 	
 	#Only load modules we need.
@@ -42,9 +39,9 @@ class ModuleManager
 	{
 	    foreach($this->moduleList["enabled"] as $module)
 	    {
-	        $tmp = file_get_contents(Site::Configuration()["directorys"]["user-modules"] . "/" . $module);
+                    $tmp = file_get_contents(Site::ResolvePath("%user-modules") . "/" . $module);
 		    $config = json_decode($tmp,true);
-		    if( in_array("everything",$config["loadFor"]) or in_array($request->$command,$config["loadFor"]))
+		    if(in_array("everything",$config["loadFor"]) or in_array($request->request,$config["loadFor"]))
 		    {
 		        #Load it!
 		        $this->RegisterModule($config);
@@ -55,13 +52,13 @@ class ModuleManager
 
 	function RegisterModule($jsonArray)
 	{
-	    $ModuleName = $jsonArray["name"];
+                $ModuleName = $jsonArray["name"];
 		if(array_key_exists($ModuleName,$this->modules))
 			Site::$Logger->writeError('Cannot register module. Module already exists');
 		
 		Site::$Logger->writeMessage('Registered module ' . $ModuleName);
 		//Stupid PHP cannot validate files without running command trickery.
-		include_once(Site::Configuration()["directorys"]["user-modules"] . "/" . $jsonArray["entryfile"]);
+		include_once(Site::ResolvePath("%user-modules") . "/" . $jsonArray["entryfile"]);
 		//Modules should be inside the namespace Bread\Modules but can differ if need be.
 		$class = 'Bread\Modules\\'  . $jsonArray["entryclass"];
 		if(isset($jsonArray["namespace"])){
@@ -87,6 +84,8 @@ class ModuleManager
 		$this->moduleConfig[$jsonArray["name"]] = $jsonArray;
 		$this->modules[$jsonArray["name"]] = Site::$themeManager->Theme["class"];
 		$this->modules[$jsonArray["name"]]->RegisterEvents();
+                Site::$Logger->writeMessage('Registered theme ' . $jsonArray["name"]);
+
 
 	}
 	
@@ -117,7 +116,7 @@ class ModuleManager
 	
 	function HookSpecifedModuleEvent($eventName,$moduleName,$arguments)
 	{
-		if(!array_key_exists($moduleName,$this->modules))
+            if(!array_key_exists($moduleName,$this->modules))
 	        return False; //Module not found.
 	    $function = $this->events[$eventName][$moduleName];
 	    return $this->modules[$moduleName]->$function($arguments);

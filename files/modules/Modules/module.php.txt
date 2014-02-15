@@ -2,7 +2,7 @@
 namespace Bread\Modules;
 class Module
 {
-    protected $manager;
+        protected $manager;
 	protected $name;
 	function __construct($manager,$name)
 	{

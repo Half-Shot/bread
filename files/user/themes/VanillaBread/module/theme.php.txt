@@ -35,9 +35,19 @@ class VanillaBreadTheme extends Bread\Modules\Module
 		return $HTMLCode;
 	}
 
-	function DrawNavbar()
+	function DrawNavbar($args)
 	{
-		$HTMLCode = "";
+                $Hooks = $this->manager->HookEvent("Bread.GenerateNavbar",$args);
+                array_unshift($Hooks, $args);
+                $HTMLCode = "<ul>";
+                foreach ($Hooks as $links)
+                {
+                    foreach ($links as $text => $url)
+                    {
+                        $HTMLCode .= "<li><a href='" . $url . "'>" . $text . "</a></li>";
+                    }
+                }
+                $HTMLCode .= "</li>";
 		return $HTMLCode;
 	}
 
