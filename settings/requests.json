@@ -1,7 +1,7 @@
 {
     "master":
     {
-        "layout":"homepage",
+        "layout":"post",
         "theme":"theme-vanilla",
         "modules":false
     },
