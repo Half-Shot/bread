@@ -10,16 +10,16 @@
 [MSG][0.006]Request data:
 Bread\Structures\BreadRequestData::__set_state(array(
    'requestType' => 'all',
-   'layout' => 'homepage',
+   'layout' => 'post',
    'theme' => 'theme-vanilla',
    'arguments' => 
   array (
     'BASEURL' => '/devbread/index.php',
-    'request' => 'page',
-    'page' => '2',
+    'request' => 'post',
+    'page' => '0',
   ),
    'modules' => false,
 ))
 [MSG][0.006]Registered theme theme-vanilla
-[MSG][0.006]Memory Used: 640.6171875kb
+[MSG][0.007]Memory Used: 677.6953125kb
 [MSG][0.007]Closing Log

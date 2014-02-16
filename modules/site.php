@@ -320,11 +320,10 @@ class Site
             static::$themeManager = new Themes\ThemeManager();
             static::$moduleManager = new Modules\ModuleManager();
             static::$settingsManager = new Settings\SettingsManager();
-
-            static::$themeManager->LoadSettings($path . "/theme/settings.json");
-            static::$themeManager->LoadLayouts();
-
             static::$moduleManager->LoadSettings($path . "/modules/settings.json");
+            static::$themeManager->LoadSettings($path . "/theme/settings.json");
+
+            static::$themeManager->LoadLayouts();
             static::$moduleManager->LoadModulesFromConfig($path . "/modules/modlist.json");
 	}
 	/**

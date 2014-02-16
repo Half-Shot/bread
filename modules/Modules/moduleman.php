@@ -120,6 +120,12 @@ class ModuleManager
 	        Site::$Logger->writeError ("Couldn't specifically hook module '" . $moduleName . "'. Module not loaded.", 3); //Module not found.
                 return False;
             }
+            
+            if(!array_key_exists($eventName, $this->events)){
+                Site::$Logger->writeError ("Couldn't specifically hook module '" . $moduleName . "'. That event is not called by any module.", 3); //Module not found.
+                return False;
+            }
+            
             if(!array_key_exists($moduleName, $this->events[$eventName])){
                 Site::$Logger->writeError ("Couldn't specifically hook module '" . $moduleName . "'. Module does not have that event set.", 3); //Module not found.
                 return False;

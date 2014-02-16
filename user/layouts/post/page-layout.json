@@ -1,6 +1,6 @@
 {
-"name": "homepage",
-"css":["homepage/page-layout.css"],
+"name": "post",
+"css":["default/page-layout.css"],
 "elements": [
     {
         "name": "navbar",
@@ -8,11 +8,15 @@
         "human": "Navigation Bar",
         "description": "Top of the page, ideal for navbars.",
         "tag":"header",
-        "event":"Theme.DrawNavbar",
-        "arguments":
-        {
-		"Home":"http://www.google.co.uk"
-        }
+        "event":"Theme.DrawNavbar"
+    },
+    {
+        "id": "title",
+        "human": "Title",
+        "description": "The title of the current document.",
+        "module": "BreadPageSystem",
+        "event":"BreadPageSystem.Title",
+        "tag":"section"
     },
     {
         "name": "contents",
@@ -24,12 +28,21 @@
         "tag":"section"
     },
     {
+        "name": "recent-posts",
+	"id": "recent-posts",
+        "human": "Recent Posts Sidebar",
+        "description": "Section for recent posts.",
+        "module": "BreadPageSystem",
+        "event":"BreadPageSystem.DrawRecentPosts"
+    },
+    {
         "name": "footer",
 	"id": "footer",
         "human": "Footer",
         "description": "Good place for copyright or author name.",
         "tag":"footer",
-        "event": "Theme.DrawFooter"
+        "event": "BreadPageSystem.PlainMarkdown",
+        "arguments":"####Absolutely no copyright, probably even copyleft. MIT Licence"
     }
 ]
 }

@@ -3,15 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-var converter = new Showdown.converter();
-for (i = 0; i < $(".bps-content").length; i++)
+function DoMarkdown()
 {
-    var parent = $(".bps-content").select(0);
-    var child = parent.find(".bps-markdown").select(0);
-    var markdown = child.html();
-    parent.append("<div class='bps-html'>");
-    parent.append(converter.makeHtml(markdown));
-    parent.append("</div>");
-    child.hide();
+    var converter = new Showdown.converter();
+    $(".bps-content").each(function(i,parent)
+    {
+        var child = parent.firstChild;
+        var markdown = child.innerHTML;
+        parent.innerHTML += "<div class='bps-html'>";
+        parent.innerHTML += converter.makeHtml(markdown);
+        parent.innerHTML += "</div>";
+    });
+    $(".bps-markdown").hide();
 }

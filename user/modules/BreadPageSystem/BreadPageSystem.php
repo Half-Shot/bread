@@ -14,16 +14,35 @@ class BreadPageSystem extends Module
             $this->manager->RegisterEvent($this->name,"Bread.DrawModule","DrawPage");
             $this->manager->RegisterEvent($this->name,"Bread.ProcessRequest","Setup");
             $this->manager->RegisterEvent($this->name,"Bread.GenerateNavbar","GenerateNavbar");
+            $this->manager->RegisterEvent($this->name,"Bread.GetPages","AddPages");
             $this->manager->RegisterEvent($this->name,"Bread.LowPriorityScripts","GenerateHTML");
+            $this->manager->RegisterEvent($this->name,"BreadPageSystem.DrawRecentPosts","DrawRecentPosts");
+            $this->manager->RegisterEvent($this->name,"BreadPageSystem.Title","DrawTitle");
+            $this->manager->RegisterEvent($this->name,"BreadPageSystem.PlainMarkdown","DrawPlainMarkdown");
 	}
         
-        function GenerateNavbar($args)
+        function AddPages()
+        {
+            if($this->settings->navbar->enabled)
+            {
+                return $this->GenerateNavbar();
+            }
+            
+            return False;
+        }
+        
+        function DrawPlainMarkdown($args)
+        {
+            return "<div class='bps-content'><div class='bps-markdown'>" . $args ."</div></div>";
+        }
+        
+        function GenerateNavbar()
         {
             $pages = array();
             foreach($this->settings->Pageindex as $id => $page)
             {
                 $parts = array();
-                $parts["request"] = "page";
+                $parts["request"] = $this->settings->RequestToLinkTo;
                 $parts["page"] = $id;
                 $pages[$page->name] = Site::CondenseURLParams(false,$parts);
             }
@@ -53,7 +72,9 @@ class BreadPageSystem extends Module
                 {
                     $path = $file->getPathname();
                     $pageData = Site::$settingsManager->RetriveSettings($path,True);
-                    $this->settings->Pageindex[] = $pageData;
+                    if(isset(pathinfo($pageData->url)['extension']))
+                        if(pathinfo($pageData->url)['extension'] == "md")
+                            $this->settings->Pageindex[] = $pageData;
                 }
             }
             $this->settings->BuildTime = time();
@@ -74,6 +95,25 @@ class BreadPageSystem extends Module
         function GenerateHTML()
         {
             Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/doMarkdown.js"), true);
+            Site::AddRawScriptCode("DoMarkdown();",true);
+        }
+        
+        function DrawRecentPosts()
+        {
+            $pages = $this->GenerateNavbar();
+            return Site::$moduleManager->HookEvent("Theme.VerticalNavbar",$pages);
+        }
+        
+        function DrawTitle()
+        {
+           $request = Site::getRequest();
+           
+           if(!isset($request->arguments["page"]))
+               return False;
+           $pageid = $request->arguments["page"];
+           
+           $html = Site::$moduleManager->HookEvent("Theme.Title",$this->settings->Pageindex[$pageid]->name)[0];
+           return $html . Site::$moduleManager->HookEvent("Theme.Subtitle",$this->settings->Pageindex[$pageid]->title)[0];
         }
 }
 
@@ -83,8 +123,15 @@ class BreadPageSystemSettings
     public $Pagedir;
     public $BuildTime = 0;
     public $CheckIndexEvery = 4;
-    
+    public $RequestToLinkTo = "post";
+    public $navbar;
     function __construct() {
        $this->Pagedir = Site::ResolvePath("%user-pages");
+       $this->navbar = new BreadPageSystemNavBarSettings();
     }
+}
+
+class BreadPageSystemNavBarSettings
+{
+    public $enabled = true;
 }

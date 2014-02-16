@@ -1,6 +1,6 @@
 {
 "name": "homepage",
-"css":["homepage/page-layout.css"],
+"css":["default/page-layout.css"],
 "elements": [
     {
         "name": "navbar",

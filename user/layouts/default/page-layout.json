@@ -1,5 +1,5 @@
 {
-"name": "post",
+"name": "default",
 "css":["post/page-layout.css"],
 "elements": [
     {
@@ -16,7 +16,7 @@
         "human": "Page Contents",
         "description": "Middle section where contents will be placed.",
         "module": "BreadPageSystem",
-        "event":"Bread.DrawModule",
+        "event":"BreadPageSystem.DrawModule",
         "tag":"section"
     },
     {
