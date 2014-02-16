@@ -14,15 +14,21 @@ class BreadRequestData
         /**
          * @var integer From the list of compatible layouts with the request, select this index. 
          */
-        public $layout = 0;
+        public $layout = -1;
         /**
          * @var integer From the list of compatible themes with the request, select this index. 
          */
-        public $theme = 0;
+        public $theme = -1;
         /**
          *
          * @var array The list of additional arguments given by the browser, e.g. page number.
          */
         public $arguments = array();
+        
+        /**
+         * The specifed module names to load.
+         * @var array Module name list
+         */
+        public $modules = array();
 }
 ?>

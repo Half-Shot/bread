@@ -34,15 +34,19 @@ class ThemeManager
 		{
 			Site::$Logger->writeError('Cannot load themes. Manager Settings file not found',1,True);
 		}
+                
 		$tmp = file_get_contents($filepath);
 		$this->configuration = json_decode($tmp,true);
+                
 		if($this->configuration == NULL)
 			Site::$Logger->writeError('Cannot load themes. Manager Settings has invalid JSON.',1,True);
 
 		foreach ($this->configuration["themes"] as $theme)
 		{
-			$this->RegisterTheme(Site::ResolvePath("%user-themes"). "/" . $theme["config-path"],$theme["use-for"]);
-		}
+			$json = Site::$settingsManager->RetriveSettings(Site::ResolvePath("%user-themes"). "/" . $theme["config-path"],true);
+                        $this->themes[$json->module->name] = $json;
+                        
+                }
 	}
 
 	//Adds to the layouts variable.
@@ -52,59 +56,13 @@ class ThemeManager
 	    foreach($layouts_cfg as $layouttype => $layoutpath)
 	    {
 	    	$layout = array();
-			$layout["JSON"] = json_decode(file_get_contents(Site::ResolvePath("%user-layouts"). "/"  . $layoutpath));
-			$layout["abs_path"] = Site::ResolvePath("%user-layouts") . "/"  . $layoutpath;
-			$layout["path"] = $layoutpath;
-			$layout["type"] = $layouttype;
-			$this->layouts[] = $layout;
+                $layout["JSON"] = Site::$settingsManager->RetriveSettings(Site::ResolvePath("%user-layouts"). "/"  . $layoutpath,true);
+                $layout["abs_path"] = Site::ResolvePath("%user-layouts") . "/"  . $layoutpath;
+                $layout["path"] = $layoutpath;
+                $layout["type"] = $layouttype;
+                $this->layouts[$layout["JSON"]->name] = $layout;
 	    }
 	}
-
-	function RegisterTheme($themeconfig,$usage)
-	{
-		//Parse config file
-		//TODO: Sort out all that jazz about module permissions which is used in themes.
-		if(!file_exists($themeconfig))
-			Site::$Logger->writeError('Cannot register theme. Theme config not found',1,True);
-		$theme = array();
-		$tmp = file_get_contents($themeconfig);
-		$theme["JSON"] = json_decode($tmp,true);
-
-		if($theme["JSON"] == NULL)
-			Site::$Logger->writeError('Cannot load theme. Theme data has invalid JSON.',1,True);
-
-		if($theme["JSON"] == NULL){
-			Site::$Logger->writeError('Cannot load theme. Theme data has missing required properties.',1,True);
-                }
-		foreach($usage as $uses){
-			$this->themes[$uses] = $theme["JSON"];
-                }
-	}
-
-        
-        function GetCompatibleThemes($RequestType)
-        {
-                $return = array();
-            	foreach ($this->themes as $usage => $theme)
-		{
-                    if($usage == $RequestType or $usage == "all"){
-                        $return[] = $theme;
-                    }
-		}
-                return $return;
-        }
-        
-        function GetCompatibleLayouts($RequestType)
-        {
-                $return = array();
-            	foreach ($this->layouts as $usage => $layout)
-		{
-                    if($usage == $RequestType or $usage == "all"){
-                        $return[] = $layout;
-                    }
-		}
-                return $return;
-        }
         
 	///Requests the theme that should be used for the request.
 	function SelectTheme($Request)
@@ -113,26 +71,26 @@ class ThemeManager
                 $moduleResults = Site::$moduleManager->HookEvent("Bread.SelectTheme",NULL);
                 if($moduleResults)
                 {
-                    return $this->SetTheme($moduleResults[0]["theme"]);
+                    $this->SetTheme($moduleResults[0]["theme"]);
+                    return True;
                 }
-                //If a request wants to override the theme
-                $themeToUse = $Request->theme;
-                $themes = $this->GetCompatibleThemes($Request->requestType);
-                if(count($themes) < $themeToUse + 1)
-                    Site::$Logger->writeError ("No compatible theme could be found for the request!", 10);
-                $theme = $themes[$themeToUse];
-                //Set the theme.
-                $this->SetTheme($theme);
-		return True;
+                //Request Theme
+                $this->SetTheme($this->themes[$Request->theme]);
+                return True;
 	}
         
         function SetTheme($suggestedTheme)
         {
-            $this->Theme["data"] = $suggestedTheme["module"];
-            require_once(Site::ResolvePath("%user-themes"). "/" . $this->Theme["data"]["entryfile"]);
-            $this->Theme["class"] = new $this->Theme["data"]["entryclass"](Site::$moduleManager,$this->Theme["data"]["name"]);
-            if(isset($this->Theme["data"]["css"])){
-                    $this->cssFiles = array_merge($this->cssFiles,$this->Theme["data"]["css"]); //Add some css files.
+            $this->Theme["data"] = $suggestedTheme->module;
+            require_once(Site::ResolvePath("%user-themes"). "/" . $this->Theme["data"]->entryfile);
+            $this->Theme["class"] = new $this->Theme["data"]->entryclass(Site::$moduleManager,$this->Theme["data"]->name);
+            if(isset($this->Theme["data"]->css)){
+                $this->cssFiles = array_merge($this->cssFiles,$this->Theme["data"]->css); //Add some css files.
+            }
+            if(isset($this->Theme["data"]->js)){
+                foreach($this->Theme["data"]->js as $script){
+                    Site::AddScript($script);
+                }
             }
             Site::$moduleManager->RegisterSelectedTheme();
             return True;
@@ -149,15 +107,11 @@ class ThemeManager
                 $this->Theme["layout"] = $layout;
                 return True;
             }
-            //If a request wants to override the theme
-            $layoutToUse = $Request->layout;
-            $layouts = $this->GetCompatibleLayouts($Request->requestType);
-            if(count($layouts) < $layoutToUse + 1)
-                Site::$Logger->writeError ("No compatible theme could be found for the request!", 10);
-            $layout = $layouts[$layoutToUse];
-            //Set the theme.
-            $this->Theme["layout"] = $layout;
+            if(!array_key_exists($Request->layout, $this->layouts))
+                    Site::$Logger->writeError ("Layout does not exist!", 10, true);
+            $this->Theme["layout"] = $this->layouts[$Request->layout];
             return True;
+                
 	}
         /**
          * Looks for a CSS file in the common user paths.

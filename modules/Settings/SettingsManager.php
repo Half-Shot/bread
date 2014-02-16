@@ -50,7 +50,7 @@ class SettingsManager {
      * @see $this::CreateSettingsFile()
      * @todo Add a secure way to lock settings files.
      */
-    function CreateModDir($dirname)
+    function FindModuleDir($dirname)
     {
         $dirname = Site::ResolvePath("%system-settings") . "/" . $dirname . "/";
         if(!file_exists($dirname)){

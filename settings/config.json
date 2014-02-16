@@ -12,13 +12,10 @@
 		"sitename":"The Bakery"
 		},
 	"bans":[],
-        "default":{
-            "layout":"homepage",
-            "module":false
-         },
 	"directorys":{
 		"system-modules":"modules",
 		"system-settings":"settings",
+                "system-requests":"settings/requests.json",
 		"settings-moduleloadlist":"settings/modules/modlist.json",
 		"user-modules":"user/modules",
 		"user-themes":"user/themes",

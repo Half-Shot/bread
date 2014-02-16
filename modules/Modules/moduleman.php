@@ -76,15 +76,15 @@ class ModuleManager
 		{
 			Site::$Logger->writeMessage("Warning: RegisterSelectedTheme called to early, no theme selected.");
 		}
-		$jsonArray = Site::$themeManager->Theme["data"];
-		if(isset($jsonArray["namespace"])){
-		    $namespace = $jsonArray["namespace"];
-		    $class = $jsonArray["namespace"] . "\\" . $jsonArray["entryclass"];
+		$theme = Site::$themeManager->Theme["data"];
+		if(isset($theme->namespace)){
+		    $namespace = $theme->namespace;
+		    $class = $namespace . "\\" . $theme->entryclass;
 		}
-		$this->moduleConfig[$jsonArray["name"]] = $jsonArray;
-		$this->modules[$jsonArray["name"]] = Site::$themeManager->Theme["class"];
-		$this->modules[$jsonArray["name"]]->RegisterEvents();
-                Site::$Logger->writeMessage('Registered theme ' . $jsonArray["name"]);
+		$this->moduleConfig[$theme->name] = $theme;
+		$this->modules[$theme->name] = Site::$themeManager->Theme["class"];
+		$this->modules[$theme->name]->RegisterEvents();
+                Site::$Logger->writeMessage('Registered theme ' . $theme->name);
 
 
 	}
@@ -116,8 +116,14 @@ class ModuleManager
 	
 	function HookSpecifedModuleEvent($eventName,$moduleName,$arguments)
 	{
-            if(!array_key_exists($moduleName,$this->modules))
-	        return False; //Module not found.
+            if(!array_key_exists($moduleName,$this->modules)){
+	        Site::$Logger->writeError ("Couldn't specifically hook module '" . $moduleName . "'. Module not loaded.", 3); //Module not found.
+                return False;
+            }
+            if(!array_key_exists($moduleName, $this->events[$eventName])){
+                Site::$Logger->writeError ("Couldn't specifically hook module '" . $moduleName . "'. Module does not have that event set.", 3); //Module not found.
+                return False;
+            }
 	    $function = $this->events[$eventName][$moduleName];
 	    return $this->modules[$moduleName]->$function($arguments);
 	}

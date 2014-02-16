@@ -47,7 +47,7 @@ class VanillaBreadTheme extends Bread\Modules\Module
                         $HTMLCode .= "<li><a href='" . $url . "'>" . $text . "</a></li>";
                     }
                 }
-                $HTMLCode .= "</li>";
+                $HTMLCode .= "</ui>";
 		return $HTMLCode;
 	}
 

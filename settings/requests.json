@@ -1,0 +1,16 @@
+{
+    "master":
+    {
+        "layout":"homepage",
+        "theme":"theme-vanilla",
+        "modules":false
+    },
+    "homepage":{
+        "layout":"homepage",
+        "modules":false
+    },
+    "post":{
+        "layout":"post",
+        "modules":false
+    }
+}

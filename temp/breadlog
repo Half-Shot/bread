@@ -4,22 +4,22 @@
 [MSG][0.003]Loaded core file modules/Settings/SettingsManager.php
 [MSG][0.003]Loaded core file modules/Structures/BreadRequest.php
 [MSG][0.004]Loaded core file modules/Themes/thememan.php
-[MSG][0.004]Loaded core file modules/functions.php
 [MSG][0.005]Registered module ExampleModule
 [MSG][0.005]Registered module BreadPageSystem
-[MSG][0.007]BPS: Built Page Index!
-[MSG][0.007]Beginning build of page
-[MSG][0.007]Request data:
+[MSG][0.006]Beginning build of page
+[MSG][0.006]Request data:
 Bread\Structures\BreadRequestData::__set_state(array(
    'requestType' => 'all',
-   'layout' => 0,
-   'theme' => 0,
+   'layout' => 'homepage',
+   'theme' => 'theme-vanilla',
    'arguments' => 
   array (
     'BASEURL' => '/devbread/index.php',
-    '/devbread/index.php' => false,
+    'request' => 'page',
+    'page' => '2',
   ),
+   'modules' => false,
 ))
-[MSG][0.007]Registered theme theme-vanilla
-[MSG][0.007]Memory Used: 622.2109375kb
-[MSG][0.008]Closing Log
+[MSG][0.006]Registered theme theme-vanilla
+[MSG][0.006]Memory Used: 640.6171875kb
+[MSG][0.007]Closing Log

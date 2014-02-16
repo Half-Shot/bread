@@ -51,13 +51,31 @@ class Site
         * @var Logger
         */
 	public static $Logger;
-
+        
+        /**
+        * Main code used in the header of the site. Modified via AddToHeaderCode()
+        * @see static::AddToHeaderCode()
+        * @var string
+        */
+        private static $headercode = "";
+        
         /**
         * HTML used in the end site. Unable to modify outside site.
         * @var string
         */
 	private static $htmlcode = "";
         
+        /**
+         * Script files loaded in the header of the document.
+         * @var string
+         */
+        private static $ScriptLines = "";
+        
+         /**
+         * Script files loaded at the end of the body of the document.
+         * @var string
+         */
+        private static $LowPriorityScriptLines = "";
         /**
         * Main code used in the body of the site. Modified via AddToBodyCode
         * @see static::AddToBodyCode()
@@ -75,6 +93,12 @@ class Site
          * @return array The configuration of the site
          */
         private static $Request = NULL;
+        
+        /**
+         * The base url of the site, written when the request is digested.
+         * @var string 
+         */
+        private static $baseurl = "";
         public static function Configuration()
 	{
 		return static::$configuration;
@@ -97,16 +121,71 @@ class Site
         {
             return static::$Request;
         }
+        /**
+         * Return the base URL.
+         * @return string
+         */
+        public static function getBaseURL()
+        {
+            return static::$baseurl;
+        }
+         /**
+         * Add some code to the document header.
+         * DO NOT ADD CSS, SCRIPTS OR METADATA THROUGH THIS
+         * @param string $code
+         * @see Site::AddToBodyCode()
+         */
+        public static function AddToHeaderCode($code)
+        {
+            static::$headercode .= $code;
+        }
+        
+        /**
+         * Adds a script to the head of the document.
+         * @param string $location The location of the file.
+         * @param string $mimetype The type of script, directed by mimetype. Default is javascript.
+         * @param bool $isLow Is the script low priority, and can be added to the end of the document instead of the head.
+         */
+        public static function AddScript($location,$isLow = False,$mimetype = 'text/javascript')
+        {
+            if($isLow){
+                static::$LowPriorityScriptLines .= "<script type='" . $mimetype . "' src='" . $location . "'></script>\n";
+            }
+            else
+            {
+                static::$ScriptLines .= "<script type='" . $mimetype . "' src='" . $location . "'></script>\n";
+            }
+        }
+        
+        /**
+         * Adds raw script code the head of the document.
+         * @param string $location The code (no tags please).
+         * @param string $mimetype The type of script, directed by mimetype. Default is javascript.
+         * @param bool $isLow Is the script low priority, and can be added to the end of the document instead of the head.
+         */
+        public static function AddRawScriptCode($code,$isLow = False,$mimetype = 'text/javascript')
+        {
+            if($isLow){
+                static::$LowPriorityScriptLines .= "<script type='" . $mimetype . "'>" . $code ."</script>\n";
+            }
+            else
+            {
+                static::$ScriptLines .= "<script type='" . $mimetype . "'>" . $code ."</script>\n";
+            }
+        }
+        
         
         /**
          * Add some code to the document body. For scripts and header infomation
-         * checkout HEADERINFOMETHODGOESHERE
+         * checkout Site::AddToHeaderCode().
          * @param string $code
+         * @see Site::AddToHeaderCode()
          */
         public static function AddToBodyCode($code)
         {
             static::$bodycode .= $code;
         }
+        
         /**
          * The first stage of any bread site. This method loads a json config file
          * into $configuration. If this method fails then the site will not start.
@@ -266,19 +345,57 @@ class Site
 		$Metadata .= "</meta>";
 		return $Metadata;
 	}
-        
+        /**
+         * Digests a request into the bits we want and puts it into a object.
+         * No return values but instead puts in Site::$Request.
+         * Users have no need to call this, its done automatically.
+         * @see Site::$Request
+         */
         public static function DigestRequest()
         {
+            //Load the requests file.
+            $requestDB = static::$settingsManager->RetriveSettings(static::ResolvePath("%system-requests"),true);
             $requestObject = new BreadRequestData();
             $URL = $_SERVER['REQUEST_URI'];
             $Params = static::DigestURL($URL);
+            static::$baseurl = $Params["BASEURL"];
+
             
+            if(isset($requestDB->master->layout))
+                $requestObject->layout = $requestDB->master->layout;
+            
+            if(isset($requestDB->master->theme))
+                $requestObject->theme  = $requestDB->master->theme;
+            
+            if(isset($requestDB->master->modules))
+                $requestObject->modules = $requestDB->master->modules;
+            
+            if(isset($requestDB->master->requestType))
+                $requestObject->requestType = "master";
+            
+            if(array_key_exists("request", $Params)){
+                $requestName = $Params["request"];
+
+                if(isset($requestDB->$requestName->layout))
+                    $requestObject->layout = $requestDB->$requestName->layout;
+
+                if(isset($requestDB->$requestName->theme))
+                    $requestObject->theme  = $requestDB->$requestName->theme;
+
+                if(isset($requestDB->$requestName->modules))
+                    $requestObject->modules = $requestDB->$requestName->modules;
+
+                if(isset($requestDB->$requestName->requestType))
+                    $requestObject->requestType = $requestName;
+            }
+            
+            //Overrides
             if(array_key_exists("theme", $Params))
                 $requestObject->theme = $Params["theme"];
+            
             if(array_key_exists("layout", $Params))
                 $requestObject->layout = $Params["layout"];
-            if(array_key_exists("request", $Params))
-                $requestObject->requestType = $Params["module"];
+            
             $requestObject->arguments = $Params;
             static::$Request = $requestObject;
         }
@@ -312,12 +429,19 @@ class Site
 	    }
 
 	    static::$themeManager->ReadElementsFromLayout(static::$themeManager->Theme["layout"]);#Build layout into HTML
+            static::$moduleManager->HookEvent("Bread.FinishedLayoutProcess",NULL);
 	    static::$htmlcode .= "<head>\n";
-	    static::$htmlcode .= static::$themeManager->CSSLines;
 	    static::$htmlcode .= static::ProcessMetadata($requestData);
+            static::$htmlcode .= static::$headercode;
+	    static::$htmlcode .= static::$themeManager->CSSLines;
+            static::$htmlcode .= static::$ScriptLines;
+            static::$moduleManager->HookEvent("Bread.FinishedHead",NULL); //Must use add to head.
 	    static::$htmlcode .= "</head>\n";
 	    static::$htmlcode .= "<body>\n";
 	    static::$htmlcode .= static::$bodycode;
+            static::$moduleManager->HookEvent("Bread.LowPriorityScripts",NULL);
+            static::$htmlcode .= static::$LowPriorityScriptLines;
+            static::$moduleManager->HookEvent("Bread.FinishedBody",NULL); //Must use add to body.
 	    static::$htmlcode .= "</body>\n";
 	    static::$htmlcode .= "</html>\n";
 	    echo static::$htmlcode;
@@ -342,7 +466,12 @@ class Site
                 static::$settingsManager->SaveChanges(); //Save all changes.
 		static::$Logger->closeStream();
 	}
-        
+        /**
+         * Splits a string path up and locates wildcard paths such as %user-themes
+         * and creates the correct path.
+         * @param string $path 
+         * @return type
+         */
         public static function ResolvePath($path)
         {
             //Example Path /settings/modules/modlist.json
@@ -389,10 +518,30 @@ class Site
             }
             return $returnedArray;
         }
-        
+        /**
+         * Create a URL from a baseurl and a array of params.
+         * @param type $baseurl The base url of the site. Use False to use the current site baseurl.
+         * @param type $params The array of params to append to the url. Leave as a blank array for none.
+         * @return string The URL
+         */
         public static function CondenseURLParams($baseurl,$params)
         {
+            if(!$baseurl)
+                $baseurl = static::$baseurl;
             
+            $url = $baseurl;
+            if(array_count_values($params) < 1)
+                return $url;
+            $key = array_keys($params)[0];
+            $url .= "?" . $key . "=" .$params[$key];
+            unset($params[$key]);
+            if(array_count_values($params) < 1)
+                return $url;
+            foreach ($params as $key => $value)
+            {
+                $url .= "&" . $key . "=" . $value;
+            }
+            return $url;
         }
         
         /**

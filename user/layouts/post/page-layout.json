@@ -1,6 +1,6 @@
 {
-"name": "post",
-"css":["post/page-layout.css"],
+"name": "homepage",
+"css":["homepage/page-layout.css"],
 "elements": [
     {
         "name": "navbar",
@@ -8,7 +8,11 @@
         "human": "Navigation Bar",
         "description": "Top of the page, ideal for navbars.",
         "tag":"header",
-        "event":"Theme.DrawNavbar"
+        "event":"Theme.DrawNavbar",
+        "arguments":
+        {
+		"Home":"http://www.google.co.uk"
+        }
     },
     {
         "name": "contents",
