@@ -121,7 +121,7 @@ class ThemeManager
          * @return string
          * @throws Exception
          */
-        function FindLocalCSSFile($filepath)
+        function FindCSSFile($filepath)
         {
                 if(mb_substr($filepath, 0, 4) == "http")//Is remote.
                     return $filepath;
@@ -134,6 +134,9 @@ class ThemeManager
                 $path = Site::ResolvePath("%user-resource/" . $filepath);
                 if(file_exists($path))
                     return $path;
+                $path = Site::ResolvePath("%user-modules/" . $filepath);
+                if(file_exists($path))
+                    return $path;
                 throw new \Exception;
         }
         
@@ -142,7 +145,7 @@ class ThemeManager
 		foreach($this->cssFiles as $filepath)
 		{
                     try {
-                        $cssfilepath = $this->FindLocalCSSFile($filepath);
+                        $cssfilepath = $this->FindCSSFile($filepath);
                     } catch (\Exception $exc) {
                         Site::$Logger->writeError("Failed to find CSS File '" . $filepath .", ignoring.'", 2, false);
                         continue;
@@ -152,6 +155,11 @@ class ThemeManager
 		}
 	}
 	
+        function AddCSSFile($filepath)
+        {
+            $this->cssFiles[] = $filepath;
+        }
+        
 	//Returns nothing but reads from layout and does all the calling to modules
 	//and adds CSS Files. Yes, this is the biggy.
 	function ReadElementsFromLayout($Layout)

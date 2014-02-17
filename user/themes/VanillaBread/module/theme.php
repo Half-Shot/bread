@@ -40,7 +40,7 @@ class VanillaBreadTheme extends Bread\Modules\Module
 
 	function Navbar($args)
 	{
-                $Hooks = $this->manager->HookEvent("Bread.GetPages",$args);
+                $Hooks = $this->manager->HookEvent("Bread.GetNavbarIndex",$args);
                 if(!$Hooks)
                 {
                    $Hooks = array();

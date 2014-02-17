@@ -4,7 +4,6 @@
 [MSG][0.003]Loaded core file modules/Settings/SettingsManager.php
 [MSG][0.003]Loaded core file modules/Structures/BreadRequest.php
 [MSG][0.004]Loaded core file modules/Themes/thememan.php
-[MSG][0.005]Registered module ExampleModule
 [MSG][0.005]Registered module BreadPageSystem
 [MSG][0.006]Beginning build of page
 [MSG][0.006]Request data:
@@ -16,10 +15,13 @@ Bread\Structures\BreadRequestData::__set_state(array(
   array (
     'BASEURL' => '/devbread/index.php',
     'request' => 'post',
-    'page' => '1',
+    'page' => '0',
   ),
-   'modules' => false,
+   'modules' => 
+  array (
+    0 => 'BreadPageSystem/module.json',
+  ),
 ))
 [MSG][0.006]Registered theme theme-vanilla
-[MSG][0.007]Memory Used: 676.71875kb
+[MSG][0.007]Memory Used: 677.8046875kb
 [MSG][0.007]Closing Log

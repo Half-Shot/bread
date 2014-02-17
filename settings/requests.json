@@ -3,14 +3,16 @@
     {
         "layout":"post",
         "theme":"theme-vanilla",
-        "modules":false
+        "modules":[]
     },
     "homepage":{
         "layout":"homepage",
-        "modules":false
+        "include":["master"],
+        "modules":[]
     },
     "post":{
         "layout":"post",
-        "modules":false
+        "include":["master"],
+        "modules":["BreadPageSystem\/module.json"]
     }
 }

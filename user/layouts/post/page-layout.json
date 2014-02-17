@@ -4,7 +4,7 @@
 "elements": [
     {
         "name": "navbar",
-	"id": "navbar",
+	    "id": "navbar",
         "human": "Navigation Bar",
         "description": "Top of the page, ideal for navbars.",
         "tag":"header",
@@ -19,8 +19,15 @@
         "tag":"section"
     },
     {
+        "id":"breadcrumbs",
+        "human":"Post Breadcrumbs",
+        "description":"Tags n stuff that goes with the post",
+        "module": "BreadPageSystem",
+        "event":"BreadPageSystem.BreadCrumbs"
+    },
+    {
         "name": "contents",
-	"id": "contents",
+        "id": "contents",
         "human": "Page Contents",
         "description": "Middle section where contents will be placed.",
         "module": "BreadPageSystem",
@@ -29,7 +36,7 @@
     },
     {
         "name": "recent-posts",
-	"id": "recent-posts",
+        "id": "recent-posts",
         "human": "Recent Posts Sidebar",
         "description": "Section for recent posts.",
         "module": "BreadPageSystem",
@@ -37,7 +44,7 @@
     },
     {
         "name": "footer",
-	"id": "footer",
+        "id": "footer",
         "human": "Footer",
         "description": "Good place for copyright or author name.",
         "tag":"footer",

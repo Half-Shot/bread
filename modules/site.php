@@ -386,7 +386,21 @@ class Site
 
                 if(isset($requestDB->$requestName->requestType))
                     $requestObject->requestType = $requestName;
+                            
+                //Add included stuff (modules)
+                if(isset($requestDB->$requestName->include))
+                {
+                    foreach($requestDB->$requestName->include as $includedRequest)
+                    {
+                        if(!isset($requestDB->$includedRequest)){
+                            static::$Logger->writeError ("Request includes " . $includedRequest . " but is not defined in the file. Ignoring" , 1);
+                            continue;
+                        }
+                        $requestObject->modules = array_merge($requestObject->modules,$requestDB->$includedRequest->modules);
+                    }
+                }
             }
+
             
             //Overrides
             if(array_key_exists("theme", $Params))
@@ -394,6 +408,7 @@ class Site
             
             if(array_key_exists("layout", $Params))
                 $requestObject->layout = $Params["layout"];
+            
             
             $requestObject->arguments = $Params;
             static::$Request = $requestObject;

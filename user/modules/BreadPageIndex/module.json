@@ -1,0 +1,7 @@
+{
+        "name":"BreadIndexSystem",
+		"permissions":["read:user/resource"],
+		"loadFor":["everything"],
+		"entryclass":"BreadIndexSystem",
+		"entryfile":"BreadIndexSystem/BreadPageSystem.php"
+}

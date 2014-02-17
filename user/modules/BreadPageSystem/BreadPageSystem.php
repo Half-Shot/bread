@@ -4,22 +4,21 @@ use Bread\Site as Site;
 class BreadPageSystem extends Module
 {
         private $settings;
-            function __construct($manager,$name)
-	{
-		parent::__construct($manager,$name);
-	}
+        function __construct($manager,$name)
+        {
+	        parent::__construct($manager,$name);
+        }
 
-	function RegisterEvents()
-	{
+        function RegisterEvents()
+        {
             $this->manager->RegisterEvent($this->name,"Bread.DrawModule","DrawPage");
             $this->manager->RegisterEvent($this->name,"Bread.ProcessRequest","Setup");
-            $this->manager->RegisterEvent($this->name,"Bread.GenerateNavbar","GenerateNavbar");
-            $this->manager->RegisterEvent($this->name,"Bread.GetPages","AddPages");
             $this->manager->RegisterEvent($this->name,"Bread.LowPriorityScripts","GenerateHTML");
             $this->manager->RegisterEvent($this->name,"BreadPageSystem.DrawRecentPosts","DrawRecentPosts");
             $this->manager->RegisterEvent($this->name,"BreadPageSystem.Title","DrawTitle");
             $this->manager->RegisterEvent($this->name,"BreadPageSystem.PlainMarkdown","DrawPlainMarkdown");
-	}
+            $this->manager->RegisterEvent($this->name,"BreadPageSystem.BreadCrumbs","DrawBreadCrumbs");
+        }
         
         function AddPages()
         {
@@ -50,7 +49,7 @@ class BreadPageSystem extends Module
         }
         
         function Setup()
-        {
+        {           
             //Get a settings file.
             $rootSettings = Site::$settingsManager->FindModuleDir("breadpages");
             Site::$settingsManager->CreateSettingsFiles($rootSettings . "settings.json", new BreadPageSystemSettings());
@@ -83,13 +82,11 @@ class BreadPageSystem extends Module
         
         function DrawPage()
         {
-           $request = Site::getRequest();
-           
-           if(!isset($request->arguments["page"]))
-               return False;
-           $pageid = $request->arguments["page"];
-           $markdown = file_get_contents($this->settings->Pagedir . "/" . $this->settings->Pageindex[$pageid]->url);
-           return "<div class='bps-content'><div class='bps-markdown'>" . $markdown ."</div></div>";
+           $page = $this->GetActivePage();
+           if($page == False)
+            return False;
+           $markdown = file_get_contents($this->settings->Pagedir . "/" . $page->url);
+           return "<div class='bps-content' editor><div class='bps-markdown'>" . $markdown ."</div></div>";
         }
         
         function GenerateHTML()
@@ -106,15 +103,37 @@ class BreadPageSystem extends Module
         
         function DrawTitle()
         {
-           $request = Site::getRequest();
-           
-           if(!isset($request->arguments["page"]))
-               return False;
-           $pageid = $request->arguments["page"];
-           
-           $html = Site::$moduleManager->HookEvent("Theme.Title",$this->settings->Pageindex[$pageid]->name)[0];
-           return $html . Site::$moduleManager->HookEvent("Theme.Subtitle",$this->settings->Pageindex[$pageid]->title)[0];
+           $page = $this->GetActivePage();
+           if($page == False)
+            return False;
+           $html = Site::$moduleManager->HookEvent("Theme.Title",$page->name)[0];
+           return $html . Site::$moduleManager->HookEvent("Theme.Subtitle",$page->title)[0];
         }
+        
+        function GetActivePage()
+        {
+            $request = Site::getRequest();
+           if(!isset($request->arguments["page"])){
+               return False;
+           }
+           $pageid = $request->arguments["page"];
+           return $this->settings->Pageindex[$pageid];
+        }
+        
+        function DrawBreadCrumbs()
+        {
+           $page = $this->GetActivePage();
+           if($page == False)
+            return False;
+           $breadcrumbs = $page->categorys;
+           $html = "";
+           foreach($breadcrumbs as $crumb){
+            $html .= $crumb . "  -";
+           }
+           return $html;
+           
+        }
+        
 }
 
 class BreadPageSystemSettings

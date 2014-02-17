@@ -37,37 +37,34 @@ class ModuleManager
 	#Only load modules we need.
 	function LoadRequiredModules($request)
 	{
-	    foreach($this->moduleList["enabled"] as $module)
+	    foreach($request->modules as $module)
 	    {
-                    $tmp = file_get_contents(Site::ResolvePath("%user-modules") . "/" . $module);
-		    $config = json_decode($tmp,true);
-		    if(in_array("everything",$config["loadFor"]) or in_array($request->request,$config["loadFor"]))
-		    {
-		        #Load it!
-		        $this->RegisterModule($config);
-		    }
-		    
+                    if(array_search($module, $this->moduleList["enabled"])){
+                        $path = Site::ResolvePath("%user-modules") . "/" . $module;
+                        $this->RegisterModule($path);
+                    }
 	    }
 	}
 
-	function RegisterModule($jsonArray)
+	function RegisterModule($path)
 	{
-                $ModuleName = $jsonArray["name"];
+                $json = Site::$settingsManager->RetriveSettings($path,true);
+                $ModuleName = $json->name;
 		if(array_key_exists($ModuleName,$this->modules))
 			Site::$Logger->writeError('Cannot register module. Module already exists');
 		
 		Site::$Logger->writeMessage('Registered module ' . $ModuleName);
 		//Stupid PHP cannot validate files without running command trickery.
-		include_once(Site::ResolvePath("%user-modules") . "/" . $jsonArray["entryfile"]);
+		include_once(Site::ResolvePath("%user-modules") . "/" . $json->entryfile);
 		//Modules should be inside the namespace Bread\Modules but can differ if need be.
-		$class = 'Bread\Modules\\'  . $jsonArray["entryclass"];
-		if(isset($jsonArray["namespace"])){
-		    $namespace = $jsonArray["namespace"];
-		    $class = $jsonArray["namespace"] . "\\" . $jsonArray["entryclass"];
+		$class = 'Bread\Modules\\'  . $json->entryclass;
+		if(isset($json->namespace)){
+		    $namespace = $json->namespace;
+		    $class = $json->namespace . "\\" . $json->entryclass;
 		}
-		$this->moduleConfig[$jsonArray["name"]] = $jsonArray;
-		$this->modules[$jsonArray["name"]] = new $class($this,$ModuleName);
-		$this->modules[$jsonArray["name"]]->RegisterEvents();
+		$this->moduleConfig[$json->name] = $json;
+		$this->modules[$json->name] = new $class($this,$ModuleName);
+		$this->modules[$json->name]->RegisterEvents();
 	}
 	
 	function RegisterSelectedTheme()
