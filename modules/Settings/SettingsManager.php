@@ -152,7 +152,7 @@ class SettingsManager {
     {
          $string = $this->CompileJson($object);
          $worked = \file_put_contents($path, $string);
-         if($worked == False)    
+         if($worked == False || $worked == "{}")    
              Site::$Logger->writeError ("Couldn't write json to file. path: '" . $path . "'", 1, $shouldThrow, "Bread\Settings\FileNotWrittenException");                  
     }
 }

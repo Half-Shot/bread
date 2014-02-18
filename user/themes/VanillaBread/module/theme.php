@@ -1,4 +1,5 @@
 <?php
+use Bread\Site as Site;
 class VanillaBreadTheme extends Bread\Modules\Module
 {
 	
@@ -45,16 +46,28 @@ class VanillaBreadTheme extends Bread\Modules\Module
                 {
                    $Hooks = array();
                 }
-                array_unshift($Hooks, $args);
                 $HTMLCode = "<ul>";
                 foreach ($Hooks as $links)
                 {
-                    foreach ($links as $text => $url)
+                    foreach ($links as $link)
                     {
-                        $HTMLCode .= "<li><a href='" . $url . "'>" . $text . "</a></li>";
+                        if($link->hidden)
+                           continue;
+                        
+                        if(!isset($link->url))
+                        {
+                            $params = array();
+                            foreach($link->args as $args)
+                            {
+                                $params[$args->key] = $args->value;
+                            }
+                            $link->url = Site::CondenseURLParams(false, array_merge(array("request" => $link->request),$params));
+                        }
+                        $HTMLCode .= "<li><a href='" . $link->url . "' target ='" . $link->targetWindow ."'>" . $link->text . "</a></li>";
+
                     }
                 }
-                $HTMLCode .= "</ui>";
+                $HTMLCode .= "</ul>";
 		return $HTMLCode;
 	}
 

@@ -3,7 +3,7 @@
     {
         "layout":"post",
         "theme":"theme-vanilla",
-        "modules":[]
+        "modules":["BreadIndexSystem\/module.json"]
     },
     "homepage":{
         "layout":"homepage",
