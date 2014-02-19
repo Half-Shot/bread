@@ -1,0 +1,10 @@
+{
+"url":"TestPage.md",
+"name":"TestPage",
+"title":"The Test Page",
+"categorys":["test"],
+"isstatic": true,
+"author":"Will",
+"thumb":"http://placehold.it/400x150"
+
+}

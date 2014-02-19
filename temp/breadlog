@@ -3,13 +3,12 @@
 [MSG][0.002]Loaded core file modules/Modules/moduleman.php
 [MSG][0.003]Loaded core file modules/Settings/SettingsManager.php
 [MSG][0.003]Loaded core file modules/Structures/BreadLinkStructure.php
-[MSG][0.003]Loaded core file modules/Structures/BreadRequest.php
+[MSG][0.004]Loaded core file modules/Structures/BreadRequest.php
 [MSG][0.004]Loaded core file modules/Themes/thememan.php
 [MSG][0.005]Registered module BreadPageSystem
 [MSG][0.006]Registered module BreadIndexSystem
-[MSG][0.007]BPS: Built Page Index!
-[MSG][0.008]Beginning build of page
-[MSG][0.008]Request data:
+[MSG][0.007]Beginning build of page
+[MSG][0.007]Request data:
 Bread\Structures\BreadRequestData::__set_state(array(
    'requestType' => false,
    'layout' => 'post',
@@ -26,6 +25,6 @@ Bread\Structures\BreadRequestData::__set_state(array(
     1 => 'BreadIndexSystem/module.json',
   ),
 ))
-[MSG][0.008]Registered theme theme-vanilla
-[MSG][0.009]Memory Used: 724.046875kb
-[MSG][0.009]Closing Log
+[MSG][0.007]Registered theme theme-vanilla
+[MSG][0.008]Memory Used: 723.96875kb
+[MSG][0.008]Closing Log
