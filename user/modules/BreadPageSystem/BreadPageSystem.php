@@ -41,6 +41,9 @@ class BreadPageSystem extends Module
             $pages = array();
             foreach($this->settings->postindex as $id => $page)
             {
+                if(isset($page->hidden))
+                    if($page->hidden)
+                        continue;
                 $parts = array();
                 $parts["request"] = $this->settings->RequestToLinkTo;
                 $parts["post"] = $id;
@@ -157,6 +160,8 @@ class BreadPageSystem extends Module
         function DrawPostInfomation()
         {
             $page = $this->GetActivePost();
+            if($page === False)
+                return False;
             $info = array();
             $info["Author"] = $page->author;
             $info["Last Modified"] = \date("F d Y H:i:s.", \filemtime($this->settings->postdir . "/" . $page->url));;

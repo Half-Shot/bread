@@ -10,7 +10,7 @@ class BreadRequestData
          * @var string The request from the browser.
          * @todo Make a list of standard request types.
          */
-	public $requestType = "all";
+	public $requestType = False;
         /**
          * @var integer From the list of compatible layouts with the request, select this index. 
          */

@@ -1,10 +1,10 @@
 [
     {
-        "request": "post",
+        "request": "homepage",
         "args": {
-            "post": 0
+            "name": "homepage"
         },
-        "text": "First Post",
+        "text": "Homepage",
         "hidden": false,
         "icon": "",
         "targetWindow": "_self"
@@ -14,7 +14,7 @@
         "args": {
             "name": "Hullo"
         },
-        "text": "Hullo",
+        "text": "A Welcome Message",
         "hidden": false,
         "icon": "",
         "targetWindow": "_self"

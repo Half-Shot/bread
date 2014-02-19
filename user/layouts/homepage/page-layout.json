@@ -19,13 +19,9 @@
 	"id": "contents",
         "human": "Page Contents",
         "description": "Middle section where contents will be placed.",
-        "module": "ExampleModule",
+        "module": "BreadPageSystem",
         "event":"Bread.DrawModule",
-        "tag":"section",
-        "arguments":
-        {
-		"gabesize":"100"
-        }
+        "tag":"section"
     },
     {
         "name": "footer",

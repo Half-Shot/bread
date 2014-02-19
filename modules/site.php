@@ -374,34 +374,44 @@ class Site
             
             if(array_key_exists("request", $Params)){
                 $requestName = $Params["request"];
-
-                if(isset($requestDB->$requestName->layout))
-                    $requestObject->layout = $requestDB->$requestName->layout;
-
-                if(isset($requestDB->$requestName->theme))
-                    $requestObject->theme  = $requestDB->$requestName->theme;
-
-                if(isset($requestDB->$requestName->modules))
-                    $requestObject->modules = $requestDB->$requestName->modules;
-
-                if(isset($requestDB->$requestName->requestType))
-                    $requestObject->requestType = $requestName;
-                            
-                //Add included stuff (modules)
-                if(isset($requestDB->$requestName->include))
-                {
-                    foreach($requestDB->$requestName->include as $includedRequest)
-                    {
-                        if(!isset($requestDB->$includedRequest)){
-                            static::$Logger->writeError ("Request includes " . $includedRequest . " but is not defined in the file. Ignoring" , 1);
-                            continue;
-                        }
-                        $requestObject->modules = array_merge($requestObject->modules,$requestDB->$includedRequest->modules);
-                    }
-                }
+            }
+            else
+            {
+                $requestName = static::$configuration["core"]["defaultrequest"];
             }
 
-            
+            if(isset($requestDB->$requestName->layout))
+                $requestObject->layout = $requestDB->$requestName->layout;
+
+            if(isset($requestDB->$requestName->theme))
+                $requestObject->theme  = $requestDB->$requestName->theme;
+
+            if(isset($requestDB->$requestName->modules))
+                $requestObject->modules = $requestDB->$requestName->modules;
+
+            if(isset($requestDB->$requestName->requestType))
+                $requestObject->requestType = $requestName;
+
+            if(isset($requestDB->$requestName->args))
+            {
+                foreach($requestDB->$requestName->args as $argpair)
+                {
+                    $argpair = get_object_vars($argpair);
+                    $Params = array_merge($argpair,$Params);
+                }
+            }
+            //Add included stuff (modules)
+            if(isset($requestDB->$requestName->include))
+            {
+                foreach($requestDB->$requestName->include as $includedRequest)
+                {
+                    if(!isset($requestDB->$includedRequest)){
+                        static::$Logger->writeError ("Request includes " . $includedRequest . " but is not defined in the file. Ignoring" , 1);
+                        continue;
+                    }
+                    $requestObject->modules = array_merge($requestObject->modules,$requestDB->$includedRequest->modules);
+                }
+            }
             //Overrides
             if(array_key_exists("theme", $Params))
                 $requestObject->theme = $Params["theme"];

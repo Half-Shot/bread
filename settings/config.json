@@ -6,7 +6,8 @@
 		"logto":"./temp/breadlog",
 		"debug":true,
 		"cache":true,
-		"banhammer":true
+		"banhammer":true,
+                "defaultrequest":"homepage"
 		},
 	"strings":{
 		"sitename":"The Bakery"

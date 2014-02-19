@@ -8,17 +8,17 @@
 [MSG][0.005]Registered module BreadPageSystem
 [MSG][0.006]Registered module BreadIndexSystem
 [MSG][0.007]BPS: Built Page Index!
-[MSG][0.007]Beginning build of page
-[MSG][0.007]Request data:
+[MSG][0.008]Beginning build of page
+[MSG][0.008]Request data:
 Bread\Structures\BreadRequestData::__set_state(array(
-   'requestType' => 'all',
+   'requestType' => false,
    'layout' => 'post',
    'theme' => 'theme-vanilla',
    'arguments' => 
   array (
     'BASEURL' => '/devbread/index.php',
     'request' => 'post',
-    'post' => '0',
+    'name' => 'Hullo',
   ),
    'modules' => 
   array (
@@ -26,6 +26,6 @@ Bread\Structures\BreadRequestData::__set_state(array(
     1 => 'BreadIndexSystem/module.json',
   ),
 ))
-[MSG][0.007]Registered theme theme-vanilla
-[MSG][0.008]Memory Used: 718.8203125kb
+[MSG][0.008]Registered theme theme-vanilla
+[MSG][0.009]Memory Used: 724.046875kb
 [MSG][0.009]Closing Log

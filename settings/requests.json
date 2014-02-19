@@ -7,8 +7,9 @@
     },
     "homepage":{
         "layout":"homepage",
-        "include":["master"],
-        "modules":[]
+        "include":["master","post"],
+        "modules":[],
+        "args":[{"post":0}]
     },
     "post":{
         "layout":"post",

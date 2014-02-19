@@ -1,6 +1,17 @@
 {
     "postindex": [
         {
+            "url": "homepage.md",
+            "name": "homepage",
+            "title": "Home",
+            "categorys": [
+                "homepage"
+            ],
+            "author": "Webmaster",
+            "hidden": true,
+            "thumb": "http:\/\/placehold.it\/400x150"
+        },
+        {
             "url": "Hullo.md",
             "name": "Hullo",
             "title": "Welcome to the blog, watch the gaps.",
@@ -24,7 +35,7 @@
         }
     ],
     "postdir": "content\/posts",
-    "BuildTime": 1392833547,
+    "BuildTime": 1392846247,
     "CheckIndexEvery": 4,
     "RequestToLinkTo": "post",
     "navbar": {

@@ -19,13 +19,6 @@
         "tag":"section"
     },
     {
-        "id":"breadcrumbs",
-        "human":"Post Breadcrumbs",
-        "description":"Tags n stuff that goes with the post",
-        "module": "BreadPageSystem",
-        "event":"BreadPageSystem.BreadCrumbs"
-    },
-    {
         "name": "contents",
         "id": "contents",
         "human": "Page Contents",
@@ -34,6 +27,13 @@
         "event":"Bread.DrawModule",
         "tag":"section",
         "elements":[
+            {
+                "id":"breadcrumbs",
+                "human":"Post Breadcrumbs",
+                "description":"Tags n stuff that goes with the post",
+                "module": "BreadPageSystem",
+                "event":"BreadPageSystem.BreadCrumbs"
+            },
             {
                 "name": "infomation",
                 "id": "infomation",
