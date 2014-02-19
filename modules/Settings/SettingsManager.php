@@ -121,7 +121,7 @@ class SettingsManager {
            Site::$Logger->writeError ("Couldn't open path '" . $path . "' for parsing settings.", 1, True, "Bread\Settings\FileNotFoundException");
         
         $jsonObj = \json_decode($contents);
-        if($jsonObj == NULL)
+        if(is_null($jsonObj)) //Stops php from interpreting a empty object as null. That was a really bad bug.
            Site::$Logger->writeError ("Couldn't parse file '" . $path . "' for reading settings.", 1, True, "Bread\Settings\FailedToParseException");   
         return $jsonObj;
     }
@@ -132,7 +132,7 @@ class SettingsManager {
      */
     public static function CompileJson($object)
     {
-        $obj = json_encode($object);
+        $obj = json_encode($object,JSON_PRETTY_PRINT);
         if($obj == False)
            Site::$Logger->writeError ("Couldn't parse object into json string.", 1, True, "Bread\Settings\FailedToParseException");   
         return $obj;

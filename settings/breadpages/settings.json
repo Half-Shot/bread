@@ -1,1 +1,33 @@
-{"Pageindex":[{"url":"Hullo.md","name":"Hullo","title":"Welcome to the blog, watch the gaps.","categorys":["firstpost"],"isstatic":false,"author":"Will","thumb":"http:\/\/placehold.it\/400x150"},{"url":"TestPage.md","name":"TestPage","title":"The Test Page","categorys":["test"],"isstatic":true,"author":"Will","thumb":"http:\/\/placehold.it\/400x150"}],"Pagedir":"content\/pages","BuildTime":1392678520,"CheckIndexEvery":4,"RequestToLinkTo":"post","navbar":{"enabled":true}}
+{
+    "postindex": [
+        {
+            "url": "Hullo.md",
+            "name": "Hullo",
+            "title": "Welcome to the blog, watch the gaps.",
+            "categorys": [
+                "firstpost"
+            ],
+            "isstatic": false,
+            "author": "Will",
+            "thumb": "http:\/\/placehold.it\/400x150"
+        },
+        {
+            "url": "TestPage.md",
+            "name": "TestPage",
+            "title": "The Test Page",
+            "categorys": [
+                "test"
+            ],
+            "isstatic": true,
+            "author": "Will",
+            "thumb": "http:\/\/placehold.it\/400x150"
+        }
+    ],
+    "postdir": "content\/pages",
+    "BuildTime": 1392830788,
+    "CheckIndexEvery": 4,
+    "RequestToLinkTo": "post",
+    "navbar": {
+        "enabled": true
+    }
+}

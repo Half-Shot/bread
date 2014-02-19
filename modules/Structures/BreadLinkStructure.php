@@ -10,4 +10,5 @@ class BreadLinkStructure
     public $url = "local";
     public $icon = "";
     public $targetWindow = "_self";
+    public $sublinks = array();
 }

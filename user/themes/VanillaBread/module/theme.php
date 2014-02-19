@@ -38,9 +38,37 @@ class VanillaBreadTheme extends Bread\Modules\Module
 		$HTMLCode = "<p>VanillaBread DrawSystemMenu Function</p>";
 		return $HTMLCode;
 	}
-
+        
+        function ProcessLink($link)
+        {
+           $HTMLCode = "";
+           if($link->hidden)
+            return "";
+           
+           //Vanilla doesn't support mutli level navbars as it doesn't use javascript.
+           //The code is simple though.
+           //$HTMLCode .= "<ul id='sublevel'>";
+           //foreach($link->sublinks as $link)
+           //{
+           //    $HTMLCode .= ProcessLink($link);
+           //}
+           //$HTMLCode .= "</ul>";
+           if(!isset($link->url))
+           {
+                $params = get_object_vars($link->args); //Fixes JSON not supporting arrays with key=>values.
+                $URL = Site::CondenseURLParams(false, array_merge(array("request" => $link->request),$params));
+           }
+           else
+           {
+                $URL = $link->url;
+           }
+           $HTMLCode .= "<li><a href='" . $URL . "' target ='" . $link->targetWindow ."'>" . $link->text . "</a></li>";
+           return $HTMLCode;
+        }
+        
 	function Navbar($args)
 	{
+                //Hooks should be filled with arrays of BreadLinkStructure.
                 $Hooks = $this->manager->HookEvent("Bread.GetNavbarIndex",$args);
                 if(!$Hooks)
                 {
@@ -51,20 +79,7 @@ class VanillaBreadTheme extends Bread\Modules\Module
                 {
                     foreach ($links as $link)
                     {
-                        if($link->hidden)
-                           continue;
-                        
-                        if(!isset($link->url))
-                        {
-                            $params = array();
-                            foreach($link->args as $args)
-                            {
-                                $params[$args->key] = $args->value;
-                            }
-                            $link->url = Site::CondenseURLParams(false, array_merge(array("request" => $link->request),$params));
-                        }
-                        $HTMLCode .= "<li><a href='" . $link->url . "' target ='" . $link->targetWindow ."'>" . $link->text . "</a></li>";
-
+                        $HTMLCode .= $this->ProcessLink($link);
                     }
                 }
                 $HTMLCode .= "</ul>";

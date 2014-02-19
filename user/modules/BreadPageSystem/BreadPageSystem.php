@@ -38,11 +38,11 @@ class BreadPageSystem extends Module
         function GenerateNavbar()
         {
             $pages = array();
-            foreach($this->settings->Pageindex as $id => $page)
+            foreach($this->settings->postindex as $id => $page)
             {
                 $parts = array();
                 $parts["request"] = $this->settings->RequestToLinkTo;
-                $parts["page"] = $id;
+                $parts["post"] = $id;
                 $pages[$page->name] = Site::CondenseURLParams(false,$parts);
             }
             return $pages;
@@ -64,8 +64,8 @@ class BreadPageSystem extends Module
         
         function BuildIndex()
         {
-            $this->settings->Pageindex = array();//Wipe array, we are rebuilding it.
-            foreach(new \recursiveIteratorIterator( new \recursiveDirectoryIterator($this->settings->Pagedir)) as $file)
+            $this->settings->postindex = array();//Wipe array, we are rebuilding it.
+            foreach(new \recursiveIteratorIterator( new \recursiveDirectoryIterator($this->settings->postdir)) as $file)
             {
                 if(pathinfo($file->getFilename())['extension'] == "json")
                 {
@@ -73,7 +73,7 @@ class BreadPageSystem extends Module
                     $pageData = Site::$settingsManager->RetriveSettings($path,True);
                     if(isset(pathinfo($pageData->url)['extension']))
                         if(pathinfo($pageData->url)['extension'] == "md")
-                            $this->settings->Pageindex[] = $pageData;
+                            $this->settings->postindex[] = $pageData;
                 }
             }
             $this->settings->BuildTime = time();
@@ -82,10 +82,10 @@ class BreadPageSystem extends Module
         
         function DrawPage()
         {
-           $page = $this->GetActivePage();
+           $page = $this->GetActivePost();
            if($page == False)
             return False;
-           $markdown = file_get_contents($this->settings->Pagedir . "/" . $page->url);
+           $markdown = file_get_contents($this->settings->postdir . "/" . $page->url);
            return "<div class='bps-content' editor><div class='bps-markdown'>" . $markdown ."</div></div>";
         }
         
@@ -103,26 +103,50 @@ class BreadPageSystem extends Module
         
         function DrawTitle()
         {
-           $page = $this->GetActivePage();
+           $page = $this->GetActivePost();
            if($page == False)
             return False;
            $html = Site::$moduleManager->HookEvent("Theme.Title",$page->name)[0];
            return $html . Site::$moduleManager->HookEvent("Theme.Subtitle",$page->title)[0];
         }
         
-        function GetActivePage()
+        function GetActivePost()
         {
-            $request = Site::getRequest();
-           if(!isset($request->arguments["page"])){
-               return False;
+           $request = Site::getRequest();
+           if(isset($request->arguments["post"]))
+               return $this->settings->postindex[$request->arguments["post"]];
+           
+           foreach($request->arguments as $key => $value)
+           {
+               $pageid = $this->GetPostIDByKey($key,$value);
+               if($pageid !== False)
+                   return $this->settings->postindex[$pageid];
            }
-           $pageid = $request->arguments["page"];
-           return $this->settings->Pageindex[$pageid];
+           return False;
+        }
+        /**
+         * Get the post ID by a key in the posts data.
+         * @param string $key
+         * @param object $value
+         * @return type
+         */
+        function GetPostIDByKey($key,$value)
+        {
+            foreach ($this->settings->postindex as $index => $post)
+            {
+                if(!isset($post->$key))
+                    continue;
+                if($post->$key == $value)
+                {
+                    return $index;
+                }
+            }
+            return False;
         }
         
         function DrawBreadCrumbs()
         {
-           $page = $this->GetActivePage();
+           $page = $this->GetActivePost();
            if($page == False)
             return False;
            $breadcrumbs = $page->categorys;
@@ -138,14 +162,14 @@ class BreadPageSystem extends Module
 
 class BreadPageSystemSettings
 {
-    public $Pageindex = array();
-    public $Pagedir;
+    public $postindex = array();
+    public $postdir;
     public $BuildTime = 0;
     public $CheckIndexEvery = 4;
     public $RequestToLinkTo = "post";
     public $navbar;
     function __construct() {
-       $this->Pagedir = Site::ResolvePath("%user-pages");
+       $this->postdir = Site::ResolvePath("%user-pages");
        $this->navbar = new BreadPageSystemNavBarSettings();
     }
 }

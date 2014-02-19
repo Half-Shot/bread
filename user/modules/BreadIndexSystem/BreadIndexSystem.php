@@ -19,21 +19,12 @@ class BreadIndexSystem extends Module
         function Setup()
         {
             $rootSettings = Site::$settingsManager->FindModuleDir("navbar");
-            Site::$settingsManager->CreateSettingsFiles($rootSettings . "index.json", new BreadNavbarIndex());
+            Site::$settingsManager->CreateSettingsFiles($rootSettings . "index.json", array());
             $this->settings = Site::$settingsManager->RetriveSettings($rootSettings . "index.json");
         }
         
         function GetPages()
         {
-            return $this->settings->links;//to meeeee.
+            return $this->settings;//to meeeee.
         }
-}
-
-class BreadNavbarIndex
-{
-    public $links = array();
-    function __construct()
-    {
-        $this->links[] = new BreadLinkStructure();
-    }
 }
