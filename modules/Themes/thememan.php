@@ -165,13 +165,15 @@ class ThemeManager
 	function ReadElementsFromLayout($Layout)
 	{
 		$IsRoot = ($Layout == $this->Theme["layout"]);
+                $endTag = "";
 		if($IsRoot)
 		{
-			if(!isset($Layout["JSON"]->elements))//No enclosed elements.
+                        $Layout = $Layout["JSON"];
+			if(!isset($Layout->elements))//No enclosed elements.
 				Site::$Logger->writeError("Layout contains no elements, page cannot be built.",1,True);
-			if(!isset($Layout["JSON"]->css))
+			if(!isset($Layout->css))
 				Site::$Logger->writeError("Layout contains no css files, page cannot be built.",1,True);
-			$this->cssFiles = array_merge($this->cssFiles,$Layout["JSON"]->css);
+			$this->cssFiles = array_merge($this->cssFiles,$Layout->css);
 			$this->BuildCSS();
 		}    
                 else
@@ -204,17 +206,20 @@ class ThemeManager
                             else {
                                 Site::AddToBodyCode($element["guts"]);
                             }
-                            Site::AddToBodyCode("</". $element["tag"] .">\n");
-                            return;
+                            $endTag = "</". $element["tag"] .">\n";
                         }
                 }
 		
 		//Draw enclosed elements.
-		if(!\is_array($Layout))//No enclosed elements.
-			return;
-		$elements = $Layout["JSON"]->elements;
-		foreach($elements as $element)
+		if(!isset($Layout->elements)){//No enclosed elements.
+			Site::AddToBodyCode($endTag);
+                        return;
+                }
+		$elements = $Layout->elements;
+		foreach($elements as $element){
 			$this->ReadElementsFromLayout($element);
+                }
+                Site::AddToBodyCode($endTag);
 	}
         /**
          * Checks for missing propertys to the element AND

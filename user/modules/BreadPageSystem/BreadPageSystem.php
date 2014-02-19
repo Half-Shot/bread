@@ -17,7 +17,8 @@ class BreadPageSystem extends Module
             $this->manager->RegisterEvent($this->name,"BreadPageSystem.DrawRecentPosts","DrawRecentPosts");
             $this->manager->RegisterEvent($this->name,"BreadPageSystem.Title","DrawTitle");
             $this->manager->RegisterEvent($this->name,"BreadPageSystem.PlainMarkdown","DrawPlainMarkdown");
-            $this->manager->RegisterEvent($this->name,"BreadPageSystem.BreadCrumbs","DrawBreadCrumbs");
+            $this->manager->RegisterEvent($this->name,"BreadPageSystem.BreadCrumbs","DrawBreadcrumbs");
+            $this->manager->RegisterEvent($this->name,"BreadPageSystem.Infomation","DrawPostInfomation");
         }
         
         function AddPages()
@@ -144,18 +145,22 @@ class BreadPageSystem extends Module
             return False;
         }
         
-        function DrawBreadCrumbs()
+        function DrawBreadcrumbs()
         {
            $page = $this->GetActivePost();
            if($page == False)
             return False;
            $breadcrumbs = $page->categorys;
-           $html = "";
-           foreach($breadcrumbs as $crumb){
-            $html .= $crumb . "  -";
-           }
-           return $html;
-           
+           return Site::$moduleManager->HookEvent("Theme.Breadcrumbs",$breadcrumbs);
+        }
+        
+        function DrawPostInfomation()
+        {
+            $page = $this->GetActivePost();
+            $info = array();
+            $info["Author"] = $page->author;
+            $info["Last Modified"] = \date("F d Y H:i:s.", \filemtime($this->settings->postdir . "/" . $page->url));;
+            return Site::$moduleManager->HookEvent("Theme.Infomation",$info);
         }
         
 }

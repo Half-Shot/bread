@@ -32,7 +32,17 @@
         "description": "Middle section where contents will be placed.",
         "module": "BreadPageSystem",
         "event":"Bread.DrawModule",
-        "tag":"section"
+        "tag":"section",
+        "elements":[
+            {
+                "name": "infomation",
+                "id": "infomation",
+                "human": "Post Infomation",
+                "description": "Infomation about a post.",
+                "module": "BreadPageSystem",
+                "event":"BreadPageSystem.Infomation"
+            }
+        ]
     },
     {
         "name": "recent-posts",

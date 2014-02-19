@@ -19,6 +19,8 @@ class VanillaBreadTheme extends Bread\Modules\Module
                         $this->manager->RegisterEvent($this->name,"Theme.VerticalNavbar","VerticalNavbar");
                         $this->manager->RegisterEvent($this->name,"Theme.Title","Title");
                         $this->manager->RegisterEvent($this->name,"Theme.Subtitle","SubTitle");
+                        $this->manager->RegisterEvent($this->name,"Theme.Breadcrumbs","Breadcrumbs");
+                        $this->manager->RegisterEvent($this->name,"Theme.Infomation","Infomation");
 	}
     
 	function Load()
@@ -117,6 +119,28 @@ class VanillaBreadTheme extends Bread\Modules\Module
 		$HTMLCode = "<p>VanillaBread Unload Function</p>";
 		return $HTMLCode;
 	}
+        
+        function Breadcrumbs($args)
+        {
+                $HTMLCode = "<pre>";
+                foreach($args as $arg)
+                {
+                    $HTMLCode .= $arg . " ";
+                }
+            	$HTMLCode .= "</pre>";
+		return $HTMLCode;
+        }
+        
+        function Infomation($args)
+        {
+                $HTMLCode = "<div>";
+                foreach($args as $key => $arg)
+                {
+                    $HTMLCode .= $key . ":" . $arg . "</br>";
+                }
+            	$HTMLCode .= "</div>";
+		return $HTMLCode;
+        }
         
 
 }
