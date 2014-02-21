@@ -15,7 +15,7 @@
         "human": "Title",
         "description": "The title of the current document.",
         "module": "BreadPageSystem",
-        "event":"BreadPageSystem.Title",
+        "event":"Bread.Title",
         "tag":"section"
     },
     {
@@ -41,7 +41,17 @@
                 "description": "Infomation about a post.",
                 "module": "BreadPageSystem",
                 "event":"BreadPageSystem.Infomation"
+            },
+            {
+                "name": "editorbutton",
+                "id": "editorbutton",
+                "human": "Editor Button",
+                "description": "Button to toggle editing markdown, editing HTML and the main post",
+                "module": "BreadPageSystem",
+                "event":"BreadPageSystem.EditorButton"
             }
+            
+            
         ]
     },
     {

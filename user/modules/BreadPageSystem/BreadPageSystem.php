@@ -4,6 +4,7 @@ use Bread\Site as Site;
 class BreadPageSystem extends Module
 {
         private $settings;
+        const EDITOR = true;
         function __construct($manager,$name)
         {
 	        parent::__construct($manager,$name);
@@ -15,11 +16,13 @@ class BreadPageSystem extends Module
             $this->manager->RegisterEvent($this->name,"Bread.ProcessRequest","Setup");
             $this->manager->RegisterEvent($this->name,"Bread.LowPriorityScripts","GenerateHTML");
             $this->manager->RegisterEvent($this->name,"BreadPageSystem.DrawRecentPosts","DrawRecentPosts");
-            $this->manager->RegisterEvent($this->name,"BreadPageSystem.Title","DrawTitle");
+            $this->manager->RegisterEvent($this->name,"Bread.Title","DrawTitle");
             $this->manager->RegisterEvent($this->name,"BreadPageSystem.PlainMarkdown","DrawPlainMarkdown");
             $this->manager->RegisterEvent($this->name,"BreadPageSystem.BreadCrumbs","DrawBreadcrumbs");
             $this->manager->RegisterEvent($this->name,"BreadPageSystem.Infomation","DrawPostInfomation");
+            $this->manager->RegisterEvent($this->name,"BreadPageSystem.EditorButton","DrawMarkdownToggleswitch");
         }
+        
         
         function AddPages()
         {
@@ -34,6 +37,11 @@ class BreadPageSystem extends Module
         function DrawPlainMarkdown($args)
         {
             return "<div class='bps-content'><div class='bps-markdown'>" . $args ."</div></div>";
+        }
+        
+        function DrawMarkdownToggleswitch()
+        {
+            return "<button id='bps-mdtoggle' onclick='toggleMarkdown();'>Open Editor</button>";
         }
         
         function GenerateNavbar()
@@ -90,7 +98,13 @@ class BreadPageSystem extends Module
            if($page == False)
             return False;
            $markdown = file_get_contents($this->settings->postdir . "/" . $page->url);
-           return "<div class='bps-content' editor><div class='bps-markdown'>" . $markdown ."</div></div>";
+           $editor = "";
+           if($this::EDITOR){
+               $editor = "editor";
+               Site::AddRawScriptCode("var epiceditor_basepath ='" . Site::ResolvePath("%user-modules/BreadPageSystem/css/") . "';");//Dirty Hack
+               Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/epiceditor.min.js"), true);
+           }
+           return "<div class='bps-content' " . $editor . "><textarea class='bps-markdown'>" . $markdown ."</textarea></div>";
         }
         
         function GenerateHTML()
