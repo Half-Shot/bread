@@ -18,6 +18,7 @@ Site::SetupLogging();
 Site::LoadCoreModules(Site::ResolvePath("%system-modules"));
 Site::CheckCoreModules();
 //External Loading
+Site::IsAjax();
 Site::SetupManagers();//Last step to have a fully set up site.
 //Main Processing
 Site::DigestRequest();

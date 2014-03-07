@@ -99,6 +99,8 @@ class Site
          * @var string 
          */
         private static $baseurl = "";
+        private static $isAjax = False;
+        private static $URLParameters;
         public static function Configuration()
 	{
 		return static::$configuration;
@@ -128,6 +130,11 @@ class Site
         public static function getBaseURL()
         {
             return static::$baseurl;
+        }
+        
+        public static function getURLParams()
+        {
+            return static::$URLParameters;
         }
          /**
          * Add some code to the document header.
@@ -229,7 +236,7 @@ class Site
         /**
          * A simple ban-by-ip system which will be swapped out in the future.
          * Looks inside our loaded config and if its a banned ip then the site will cease.
-         * A really horrible ban
+         * A really horrible ban system.
          * @todo Hook Ban System 
          */
 	public static function CheckBans()
@@ -317,13 +324,15 @@ class Site
 	public static function SetupManagers()
 	{
             $path = static::ResolvePath("%system-settings");
-            static::$themeManager = new Themes\ThemeManager();
+            if(!static::$isAjax)
+                static::$themeManager = new Themes\ThemeManager();
             static::$moduleManager = new Modules\ModuleManager();
             static::$settingsManager = new Settings\SettingsManager();
             static::$moduleManager->LoadSettings($path . "/modules/settings.json");
-            static::$themeManager->LoadSettings($path . "/theme/settings.json");
-
-            static::$themeManager->LoadLayouts();
+            if(!static::$isAjax){
+                static::$themeManager->LoadSettings($path . "/theme/settings.json");
+                static::$themeManager->LoadLayouts();
+            }
             static::$moduleManager->LoadModulesFromConfig($path . "/modules/modlist.json");
 	}
 	/**
@@ -358,8 +367,12 @@ class Site
             $URL = $_SERVER['REQUEST_URI'];
             $Params = static::DigestURL($URL);
             static::$baseurl = $Params["BASEURL"];
-
-            
+            static::$URLParameters = $Params;
+            //Override for ajax.
+            //TODO: Allow use to turn this off, could be used as a backdoor.
+            if(static::$configuration["core"]["debug"] && array_key_exists("ajax", $Params)){
+                    static::$isAjax = true;
+            }
             if(isset($requestDB->master->layout))
                 $requestObject->layout = $requestDB->master->layout;
             
@@ -436,10 +449,46 @@ class Site
 	public static function ProcessRequest()
 	{
             $requestData = static::$Request;
-            
 	    //Load required modules.
 	    static::$moduleManager->LoadRequiredModules($requestData);
 	    static::$moduleManager->HookEvent("Bread.ProcessRequest",NULL);
+            
+            if(static::$isAjax)
+            {
+                site::$Logger->writeMessage("Request is AJAX!");
+                $module = "";
+                $event = "Bread.AjaxRequest";
+                if(isset($_POST["ajaxEvent"]))
+                {
+                    $event = $_POST["ajaxEvent"];
+                }
+                
+                if(isset($_POST["ajaxModule"]))
+                {
+                    $module = $_POST["ajaxModule"];
+                }
+                else if(static::$URLParameters["ajax"])
+                {
+                    static::$Logger->writeMessage("Using crappy GET based ajax. Please use POST for production sites.");
+                    $module = static::$URLParameters["ajax"];
+                }
+                else
+                {
+                    static::$Logger->writeError("No bread module specfied for ajax request. Ignoring request.");
+                    return False;
+                }
+                
+                $return = static::$moduleManager->HookSpecifedModuleEvent($event,$module,NULL);
+                if(!$return)
+                {
+                   static::$Logger->writeError("ajaxModule: " . $module);
+                   static::$Logger->writeError("Couldn't hook Ajax Request to requested module.");
+                   return False;
+                }
+                echo $return;
+                return True;
+            }
+            
 	    //Draw
 	    static::$htmlcode .= "<!DOCTYPE html>\n<html>\n"; //Obviously.
 	    static::$Logger->writeMessage("Beginning build of page");
@@ -577,6 +626,14 @@ class Site
         {
             return round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], $dec, PHP_ROUND_HALF_UP);
         }
+        /**
+         * A simple check to see if the request is an ajax based one. Will set Site::$isAjax
+         * @see Site::$isAjax
+         */
+        public static function IsAjax()
+        {
+            static::$isAjax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'); 
+        }
 }
 /**
  * A class that logs important infomation and also throws errors for bread.
@@ -627,7 +684,8 @@ class Logger
             $this->fileStream = fopen("php://temp",static::FILEMODE);// No writing possible
             trigger_error("Couldn't write a new log file. File name " . $this->logpath, E_USER_ERROR);
         }
-        static::writeMessage("Opened Logger");
+        static::writeMessage("Bread Version " . Site::Configuration()["core"]["version"]);
+        static::writeMessage("Log Date: " . date('l jS \of F Y'));
     }
     /**
      * Write some infomation to the log stack. Purely for debugging or user info

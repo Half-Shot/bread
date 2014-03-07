@@ -4,7 +4,7 @@ use Bread\Site as Site;
 class BreadPageSystem extends Module
 {
         private $settings;
-        const EDITOR = true;
+        public $EnableEditor = false;
         function __construct($manager,$name)
         {
 	        parent::__construct($manager,$name);
@@ -23,7 +23,6 @@ class BreadPageSystem extends Module
             $this->manager->RegisterEvent($this->name,"BreadPageSystem.EditorButton","DrawMarkdownToggleswitch");
         }
         
-        
         function AddPages()
         {
             if($this->settings->navbar->enabled)
@@ -41,7 +40,9 @@ class BreadPageSystem extends Module
         
         function DrawMarkdownToggleswitch()
         {
-            return "<button id='bps-mdtoggle' onclick='toggleMarkdown();'>Open Editor</button>";
+            if($this->EnableEditor){
+                return "<button id='bps-mdtoggle' onclick='toggleMarkdown();'>Open Editor</button>";
+            }
         }
         
         function GenerateNavbar()
@@ -71,6 +72,16 @@ class BreadPageSystem extends Module
             }
             //TODO: Add a way to determine a user who can and can't edit the page. This would go here.
             Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/showdown.js")); //For just parsing.
+            
+           //See if the user is an editor
+           $User = $this->manager->HookEvent("Bread.GetCurrentUser",NULL);
+           if($User){
+               if(array_search("editor", $User[0]->rights))
+               {
+                   $this->EnableEditor = true;
+               }
+               
+           }
         }
         
         
@@ -99,7 +110,7 @@ class BreadPageSystem extends Module
             return False;
            $markdown = file_get_contents($this->settings->postdir . "/" . $page->url);
            $editor = "";
-           if($this::EDITOR){
+           if($this->EnableEditor){
                $editor = "editor";
                Site::AddRawScriptCode("var epiceditor_basepath ='" . Site::ResolvePath("%user-modules/BreadPageSystem/css/") . "';");//Dirty Hack
                Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/epiceditor.min.js"), true);
