@@ -53,6 +53,10 @@ class ReallyInsecureUserSystem extends Module
                     return;
                  }
             }
+            else
+            {
+                return;
+            }
             
             $this->currentUser = new BreadUser;
             $this->currentUser->username = $ip;

@@ -1,4 +1,4 @@
-[MSG][0.002]Bread Version 0.08
+[MSG][0.002]Bread Version 0.09
 [MSG][0.002]Log Date: Sunday 9th of March 2014
 [MSG][0.002]Loaded core file modules/Modules/module.php
 [MSG][0.003]Loaded core file modules/Modules/moduleman.php
@@ -22,7 +22,7 @@ Bread\Structures\BreadRequestData::__set_state(array(
   array (
     'BASEURL' => '/devbread/index.php',
     'request' => 'post',
-    'post' => '2',
+    'name' => 'Hullo',
   ),
    'modules' => 
   array (
@@ -32,5 +32,5 @@ Bread\Structures\BreadRequestData::__set_state(array(
   ),
 ))
 [MSG][0.009]Registered theme theme-vanilla
-[MSG][0.01]Memory Used: 846.34375kb
+[MSG][0.01]Memory Used: 848.0390625kb
 [MSG][0.011]Closing Log
