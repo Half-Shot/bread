@@ -62,7 +62,7 @@ class ReallyInsecureUserSystem extends Module
             }
             
             $this->currentUser = new BreadUser;
-            $this->currentUsSEer->username = $ip;
+            $this->currentUser->username = $ip;
             $this->currentUser->sessionVars["Authenticator"] = "Rius";
             $this->currentUser->rights = $this->settings->rights;
         }
