@@ -2,19 +2,35 @@
 [MSG][0.002]Log Date: Sunday 9th of March 2014
 [MSG][0.002]Loaded core file modules/Modules/module.php
 [MSG][0.003]Loaded core file modules/Modules/moduleman.php
-[MSG][0.004]Loaded core file modules/Settings/SettingsManager.php
+[MSG][0.003]Loaded core file modules/Settings/SettingsManager.php
 [MSG][0.004]Loaded core file modules/Structures/BreadForm.php
 [MSG][0.004]Loaded core file modules/Structures/BreadLinkStructure.php
 [MSG][0.004]Loaded core file modules/Structures/BreadRequest.php
 [MSG][0.004]Loaded core file modules/Structures/BreadUser.php
 [MSG][0.005]Loaded core file modules/Themes/thememan.php
-[MSG][0.006]Registered module BreadIndexSystem
-[MSG][0.006]Registered module RIUS
-[MSG][0.007]Registered module BreadPageSystem
+[MSG][0.006]Registered module BreadPageSystem
+[MSG][0.007]Registered module BreadIndexSystem
+[MSG][0.007]Registered module RIUS
 [MSG][0.009]BPS: Built Page Index!
-[MSG][0.009]Request is AJAX!
-[MSG][0.009]Event: BreadPageSystem.SavePost
-Module: BreadPageSystem
-[ERR -1][0.009]Modified content/posts/TestPage.md with new data.
-[MSG][0.009]Memory Used: 739.9765625kb
-[MSG][0.009]Closing Log
+[MSG][0.009]Beginning build of page
+[MSG][0.009]Request data:
+Bread\Structures\BreadRequestData::__set_state(array(
+   'requestType' => 'post',
+   'layout' => 'post',
+   'theme' => 'theme-vanilla',
+   'arguments' => 
+  array (
+    'BASEURL' => '/devbread/index.php',
+    'request' => 'post',
+    'post' => '2',
+  ),
+   'modules' => 
+  array (
+    0 => 'BreadPageSystem/module.json',
+    1 => 'BreadIndexSystem/module.json',
+    2 => 'ReallyInsecureUserSystem/module.json',
+  ),
+))
+[MSG][0.009]Registered theme theme-vanilla
+[MSG][0.01]Memory Used: 846.34375kb
+[MSG][0.011]Closing Log

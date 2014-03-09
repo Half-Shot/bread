@@ -1,0 +1,10 @@
+{
+    "limitToHTTPS": true,
+    "limitToLocalConnections": true,
+    "allowedIPs": [
+
+    ],
+    "rights": [
+        "Editor"
+    ]
+}

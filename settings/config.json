@@ -1,7 +1,6 @@
 {
 	"core":{
-		"version":0.08,
-		"rooturl":"http://localhost/will/bread/",
+		"version":0.09,
 		"databasefile":"tables.db",
 		"logto":"./temp/breadlog",
 		"debug":true,
