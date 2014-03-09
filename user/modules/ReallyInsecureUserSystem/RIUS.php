@@ -56,16 +56,13 @@ class ReallyInsecureUserSystem extends Module
                 }
                 else
                 {
+                    Site::$Logger->writeMessage("[RIUS] As requested, user was denied because the connection isn't HTTPS.");
                     return;
                 }
             }
-            else
-            {
-                return;
-            }
             
             $this->currentUser = new BreadUser;
-            $this->currentUser->username = $ip;
+            $this->currentUsSEer->username = $ip;
             $this->currentUser->sessionVars["Authenticator"] = "Rius";
             $this->currentUser->rights = $this->settings->rights;
         }
