@@ -213,6 +213,7 @@ class Site
 		{
 			throw new \Exception("Configuration could be <b>read</b> but not be <b>loaded</b>. Game Over!");
 		}
+                date_default_timezone_set(static::$configuration["core"]["timezone"]);//Setting timezone before its too late.
 	}
         /**
          * Enables/Disables Debug Statements. Very useful for a developer

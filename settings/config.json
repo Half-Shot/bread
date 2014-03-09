@@ -1,12 +1,12 @@
 {
 	"core":{
 		"version":0.09,
-		"databasefile":"tables.db",
 		"logto":"./temp/breadlog",
 		"debug":true,
 		"cache":true,
 		"banhammer":true,
                 "defaultrequest":"homepage"
+                "timezone":"GMT"
 		},
 	"strings":{
 		"sitename":"The Bakery"
