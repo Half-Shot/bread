@@ -13,12 +13,6 @@ dog's back.
 
 ### Header 3
 
-> This is a blockquote.
->
-> This is the second paragraph in the blockquote.
->
-> ## This is an H2 in a blockquote
-
 Phrase Emphasis
 
 Some of these words *are emphasized*.
@@ -79,8 +73,8 @@ Code
 
 I strongly recommend against using any `<blink>` tags.
 
-I wish SmartyPants used named entities like `&mdash;`
-instead of decimal-encoded entites like `&#8212;`.
+I wish SmartyPants used named entities like `â€”`
+instead of decimal-encoded entites like `â€”`.
 
 If you want your page to validate under XHTML 1.0 Strict,
 you've got to put paragraph tags in your blockquotes:
@@ -89,5 +83,5 @@ you've got to put paragraph tags in your blockquotes:
          <p>For example.</p>
      </blockquote>
 
-—
+Ã¢â‚¬â€
 

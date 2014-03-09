@@ -3,13 +3,13 @@ namespace Bread\Themes;
 use Bread\Site as Site;
 class ThemeManager
 {
-	#Collection
+	//Collection
 	private $themes;
 	private $layouts;
 	private $configuration = "";
 	private $cssFiles;
 	
-	#Selected Items
+	//Selected Items
 	public $Theme;
 	public $CSSLines = "";
 

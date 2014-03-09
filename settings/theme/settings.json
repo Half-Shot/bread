@@ -7,9 +7,10 @@
 		}
 	},
 	"layouts":{
-        	"default":"default//page-layout.json",
+        	"default" :"default//page-layout.json",
                 "homepage":"homepage//page-layout.json",
-                "viewpost":"post//page-layout.json"
+                "viewpost":"post//page-layout.json",
+                "login"   :"login//page-layout.json"
 	},
 	"settings":{
 	}

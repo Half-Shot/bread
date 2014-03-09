@@ -15,5 +15,15 @@
         "layout":"post",
         "include":["master"],
         "modules":["BreadPageSystem\/module.json"]
+    },
+    "loginform":{
+        "layout":"login",
+        "include":["master"],
+        "modules":["BreadFormBuilder\/module.json"]
+    },
+        "login":{
+        "layout":"default",
+        "include":["master"],
+        "modules":[""]
     }
 }

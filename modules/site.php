@@ -402,8 +402,7 @@ class Site
             if(isset($requestDB->$requestName->modules))
                 $requestObject->modules = $requestDB->$requestName->modules;
 
-            if(isset($requestDB->$requestName->requestType))
-                $requestObject->requestType = $requestName;
+            $requestObject->requestType = $requestName;
 
             if(isset($requestDB->$requestName->args))
             {
@@ -467,7 +466,7 @@ class Site
                 {
                     $module = $_POST["ajaxModule"];
                 }
-                else if(static::$URLParameters["ajax"])
+                else if(isset(static::$URLParameters["ajax"]))
                 {
                     static::$Logger->writeMessage("Using crappy GET based ajax. Please use POST for production sites.");
                     $module = static::$URLParameters["ajax"];
@@ -477,7 +476,7 @@ class Site
                     static::$Logger->writeError("No bread module specfied for ajax request. Ignoring request.");
                     return False;
                 }
-                
+                static::$Logger->writeMessage("Event: " . $event . "\nModule: " . $module);
                 $return = static::$moduleManager->HookSpecifedModuleEvent($event,$module,NULL);
                 if(!$return)
                 {
@@ -518,16 +517,6 @@ class Site
 	    static::$htmlcode .= "</body>\n";
 	    static::$htmlcode .= "</html>\n";
 	    echo static::$htmlcode;
-	}
-	
-        /**
-         * A fake, example request that is used for early stage debugging.
-         * @see BreadRequestData
-         */
-	public static function ExampleRequest()
-	{
-	    $request = BreadRequestData;
-	    return $request;
 	}
         /**
          * Closes the logger and gives any modules a chance to clean up their work
@@ -633,6 +622,24 @@ class Site
         public static function IsAjax()
         {
             static::$isAjax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'); 
+        }
+        
+        public static function CastStdObjectToStruct($obj,$type)
+        {
+            $newObj = new $type;
+            
+            foreach((array)$obj as $key =>$value)
+                if(isset($newObj->$key))
+                    $newObj->$key = $value;
+            
+            return $newObj;
+        }
+        
+        public static function Redirect($url)
+        {
+            Site::$Logger->writeMessage("Redirected to " . $url);
+            static::Cleanup();
+            header("Location: " . $url);
         }
 }
 /**

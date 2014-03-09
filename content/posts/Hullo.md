@@ -1,4 +1,4 @@
-Hullo and welcome to the blog.
+Hullo ,welcome to the blog.
 
 ##My first bake
 So far this all looks good. There are some gaps in the flooring and the security is __AWFUL__ and the speed isn't all the way there but i will say that it has the best format for storing pages. It hasn't got a huge database labeled swag. It dosn't use amazons *HUGE*  S3 servers to keep it running. It uses a simple bit of [MarkDown](http://lmgtfy.com/?q=markdown) which is a beautiful technology that allows people to use any editor, from notepad to a javascript website, to write a fully formatted document and Bread(C) will convert that into a website. None of this wordpress bloatware, just a simple drag and drop and its on the navbar.

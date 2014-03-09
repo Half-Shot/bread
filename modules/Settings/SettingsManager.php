@@ -80,7 +80,7 @@ class SettingsManager {
     /**
      * Retrives the settings file.
      * @param string $path The path of the file.
-     * @param boolean $dontsave Don't save the file to the array
+     * @param boolean $dontsave Don't save the file to the array.
      * @throws FileNotFoundException
      * @throws FailedToParseException
      */

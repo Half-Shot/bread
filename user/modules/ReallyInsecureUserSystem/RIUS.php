@@ -18,12 +18,21 @@ class ReallyInsecureUserSystem extends Module
 
 	function RegisterEvents()
 	{
-            $this->manager->RegisterEvent($this->name,"Bread.GetCurrentUser","ReturnUser");
+            $this->manager->RegisterEvent($this->name,"Bread.Security.GetCurrentUser","ReturnUser");
             $this->manager->RegisterEvent($this->name,"Bread.ProcessRequest","Setup");
 	}
     
+        function DoLogin()
+        {
+            Site::$Logger->writeMessage("[RIUS] User logged in, but there is no login code in this module.");
+            Site::Redirect("index.php");
+        }
+        
         function Setup()
         {
+            if(Site::getRequest()->requestType == "login"){
+                $this->DoLogin();
+            }
             //Settings
             $rootSettings = Site::$settingsManager->FindModuleDir("RIUS");
             Site::$settingsManager->CreateSettingsFiles($rootSettings . "settings.json", new RIUSSettings());

@@ -13,7 +13,7 @@ class BreadPageSystem extends Module
         function RegisterEvents()
         {
             $this->manager->RegisterEvent($this->name,"Bread.DrawModule","DrawPage");
-            $this->manager->RegisterEvent($this->name,"Bread.ProcessRequest","Setup");
+            $this->manager->RegisterEvent($this->name,"Bread.ProcessRequest","Setup",array("Bread.ProcessRequest"=>"RIUS"));
             $this->manager->RegisterEvent($this->name,"Bread.LowPriorityScripts","GenerateHTML");
             $this->manager->RegisterEvent($this->name,"BreadPageSystem.DrawRecentPosts","DrawRecentPosts");
             $this->manager->RegisterEvent($this->name,"Bread.Title","DrawTitle");
@@ -21,6 +21,7 @@ class BreadPageSystem extends Module
             $this->manager->RegisterEvent($this->name,"BreadPageSystem.BreadCrumbs","DrawBreadcrumbs");
             $this->manager->RegisterEvent($this->name,"BreadPageSystem.Infomation","DrawPostInfomation");
             $this->manager->RegisterEvent($this->name,"BreadPageSystem.EditorButton","DrawMarkdownToggleswitch");
+            $this->manager->RegisterEvent($this->name,"BreadPageSystem.SavePost","SavePost");
         }
         
         function AddPages()
@@ -41,7 +42,8 @@ class BreadPageSystem extends Module
         function DrawMarkdownToggleswitch()
         {
             if($this->EnableEditor){
-                return "<button id='bps-mdtoggle' onclick='toggleMarkdown();'>Open Editor</button>";
+                return "<button id='bps-mdtoggle' onclick='toggleMarkdown();'>Open Editor</button>"
+                . "<button id='bps-mdsave' onclick='saveMarkdown();'>Save/Publish</button>";
             }
         }
         
@@ -74,13 +76,10 @@ class BreadPageSystem extends Module
             Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/showdown.js")); //For just parsing.
             
            //See if the user is an editor
-           $User = $this->manager->HookEvent("Bread.GetCurrentUser",NULL);
+           $User = $this->manager->HookEvent("Bread.Security.GetCurrentUser",NULL)[0];
            if($User){
-               if(array_search("editor", $User[0]->rights))
-               {
+               if(in_array("Editor", $User->rights))
                    $this->EnableEditor = true;
-               }
-               
            }
         }
         
@@ -135,8 +134,8 @@ class BreadPageSystem extends Module
            $page = $this->GetActivePost();
            if($page == False)
             return False;
-           $html = Site::$moduleManager->HookEvent("Theme.Title",$page->name)[0];
-           return $html . Site::$moduleManager->HookEvent("Theme.Subtitle",$page->title)[0];
+           $html = Site::$moduleManager->HookEvent("Theme.Post.Title",$page->name)[0];
+           return $html . Site::$moduleManager->HookEvent("Theme.Post.Subtitle",$page->title)[0];
         }
         
         function GetActivePost()
@@ -179,7 +178,7 @@ class BreadPageSystem extends Module
            if($page == False)
             return False;
            $breadcrumbs = $page->categorys;
-           return Site::$moduleManager->HookEvent("Theme.Breadcrumbs",$breadcrumbs);
+           return Site::$moduleManager->HookEvent("Theme.Post.Breadcrumbs",$breadcrumbs);
         }
         
         function DrawPostInfomation()
@@ -190,9 +189,34 @@ class BreadPageSystem extends Module
             $info = array();
             $info["Author"] = $page->author;
             $info["Last Modified"] = \date("F d Y H:i:s.", \filemtime($this->settings->postdir . "/" . $page->url));;
-            return Site::$moduleManager->HookEvent("Theme.Infomation",$info);
+            return Site::$moduleManager->HookEvent("Theme.Post.Infomation",$info);
         }
         
+        function SavePost()
+        {
+             //Need a login check here.
+             $url = $_POST["url"];
+             $md = $_POST["markdown"];
+             
+             $url_data = Site::DigestURL($url);
+             if(isset($url_data["name"]))
+             {
+                 $id = $this->GetPostIDByKey("name",$url_data["name"]);
+             }
+             else if(isset($url_data["post"]))
+             {
+                 $id = $url_data["post"];
+             }
+             else
+             {
+                 Site::$Logger->writeError("Coudln't find the post for saving markdown file. Nonstandard URL!'");
+                 return "0";
+             }
+             $url = $this->settings->postdir . "/" . $this->settings->postindex[$id]->url;
+             file_put_contents($url, $md);
+             Site::$Logger->writeError("Modified " . $url . " with new data.");
+             return "1";
+        }
 }
 
 class BreadPageSystemSettings

@@ -18,5 +18,12 @@
         "hidden": false,
         "icon": "",
         "targetWindow": "_self"
+    },
+    {
+        "request": "loginform",
+        "text": "Login",
+        "hidden": false,
+        "icon": "",
+        "targetWindow": "_self"
     }
 ]

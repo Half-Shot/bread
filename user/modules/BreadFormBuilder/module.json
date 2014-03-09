@@ -1,0 +1,6 @@
+{
+        "name":"BreadFormBuilder",
+		"permissions":["read:user/resource"],
+		"entryclass":"BreadFormBuilder",
+		"entryfile":"BreadFormBuilder/BreadFormBuilder.php"
+}

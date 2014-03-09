@@ -7,8 +7,7 @@ namespace Bread\Structures;
 class BreadRequestData
 {
         /**
-         * @var string The request from the browser.
-         * @todo Make a list of standard request types.
+         * @var string The request from the browser. Avaliable requests are defined in the requests.json file.
          */
 	public $requestType = False;
         /**

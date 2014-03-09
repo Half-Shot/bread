@@ -8,12 +8,15 @@ class ModuleManager
 	private $moudleConfig;
 	private $configuration;
 	private $events;
+        private $completed;
 	function __construct()
 	{
 		$this->modules = array();
 		$this->moduleList = array();
 		$this->moduleConfig = array();
 		$this->events = array();
+                $this->completed = array();
+                $this->heldevents = array();
 	}
 
 	function LoadSettings($filepath)
@@ -86,32 +89,57 @@ class ModuleManager
 
 	}
 	
-	function RegisterEvent($moduleName,$eventName,$function)
+	function RegisterEvent($moduleName,$eventName,$function,$dependencies = array())
 	{
 	    if(!array_key_exists($eventName,$this->events)){
 	        $this->events[$eventName] = array();
 		}
 		
-	    $this->events[$eventName][$moduleName] = $function;
+	    $this->events[$eventName][$moduleName] = array($function,$dependencies);
 
 	}
 	
-	function HookEvent($eventName,$arguments)
+        function CanRunEvent($dependencies)
+        {
+            $needToRun = array();
+            foreach($dependencies as $event => $module)
+            {
+                if(array_key_exists($event, $this->completed)){
+                        if(!array_search($module, $this->completed))
+                                $needToRun[$event] = $module;
+                }
+                else {
+                    $needToRun[$event] = $module;
+                }
+            }
+            return $needToRun;
+        }
+        
+	function HookEvent($eventName,$arguments = null)
 	{
-	    $returnData = array();
-		if(!array_key_exists($eventName,$this->events))
-	        return False; //Event not used.
-	    foreach($this->events[$eventName] as $module => $function)
-		{
-			$returnData[] = $this->modules[$module]->$function($arguments);
-		}
+            $returnData = array();
+            if(!array_key_exists($eventName,$this->events))
+                return False; //Event not used.
+            
+            foreach($this->events[$eventName] as $module => $data)
+            {
+                $function = $data[0];
+                $dependencies = $data[1];
+                $toRun = $this->CanRunEvent($dependencies);
+                foreach($toRun as $depEvt => $depMod)
+                {
+                    $this->HookSpecifedModuleEvent($depEvt,$depMod);
+                }
+                $returnData[] = $this->modules[$module]->$function($arguments);
+                $this->completed[$eventName] = $module;
+            }
             if(!array_filter($returnData)){
                 return False;
             }
-	    return $returnData;
+            return $returnData;
 	}
 	
-	function HookSpecifedModuleEvent($eventName,$moduleName,$arguments)
+	function HookSpecifedModuleEvent($eventName,$moduleName,$arguments = null)
 	{
             if(!array_key_exists($moduleName,$this->modules)){
 	        Site::$Logger->writeError ("Couldn't specifically hook module '" . $moduleName . "'. Module not loaded.", 3); //Module not found.
@@ -127,7 +155,17 @@ class ModuleManager
                 Site::$Logger->writeError ("Couldn't specifically hook module '" . $moduleName . "'. Module does not have that event set.", 3); //Module not found.
                 return False;
             }
-	    $function = $this->events[$eventName][$moduleName];
+            $data = $this->events[$eventName][$moduleName];
+            $function = $data[0];
+            $dependencies = $data[1];
+            if(!$this->CanRunEvent($dependencies))
+            {
+                foreach($dependencies as $event => $module)
+                {
+                    $this->HookSpecifedModuleEvent($event,$module);
+                }
+            }
+            $this->completed[$eventName] = $moduleName;
 	    return $this->modules[$moduleName]->$function($arguments);
 	}
 }

@@ -91,3 +91,15 @@ function toggleMarkdown()
             break;
     }
 }
+
+function saveMarkdown()
+{
+    var md = editor.exportFile();
+    $.post( "index.php", { ajaxEvent: "BreadPageSystem.SavePost",ajaxModule:"BreadPageSystem", url: document.URL, markdown: md }, function(returndata)
+    {
+        if(returndata = "1")
+            alert("Saved :D");
+        else
+            alert("Something went wrong :|");
+    });
+}
