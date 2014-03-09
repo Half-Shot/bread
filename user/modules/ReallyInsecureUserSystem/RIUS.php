@@ -45,13 +45,19 @@ class ReallyInsecureUserSystem extends Module
                 return;
             }
             
-            if($this->settings->limitToHTTPS && isset($_SERVER["HTTPS"]))
+            if($this->settings->limitToHTTPS)
             {
+                if(isset($_SERVER["HTTPS"])){
                  if($_SERVER["HTTPS"] != "on"){
                     $this->currentUser = false;
                     Site::$Logger->writeMessage("[RIUS] As requested, user was denied because the connection isn't HTTPS.");
                     return;
                  }
+                }
+                else
+                {
+                    return;
+                }
             }
             else
             {
