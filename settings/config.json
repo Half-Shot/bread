@@ -5,7 +5,7 @@
 		"debug":true,
 		"cache":true,
 		"banhammer":true,
-                "defaultrequest":"homepage"
+                "defaultrequest":"homepage",
                 "timezone":"GMT"
 		},
 	"strings":{
