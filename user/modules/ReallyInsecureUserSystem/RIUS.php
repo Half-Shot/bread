@@ -44,7 +44,7 @@ class ReallyInsecureUserSystem extends Module
                 Site::$Logger->writeMessage("[RIUS] As requested, user was denied because the address wasn't local.");
                 return;
             }
-            
+            //NOT WORKING!!!!!
             if($this->settings->limitToHTTPS)
             {
                 if(isset($_SERVER["HTTPS"])){

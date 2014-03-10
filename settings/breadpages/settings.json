@@ -10,7 +10,8 @@
             "author": "Webmaster",
             "hidden": true,
             "liveedit": true,
-            "thumb": "http:\/\/placehold.it\/400x150"
+            "thumb": "http:\/\/placehold.it\/400x150",
+            "jsonurl": "content\/posts\/homepage.json"
         },
         {
             "url": "Hullo.md",
@@ -22,23 +23,25 @@
             "isstatic": false,
             "liveedit": false,
             "author": "Will",
-            "thumb": "http:\/\/placehold.it\/400x150"
+            "thumb": "http:\/\/placehold.it\/400x150",
+            "jsonurl": "content\/posts\/Hullo.json"
         },
         {
             "url": "TestPage.md",
             "name": "TestPage",
-            "title": "The Test Page",
+            "title": "Now I know this is gonna get griefed.",
             "categorys": [
                 "test"
             ],
             "liveedit": true,
             "isstatic": true,
             "author": "Will",
-            "thumb": "http:\/\/placehold.it\/400x150"
+            "thumb": "http:\/\/placehold.it\/400x150",
+            "jsonurl": "content\/posts\/TestPage.json"
         }
     ],
     "postdir": "content\/posts",
-    "BuildTime": 1394473423,
+    "BuildTime": 1394476731,
     "CheckIndexEvery": 4,
     "RequestToLinkTo": "post",
     "navbar": {

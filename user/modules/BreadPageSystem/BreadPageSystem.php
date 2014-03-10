@@ -4,6 +4,7 @@ use Bread\Site as Site;
 class BreadPageSystem extends Module
 {
         private $settings;
+        private $settingspath;
         public $EnableEditor = false;
         function __construct($manager,$name)
         {
@@ -67,8 +68,9 @@ class BreadPageSystem extends Module
         {           
             //Get a settings file.
             $rootSettings = Site::$settingsManager->FindModuleDir("breadpages");
-            Site::$settingsManager->CreateSettingsFiles($rootSettings . "settings.json", new BreadPageSystemSettings());
-            $this->settings = Site::$settingsManager->RetriveSettings($rootSettings . "settings.json");
+            $this->settingspath = $rootSettings . "settings.json";
+            Site::$settingsManager->CreateSettingsFiles($this->settingspath, new BreadPageSystemSettings());
+            $this->settings = Site::$settingsManager->RetriveSettings($this->settingspath);
             if( ( time() - $this->settings->BuildTime) > $this->settings->CheckIndexEvery){
                 $this->BuildIndex();
             }
@@ -93,6 +95,7 @@ class BreadPageSystem extends Module
                 {
                     $path = $file->getPathname();
                     $pageData = Site::$settingsManager->RetriveSettings($path,True);
+                    $pageData->jsonurl = $path;
                     if(isset(pathinfo($pageData->url)['extension']))
                         if(pathinfo($pageData->url)['extension'] == "md")
                             $this->settings->postindex[] = $pageData;
@@ -109,8 +112,9 @@ class BreadPageSystem extends Module
             return False;
            $markdown = file_get_contents($this->settings->postdir . "/" . $page->url);
            $editor = "";
-           if(isset($page->liveedit))
+           if(isset($page->liveedit) && $this->EnableEditor)
                 $this->EnableEditor = $page->liveedit;
+           
            if($this->EnableEditor){
                $editor = "editor";
                Site::AddRawScriptCode("var epiceditor_basepath ='" . Site::ResolvePath("%user-modules/BreadPageSystem/css/") . "';");//Dirty Hack
@@ -199,6 +203,8 @@ class BreadPageSystem extends Module
              //Need a login check here.
              $url = $_POST["url"];
              $md = $_POST["markdown"];
+             $title = $_POST["title"];
+             $subtitle = $_POST["subtitle"];
              
              $url_data = Site::DigestURL($url);
              if(isset($url_data["name"]))
@@ -216,7 +222,23 @@ class BreadPageSystem extends Module
              }
              $url = $this->settings->postdir . "/" . $this->settings->postindex[$id]->url;
              file_put_contents($url, $md);
-             Site::$Logger->writeError("Modified " . $url . " with new data.");
+             Site::$Logger->writeMessage("===BPS===");
+             Site::$Logger->writeMessage("Post Data:" . var_export($_POST,True));
+             $pageData = Site::$settingsManager->RetriveSettings($this->settings->postindex[$id]->jsonurl,True); //Get actual file
+             $this->BuildTime = 0; //Reset Index.
+             $pageData->name = $title;
+             $pageData->title = $subtitle; //Needs changing.
+             Site::$Logger->writeMessage("Post Index Data:" . var_export($this->settings->postindex[$id],True));
+             try
+             {
+                Site::$settingsManager->SaveSetting($pageData,$this->settings->postindex[$id]->jsonurl,True);
+             }
+             catch(Exception $e)
+             {
+                 Site::$Logger->writeError("[BPS]Coudln't save bread page system settings. Gave an " . get_class($e));
+                 return "0";
+             }
+             Site::$Logger->writeMessage("Modified " . $url . " with new data.");
              return "1";
         }
 }
