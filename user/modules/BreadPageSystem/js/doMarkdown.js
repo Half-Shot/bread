@@ -80,12 +80,20 @@ function toggleMarkdown()
             $(".bps-html").animate({"height": "400px"},400,function(){$(".bps-html").css( "overflow-y", "scroll" )});
             $("#bps-editor").slideDown();
             $("#bps-editor").animate({"height": "400px"},400,function(){editor.reflow();});
+            $("#bps-mdsave").show();
+            $("#bps-title").attr('contentEditable',true);
+            $("#bps-subtitle").attr('contentEditable',true);
             $.each($("#bps-mdtoggle"),function(){$(this).html("Close Editor") });
             editorState = 1;
             break;
         case 1:
             $(".bps-html").animate({"height": "100%"},400,function(){$(".bps-html").css( "overflow-y", "none" )});
             $("#bps-editor").slideUp();
+            $("#bps-mdsave").hide();
+            $("#bps-title").attr('contentEditable',false);
+            $("#bps-title").css("border","black dashed 1px");
+            $("#bps-subtitle").attr('contentEditable',false);
+            $("#bps-subtitle").css("border","black dashed 1px");
             $.each($("#bps-mdtoggle"),function(){$(this).html("Open Editor") });
             editorState = 0;
             break;
@@ -95,7 +103,7 @@ function toggleMarkdown()
 function saveMarkdown()
 {
     var md = editor.exportFile();
-    $.post( "index.php", { ajaxEvent: "BreadPageSystem.SavePost",ajaxModule:"BreadPageSystem", url: document.URL, markdown: md }, function(returndata)
+    $.post( "index.php", { ajaxEvent: "BreadPageSystem.SavePost",ajaxModule:"BreadPageSystem", url: document.URL, markdown: md, title: $("#bps-title").html(), subtitle: $("#bps-subtitle").html() }, function(returndata)
     {
         if(returndata = "1")
             alert("Saved :D");
@@ -103,3 +111,4 @@ function saveMarkdown()
             alert("Something went wrong :|");
     });
 }
+$("#bps-mdsave").hide();

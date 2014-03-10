@@ -9,6 +9,7 @@
             ],
             "author": "Webmaster",
             "hidden": true,
+            "liveedit": true,
             "thumb": "http:\/\/placehold.it\/400x150"
         },
         {
@@ -19,6 +20,7 @@
                 "firstpost"
             ],
             "isstatic": false,
+            "liveedit": false,
             "author": "Will",
             "thumb": "http:\/\/placehold.it\/400x150"
         },
@@ -29,13 +31,14 @@
             "categorys": [
                 "test"
             ],
+            "liveedit": true,
             "isstatic": true,
             "author": "Will",
             "thumb": "http:\/\/placehold.it\/400x150"
         }
     ],
     "postdir": "content\/posts",
-    "BuildTime": 1394384594,
+    "BuildTime": 1394473423,
     "CheckIndexEvery": 4,
     "RequestToLinkTo": "post",
     "navbar": {

@@ -109,6 +109,8 @@ class BreadPageSystem extends Module
             return False;
            $markdown = file_get_contents($this->settings->postdir . "/" . $page->url);
            $editor = "";
+           if(isset($page->liveedit))
+                $this->EnableEditor = $page->liveedit;
            if($this->EnableEditor){
                $editor = "editor";
                Site::AddRawScriptCode("var epiceditor_basepath ='" . Site::ResolvePath("%user-modules/BreadPageSystem/css/") . "';");//Dirty Hack
@@ -134,8 +136,8 @@ class BreadPageSystem extends Module
            $page = $this->GetActivePost();
            if($page == False)
             return False;
-           $html = Site::$moduleManager->HookEvent("Theme.Post.Title",$page->name)[0];
-           return $html . Site::$moduleManager->HookEvent("Theme.Post.Subtitle",$page->title)[0];
+           $html = Site::$moduleManager->HookEvent("Theme.Post.Title","<div id='bps-title'>" . $page->name . "</div>")[0];
+           return $html . Site::$moduleManager->HookEvent("Theme.Post.Subtitle","<div id='bps-subtitle'>" . $page->title . "</div>")[0];
         }
         
         function GetActivePost()
