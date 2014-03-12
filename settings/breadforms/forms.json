@@ -1,22 +1,30 @@
 [
     {
         "name": "login",
-        "action": "?request=login",
-        "onsubmit": "login();",
+        "onsubmit": "return false;",
         "elements": [
             {
-                "name": "username",
+                "label": "Name",
+                "name": "uname",
+                "attributes": {
+                    "id": "username"
+                },
                 "type": "text",
                 "value": ""
             },
             {
-                "name": "password",
-                "type": "pass",
+                "label": "Password",
+                "name": "pw",
+                "attributes": {
+                    "id": "password"
+                },
+                "type": "password",
                 "value": ""
             },
             {
-                "name": "submit",
-                "type": "submit",
+                "name": "senddata",
+                "type": "button",
+                "onclick": "DoLogin();",
                 "value": "Login!"
             }
         ]

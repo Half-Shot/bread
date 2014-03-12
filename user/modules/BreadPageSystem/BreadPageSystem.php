@@ -78,9 +78,7 @@ class BreadPageSystem extends Module
             Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/showdown.js")); //For just parsing.
             
            //See if the user is an editor
-           $User = $this->manager->HookEvent("Bread.Security.GetCurrentUser",NULL)[0];
-           if($User){
-               if(in_array("Editor", $User->rights))
+           if($this->manager->HookEvent("Bread.Security.GetPermission","Editor")[0]){
                    $this->EnableEditor = true;
            }
         }

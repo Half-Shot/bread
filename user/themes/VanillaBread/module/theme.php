@@ -158,10 +158,18 @@ class VanillaBreadTheme extends Bread\Modules\Module
         
         function BuildForm(Bread\Structures\BreadForm $form)
         {
-            $html = "<form name='" . $form->name ."' onsubmit='".$form->onsubmit."' action='" . $form->action . "' method='" . $form->method . "'";
-            if(isset($element->attributes))
+            $html = "<form";
+            if($form->name)
+                $html .= " name='" . $form->name . "'";
+            if($form->action)
+                $html .= " action='" . $form->action . "'";
+            if($form->onsubmit)
+                $html .= " onsubmit='" . $form->onsubmit . "'";
+            if($form->method)
+                $html .= " method='" . $form->method . "'";
+            if(isset($form->attributes) && !empty($form->attributes))
             {
-                $attributes = get_object_vars($element->attributes);
+                $attributes = get_object_vars($form->attributes);
                 foreach($attributes as $key => $value)
                 {
                     $html .= " " . $key . "='" . $value . "'";
@@ -171,7 +179,9 @@ class VanillaBreadTheme extends Bread\Modules\Module
             
             foreach($form->elements as $element)
             {
-                $html .= $this->BuildInput($element);
+                if(isset($element->label))
+                    $html .= "<label for='" . $element->name ."'>" . $element->label . "</label>";
+                $html .= $this->BuildInput($element) . "<br>";
             }
             $html .= "\n</form>";
             return $html;
@@ -179,32 +189,39 @@ class VanillaBreadTheme extends Bread\Modules\Module
         
         function BuildInput($element)
         {
-                switch ($element->type)
-                {
-                    case BreadFormElement::TYPE_TEXTBOX:
-                        $html = "\n\t<input name='".$element->name."' type='text'";
-                        break;
-                    case BreadFormElement::TYPE_PASSWORD:
-                        $html = "\n\t<input name='".$element->name."' type='password'";
-                        break; 
-                    default:
-                        $html = "\n\t<input name='".$element->name."' type='" . $element->type ."'";
+            $endtag = "";
+            switch ($element->type)
+            {
+                case BreadFormElement::TYPE_TEXTBOX:
+                    $html = "\n\t<input name='".$element->name."' type='text'";
+                    break;
+                case BreadFormElement::TYPE_PASSWORD:
+                    $html = "\n\t<input name='".$element->name."' type='password'";
+                    break; 
+                case BreadFormElement::TYPE_HTMLFIVEBUTTON:
+                    $html = "\n\t<button";
+                    $endtag = ">" . $element->value ."</button";
+                    break;
+                default:
+                    $html = "\n\t<input name='".$element->name."' type='" . $element->type ."'";
 
-                }
-                if(isset($element->value))
-                    $html .= " value='" . $element->value . "'";
-                if(isset($element->placeholder))
-                    $html .= " placeholder='" . $element->placeholder . "'";
-                if(isset($element->attributes))
+            }
+            if(isset($element->onclick))
+                        $html .= " onclick='" . $element->onclick . "'"; 
+            if(isset($element->value))
+                $html .= " value='" . $element->value . "'";
+            if(isset($element->placeholder))
+                $html .= " placeholder='" . $element->placeholder . "'";
+            if(isset($element->attributes) && !empty($element->attributes))
+            {
+                $attributes = get_object_vars($element->attributes);
+                foreach($attributes as $key => $value)
                 {
-                    $attributes = get_object_vars($element->attributes);
-                    foreach($attributes as $key => $value)
-                    {
-                        $html .= " " . $key . "='" . $value . "'";
-                    }
+                    $html .= " " . $key . "='" . $value . "'";
                 }
-                $html .= ">";
-                return $html;
+            }
+            $html .= $endtag . ">";
+            return $html;
         }
 }
 ?>

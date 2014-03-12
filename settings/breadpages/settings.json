@@ -28,8 +28,8 @@
         },
         {
             "url": "TestPage.md",
-            "name": "TestPage",
-            "title": "Now I know this is gonna get griefed.",
+            "name": "The Best Test Page Of Them All",
+            "title": "Chipzel is the best chiptune artist.",
             "categorys": [
                 "test"
             ],
@@ -41,7 +41,7 @@
         }
     ],
     "postdir": "content\/posts",
-    "BuildTime": 1394476731,
+    "BuildTime": 1394643895,
     "CheckIndexEvery": 4,
     "RequestToLinkTo": "post",
     "navbar": {

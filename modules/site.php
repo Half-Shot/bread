@@ -472,20 +472,25 @@ class Site
                     static::$Logger->writeMessage("Using crappy GET based ajax. Please use POST for production sites.");
                     $module = static::$URLParameters["ajax"];
                 }
-                else
+                static::$Logger->writeMessage("Event: " . $event);
+                if($module != "")
                 {
-                    static::$Logger->writeError("No bread module specfied for ajax request. Ignoring request.");
-                    return False;
+                    static::$Logger->writeMessage("Module: " . $module);
+                    $return = static::$moduleManager->HookSpecifedModuleEvent($event,$module,NULL);
+                    $realdata = $return;
                 }
-                static::$Logger->writeMessage("Event: " . $event . "\nModule: " . $module);
-                $return = static::$moduleManager->HookSpecifedModuleEvent($event,$module,NULL);
-                if(!$return)
+                else {
+                    $return = static::$moduleManager->HookEvent($event,NULL);
+                    if(is_array($return))
+                        $realdata = $return[0];
+                }
+                if($return === False)
                 {
-                   static::$Logger->writeError("ajaxModule: " . $module);
                    static::$Logger->writeError("Couldn't hook Ajax Request to requested module.");
                    return False;
                 }
-                echo $return;
+                
+                echo $realdata;
                 return True;
             }
             

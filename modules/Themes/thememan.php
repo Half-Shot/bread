@@ -121,7 +121,7 @@ class ThemeManager
          * @return string
          * @throws Exception
          */
-        function FindCSSFile($filepath)
+        function FindFile($filepath)
         {
                 if(mb_substr($filepath, 0, 4) == "http")//Is remote.
                     return $filepath;
@@ -145,7 +145,7 @@ class ThemeManager
 		foreach($this->cssFiles as $filepath)
 		{
                     try {
-                        $cssfilepath = $this->FindCSSFile($filepath);
+                        $cssfilepath = $this->FindFile($filepath);
                     } catch (\Exception $exc) {
                         Site::$Logger->writeError("Failed to find CSS File '" . $filepath .", ignoring.'", 2, false);
                         continue;
@@ -171,10 +171,21 @@ class ThemeManager
                         $Layout = $Layout["JSON"];
 			if(!isset($Layout->elements))//No enclosed elements.
 				Site::$Logger->writeError("Layout contains no elements, page cannot be built.",1,True);
-			if(!isset($Layout->css))
-				Site::$Logger->writeError("Layout contains no css files, page cannot be built.",1,True);
-			$this->cssFiles = array_merge($this->cssFiles,$Layout->css);
-			$this->BuildCSS();
+			if(isset($Layout->css)){
+                            $this->cssFiles = array_merge($this->cssFiles,$Layout->css);
+                            $this->BuildCSS();
+                        }
+                        if(isset($Layout->scripts)){
+                            foreach($Layout->scripts as $path)
+                            {
+                                try {
+                                    Site::AddScript($this->FindFile($path));
+                                } catch (\Exception $exc) {
+                                    Site::$Logger->writeError("Failed to find Scriptfile File '" . $path .", ignoring.'", 2, false);
+                                    continue;
+                                }
+                            }
+                        }
 		}    
                 else
                 {

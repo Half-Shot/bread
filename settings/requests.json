@@ -3,7 +3,7 @@
     {
         "layout":"post",
         "theme":"theme-vanilla",
-        "modules":["BreadIndexSystem\/module.json","ReallyInsecureUserSystem\/module.json"]
+        "modules":["BreadIndexSystem\/module.json","BreadUserSystem\/module.json"]
     },
     "homepage":{
         "layout":"homepage",
@@ -21,7 +21,7 @@
         "include":["master"],
         "modules":["BreadFormBuilder\/module.json"]
     },
-        "login":{
+    "login":{
         "layout":"default",
         "include":["master"],
         "modules":[""]

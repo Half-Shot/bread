@@ -3,7 +3,7 @@
         "ExampleModule\/module.json",
         "BreadPageSystem\/module.json",
         "BreadIndexSystem\/module.json",
-        "ReallyInsecureUserSystem\/module.json",
+        "BreadUserSystem\/module.json",
         "BreadFormBuilder\/module.json"
     ],
     "blacklisted": [
