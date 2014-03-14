@@ -455,6 +455,8 @@ class Site
             
             if(static::$isAjax)
             {
+                // Turn off all error reporting
+                error_reporting(0);
                 site::$Logger->writeMessage("Request is AJAX!");
                 $module = "";
                 $event = "Bread.AjaxRequest";
@@ -489,7 +491,7 @@ class Site
                    static::$Logger->writeError("Couldn't hook Ajax Request to requested module.");
                    return False;
                 }
-                
+                static::$Logger->writeMessage($realdata);
                 echo $realdata;
                 return True;
             }

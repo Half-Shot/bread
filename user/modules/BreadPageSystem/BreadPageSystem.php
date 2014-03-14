@@ -14,7 +14,7 @@ class BreadPageSystem extends Module
         function RegisterEvents()
         {
             $this->manager->RegisterEvent($this->name,"Bread.DrawModule","DrawPage");
-            $this->manager->RegisterEvent($this->name,"Bread.ProcessRequest","Setup",array("Bread.ProcessRequest"=>"RIUS"));
+            $this->manager->RegisterEvent($this->name,"Bread.ProcessRequest","Setup",array("Bread.Security.GetPermission"=>"BreadUserSystem"));
             $this->manager->RegisterEvent($this->name,"Bread.LowPriorityScripts","GenerateHTML");
             $this->manager->RegisterEvent($this->name,"BreadPageSystem.DrawRecentPosts","DrawRecentPosts");
             $this->manager->RegisterEvent($this->name,"Bread.Title","DrawTitle");
@@ -23,6 +23,7 @@ class BreadPageSystem extends Module
             $this->manager->RegisterEvent($this->name,"BreadPageSystem.Infomation","DrawPostInfomation");
             $this->manager->RegisterEvent($this->name,"BreadPageSystem.EditorButton","DrawMarkdownToggleswitch");
             $this->manager->RegisterEvent($this->name,"BreadPageSystem.SavePost","SavePost");
+            $this->manager->RegisterEvent($this->name,"Bread.Security.LoggedIn","CheckEditorRights");
         }
         
         function AddPages()
@@ -77,12 +78,15 @@ class BreadPageSystem extends Module
             //TODO: Add a way to determine a user who can and can't edit the page. This would go here.
             Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/showdown.js")); //For just parsing.
             
+        }
+        
+        function CheckEditorRights()
+        {
            //See if the user is an editor
            if($this->manager->HookEvent("Bread.Security.GetPermission","Editor")[0]){
                    $this->EnableEditor = true;
            }
         }
-        
         
         function BuildIndex()
         {
@@ -198,7 +202,11 @@ class BreadPageSystem extends Module
         
         function SavePost()
         {
-             //Need a login check here.
+             $canSave = $this->manager->HookEvent("Bread.Security.GetPermission","Editor")[0];
+             if(!$canSave){
+                 Site::$Logger->writeError("User tried to save markdown without permission somehow, blocked!");
+                 return "0";
+             }
              $url = $_POST["url"];
              $md = $_POST["markdown"];
              $title = $_POST["title"];

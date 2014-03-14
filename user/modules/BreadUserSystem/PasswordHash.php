@@ -44,7 +44,7 @@ class PasswordHash {
 		if (function_exists('getmypid'))
 			$this->random_state .= getmypid();
 	}
-
+        
 	function get_random_bytes($count)
 	{
 		$output = '';

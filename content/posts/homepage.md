@@ -7,4 +7,4 @@ There isn't much here yet, but that may be because this is a test site.
 
 or
 
-![The Heavy](http://tf2wiki.net/ww/images/1/1e/Heavy2.png)
+![The Heavy](http://fc08.deviantart.net/fs49/f/2009/183/6/2/TF2_Heavy_by_JayAxer.jpg)

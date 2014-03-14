@@ -1,5 +1,15 @@
 {
     "limitToHTTPS": true,
-    "string": "365434585532092e3ade1c6.36086324",
-    "userfile": "users.json"
+    "userfile": "users.json",
+    "sessiontimeout": 604800,
+    "successredirect": {
+        "request": "homepage",
+        "args": null,
+        "text": "Link",
+        "hidden": false,
+        "url": null,
+        "icon": null,
+        "targetWindow": "_self",
+        "sublinks": null
+    }
 }

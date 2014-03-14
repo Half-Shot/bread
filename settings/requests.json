@@ -23,7 +23,6 @@
     },
     "login":{
         "layout":"default",
-        "include":["master"],
-        "modules":[""]
+        "modules":["BreadUserSystem\/module.json"]
     }
 }

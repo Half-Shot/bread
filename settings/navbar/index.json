@@ -22,7 +22,7 @@
     {
         "request": "loginform",
         "text": "Login",
-        "hidden": false,
+        "hidden": true,
         "icon": "",
         "targetWindow": "_self"
     }

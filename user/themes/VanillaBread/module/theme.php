@@ -54,15 +54,6 @@ class VanillaBreadTheme extends Bread\Modules\Module
            $HTMLCode = "";
            if($link->hidden)
             return "";
-           
-           //Vanilla doesn't support mutli level navbars as it doesn't use javascript.
-           //The code is simple though.
-           //$HTMLCode .= "<ul id='sublevel'>";
-           //foreach($link->sublinks as $link)
-           //{
-           //    $HTMLCode .= ProcessLink($link);
-           //}
-           //$HTMLCode .= "</ul>";
            if(!isset($link->url))
            {
                 if(isset($link->args)){
