@@ -28,5 +28,44 @@
                 "value": "Login!"
             }
         ]
+    },
+    {
+        "name": "register",
+        "onsubmit": "DoRegister();return false;",
+        "elements": [
+            {
+                "label": "Name",
+                "name": "uname",
+                "attributes": {
+                    "id": "username"
+                },
+                "type": "text",
+                "value": ""
+            },
+            {
+                "label": "Password",
+                "name": "pw",
+                "attributes": {
+                    "id": "password"
+                },
+                "type": "password",
+                "value": ""
+            },
+            {
+                "label": "E-Mail",
+                "name": "email",
+                "attributes": {
+                    "id": "email"
+                },
+                "type": "email",
+                "value": ""
+            },
+            {
+                "name": "senddata",
+                "type": "button",
+                "onclick": "",
+                "value": "Register!"
+            }
+        ]
     }
 ]

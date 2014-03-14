@@ -11,6 +11,7 @@ class BreadUserSystem extends Module
         private $currentUser;
         private $settings;
         private $userDB;
+        private $userDBPath;
 	function __construct($manager,$name)
 	{
 		parent::__construct($manager,$name);
@@ -22,6 +23,7 @@ class BreadUserSystem extends Module
             $this->manager->RegisterEvent($this->name,"Bread.Security.GetPermission","HasPermission");
             $this->manager->RegisterEvent($this->name,"Bread.ProcessRequest","Setup");
             $this->manager->RegisterEvent($this->name,"Bread.Security.LoginUser","DoLogin");
+            $this->manager->RegisterEvent($this->name,"Bread.Security.RegisterNewUser","RegisterNewUser");
             $this->manager->RegisterEvent($this->name,"Bread.Security.Logout","Logout");
             $this->manager->RegisterEvent($this->name,"Bread.GetNavbarIndex","CreateLoginLink");
 	}
@@ -30,7 +32,6 @@ class BreadUserSystem extends Module
         {
             $return = array("status" => 10,"goto" => "");
             session_start();
-            Site::$Logger->writeMessage(var_export($_POST,true));
             if(!isset($_POST["uname"]) || !isset($_POST["pw"]))
                 return json_encode($return);
             Site::$Logger->writeMessage("Got Right Info!");
@@ -43,11 +44,14 @@ class BreadUserSystem extends Module
                     $user = $u;
                     Site::$Logger->writeMessage("Username identified!");
                     break;
-                    
                 }
+            }
+            if(is_null($user))
+            {
                 Site::$Logger->writeMessage("Could not log user in because the username is not correct.");
                 return json_encode($return);
             }
+            
             $pw = $_POST["pw"];
             $hasher = new \PasswordHash(8, false);
             if($hasher->CheckPassword($pw,$user->hash))
@@ -71,19 +75,73 @@ class BreadUserSystem extends Module
         function FirstTime($path)
         {
             Site::$Logger->writeMessage("First time setup for BreadUserSystem. If this is not the first time the module has started then there is an issue.");
-            $hasher = new \PasswordHash(8, false);
-            //Create the user db
-            $rootUser = new BreadUser;
-            $rootUser->uid = 0;
-            $rootUser->rights[] = "root";
-            $rootUser->username = "root";
-            $packet = new BreadUserPacket;
-            $packet->breaduserdata = $rootUser;
-            $pw = "ILikeToast";
-            $packet->hash = $hasher->HashPassword($pw);
-            $this->userDB[] = $packet;
+             $this->StoreNewUser("root","ILikeToast",0,array("root"));
             Site::$settingsManager->SaveSetting($this->userDB,$path);
-            //Only load the salt if its required
+        }
+        
+        function GetUserByUID($uid)
+        {
+            foreach($this->userDB as $user)
+            {
+                if($uid == $user->breaduserdata->uid)
+                    return $user;
+            }
+            return False;
+        }
+        
+        function StoreNewUser($username,$password,$uid = -1,$rights = array(),$extrainfomation = array())
+        {
+            Site::$Logger->writeMessage("Storing new user.");
+            $newUser = new BreadUser;
+            $newUser->uid = 0;
+            if($uid == -1){
+                while($this->GetUserByUID($newUser->uid) !== False){
+                    $newUser->uid = mt_rand(1 * pow(10,16),9 * pow(10,16)); 
+                }
+            }
+            else{
+                $newUser->uid = $uid;
+            }
+            $newUser->username = $username;
+            $hasher = new \PasswordHash(8, false);
+            $hash = $hasher->HashPassword($password);
+            Site::$Logger->writeMessage(var_export($extrainfomation,true));
+            $extrainfomation = json_decode($extrainfomation);
+            $newUser->infomation = get_object_vars($extrainfomation);
+            $newUser->infomation = $extrainfomation;
+            $newUser->rights = $rights;
+            $packet = new BreadUserPacket;
+            $packet->breaduserdata = $newUser;
+            $packet->hash = $hash;
+            $this->userDB[] = $packet;
+            Site::$settingsManager->SaveSetting($this->userDB,$this->userDBPath);
+        }
+        
+        function RegisterNewUser()
+        {
+            $return = array("status" => 10);
+            if(!isset($_POST["uname"]) || !isset($_POST["pw"])|| !isset($_POST["extrainfo"]))
+            {
+                Site::$Logger->writeMessage("Not enough infomation sent!");
+                return json_encode($return);
+            }
+            
+            foreach($this->userDB as $user)
+            {
+                if($user->breaduserdata->username == $_POST["uname"])
+                {
+                    Site::$Logger->writeMessage("Dupe username.");
+                    $return["status"] = 12;
+                    return json_encode($return);
+                }
+            }
+            Site::$Logger->writeMessage("Username looks good.");
+            $this->StoreNewUser($_POST["uname"],$_POST["pw"],-1,$_POST["extrainfo"]);
+            Site::$Logger->writeMessage("Stored User OK");
+            $return["goto"] = $this->settings->successredirect->createURL();
+            $return["status"] = 11;
+            Site::$Logger->writeMessage("Sent success response header.");
+            return json_encode($return);
         }
         
         function Setup()
@@ -93,13 +151,15 @@ class BreadUserSystem extends Module
             Site::$settingsManager->CreateSettingsFiles($rootSettings . "settings.json", new BreadUserSystemSettings());
             $this->settings = Site::$settingsManager->RetriveSettings($rootSettings . "settings.json");
             $this->settings->successredirect = Site::CastStdObjectToStruct($this->settings->successredirect, "\Bread\Structures\BreadLinkStructure");
-            
-            Site::$settingsManager->CreateSettingsFiles($rootSettings . $this->settings->userfile, array());
-            $this->userDB = Site::$settingsManager->RetriveSettings($rootSettings . $this->settings->userfile,TRUE);
+                        
+            $this->userDBPath = $rootSettings . $this->settings->userfile;
+            Site::$settingsManager->CreateSettingsFiles($this->userDBPath, array());
+            $this->userDB = Site::$settingsManager->RetriveSettings($this->userDBPath,true);
             
             if(\count($this->userDB) < 1){
                $this->FirstTime($rootSettings . $this->settings->userfile);
             }
+            
             
             $this->CheckSession();
             if(Site::getRequest()->requestType == "login"){
@@ -113,23 +173,31 @@ class BreadUserSystem extends Module
                 }
                 
             }
-
         }
         
         function CreateLoginLink()
         {
-           $link = new \Bread\Structures\BreadLinkStructure();
+           $links = array();
            if(isset($this->currentUser))
            {
-               $link->request = "login";
-               $link->text = "Logout";
+               $logout = new \Bread\Structures\BreadLinkStructure();
+               $logout->request = "login";
+               $logout->text = "Logout";
+               $links[] = $logout;
            }
            else
            {
-               $link->request = "loginform";
-               $link->text = "Login";
+               $login = new \Bread\Structures\BreadLinkStructure();
+               $login->request = "loginform";
+               $login->text = "Login";
+               $links[] = $login;
+               
+               $register = new \Bread\Structures\BreadLinkStructure();
+               $register->request = "registerform";
+               $register->text = "Register";
+               $links[] = $register;
            }
-           return array($link);
+           return $links;
         }
         
 	function ReturnUser($arguments)
@@ -177,7 +245,15 @@ class BreadUserSystem extends Module
             }    
             Site::$Logger->writeMessage("User logged in.");
             session_regenerate_id ();
-            $this->currentUser = $this->userDB[$_SESSION["uid"]]->breaduserdata;
+            $user = $this->GetUserByUID($_SESSION["uid"]);
+            if(!$user)
+            {
+                Site::$moduleManager->HookEvent("Bread.Security.InvalidSession",0);
+                Site::$Logger->writeMessage("Stored UID does not exist, whoa!");
+                $this->Logout();
+                return False;
+            }
+            $this->currentUser = $user->breaduserdata;
             Site::$moduleManager->HookEvent("Bread.Security.LoggedIn",NULL);
         }
 }

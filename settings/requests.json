@@ -21,6 +21,11 @@
         "include":["master"],
         "modules":["BreadFormBuilder\/module.json"]
     },
+    "registerform":{
+        "layout":"register",
+        "include":["master"],
+        "modules":["BreadFormBuilder\/module.json"]
+    },
     "login":{
         "layout":"default",
         "modules":["BreadUserSystem\/module.json"]
