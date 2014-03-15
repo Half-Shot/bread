@@ -5,8 +5,9 @@
 Please note these are *core* events listed.
 Offical and supported modules will list their own events.
 Also this isn't in any order, just whatever findall returned first.
+
 |Event Name                     |Fired When                                                                     |Expected Return Data                       |Useful For                                                 |Arguments Passed       | 
-|-------------------------------|-------------------------------------------------------------------------------|-------------------------------------------|-----------------------------------------------------------|-----------------------|
+|:-----------------------------:| ----------------------------------------------------------------------------- |:-----------------------------------------:| --------------------------------------------------------- |:---------------------:|
 |Bread.SelectLayout             |When the thememanger is deciding on a layout, this can override its decision.  |A StdObject comprising of the theme data.  |Overriding themes.                                         |None                   |
 |Bread.SelectTheme              |When the thememanger is deciding on a theme, this can override its decision.   |A StdObject comprising of the layout data. |Overriding layouts.                                        |None                   |
 |Bread.Metadata                 |When bread is building the head of the document.                               |A HTML string                              |Post title or data.                                        |RequestData            |
