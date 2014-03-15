@@ -23,7 +23,9 @@ but even at 0.1 hopefully most of the system is in concrete.
 
 ##Whats done/todo:
 
-This list needs to be done XD
+Since I try to make use of the Github Issues System, most of the changes are documentd on closed issues.
+Of cource if you wish for a feature then just throw it onto the pile.
+
 
 ====
 ##Credit to
