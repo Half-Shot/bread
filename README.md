@@ -16,9 +16,10 @@ The aims of the project are to:
 
 ##Usage
 
-We DO NOT RECCOMEND USING DEVBREAD YET.
-However if you want to help with coding it then its really just a drag and drop to webserver system at the moment.
-You might want to edit some of the settings files.
+Documentation: http://half-shot.github.io/bread/
+
+The Core system is expected to shift around until 0.3 where things are expected to stabilize
+but even at 0.1 hopefully most of the system is in concrete.
 
 ##Whats done/todo:
 
