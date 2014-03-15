@@ -5,6 +5,8 @@ use Bread\Site as Site;
  * The manager responsible fro loading Theme Modules and Layouts.
  * This loads the themes and layouts and decides which one is right, before calling
  * hooks listed by a module file. The final result is appended to the html.
+ * @todo Add a theme structure.
+ * @todo Add a layout structure.
  */
 class ThemeManager
 {
