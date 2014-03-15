@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class Bread\Themes\ThemeManager | Bread</title>
+
+	<script type="text/javascript" src="resources/combined.js?174271566"></script>
+	<script type="text/javascript" src="elementlist.js?2014293178"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li class="active"><a href="namespace-Bread.html">Bread<span></span></a>
+						<ul>
+				<li><a href="namespace-Bread.Modules.html">Modules</a>
+						</li>
+				<li><a href="namespace-Bread.Settings.html">Settings</a>
+						</li>
+				<li><a href="namespace-Bread.Structures.html">Structures</a>
+						</li>
+				<li class="active"><a href="namespace-Bread.Themes.html">Themes</a>
+						</li>
+							</ul></li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li class="active"><a href="class-Bread.Themes.ThemeManager.html">ThemeManager</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-Bread.Themes.html" title="Summary of Bread\Themes"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class ThemeManager</h1>
+
+
+	<div class="description">
+	
+<p>The manager responsible fro loading Theme Modules and Layouts. This loads the
+themes and layouts and decides which one is right, before calling hooks listed
+by a module file. The final result is appended to the html.</p>
+
+	</div>
+
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-Bread.html">Bread</a>\<a href="namespace-Bread.Themes.html">Themes</a><br />
+		
+
+		<b>Located at</b> <a href="source-class-Bread.Themes.ThemeManager.html#4-297" title="Go to source code">modules/Themes/thememan.php</a><br />
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-Bread.Themes.ThemeManager.html#23-28" title="Go to source code">__construct</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="LoadSettings" id="_LoadSettings">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_LoadSettings">#</a>
+		<code><a href="source-class-Bread.Themes.ThemeManager.html#30-46" title="Go to source code">LoadSettings</a>( <span>string <var>$filepath</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Load the settings files and retrive the settings for each listed theme as
+well.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Load the settings files and retrive the settings for each listed theme as
+well.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$filepath</var></dt>
+					<dd><code>string</code><br>$filepath Filepath to load settings from.</dd>
+				</dl></div>
+
+
+
+				<h4>See</h4>
+				<div class="list">
+						Site::$configuration<br />
+						Site::$themes<br />
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="LoadLayouts" id="_LoadLayouts">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_LoadLayouts">#</a>
+		<code><a href="source-class-Bread.Themes.ThemeManager.html#48-64" title="Go to source code">LoadLayouts</a>( )</code>
+
+		<div class="description short">
+			
+<p>Load the layout files listed in the themes settings.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Load the layout files listed in the themes settings.</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="SelectTheme" id="_SelectTheme">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_SelectTheme">#</a>
+		<code><a href="source-class-Bread.Themes.ThemeManager.html#66-83" title="Go to source code">SelectTheme</a>( <span>/Bread/Structures/BreadRequest <var>$Request</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Select the correct theme based on the request.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Select the correct theme based on the request.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$Request</var></dt>
+					<dd><code>/Bread/Structures/BreadRequest</code><br>$Request</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br>Was the theme set.<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="SetTheme" id="_SetTheme">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_SetTheme">#</a>
+		<code><a href="source-class-Bread.Themes.ThemeManager.html#85-100" title="Go to source code">SetTheme</a>( <span>mixed <var>$suggestedTheme</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="SelectLayout" id="_SelectLayout">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_SelectLayout">#</a>
+		<code><a href="source-class-Bread.Themes.ThemeManager.html#102-122" title="Go to source code">SelectLayout</a>( <span>/Bread/Structures/BreadRequest <var>$Request</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Select the correct layout based on the request.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Select the correct layout based on the request.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$Request</var></dt>
+					<dd><code>/Bread/Structures/BreadRequest</code><br>$Request</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br>Was the layout set.<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="FindFile" id="_FindFile">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_FindFile">#</a>
+		<code><a href="source-class-Bread.Themes.ThemeManager.html#124-149" title="Go to source code">FindFile</a>( <span>type <var>$filepath</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Looks for a CSS file in the common user paths. Ordered by layout, theme and
+resource. Useful for layouts overriding.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Looks for a CSS file in the common user paths. Ordered by layout, theme and
+resource. Useful for layouts overriding.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$filepath</var></dt>
+					<dd><code>type</code><br>$filepath</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><code><a href="class-Exception.html">Exception</a></code></code><br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="BuildCSS" id="_BuildCSS">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_BuildCSS">#</a>
+		<code><a href="source-class-Bread.Themes.ThemeManager.html#151-167" title="Go to source code">BuildCSS</a>( )</code>
+
+		<div class="description short">
+			
+<p>Add CSS to the HTML page for each file registered.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Add CSS to the HTML page for each file registered.</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="AddCSSFile" id="_AddCSSFile">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_AddCSSFile">#</a>
+		<code><a href="source-class-Bread.Themes.ThemeManager.html#168-175" title="Go to source code">AddCSSFile</a>( <span>string <var>$filepath</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Add a CSS file to the list.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Add a CSS file to the list.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$filepath</var></dt>
+					<dd><code>string</code><br>$filepath The relative path of the file.</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="ReadElementsFromLayout" id="_ReadElementsFromLayout">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_ReadElementsFromLayout">#</a>
+		<code><a href="source-class-Bread.Themes.ThemeManager.html#178-251" title="Go to source code">ReadElementsFromLayout</a>( <span><code><a href="class-stdClass.html">stdClass</a></code> <var>$Layout</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Read the elements from the layout and puts them in the right place.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Read the elements from the layout and puts them in the right place.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$Layout</var></dt>
+					<dd><code><code><a href="class-stdClass.html">stdClass</a></code></code><br>$Layout</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="ExamineElement" id="_ExamineElement">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_ExamineElement">#</a>
+		<code><a href="source-class-Bread.Themes.ThemeManager.html#252-296" title="Go to source code">ExamineElement</a>( <span>array <var>$element</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Checks for missing propertys to the element AND any hacks that might be
+injected.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Checks for missing propertys to the element AND any hacks that might be
+injected.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$element</var></dt>
+					<dd><code>array</code><br>$element Element to scan for hacks</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>Returns a array to be drawn.<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="Theme" id="$Theme">
+		<td class="attributes"><code>
+			public  
+			mixed
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Bread.Themes.ThemeManager.html#20" title="Go to source code"><var>$Theme</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$Theme" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="CSSLines" id="$CSSLines">
+		<td class="attributes"><code>
+			public  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Bread.Themes.ThemeManager.html#21" title="Go to source code"><var>$CSSLines</var></a>
+		</td>
+		<td class="value"><code><span class="php-quote">&quot;&quot;</span></code></td>
+		<td class="description"><div>
+			<a href="#$CSSLines" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		Bread API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class Bread\Settings\SettingsManager | Bread</title>
+
+	<script type="text/javascript" src="resources/combined.js?174271566"></script>
+	<script type="text/javascript" src="elementlist.js?2014293178"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li class="active"><a href="namespace-Bread.html">Bread<span></span></a>
+						<ul>
+				<li><a href="namespace-Bread.Modules.html">Modules</a>
+						</li>
+				<li class="active"><a href="namespace-Bread.Settings.html">Settings</a>
+						</li>
+				<li><a href="namespace-Bread.Structures.html">Structures</a>
+						</li>
+				<li><a href="namespace-Bread.Themes.html">Themes</a>
+						</li>
+							</ul></li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li class="active"><a href="class-Bread.Settings.SettingsManager.html">SettingsManager</a></li>
+			</ul>
+
+
+
+			<h3>Exceptions</h3>
+			<ul>
+				<li><a href="class-Bread.Settings.FailedToParseException.html">FailedToParseException</a></li>
+				<li><a href="class-Bread.Settings.FileNotFoundException.html">FileNotFoundException</a></li>
+				<li><a href="class-Bread.Settings.FileNotWrittenException.html">FileNotWrittenException</a></li>
+				<li><a href="class-Bread.Settings.SettingsException.html">SettingsException</a></li>
+			</ul>
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-Bread.Settings.html" title="Summary of Bread\Settings"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class SettingsManager</h1>
+
+
+	<div class="description">
+	
+<p>The manager responsible for serving all settings files from json storage to
+stdObject. It deals with loading and converting, saving and rasing errors and
+logging them where appropriate.</p>
+
+	</div>
+
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-Bread.html">Bread</a>\<a href="namespace-Bread.Settings.html">Settings</a><br />
+		
+
+		<b>Located at</b> <a href="source-class-Bread.Settings.SettingsManager.html#28-164" title="Go to source code">modules/Settings/SettingsManager.php</a><br />
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-Bread.Settings.SettingsManager.html#43-45" title="Go to source code">__construct</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="FindModuleDir" id="_FindModuleDir">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_FindModuleDir">#</a>
+		<code><a href="source-class-Bread.Settings.SettingsManager.html#46-62" title="Go to source code">FindModuleDir</a>( <span>string <var>$dirname</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Creates a settings folder for your module or just returns the path. You will
+also want to create settings files. PLEASE use module names and not anything
+else.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Creates a settings folder for your module or just returns the path. You will
+also want to create settings files. PLEASE use module names and not anything
+else.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$dirname</var></dt>
+					<dd><code>string</code><br>$dirname The module name.</dd>
+				</dl></div>
+
+
+
+				<h4>See</h4>
+				<div class="list">
+						$this::CreateSettingsFile()<br />
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="CreateSettingsFiles" id="_CreateSettingsFiles">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_CreateSettingsFiles">#</a>
+		<code><a href="source-class-Bread.Settings.SettingsManager.html#64-79" title="Go to source code">CreateSettingsFiles</a>( <span>string <var>$filename</var></span>, <span><code><a href="class-stdClass.html">stdClass</a></code> <var>$template</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Creates a new settings file, sets the permissions and uses the specified
+template. If the file exists then returns False, else True.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Creates a new settings file, sets the permissions and uses the specified
+template. If the file exists then returns False, else True.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$filename</var></dt>
+					<dd><code>string</code><br>$filename Filename. Not relative (use CreateModInfo to get the directory).</dd>
+					<dt><var>$template</var></dt>
+					<dd><code><code><a href="class-stdClass.html">stdClass</a></code></code><br>$template Specify a template to use for the settings file. Could be a included
+json file with your module (must be decoded as a class).</dd>
+				</dl></div>
+
+
+
+				<h4>See</h4>
+				<div class="list">
+						$this::CreateModDir()<br />
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="RetriveSettings" id="_RetriveSettings">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_RetriveSettings">#</a>
+		<code><a href="source-class-Bread.Settings.SettingsManager.html#81-104" title="Go to source code">RetriveSettings</a>( <span>string <var>$path</var></span>, <span>boolean <var>$dontsave</var> = <span class="php-keyword1">False</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Retrives the settings file.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Retrives the settings file.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$path</var></dt>
+					<dd><code>string</code><br>$path The path of the file.</dd>
+					<dt><var>$dontsave</var></dt>
+					<dd><code>boolean</code><br>$dontsave Don't save the file to the array.</dd>
+				</dl></div>
+
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><code><a href="class-Bread.Settings.FileNotFoundException.html">Bread\Settings\FileNotFoundException</a></code></code><br />
+					<code><code><a href="class-Bread.Settings.FailedToParseException.html">Bread\Settings\FailedToParseException</a></code></code><br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="GetJsonObject" id="_GetJsonObject">
+
+		<td class="attributes"><code>
+			 public static
+			stdObject
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_GetJsonObject">#</a>
+		<code><a href="source-class-Bread.Settings.SettingsManager.html#106-128" title="Go to source code">GetJsonObject</a>( <span>type <var>$path</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Convert a path to a json object. Better to use RetriveSettings for long term
+use.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Convert a path to a json object. Better to use RetriveSettings for long term
+use.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$path</var></dt>
+					<dd><code>type</code><br>$path Path of the JSON File.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>stdObject</code><br>Json Object<br />
+				</div>
+
+
+				<h4>See</h4>
+				<div class="list">
+						<code><code><a href="class-Bread.Settings.SettingsManager.html#_RetriveSettings">Bread\Settings\SettingsManager::RetriveSettings()</a></code></code><br />
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="CompileJson" id="_CompileJson">
+
+		<td class="attributes"><code>
+			 public static
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_CompileJson">#</a>
+		<code><a href="source-class-Bread.Settings.SettingsManager.html#129-140" title="Go to source code">CompileJson</a>( <span>stdObject <var>$object</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Converts a Json Object into its string notation.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Converts a Json Object into its string notation.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$object</var></dt>
+					<dd><code>stdObject</code><br>$object</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>The JSON string.<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="SaveChanges" id="_SaveChanges">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_SaveChanges">#</a>
+		<code><a href="source-class-Bread.Settings.SettingsManager.html#142-150" title="Go to source code">SaveChanges</a>( )</code>
+
+		<div class="description short">
+			
+<p>Saves all the settings files currently open.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Saves all the settings files currently open.</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="SaveSetting" id="_SaveSetting">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_SaveSetting">#</a>
+		<code><a href="source-class-Bread.Settings.SettingsManager.html#151-163" title="Go to source code">SaveSetting</a>( <span>any <var>$object</var></span>, <span>string <var>$path</var></span>, <span>boolean <var>$shouldThrow</var> = <span class="php-keyword1">True</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Serializes an object into json before saving it into a file.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Serializes an object into json before saving it into a file.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$object</var></dt>
+					<dd><code>any</code><br>$object Object to save.</dd>
+					<dt><var>$path</var></dt>
+					<dd><code>string</code><br>$path The relative path to save to in relation to root.</dd>
+					<dt><var>$shouldThrow</var></dt>
+					<dd><code>boolean</code><br>$shouldThrow Should this function throw an error if it fails</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+	<table class="summary" id="constants">
+	<caption>Constants summary</caption>
+	<tr data-order="SAVEMODE" id="SAVEMODE">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+				<a href="source-class-Bread.Settings.SettingsManager.html#42" title="Go to source code"><b>SAVEMODE</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">0755</span></code></td>
+		<td class="description"><div>
+			<a href="#SAVEMODE" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		Bread API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

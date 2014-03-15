@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class Bread\Modules\ModuleManager | Bread</title>
+
+	<script type="text/javascript" src="resources/combined.js?174271566"></script>
+	<script type="text/javascript" src="elementlist.js?2014293178"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li class="active"><a href="namespace-Bread.html">Bread<span></span></a>
+						<ul>
+				<li class="active"><a href="namespace-Bread.Modules.html">Modules</a>
+						</li>
+				<li><a href="namespace-Bread.Settings.html">Settings</a>
+						</li>
+				<li><a href="namespace-Bread.Structures.html">Structures</a>
+						</li>
+				<li><a href="namespace-Bread.Themes.html">Themes</a>
+						</li>
+							</ul></li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Bread.Modules.Module.html">Module</a></li>
+				<li class="active"><a href="class-Bread.Modules.ModuleManager.html">ModuleManager</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-Bread.Modules.html" title="Summary of Bread\Modules"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class ModuleManager</h1>
+
+
+	<div class="description">
+	
+<p>The manager responsible for Modules: The plugin system for bread. Any extra
+code you will do for bread will run through this. It deals with loading and
+unloading of external code, and hooking it at appropriate times.</p>
+
+	</div>
+
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-Bread.html">Bread</a>\<a href="namespace-Bread.Modules.html">Modules</a><br />
+		
+
+		<b>Located at</b> <a href="source-class-Bread.Modules.ModuleManager.html#4-225" title="Go to source code">modules/Modules/moduleman.php</a><br />
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-Bread.Modules.ModuleManager.html#21-28" title="Go to source code">__construct</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="LoadSettings" id="_LoadSettings">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_LoadSettings">#</a>
+		<code><a href="source-class-Bread.Modules.ModuleManager.html#29-37" title="Go to source code">LoadSettings</a>( <span>string <var>$filepath</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Loads settings/</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Loads settings/</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$filepath</var></dt>
+					<dd><code>string</code><br>$filepath Filepath of the configuration file.</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="LoadModulesFromConfig" id="_LoadModulesFromConfig">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_LoadModulesFromConfig">#</a>
+		<code><a href="source-class-Bread.Modules.ModuleManager.html#38-53" title="Go to source code">LoadModulesFromConfig</a>( <span>string <var>$filepath</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Loads the modulelist from its json file.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Loads the modulelist from its json file.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$filepath</var></dt>
+					<dd><code>string</code><br>$filepath Filepath of the modulelist.</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="LoadRequiredModules" id="_LoadRequiredModules">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_LoadRequiredModules">#</a>
+		<code><a href="source-class-Bread.Modules.ModuleManager.html#55-68" title="Go to source code">LoadRequiredModules</a>( <span>/Bread/Structures/BreadLinkStructure <var>$request</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Reads the processed request and only loads required modules, saving
+memory.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Reads the processed request and only loads required modules, saving
+memory.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$request</var></dt>
+					<dd><code>/Bread/Structures/BreadLinkStructure</code><br>$request The request object.</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="RegisterSelectedTheme" id="_RegisterSelectedTheme">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_RegisterSelectedTheme">#</a>
+		<code><a href="source-class-Bread.Modules.ModuleManager.html#96-118" title="Go to source code">RegisterSelectedTheme</a>( )</code>
+
+		<div class="description short">
+			
+<p>The selected theme from /Bread/Themes/ThemeManager is loaded as a module in
+here. The method is simular to ModuleManager::RegisterModule()</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>The selected theme from /Bread/Themes/ThemeManager is loaded as a module in
+here. The method is simular to ModuleManager::RegisterModule()</p>
+
+
+
+
+
+
+				<h4>See</h4>
+				<div class="list">
+						/Bread/Themes/ThemeManager<br />
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="RegisterHook" id="_RegisterHook">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_RegisterHook">#</a>
+		<code><a href="source-class-Bread.Modules.ModuleManager.html#119-136" title="Go to source code">RegisterHook</a>( <span>string <var>$moduleName</var></span>, <span>type <var>$eventName</var></span>, <span>string <var>$function</var></span>, <span>array <var>$dependencies</var> = <span class="php-keyword1">array</span>()</span> )</code>
+
+		<div class="description short">
+			
+<p>Registers an event:<br />
+A module can register itself to a event which means any arguments of a hook is
+passed to<br />
+this modules function. A hook can be called at any time with a string of the
+event it wants to call.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Registers an event: A module can register itself to a event which means any
+arguments of a hook is passed to this modules function. A hook can be called at
+any time with a string of the event it wants to call.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$moduleName</var></dt>
+					<dd><code>string</code><br>$moduleName The module name as set when the module was registered.</dd>
+					<dt><var>$eventName</var></dt>
+					<dd><code>type</code><br>$eventName The event wished to be hooked onto.</dd>
+					<dt><var>$function</var></dt>
+					<dd><code>string</code><br>$function Function identifer of the object/module, just put the identifier, not
+the full location.</dd>
+					<dt><var>$dependencies</var></dt>
+					<dd><code>array</code><br>$dependencies Any depedencies of another event that must be run first, format of
+EventName =&gt; ModuleName</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="CanRunEvent" id="_CanRunEvent">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_CanRunEvent">#</a>
+		<code><a href="source-class-Bread.Modules.ModuleManager.html#138-157" title="Go to source code">CanRunEvent</a>( <span>type <var>$dependencies</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Can the event be run in regards to its dependencies.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Can the event be run in regards to its dependencies.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$dependencies</var></dt>
+					<dd><code>type</code><br>$dependencies A list of dependencies. format of EventName =&gt; ModuleName.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br>Returns if it can run the event.<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="FireEvent" id="_FireEvent">
+
+		<td class="attributes"><code>
+			 public 
+			array|boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_FireEvent">#</a>
+		<code><a href="source-class-Bread.Modules.ModuleManager.html#159-188" title="Go to source code">FireEvent</a>( <span>string <var>$eventName</var></span>, <span>any <var>$arguments</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Send a message to ModuleManager that the event should be fired on all hooked
+functions. It will call all registered hooks to run their function and return
+the data if any into a array.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Send a message to ModuleManager that the event should be fired on all hooked
+functions. It will call all registered hooks to run their function and return
+the data if any into a array.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$eventName</var></dt>
+					<dd><code>string</code><br>$eventName The event to fire.</dd>
+					<dt><var>$arguments</var></dt>
+					<dd><code>any</code><br>$arguments An array or any datatype to be passed to the function.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array|boolean</code><br>An array of the returned data or false if no data was returned.<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="FireSpecifiedModuleEvent" id="_FireSpecifiedModuleEvent">
+
+		<td class="attributes"><code>
+			 public 
+			boolean|any
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_FireSpecifiedModuleEvent">#</a>
+		<code><a href="source-class-Bread.Modules.ModuleManager.html#189-224" title="Go to source code">FireSpecifiedModuleEvent</a>( <span>string <var>$eventName</var></span>, <span>any <var>$moduleName</var></span>, <span>string <var>$arguments</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Similar to ModuleManager::FireEvent() but requires a module argument so you
+can pick which module picks it up.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Similar to ModuleManager::FireEvent() but requires a module argument so you
+can pick which module picks it up.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$eventName</var></dt>
+					<dd><code>string</code><br>$eventName The event to fire.</dd>
+					<dt><var>$moduleName</var></dt>
+					<dd><code>any</code><br>$arguments An array or any datatype to be passed to the function.</dd>
+					<dt><var>$arguments</var></dt>
+					<dd><code>string</code><br>$moduleName The module to use.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean|any</code><br>Returns data from the module or false if it failed.<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		Bread API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

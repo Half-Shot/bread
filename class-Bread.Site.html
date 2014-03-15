@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class Bread\Site | Bread</title>
+
+	<script type="text/javascript" src="resources/combined.js?174271566"></script>
+	<script type="text/javascript" src="elementlist.js?2014293178"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li class="active"><a href="namespace-Bread.html">Bread<span></span></a>
+						<ul>
+				<li><a href="namespace-Bread.Modules.html">Modules</a>
+						</li>
+				<li><a href="namespace-Bread.Settings.html">Settings</a>
+						</li>
+				<li><a href="namespace-Bread.Structures.html">Structures</a>
+						</li>
+				<li><a href="namespace-Bread.Themes.html">Themes</a>
+						</li>
+							</ul></li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Bread.Logger.html">Logger</a></li>
+				<li class="active"><a href="class-Bread.Site.html">Site</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-Bread.html" title="Summary of Bread"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class Site</h1>
+
+
+	<div class="description">
+	
+<p>The root class of Bread. Contains managers and configuration code. This class
+should only have its methods called from index.php except getters and setters.
+The class has 2 important objects, ThemeManager and ModuleManager. Editing this
+class from any other module or class is discouraged since its bad for security.
+Use the supplied methods instead and use the module system where possible.</p>
+
+	</div>
+
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-Bread.html">Bread</a><br />
+		<b>Package:</b> Bread<br />
+
+				<b>See:</b>
+				ModuleManager<br />
+				<b>See:</b>
+				ThemeManager<br />
+		<b>Located at</b> <a href="source-class-Bread.Site.html#5-670" title="Go to source code">modules/site.php</a><br />
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="Configuration" id="_Configuration">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_Configuration">#</a>
+		<code><a href="source-class-Bread.Site.html#113-116" title="Go to source code">Configuration</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isDebug" id="_isDebug">
+
+		<td class="attributes"><code>
+			 public static
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isDebug">#</a>
+		<code><a href="source-class-Bread.Site.html#117-124" title="Go to source code">isDebug</a>( )</code>
+
+		<div class="description short">
+			
+<p>Is the site in debug mode?</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Is the site in debug mode?</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br>DebugOn<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getRequest" id="_getRequest">
+
+		<td class="attributes"><code>
+			 public static
+			<code><a href="class-Bread.Structures.BreadRequestData.html">Bread\Structures\BreadRequestData</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getRequest">#</a>
+		<code><a href="source-class-Bread.Site.html#125-134" title="Go to source code">getRequest</a>( )</code>
+
+		<div class="description short">
+			
+<p>Get the data parsed from the input url, useful for modules. Set in
+static::DigestRequest()</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Get the data parsed from the input url, useful for modules. Set in
+static::DigestRequest()</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-Bread.Structures.BreadRequestData.html">Bread\Structures\BreadRequestData</a></code></code><br>The requested data by the user.<br />
+				</div>
+
+
+				<h4>See</h4>
+				<div class="list">
+						static::DigestRequest()<br />
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getBaseURL" id="_getBaseURL">
+
+		<td class="attributes"><code>
+			 public static
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getBaseURL">#</a>
+		<code><a href="source-class-Bread.Site.html#135-142" title="Go to source code">getBaseURL</a>( )</code>
+
+		<div class="description short">
+			
+<p>Return the base URL.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Return the base URL.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getURLParams" id="_getURLParams">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getURLParams">#</a>
+		<code><a href="source-class-Bread.Site.html#144-147" title="Go to source code">getURLParams</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="AddToHeaderCode" id="_AddToHeaderCode">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_AddToHeaderCode">#</a>
+		<code><a href="source-class-Bread.Site.html#148-157" title="Go to source code">AddToHeaderCode</a>( <span>string <var>$code</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Add some code to the document header. DO NOT ADD CSS, SCRIPTS OR METADATA
+THROUGH THIS</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Add some code to the document header. DO NOT ADD CSS, SCRIPTS OR METADATA
+THROUGH THIS</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$code</var></dt>
+					<dd><code>string</code><br>$code</dd>
+				</dl></div>
+
+
+
+				<h4>See</h4>
+				<div class="list">
+						<code><code><a href="class-Bread.Site.html#_AddToBodyCode">Bread\Site::AddToBodyCode()</a></code></code><br />
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="AddScript" id="_AddScript">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_AddScript">#</a>
+		<code><a href="source-class-Bread.Site.html#159-174" title="Go to source code">AddScript</a>( <span>string <var>$location</var></span>, <span>string <var>$isLow</var> = <span class="php-keyword1">False</span></span>, <span>boolean <var>$mimetype</var> = <span class="php-quote">'text/javascript'</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Adds a script to the head of the document.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Adds a script to the head of the document.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$location</var></dt>
+					<dd><code>string</code><br>$location The location of the file.</dd>
+					<dt><var>$isLow</var></dt>
+					<dd><code>string</code><br>$mimetype The type of script, directed by mimetype. Default is javascript.</dd>
+					<dt><var>$mimetype</var></dt>
+					<dd><code>boolean</code><br>$isLow Is the script low priority, and can be added to the end of the document
+instead of the head.</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="AddRawScriptCode" id="_AddRawScriptCode">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_AddRawScriptCode">#</a>
+		<code><a href="source-class-Bread.Site.html#176-191" title="Go to source code">AddRawScriptCode</a>( <span>string <var>$code</var></span>, <span>string <var>$isLow</var> = <span class="php-keyword1">False</span></span>, <span>boolean <var>$mimetype</var> = <span class="php-quote">'text/javascript'</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Adds raw script code the head of the document.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Adds raw script code the head of the document.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$code</var></dt>
+					<dd><code>string</code><br>$location The code (no tags please).</dd>
+					<dt><var>$isLow</var></dt>
+					<dd><code>string</code><br>$mimetype The type of script, directed by mimetype. Default is javascript.</dd>
+					<dt><var>$mimetype</var></dt>
+					<dd><code>boolean</code><br>$isLow Is the script low priority, and can be added to the end of the document
+instead of the head.</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="AddToBodyCode" id="_AddToBodyCode">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_AddToBodyCode">#</a>
+		<code><a href="source-class-Bread.Site.html#194-203" title="Go to source code">AddToBodyCode</a>( <span>string <var>$code</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Add some code to the document body. For scripts and header infomation
+checkout Site::AddToHeaderCode().</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Add some code to the document body. For scripts and header infomation
+checkout Site::AddToHeaderCode().</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$code</var></dt>
+					<dd><code>string</code><br>$code</dd>
+				</dl></div>
+
+
+
+				<h4>See</h4>
+				<div class="list">
+						<code><code><a href="class-Bread.Site.html#_AddToHeaderCode">Bread\Site::AddToHeaderCode()</a></code></code><br />
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="LoadConfig" id="_LoadConfig">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_LoadConfig">#</a>
+		<code><a href="source-class-Bread.Site.html#205-226" title="Go to source code">LoadConfig</a>( <span>string <var>$configurl</var></span> )</code>
+
+		<div class="description short">
+			
+<p>The first stage of any bread site. This method loads a json config file into
+$configuration. If this method fails then the site will not start.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>The first stage of any bread site. This method loads a json config file into
+$configuration. If this method fails then the site will not start.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$configurl</var></dt>
+					<dd><code>string</code><br>$configurl The url to load the config from.</dd>
+				</dl></div>
+
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><code><a href="class-Exception.html">Exception</a></code></code><br />
+				</div>
+
+				<h4>See</h4>
+				<div class="list">
+						static::$configuration<br />
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="ShowDebug" id="_ShowDebug">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_ShowDebug">#</a>
+		<code><a href="source-class-Bread.Site.html#227-245" title="Go to source code">ShowDebug</a>( <span>Boolean <var>$enable</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Enables/Disables Debug Statements. Very useful for a developer such as
+yourself. Starts disabled.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Enables/Disables Debug Statements. Very useful for a developer such as
+yourself. Starts disabled.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$enable</var></dt>
+					<dd><code>Boolean</code><br>$enable Toggle</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="CheckBans" id="_CheckBans">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_CheckBans">#</a>
+		<code><a href="source-class-Bread.Site.html#246-266" title="Go to source code">CheckBans</a>( )</code>
+
+		<div class="description short">
+			
+<p>A simple ban-by-ip system which will be swapped out in the future. Looks
+inside our loaded config and if its a banned ip then the site will cease. A
+really horrible ban system.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>A simple ban-by-ip system which will be swapped out in the future. Looks
+inside our loaded config and if its a banned ip then the site will cease. A
+really horrible ban system.</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="LoadCoreModules" id="_LoadCoreModules">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_LoadCoreModules">#</a>
+		<code><a href="source-class-Bread.Site.html#267-292" title="Go to source code">LoadCoreModules</a>( <span>string <var>$directory</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Loads core modules from a directory ($directory). Its probably best to not
+place anything in this directory or you will fear the wrath of bread.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Loads core modules from a directory ($directory). Its probably best to not
+place anything in this directory or you will fear the wrath of bread.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$directory</var></dt>
+					<dd><code>string</code><br>$directory Relative/Fullpath to load classes from.</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="SetupLogging" id="_SetupLogging">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_SetupLogging">#</a>
+		<code><a href="source-class-Bread.Site.html#293-300" title="Go to source code">SetupLogging</a>( )</code>
+
+		<div class="description short">
+			
+<p>Creates a new logger for error reporting.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Creates a new logger for error reporting.</p>
+
+
+
+
+
+
+				<h4>See</h4>
+				<div class="list">
+						static::$Logger<br />
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="CheckCoreModules" id="_CheckCoreModules">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_CheckCoreModules">#</a>
+		<code><a href="source-class-Bread.Site.html#301-324" title="Go to source code">CheckCoreModules</a>( )</code>
+
+		<div class="description short">
+			
+<p>Checks each module in the core modules that were previously loaded from
+LoadCoreModules() and if any are missing then bread will throw an error. The
+file it checks will be inside the root settings directory called
+'coremodulecheck.json'</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Checks each module in the core modules that were previously loaded from
+LoadCoreModules() and if any are missing then bread will throw an error. The
+file it checks will be inside the root settings directory called
+'coremodulecheck.json'</p>
+
+
+
+
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><code><a href="class-Exception.html">Exception</a></code></code><br />
+				</div>
+
+				<h4>See</h4>
+				<div class="list">
+						static::LoadCoreModules()<br />
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="SetupManagers" id="_SetupManagers">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_SetupManagers">#</a>
+		<code><a href="source-class-Bread.Site.html#325-347" title="Go to source code">SetupManagers</a>( )</code>
+
+		<div class="description short">
+			
+<p>Sets up all managers that bread uses. This is currently:<br />
+ThemeManager<br />
+ModuleManager It also loads settings and configuration files for managers.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Sets up all managers that bread uses. This is currently: ThemeManager
+ModuleManager It also loads settings and configuration files for managers.</p>
+
+
+
+
+
+
+				<h4>See</h4>
+				<div class="list">
+						static::$themeManager<br />
+						static::$moduleManager<br />
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="ProcessMetadata" id="_ProcessMetadata">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_ProcessMetadata">#</a>
+		<code><a href="source-class-Bread.Site.html#348-365" title="Go to source code">ProcessMetadata</a>( <span><code><a href="class-Bread.Structures.BreadRequestData.html">Bread\Structures\BreadRequestData</a></code> <var>$requestData</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Creates metadata tags for the header. This function calls moduleman and asks
+all applicable modules to add metadata structures.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Creates metadata tags for the header. This function calls moduleman and asks
+all applicable modules to add metadata structures.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$requestData</var></dt>
+					<dd><code><code><a href="class-Bread.Structures.BreadRequestData.html">Bread\Structures\BreadRequestData</a></code></code><br>$requestData The request structure generated.</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="DigestRequest" id="_DigestRequest">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_DigestRequest">#</a>
+		<code><a href="source-class-Bread.Site.html#366-447" title="Go to source code">DigestRequest</a>( )</code>
+
+		<div class="description short">
+			
+<p>Digests a request into the bits we want and puts it into a object. No return
+values but instead puts in Site::$Request. Users have no need to call this, its
+done automatically.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Digests a request into the bits we want and puts it into a object. No return
+values but instead puts in Site::$Request. Users have no need to call this, its
+done automatically.</p>
+
+
+
+
+
+
+				<h4>See</h4>
+				<div class="list">
+						Site::$Request<br />
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="ProcessRequest" id="_ProcessRequest">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_ProcessRequest">#</a>
+		<code><a href="source-class-Bread.Site.html#449-537" title="Go to source code">ProcessRequest</a>( )</code>
+
+		<div class="description short">
+			
+<p>This is the big one. It generates the page when all of bread is ready. It
+also loads 3 important functions which determine what modules, themes and
+layouts to load.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>This is the big one. It generates the page when all of bread is ready. It
+also loads 3 important functions which determine what modules, themes and
+layouts to load.</p>
+
+
+
+
+
+
+				<h4>See</h4>
+				<div class="list">
+						ModuleManager::LoadRequiredModules()<br />
+						ThemeManager::SelectTheme()<br />
+						ThemeManager::SelectLayout()<br />
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="Cleanup" id="_Cleanup">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_Cleanup">#</a>
+		<code><a href="source-class-Bread.Site.html#538-547" title="Go to source code">Cleanup</a>( )</code>
+
+		<div class="description short">
+			
+<p>Closes the logger and gives any modules a chance to clean up their work by
+calling "Bread.Cleanup".</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Closes the logger and gives any modules a chance to clean up their work by
+calling "Bread.Cleanup".</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="ResolvePath" id="_ResolvePath">
+
+		<td class="attributes"><code>
+			 public static
+			type
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_ResolvePath">#</a>
+		<code><a href="source-class-Bread.Site.html#548-575" title="Go to source code">ResolvePath</a>( <span>string <var>$path</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Splits a string path up and locates wildcard paths such as %user-themes and
+creates the correct path.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Splits a string path up and locates wildcard paths such as %user-themes and
+creates the correct path.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$path</var></dt>
+					<dd><code>string</code><br>$path</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>type</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="DigestURL" id="_DigestURL">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_DigestURL">#</a>
+		<code><a href="source-class-Bread.Site.html#576-599" title="Go to source code">DigestURL</a>( <span>type <var>$url</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Converts a URL into a array of parameters and the base url.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Converts a URL into a array of parameters and the base url.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$url</var></dt>
+					<dd><code>type</code><br>$url</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="CondenseURLParams" id="_CondenseURLParams">
+
+		<td class="attributes"><code>
+			 public static
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_CondenseURLParams">#</a>
+		<code><a href="source-class-Bread.Site.html#600-624" title="Go to source code">CondenseURLParams</a>( <span>type <var>$baseurl</var></span>, <span>type <var>$params</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Create a URL from a baseurl and a array of params.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Create a URL from a baseurl and a array of params.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$baseurl</var></dt>
+					<dd><code>type</code><br>$baseurl The base url of the site. Use False to use the current site baseurl.</dd>
+					<dt><var>$params</var></dt>
+					<dd><code>type</code><br>$params The array of params to append to the url. Leave as a blank array for
+none.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>The URL<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="GetTimeSinceStart" id="_GetTimeSinceStart">
+
+		<td class="attributes"><code>
+			 public static
+			float
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_GetTimeSinceStart">#</a>
+		<code><a href="source-class-Bread.Site.html#626-634" title="Go to source code">GetTimeSinceStart</a>( <span>integer <var>$dec</var> = <span class="php-num">3</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Gets the seconds of time since PHP got the request.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Gets the seconds of time since PHP got the request.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$dec</var></dt>
+					<dd><code>integer</code><br>$dec The decimal time to account to.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>float</code><br>Microsecond Time.<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="IsAjax" id="_IsAjax">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_IsAjax">#</a>
+		<code><a href="source-class-Bread.Site.html#636-643" title="Go to source code">IsAjax</a>( )</code>
+
+		<div class="description short">
+			
+<p>A simple check to see if the request is an ajax based one. Will set
+Site::$isAjax</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>A simple check to see if the request is an ajax based one. Will set
+Site::$isAjax</p>
+
+
+
+
+
+
+				<h4>See</h4>
+				<div class="list">
+						Site::$isAjax<br />
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="CastStdObjectToStruct" id="_CastStdObjectToStruct">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_CastStdObjectToStruct">#</a>
+		<code><a href="source-class-Bread.Site.html#645-657" title="Go to source code">CastStdObjectToStruct</a>( <span>mixed <var>$obj</var></span>, <span>mixed <var>$type</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Cast a standard object (say a unserialzed object) into its proper object.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Cast a standard object (say a unserialzed object) into its proper object.</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="Redirect" id="_Redirect">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_Redirect">#</a>
+		<code><a href="source-class-Bread.Site.html#659-669" title="Go to source code">Redirect</a>( <span>string <var>$url</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Redirect the user to a new URL and cleanup bread. Careful with this.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Redirect the user to a new URL and cleanup bread. Careful with this.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$url</var></dt>
+					<dd><code>string</code><br>$url</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="themeManager" id="$themeManager">
+		<td class="attributes"><code>
+			public static 
+			ThemeManager
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Bread.Site.html#28-33" title="Go to source code"><var>$themeManager</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$themeManager" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>The global theme manager. There is only one ThemeManager and this is it.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>The global theme manager. There is only one ThemeManager and this is it.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="moduleManager" id="$moduleManager">
+		<td class="attributes"><code>
+			public static 
+			ModuleManager
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Bread.Site.html#35-40" title="Go to source code"><var>$moduleManager</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$moduleManager" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>The global module manager.There is only one ModuleManager and this is it.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>The global module manager.There is only one ModuleManager and this is it.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="settingsManager" id="$settingsManager">
+		<td class="attributes"><code>
+			public static 
+			SettingsManager
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Bread.Site.html#42-47" title="Go to source code"><var>$settingsManager</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$settingsManager" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>The global settings manager. Although advanced modules may wish to use their
+own SettingsManager instance, this is the one most will use.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>The global settings manager. Although advanced modules may wish to use their
+own SettingsManager instance, this is the one most will use.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="Logger" id="$Logger">
+		<td class="attributes"><code>
+			public static 
+			<code><a href="class-Bread.Logger.html">Bread\Logger</a></code>
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Bread.Site.html#49-53" title="Go to source code"><var>$Logger</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$Logger" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>The global Logger which logs messages and throws errors.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>The global Logger which logs messages and throws errors.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		Bread API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>
