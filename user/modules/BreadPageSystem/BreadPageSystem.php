@@ -13,17 +13,17 @@ class BreadPageSystem extends Module
 
         function RegisterEvents()
         {
-            $this->manager->RegisterEvent($this->name,"Bread.DrawModule","DrawPage");
-            $this->manager->RegisterEvent($this->name,"Bread.ProcessRequest","Setup",array("Bread.Security.GetPermission"=>"BreadUserSystem"));
-            $this->manager->RegisterEvent($this->name,"Bread.LowPriorityScripts","GenerateHTML");
-            $this->manager->RegisterEvent($this->name,"BreadPageSystem.DrawRecentPosts","DrawRecentPosts");
-            $this->manager->RegisterEvent($this->name,"Bread.Title","DrawTitle");
-            $this->manager->RegisterEvent($this->name,"BreadPageSystem.PlainMarkdown","DrawPlainMarkdown");
-            $this->manager->RegisterEvent($this->name,"BreadPageSystem.BreadCrumbs","DrawBreadcrumbs");
-            $this->manager->RegisterEvent($this->name,"BreadPageSystem.Infomation","DrawPostInfomation");
-            $this->manager->RegisterEvent($this->name,"BreadPageSystem.EditorButton","DrawMarkdownToggleswitch");
-            $this->manager->RegisterEvent($this->name,"BreadPageSystem.SavePost","SavePost");
-            $this->manager->RegisterEvent($this->name,"Bread.Security.LoggedIn","CheckEditorRights");
+            $this->manager->RegisterHook($this->name,"Bread.DrawModule","DrawPage");
+            $this->manager->RegisterHook($this->name,"Bread.ProcessRequest","Setup",array("Bread.Security.GetPermission"=>"BreadUserSystem"));
+            $this->manager->RegisterHook($this->name,"Bread.LowPriorityScripts","GenerateHTML");
+            $this->manager->RegisterHook($this->name,"BreadPageSystem.DrawRecentPosts","DrawRecentPosts");
+            $this->manager->RegisterHook($this->name,"Bread.Title","DrawTitle");
+            $this->manager->RegisterHook($this->name,"BreadPageSystem.PlainMarkdown","DrawPlainMarkdown");
+            $this->manager->RegisterHook($this->name,"BreadPageSystem.BreadCrumbs","DrawBreadcrumbs");
+            $this->manager->RegisterHook($this->name,"BreadPageSystem.Infomation","DrawPostInfomation");
+            $this->manager->RegisterHook($this->name,"BreadPageSystem.EditorButton","DrawMarkdownToggleswitch");
+            $this->manager->RegisterHook($this->name,"BreadPageSystem.SavePost","SavePost");
+            $this->manager->RegisterHook($this->name,"Bread.Security.LoggedIn","CheckEditorRights");
         }
         
         function AddPages()
@@ -83,7 +83,7 @@ class BreadPageSystem extends Module
         function CheckEditorRights()
         {
            //See if the user is an editor
-           if($this->manager->HookEvent("Bread.Security.GetPermission","Editor")[0]){
+           if($this->manager->FireEvent("Bread.Security.GetPermission","Editor")[0]){
                    $this->EnableEditor = true;
            }
         }
@@ -134,7 +134,7 @@ class BreadPageSystem extends Module
         function DrawRecentPosts()
         {
             $pages = $this->GenerateNavbar();
-            return Site::$moduleManager->HookEvent("Theme.VerticalNavbar",$pages);
+            return Site::$moduleManager->FireEvent("Theme.VerticalNavbar",$pages);
         }
         
         function DrawTitle()
@@ -142,8 +142,8 @@ class BreadPageSystem extends Module
            $page = $this->GetActivePost();
            if($page == False)
             return False;
-           $html = Site::$moduleManager->HookEvent("Theme.Post.Title","<div id='bps-title'>" . $page->name . "</div>")[0];
-           return $html . Site::$moduleManager->HookEvent("Theme.Post.Subtitle","<div id='bps-subtitle'>" . $page->title . "</div>")[0];
+           $html = Site::$moduleManager->FireEvent("Theme.Post.Title","<div id='bps-title'>" . $page->name . "</div>")[0];
+           return $html . Site::$moduleManager->FireEvent("Theme.Post.Subtitle","<div id='bps-subtitle'>" . $page->title . "</div>")[0];
         }
         
         function GetActivePost()
@@ -186,7 +186,7 @@ class BreadPageSystem extends Module
            if($page == False)
             return False;
            $breadcrumbs = $page->categorys;
-           return Site::$moduleManager->HookEvent("Theme.Post.Breadcrumbs",$breadcrumbs);
+           return Site::$moduleManager->FireEvent("Theme.Post.Breadcrumbs",$breadcrumbs);
         }
         
         function DrawPostInfomation()
@@ -197,12 +197,12 @@ class BreadPageSystem extends Module
             $info = array();
             $info["Author"] = $page->author;
             $info["Last Modified"] = \date("F d Y H:i:s.", \filemtime($this->settings->postdir . "/" . $page->url));;
-            return Site::$moduleManager->HookEvent("Theme.Post.Infomation",$info);
+            return Site::$moduleManager->FireEvent("Theme.Post.Infomation",$info);
         }
         
         function SavePost()
         {
-             $canSave = $this->manager->HookEvent("Bread.Security.GetPermission","Editor")[0];
+             $canSave = $this->manager->FireEvent("Bread.Security.GetPermission","Editor")[0];
              if(!$canSave){
                  Site::$Logger->writeError("User tried to save markdown without permission somehow, blocked!");
                  return "0";

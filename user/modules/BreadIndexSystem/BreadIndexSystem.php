@@ -12,8 +12,8 @@ class BreadIndexSystem extends Module
         
         function RegisterEvents()
         {
-            $this->manager->RegisterEvent($this->name,"Bread.ProcessRequest","Setup");
-            $this->manager->RegisterEvent($this->name,"Bread.GetNavbarIndex","GetPages");
+            $this->manager->RegisterHook($this->name,"Bread.ProcessRequest","Setup");
+            $this->manager->RegisterHook($this->name,"Bread.GetNavbarIndex","GetPages");
         }
         
         function Setup()

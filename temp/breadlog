@@ -1,18 +1,18 @@
-[MSG][0.001]Bread Version 0.09
-[MSG][0.002]Log Date: Friday 14th of March 2014
+[MSG][0.002]Bread Version 0.09
+[MSG][0.002]Log Date: Saturday 15th of March 2014
 [MSG][0.002]Loaded core file modules/Modules/module.php
-[MSG][0.002]Loaded core file modules/Modules/moduleman.php
+[MSG][0.003]Loaded core file modules/Modules/moduleman.php
 [MSG][0.003]Loaded core file modules/Settings/SettingsManager.php
-[MSG][0.003]Loaded core file modules/Structures/BreadForm.php
+[MSG][0.004]Loaded core file modules/Structures/BreadForm.php
 [MSG][0.004]Loaded core file modules/Structures/BreadLinkStructure.php
 [MSG][0.004]Loaded core file modules/Structures/BreadRequest.php
 [MSG][0.004]Loaded core file modules/Structures/BreadUser.php
 [MSG][0.005]Loaded core file modules/Themes/thememan.php
 [MSG][0.006]Registered module BreadIndexSystem
 [MSG][0.007]Registered module BreadUserSystem
-[MSG][0.008]Registered module BreadPageSystem
-[MSG][0.01]Beginning build of page
-[MSG][0.01]Request data:
+[MSG][0.007]Registered module BreadPageSystem
+[MSG][0.009]Beginning build of page
+[MSG][0.009]Request data:
 Bread\Structures\BreadRequestData::__set_state(array(
    'requestType' => 'homepage',
    'layout' => 'homepage',
@@ -31,5 +31,5 @@ Bread\Structures\BreadRequestData::__set_state(array(
   ),
 ))
 [MSG][0.01]Registered theme theme-vanilla
-[MSG][0.011]Memory Used: 1004.390625kb
+[MSG][0.01]Memory Used: 997.75kb
 [MSG][0.011]Closing Log

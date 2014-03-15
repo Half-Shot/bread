@@ -18,8 +18,8 @@ class ReallyInsecureUserSystem extends Module
 
 	function RegisterEvents()
 	{
-            $this->manager->RegisterEvent($this->name,"Bread.Security.GetCurrentUser","ReturnUser");
-            $this->manager->RegisterEvent($this->name,"Bread.ProcessRequest","Setup");
+            $this->manager->RegisterHook($this->name,"Bread.Security.GetCurrentUser","ReturnUser");
+            $this->manager->RegisterHook($this->name,"Bread.ProcessRequest","Setup");
 	}
     
         function DoLogin()

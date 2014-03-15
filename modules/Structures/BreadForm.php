@@ -1,6 +1,10 @@
 <?php
 namespace Bread\Structures;
 
+/**
+ * A Common Structure used with FormBuilding Modules for themes
+ * to parse.
+ */
 class BreadForm
 {
     public $name = "";
@@ -11,7 +15,9 @@ class BreadForm
     public $elements = array();
     public $attributes = array();
 }
-
+/**
+ * A Form Element.
+ */
 class BreadFormElement
 {
     public $name = "";

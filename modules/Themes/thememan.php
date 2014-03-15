@@ -1,12 +1,17 @@
 <?php
 namespace Bread\Themes;
 use Bread\Site as Site;
+/**
+ * The manager responsible fro loading Theme Modules and Layouts.
+ * This loads the themes and layouts and decides which one is right, before calling
+ * hooks listed by a module file. The final result is appended to the html.
+ */
 class ThemeManager
 {
 	//Collection
 	private $themes;
 	private $layouts;
-	private $configuration = "";
+	private $configuration;
 	private $cssFiles;
 	
 	//Selected Items
@@ -17,42 +22,34 @@ class ThemeManager
 	{
 		$this->themes = array();
 		$this->layouts = array();
-		$this->Theme = array();
-		$this->Layout = array();
 		$this->cssFiles = array();
-		$this->configuration = array();
 	}
 
-	public static function Configuration()
+        /**
+         * Load the settings files and retrive the settings for each listed theme as well.
+         * @see Site::$configuration
+         * @see Site::$themes
+         * @param string $filepath Filepath to load settings from.
+         */
+        function LoadSettings($filepath)
 	{
-		return $this->configuration;
-	}
+                $this->configuration = Site::$settingsManager->RetriveSettings($filepath);
 
-	function LoadSettings($filepath)
-	{
-		if(!file_exists($filepath))
+		foreach ($this->configuration->themes as $theme)
 		{
-			Site::$Logger->writeError('Cannot load themes. Manager Settings file not found',1,True);
-		}
-                
-		$tmp = file_get_contents($filepath);
-		$this->configuration = json_decode($tmp,true);
-                
-		if($this->configuration == NULL)
-			Site::$Logger->writeError('Cannot load themes. Manager Settings has invalid JSON.',1,True);
-
-		foreach ($this->configuration["themes"] as $theme)
-		{
-			$json = Site::$settingsManager->RetriveSettings(Site::ResolvePath("%user-themes"). "/" . $theme["config-path"],true);
+			$json = Site::$settingsManager->RetriveSettings(Site::ResolvePath("%user-themes"). "/" . $theme->cpath,true);
                         $this->themes[$json->module->name] = $json;
                         
                 }
 	}
 
-	//Adds to the layouts variable.
+	/**
+         * Load the layout files listed in the themes settings.
+         * @todo Find a more efficent way to load layouts, since the site will only be using one.
+         */
 	function LoadLayouts()
 	{
-	    $layouts_cfg = $this->configuration["layouts"];
+	    $layouts_cfg = $this->configuration->layouts;
 	    foreach($layouts_cfg as $layouttype => $layoutpath)
 	    {
 	    	$layout = array();
@@ -64,11 +61,15 @@ class ThemeManager
 	    }
 	}
         
-	///Requests the theme that should be used for the request.
+	/**
+         * Select the correct theme based on the request.
+         * @param /Bread/Structures/BreadRequest $Request
+         * @return boolean Was the theme set.
+         */
 	function SelectTheme($Request)
 	{
                 //If a module wants to force override a theme, it can from this call.
-                $moduleResults = Site::$moduleManager->HookEvent("Bread.SelectTheme",NULL);
+                $moduleResults = Site::$moduleManager->FireEvent("Bread.SelectTheme",NULL);
                 if($moduleResults)
                 {
                     $this->SetTheme($moduleResults[0]["theme"]);
@@ -95,12 +96,16 @@ class ThemeManager
             Site::$moduleManager->RegisterSelectedTheme();
             return True;
         }
-
-	///Requests the layout that should be used for the page request.
+        
+	/**
+         * Select the correct layout based on the request.
+         * @param /Bread/Structures/BreadRequest $Request
+         * @return boolean Was the layout set.
+         */
 	function SelectLayout($Request)
 	{
             //If a module wants to force override a theme, it can from this call.
-            $moduleResults = Site::$moduleManager->HookEvent("Bread.SelectLayout",NULL);
+            $moduleResults = Site::$moduleManager->FireEvent("Bread.SelectLayout",NULL);
             if($moduleResults)
             {
                 $layout = ($moduleResults[0]["layout"]);
@@ -113,6 +118,7 @@ class ThemeManager
             return True;
                 
 	}
+        
         /**
          * Looks for a CSS file in the common user paths.
          * Ordered by layout, theme and resource.
@@ -140,6 +146,9 @@ class ThemeManager
                 throw new \Exception;
         }
         
+        /**
+         * Add CSS to the HTML page for each file registered.
+         */
 	function BuildCSS()
 	{
 		foreach($this->cssFiles as $filepath)
@@ -154,14 +163,20 @@ class ThemeManager
                     $this->CSSLines .= "<link rel='stylesheet' type='text/css' href='" . $cssfilepath . "'>\n";
 		}
 	}
-	
+	/**
+         * Add a CSS file to the list.
+         * @param string $filepath The relative path of the file.
+         */
         function AddCSSFile($filepath)
         {
             $this->cssFiles[] = $filepath;
         }
         
-	//Returns nothing but reads from layout and does all the calling to modules
-	//and adds CSS Files. Yes, this is the biggy.
+
+        /**
+         * Read the elements from the layout and puts them in the right place.
+         * @param stdClass $Layout
+         */
 	function ReadElementsFromLayout($Layout)
 	{
 		$IsRoot = ($Layout == $this->Theme["layout"]);
@@ -264,11 +279,11 @@ class ThemeManager
             
             if(isset($element->module))
             {
-                    $returnedElement["guts"] = Site::$moduleManager->HookSpecifedModuleEvent($returnedElement["event"],$element->module,$returnedElement["arguments"]);
+                    $returnedElement["guts"] = Site::$moduleManager->FireSpecifiedModuleEvent($returnedElement["event"],$element->module,$returnedElement["arguments"]);
             }
             else
             {
-                    $returnedElement["guts"] = Site::$moduleManager->HookEvent($returnedElement["event"],$returnedElement["arguments"]);
+                    $returnedElement["guts"] = Site::$moduleManager->FireEvent($returnedElement["event"],$returnedElement["arguments"]);
             }
             
             if(!$returnedElement["guts"])

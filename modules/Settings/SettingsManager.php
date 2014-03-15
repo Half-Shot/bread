@@ -26,8 +26,9 @@ class FailedToParseException extends SettingsException { }
 class UnauthorizedException extends SettingsException { }
 
 /**
- * Description of SettingsManager
- *
+ * The manager responsible for serving all settings files from json storage
+ * to stdObject. It deals with loading and converting, saving and rasing errors and
+ * logging them where appropriate.
  */
 class SettingsManager {
     //put your code here
@@ -147,7 +148,12 @@ class SettingsManager {
             $this->SaveSetting($obj,$path,False); //Don't throw on such a large operation.
         }
     }
-    
+    /**
+     * Serializes an object into json before saving it into a file.
+     * @param any $object Object to save.
+     * @param string $path The relative path to save to in relation to root.
+     * @param bool $shouldThrow Should this function throw an error if it fails
+     */
     public function SaveSetting($object,$path,$shouldThrow = True)
     {
          $string = $this->CompileJson($object);

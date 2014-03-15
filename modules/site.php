@@ -99,7 +99,16 @@ class Site
          * @var string 
          */
         private static $baseurl = "";
+        /**
+         * Is the request an AJAX based one
+         * (Do we need to draw any UI)
+         * @var bool 
+         */
         private static $isAjax = False;
+        /**
+         * Parameters from parsing the URL;
+         * @var array key=> value
+         */
         private static $URLParameters;
         public static function Configuration()
 	{
@@ -344,7 +353,7 @@ class Site
 	public static function ProcessMetadata(BreadRequestData $requestData)
 	{
 		$Metadata  = "<meta>";
-                $returnData = static::$moduleManager->HookEvent("Bread.Metadata",$requestData);
+                $returnData = static::$moduleManager->FireEvent("Bread.Metadata",$requestData);
                 if($returnData == False)
                     return False;
                 //HookEvent returns an array of results.
@@ -451,7 +460,7 @@ class Site
             $requestData = static::$Request;
 	    //Load required modules.
 	    static::$moduleManager->LoadRequiredModules($requestData);
-	    static::$moduleManager->HookEvent("Bread.ProcessRequest",NULL);
+	    static::$moduleManager->FireEvent("Bread.ProcessRequest",NULL);
             
             if(static::$isAjax)
             {
@@ -478,11 +487,11 @@ class Site
                 if($module != "")
                 {
                     static::$Logger->writeMessage("Module: " . $module);
-                    $return = static::$moduleManager->HookSpecifedModuleEvent($event,$module,NULL);
+                    $return = static::$moduleManager->FireSpecifiedModuleEvent($event,$module,NULL);
                     $realdata = $return;
                 }
                 else {
-                    $return = static::$moduleManager->HookEvent($event,NULL);
+                    $return = static::$moduleManager->FireEvent($event,NULL);
                     if(is_array($return))
                         $realdata = $return[0];
                 }
@@ -509,19 +518,19 @@ class Site
 	    }
 
 	    static::$themeManager->ReadElementsFromLayout(static::$themeManager->Theme["layout"]);#Build layout into HTML
-            static::$moduleManager->HookEvent("Bread.FinishedLayoutProcess",NULL);
+            static::$moduleManager->FireEvent("Bread.FinishedLayoutProcess",NULL);
 	    static::$htmlcode .= "<head>\n";
 	    static::$htmlcode .= static::ProcessMetadata($requestData);
             static::$htmlcode .= static::$headercode;
 	    static::$htmlcode .= static::$themeManager->CSSLines;
             static::$htmlcode .= static::$ScriptLines;
-            static::$moduleManager->HookEvent("Bread.FinishedHead",NULL); //Must use add to head.
+            static::$moduleManager->FireEvent("Bread.FinishedHead",NULL); //Must use add to head.
 	    static::$htmlcode .= "</head>\n";
 	    static::$htmlcode .= "<body>\n";
 	    static::$htmlcode .= static::$bodycode;
-            static::$moduleManager->HookEvent("Bread.LowPriorityScripts",NULL);
+            static::$moduleManager->FireEvent("Bread.LowPriorityScripts",NULL);
             static::$htmlcode .= static::$LowPriorityScriptLines;
-            static::$moduleManager->HookEvent("Bread.FinishedBody",NULL); //Must use add to body.
+            static::$moduleManager->FireEvent("Bread.FinishedBody",NULL); //Must use add to body.
 	    static::$htmlcode .= "</body>\n";
 	    static::$htmlcode .= "</html>\n";
 	    echo static::$htmlcode;
@@ -532,7 +541,7 @@ class Site
          */
 	public static function Cleanup()
 	{
-                static::$moduleManager->HookEvent("Bread.Cleanup",NULL);//Broadcast that we are cleaning up.
+                static::$moduleManager->FireEvent("Bread.Cleanup",NULL);//Broadcast that we are cleaning up.
                 static::$settingsManager->SaveChanges(); //Save all changes.
 		static::$Logger->closeStream();
 	}
@@ -623,6 +632,7 @@ class Site
         {
             return round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], $dec, PHP_ROUND_HALF_UP);
         }
+        
         /**
          * A simple check to see if the request is an ajax based one. Will set Site::$isAjax
          * @see Site::$isAjax
@@ -632,6 +642,9 @@ class Site
             static::$isAjax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'); 
         }
         
+        /**
+         * Cast a standard object (say a unserialzed object) into its proper object.
+         */
         public static function CastStdObjectToStruct($obj,$type)
         {
             $newObj = new $type;
@@ -643,6 +656,11 @@ class Site
             return $newObj;
         }
         
+        /**
+         * Redirect the user to a new URL and cleanup bread.
+         * Careful with this.
+         * @param string $url
+         */
         public static function Redirect($url)
         {
             Site::$Logger->writeMessage("Redirected to " . $url);

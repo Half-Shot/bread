@@ -1,11 +1,20 @@
 <?php
 namespace Bread\Modules;
 use Bread\Site as Site;
+/**
+ * The manager responsible for Modules: The plugin system for bread.
+ * Any extra code you will do for bread will run through this.
+ * It deals with loading and unloading of external code, and hooking it at
+ * appropriate times.
+ */
 class ModuleManager
 {
+        /**
+         * A list of modules
+         * @var type 
+         */
 	private $modules;
 	private $moduleList;
-	private $moudleConfig;
 	private $configuration;
 	private $events;
         private $completed;
@@ -13,17 +22,23 @@ class ModuleManager
 	{
 		$this->modules = array();
 		$this->moduleList = array();
-		$this->moduleConfig = array();
 		$this->events = array();
                 $this->completed = array();
                 $this->heldevents = array();
 	}
-
+        /**
+         * Loads settings/
+         * @todo This actually does pretty much nothing since the configuration is not used.
+         * @param string $filepath Filepath of the configuration file.
+         */
 	function LoadSettings($filepath)
 	{
 		$this->configuration = Site::$settingsManager->RetriveSettings($filepath);
 	}
-
+        /**
+         * Loads the modulelist from its json file.
+         * @param string $filepath Filepath of the modulelist.
+         */
 	function LoadModulesFromConfig($filepath)
 	{
                 $mods = Site::$settingsManager->RetriveSettings($filepath);
@@ -37,7 +52,10 @@ class ModuleManager
                 $this->moduleList["blacklisted"] = array_merge($this->moduleList["blacklisted"],$mods->blacklisted);
 	}
 	
-	#Only load modules we need.
+	/**
+         * Reads the processed request and only loads required modules, saving memory.
+         * @param /Bread/Structures/BreadLinkStructure $request The request object.
+         */
 	function LoadRequiredModules($request)
 	{
 	    foreach($request->modules as $module)
@@ -48,8 +66,14 @@ class ModuleManager
                     }
 	    }
 	}
-
-	function RegisterModule($path)
+        /**
+         * Loads and register the module, constructing it and placing it in the ModuleManager::$modules array.
+         * Also runs the RegisterEvents function. This is only run from LoadRequiredModules.
+         * *Warning*: Code errors with modules cannot be checked against so any whitepage crashes will be down to module problems.
+         * You can debug this by checking the log for the last registered module which is the culprit.
+         * @param string $path
+         */
+	private function RegisterModule($path)
 	{
                 $json = Site::$settingsManager->RetriveSettings($path,true);
                 $ModuleName = $json->name;
@@ -69,7 +93,11 @@ class ModuleManager
 		$this->modules[$json->name] = new $class($this,$ModuleName);
 		$this->modules[$json->name]->RegisterEvents();
 	}
-	
+	/**
+         * The selected theme from /Bread/Themes/ThemeManager is loaded as a module in here.
+         * The method is simular to ModuleManager::RegisterModule()
+         * @see /Bread/Themes/ThemeManager
+         */
 	function RegisterSelectedTheme()
 	{
 		if(!isset(Site::$themeManager->Theme["data"]))
@@ -88,8 +116,16 @@ class ModuleManager
 
 
 	}
-	
-	function RegisterEvent($moduleName,$eventName,$function,$dependencies = array())
+	/**
+         * Registers an event:
+         *  A module can register itself to a event which means any arguments of a hook is passed to 
+         *  this modules function. A hook can be called at any time with a string of the event it wants to call.
+         * @param string $moduleName The module name as set when the module was registered.
+         * @param type $eventName The event wished to be hooked onto.
+         * @param string $function Function identifer of the object/module, just put the identifier, not the full location.
+         * @param array $dependencies Any depedencies of another event that must be run first, format of EventName => ModuleName
+         */
+	function RegisterHook($moduleName,$eventName,$function,$dependencies = array())
 	{
 	    if(!array_key_exists($eventName,$this->events)){
 	        $this->events[$eventName] = array();
@@ -99,6 +135,11 @@ class ModuleManager
 
 	}
 	
+        /**
+         * Can the event be run in regards to its dependencies.
+         * @param type $dependencies A list of dependencies. format of EventName => ModuleName.
+         * @return bool Returns if it can run the event. 
+         */
         function CanRunEvent($dependencies)
         {
             $needToRun = array();
@@ -115,7 +156,14 @@ class ModuleManager
             return $needToRun;
         }
         
-	function HookEvent($eventName,$arguments = null)
+        /**
+         * Send a message to ModuleManager that the event should be fired on all hooked functions.
+         * It will call all registered hooks to run their function and return the data if any into a array.
+         * @param string $eventName The event to fire.
+         * @param any $arguments An array or any datatype to be passed to the function.
+         * @return array|bool An array of the returned data or false if no data was returned.
+         */
+	function FireEvent($eventName,$arguments = null)
 	{
             $returnData = array();
             if(!array_key_exists($eventName,$this->events))
@@ -128,7 +176,7 @@ class ModuleManager
                 $toRun = $this->CanRunEvent($dependencies);
                 foreach($toRun as $depEvt => $depMod)
                 {
-                    $this->HookSpecifedModuleEvent($depEvt,$depMod);
+                    $this->FireSpecifiedModuleEvent($depEvt,$depMod);
                 }
                 $returnData[] = $this->modules[$module]->$function($arguments);
                 $this->completed[$eventName] = $module;
@@ -138,8 +186,14 @@ class ModuleManager
             }
             return $returnData;
 	}
-	
-	function HookSpecifedModuleEvent($eventName,$moduleName,$arguments = null)
+	/**
+         * Similar to ModuleManager::FireEvent() but requires a module argument so you can pick which module picks it up.
+         * @param string $eventName The event to fire.
+         * @param any $arguments An array or any datatype to be passed to the function.
+         * @param string $moduleName The module to use.
+         * @return boolean|any Returns data from the module or false if it failed.
+         */
+	function FireSpecifiedModuleEvent($eventName,$moduleName,$arguments = null)
 	{
             if(!array_key_exists($moduleName,$this->modules)){
 	        Site::$Logger->writeError ("Couldn't specifically hook module '" . $moduleName . "'. Module not loaded.", 3); //Module not found.
@@ -162,7 +216,7 @@ class ModuleManager
             {
                 foreach($dependencies as $event => $module)
                 {
-                    $this->HookSpecifedModuleEvent($event,$module);
+                    $this->FireSpecifiedModuleEvent($event,$module);
                 }
             }
             $this->completed[$eventName] = $moduleName;

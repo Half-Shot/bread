@@ -12,10 +12,10 @@ Don't import unless needed.
 ####Variable naming
 Public Variables : Cap words (VariableName)
 
-Priavte Variables : First lower, rest upper (variableName)
+Private Variables : First lower, rest upper (variableName)
 
 Protected Variables : Underscore, same as private (variable_Name)
 
 ####Documentation
 
-Follow phpDocumentor syntax
+See site for correct documentation.

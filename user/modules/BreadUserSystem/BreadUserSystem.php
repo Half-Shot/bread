@@ -19,13 +19,13 @@ class BreadUserSystem extends Module
 
 	function RegisterEvents()
 	{
-            $this->manager->RegisterEvent($this->name,"Bread.Security.GetCurrentUser","ReturnUser");
-            $this->manager->RegisterEvent($this->name,"Bread.Security.GetPermission","HasPermission");
-            $this->manager->RegisterEvent($this->name,"Bread.ProcessRequest","Setup");
-            $this->manager->RegisterEvent($this->name,"Bread.Security.LoginUser","DoLogin");
-            $this->manager->RegisterEvent($this->name,"Bread.Security.RegisterNewUser","RegisterNewUser");
-            $this->manager->RegisterEvent($this->name,"Bread.Security.Logout","Logout");
-            $this->manager->RegisterEvent($this->name,"Bread.GetNavbarIndex","CreateLoginLink");
+            $this->manager->RegisterHook($this->name,"Bread.Security.GetCurrentUser","ReturnUser");
+            $this->manager->RegisterHook($this->name,"Bread.Security.GetPermission","HasPermission");
+            $this->manager->RegisterHook($this->name,"Bread.ProcessRequest","Setup");
+            $this->manager->RegisterHook($this->name,"Bread.Security.LoginUser","DoLogin");
+            $this->manager->RegisterHook($this->name,"Bread.Security.RegisterNewUser","RegisterNewUser");
+            $this->manager->RegisterHook($this->name,"Bread.Security.Logout","Logout");
+            $this->manager->RegisterHook($this->name,"Bread.GetNavbarIndex","CreateLoginLink");
 	}
         
         function DoLogin()
@@ -106,8 +106,6 @@ class BreadUserSystem extends Module
             $hasher = new \PasswordHash(8, false);
             $hash = $hasher->HashPassword($password);
             Site::$Logger->writeMessage(var_export($extrainfomation,true));
-            $extrainfomation = json_decode($extrainfomation);
-            $newUser->infomation = get_object_vars($extrainfomation);
             $newUser->infomation = $extrainfomation;
             $newUser->rights = $rights;
             $packet = new BreadUserPacket;
@@ -136,7 +134,9 @@ class BreadUserSystem extends Module
                 }
             }
             Site::$Logger->writeMessage("Username looks good.");
-            $this->StoreNewUser($_POST["uname"],$_POST["pw"],-1,$_POST["extrainfo"]);
+            $extrainfomation = json_decode($_POST["extrainfo"]);
+            $extrainfomation = get_object_vars($extrainfomation);
+            $this->StoreNewUser($_POST["uname"],$_POST["pw"],-1,$extrainfomation);
             Site::$Logger->writeMessage("Stored User OK");
             $return["goto"] = $this->settings->successredirect->createURL();
             $return["status"] = 11;
@@ -223,13 +223,13 @@ class BreadUserSystem extends Module
         {
             session_start();
             if(!isset($_SESSION["lastlogin"])){
-                Site::$moduleManager->HookEvent("Bread.Security.NotLoggedIn",NULL);
+                Site::$moduleManager->FireEvent("Bread.Security.NotLoggedIn",NULL);
                 return False;          
             }
             if(time() - $_SESSION["lastlogin"] > $this->settings->sessiontimeout){
                 $this->Logout();
                 Site::$Logger->writeMessage("Login session timed out.");
-                Site::$moduleManager->HookEvent("Bread.Security.SessionTimeout",NULL);
+                Site::$moduleManager->FireEvent("Bread.Security.SessionTimeout",NULL);
                 return False;
             }
             
@@ -238,7 +238,7 @@ class BreadUserSystem extends Module
                     || $_SESSION["REMOTE_ADDR"] != $_SERVER["REMOTE_ADDR"]
                     || $_SESSION["HTTP_USER_AGENT"] != $_SERVER["HTTP_USER_AGENT"])
             {
-                Site::$moduleManager->HookEvent("Bread.Security.InvalidSession",0);
+                Site::$moduleManager->FireEvent("Bread.Security.InvalidSession",0);
                 Site::$Logger->writeMessage("Session had a changed host,address,user agent or corrupt uid. Destroying");
                 $this->Logout();
                 return False;
@@ -248,13 +248,13 @@ class BreadUserSystem extends Module
             $user = $this->GetUserByUID($_SESSION["uid"]);
             if(!$user)
             {
-                Site::$moduleManager->HookEvent("Bread.Security.InvalidSession",0);
+                Site::$moduleManager->FireEvent("Bread.Security.InvalidSession",0);
                 Site::$Logger->writeMessage("Stored UID does not exist, whoa!");
                 $this->Logout();
                 return False;
             }
             $this->currentUser = $user->breaduserdata;
-            Site::$moduleManager->HookEvent("Bread.Security.LoggedIn",NULL);
+            Site::$moduleManager->FireEvent("Bread.Security.LoggedIn",NULL);
         }
 }
 

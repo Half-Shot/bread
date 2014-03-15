@@ -10,7 +10,7 @@ class ExampleModule extends Module
 
 	function RegisterEvents()
 	{
-            $this->manager->RegisterEvent($this->name,"Bread.DrawModule","ReturnFirstArgument");
+            $this->manager->RegisterHook($this->name,"Bread.DrawModule","ReturnFirstArgument");
 
 	}
     

@@ -11,19 +11,19 @@ class VanillaBreadTheme extends Bread\Modules\Module
 
 	function RegisterEvents()
 	{
-            $this->manager->RegisterEvent($this->name,"Theme.Load","Load"); //For each event you want to allow, specify: Name of theme, EventName and function name
-            $this->manager->RegisterEvent($this->name,"Theme.HeaderInfo","HeaderInfomation");
-            $this->manager->RegisterEvent($this->name,"Theme.DrawSystemMenu","SystemMenu");
-            $this->manager->RegisterEvent($this->name,"Theme.DrawNavbar","Navbar");
-            $this->manager->RegisterEvent($this->name,"Theme.DrawFooter","Footer");
-            $this->manager->RegisterEvent($this->name,"Theme.Unload","Unload");
-            $this->manager->RegisterEvent($this->name,"Theme.VerticalNavbar","VerticalNavbar");
-            $this->manager->RegisterEvent($this->name,"Theme.Post.Title","Title");
-            $this->manager->RegisterEvent($this->name,"Theme.Post.Subtitle","SubTitle");
-            $this->manager->RegisterEvent($this->name,"Theme.Post.Breadcrumbs","Breadcrumbs");
-            $this->manager->RegisterEvent($this->name,"Theme.Post.Infomation","Infomation");
-            $this->manager->RegisterEvent($this->name,"Theme.Infomation","ShowInfomation");
-            $this->manager->RegisterEvent($this->name,"Theme.Form","BuildForm");
+            $this->manager->RegisterHook($this->name,"Theme.Load","Load"); //For each event you want to allow, specify: Name of theme, EventName and function name
+            $this->manager->RegisterHook($this->name,"Theme.HeaderInfo","HeaderInfomation");
+            $this->manager->RegisterHook($this->name,"Theme.DrawSystemMenu","SystemMenu");
+            $this->manager->RegisterHook($this->name,"Theme.DrawNavbar","Navbar");
+            $this->manager->RegisterHook($this->name,"Theme.DrawFooter","Footer");
+            $this->manager->RegisterHook($this->name,"Theme.Unload","Unload");
+            $this->manager->RegisterHook($this->name,"Theme.VerticalNavbar","VerticalNavbar");
+            $this->manager->RegisterHook($this->name,"Theme.Post.Title","Title");
+            $this->manager->RegisterHook($this->name,"Theme.Post.Subtitle","SubTitle");
+            $this->manager->RegisterHook($this->name,"Theme.Post.Breadcrumbs","Breadcrumbs");
+            $this->manager->RegisterHook($this->name,"Theme.Post.Infomation","Infomation");
+            $this->manager->RegisterHook($this->name,"Theme.Infomation","ShowInfomation");
+            $this->manager->RegisterHook($this->name,"Theme.Form","BuildForm");
 	}
     
 	function Load()
@@ -76,7 +76,7 @@ class VanillaBreadTheme extends Bread\Modules\Module
 	function Navbar($args)
 	{
                 //Hooks should be filled with arrays of BreadLinkStructure.
-                $Hooks = $this->manager->HookEvent("Bread.GetNavbarIndex",$args);
+                $Hooks = $this->manager->FireEvent("Bread.GetNavbarIndex",$args);
                 if(!$Hooks)
                 {
                    $Hooks = array();
