@@ -27,9 +27,11 @@ Also this isn't in any order, just whatever findall returned first.
 ###How to Event
 
 Events are fired like so:
+```php
 Site::$moduleManager->FireEvent(EventData,data);
-
+```
 And are registered like so:
+```php
 Site::$moduleManager->RegisterHook(*Module*Name,EventName,CorrespondingFunctionIdentifer);
-
+```
 Simple stuff really.
