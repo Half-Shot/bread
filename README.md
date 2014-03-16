@@ -28,9 +28,9 @@ Bread was started as a side project where I saw a gap where no content manager l
 a functioning core site. For example, wordpress cannot let you seamlessly demo new themes and keep your old theme. That and muuuch more can be
 accomplished by the way bread is written. Bread has a object orientated system which allows for bits of code to plug in and out seamlessly.
 
-    Another cool thing is that I built this based on a linux distro philosophy; Cut out the crap and leave a basic system that applys to everyone
-    but allow really easy ways to make it specialised. In particular, [Arch Linux](https://wiki.archlinux.org/index.php/The_Arch_Way') has a great
-    understanding of this and I try to mimic that.
+Another cool thing is that I built this based on a linux distro philosophy; Cut out the crap and leave a basic system that applys to everyone
+but allow really easy ways to make it specialised. In particular, [Arch Linux](https://wiki.archlinux.org/index.php/The_Arch_Way') has a great
+understanding of this and I try to mimic that.
 
 
 ###Is it right for me?
