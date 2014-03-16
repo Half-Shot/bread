@@ -1,3 +1,11 @@
 {
-	"checklist":["Bread\\Themes\\ThemeManager","Bread\\Modules\\ModuleManager","Bread\\Settings\\SettingsManager"]
+	"checklist":["Bread\\Themes\\ThemeManager",
+	             "Bread\\Modules\\ModuleManager",
+	             "Bread\\Modules\\Module",
+	             "Bread\\Settings\\SettingsManager",
+	             "Bread\\Structures\\BreadRequestData",
+	             "Bread\\Structures\\BreadUser",
+	             "Bread\\Structures\\BreadLinkStructure",
+	             "Bread\\Structures\\BreadForm"
+	            ]
 }

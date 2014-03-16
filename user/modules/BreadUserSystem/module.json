@@ -1,6 +1,0 @@
-{
-        "name":"BreadUserSystem",
-		"permissions":["read:user/resource"],
-		"entryclass":"BreadUserSystem",
-		"entryfile":"BreadUserSystem/BreadUserSystem.php"
-}

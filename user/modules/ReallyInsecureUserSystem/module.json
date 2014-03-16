@@ -1,6 +1,0 @@
-{
-        "name":"RIUS",
-		"permissions":["read:user/resource"],
-		"entryclass":"ReallyInsecureUserSystem",
-		"entryfile":"ReallyInsecureUserSystem/RIUS.php"
-}

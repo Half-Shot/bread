@@ -1,6 +1,0 @@
-{
-        "name":"BreadIndexSystem",
-        "permissions":["read:user/resource"],
-        "entryclass":"BreadIndexSystem",
-        "entryfile":"BreadIndexSystem/BreadIndexSystem.php"
-}

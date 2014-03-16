@@ -1,6 +1,0 @@
-{
-        "name":"BreadPageSystem",
-		"permissions":["read:user/resource"],
-		"entryclass":"BreadPageSystem",
-		"entryfile":"BreadPageSystem/BreadPageSystem.php"
-}

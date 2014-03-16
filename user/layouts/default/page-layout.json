@@ -8,15 +8,15 @@
         "human": "Navigation Bar",
         "description": "Top of the page, ideal for navbars.",
         "tag":"header",
-        "event":"Theme.DrawNavbar"
+        "event":""
     },
     {
         "name": "contents",
 	"id": "contents",
         "human": "Page Contents",
         "description": "Middle section where contents will be placed.",
-        "module": "BreadPageSystem",
-        "event":"BreadPageSystem.DrawModule",
+        "module": "",
+        "event":"",
         "tag":"section"
     },
     {
@@ -25,7 +25,7 @@
         "human": "Footer",
         "description": "Good place for copyright or author name.",
         "tag":"footer",
-        "event": "Theme.DrawFooter"
+        "event": ""
     }
 ]
 }

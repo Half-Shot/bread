@@ -1,10 +1,6 @@
 {
     "enabled": [
-        "ExampleModule\/module.json",
-        "BreadPageSystem\/module.json",
-        "BreadIndexSystem\/module.json",
-        "BreadUserSystem\/module.json",
-        "BreadFormBuilder\/module.json"
+
     ],
     "blacklisted": [
 

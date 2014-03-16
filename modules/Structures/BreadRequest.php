@@ -2,7 +2,7 @@
 namespace Bread\Structures;
 /**
  * This is filled out to describe the request from the browser to Bread.
- * 
+ * @todo Change name to BreadRequest.
  */
 class BreadRequestData
 {
