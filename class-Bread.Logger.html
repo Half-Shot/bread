@@ -7,7 +7,7 @@
 	<title>Class Bread\Logger | Bread</title>
 
 	<script type="text/javascript" src="resources/combined.js?174271566"></script>
-	<script type="text/javascript" src="elementlist.js?2014293178"></script>
+	<script type="text/javascript" src="elementlist.js?2491947360"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -44,6 +44,7 @@
 			<h3>Classes</h3>
 			<ul>
 				<li class="active"><a href="class-Bread.Logger.html">Logger</a></li>
+				<li><a href="class-Bread.LoggerMessage.html">LoggerMessage</a></li>
 				<li><a href="class-Bread.Site.html">Site</a></li>
 			</ul>
 
@@ -114,7 +115,7 @@ main logger is to be found in static::$Logger.</p>
 
 				<b>See:</b>
 				static::$Logger<br />
-		<b>Located at</b> <a href="source-class-Bread.Logger.html#671-772" title="Go to source code">modules/site.php</a><br />
+		<b>Located at</b> <a href="source-class-Bread.Logger.html#671-911" title="Go to source code">modules/site.php</a><br />
 	</div>
 
 
@@ -132,54 +133,19 @@ main logger is to be found in static::$Logger.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getMessagesstack">#</a>
-		<code><a href="source-class-Bread.Logger.html#685-692" title="Go to source code">getMessagesstack</a>( )</code>
+		<code><a href="source-class-Bread.Logger.html#709-717" title="Go to source code">getMessagesstack</a>( )</code>
 
 		<div class="description short">
 			
-<p>Gets the messages passed to the logger since startup.</p>
+<p>Gets the messages passed to the logger since startup. Stacked as category
+=&gt; LoggerMessage</p>
 
 		</div>
 
 		<div class="description detailed hidden">
 			
-<p>Gets the messages passed to the logger since startup.</p>
-
-
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					<code>array</code><br />
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="getErrorstack" id="_getErrorstack">
-
-		<td class="attributes"><code>
-			 public 
-			array
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_getErrorstack">#</a>
-		<code><a href="source-class-Bread.Logger.html#694-701" title="Go to source code">getErrorstack</a>( )</code>
-
-		<div class="description short">
-			
-<p>Gets the errors passed to the logger since startup.</p>
-
-		</div>
-
-		<div class="description detailed hidden">
-			
-<p>Gets the errors passed to the logger since startup.</p>
+<p>Gets the messages passed to the logger since startup. Stacked as category
+=&gt; LoggerMessage</p>
 
 
 
@@ -206,7 +172,7 @@ main logger is to be found in static::$Logger.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-Bread.Logger.html#703-722" title="Go to source code">__construct</a>( <span>string <var>$filepath</var></span> )</code>
+		<code><a href="source-class-Bread.Logger.html#719-738" title="Go to source code">__construct</a>( <span>string <var>$filepath</var></span>, <span>mixed <var>$minlog</var> = <span class="php-num">1</span></span>, <span>mixed <var>$maxlogs</var> = <span class="php-num">50</span></span>, <span>mixed <var>$logpermodule</var> = <span class="php-keyword1">false</span></span>, <span>mixed <var>$keepfor</var> = -<span class="php-num">1</span></span> )</code>
 
 		<div class="description short">
 			
@@ -226,6 +192,14 @@ file. Leave a blank string if you do not want to log to a file.</p>
 				<div class="list"><dl>
 					<dt><var>$filepath</var></dt>
 					<dd><code>string</code><br>$filepath File name to log to.</dd>
+					<dt><var>$minlog</var></dt>
+					<dd></dd>
+					<dt><var>$maxlogs</var></dt>
+					<dd></dd>
+					<dt><var>$logpermodule</var></dt>
+					<dd></dd>
+					<dt><var>$keepfor</var></dt>
+					<dd></dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -250,7 +224,7 @@ file. Leave a blank string if you do not want to log to a file.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_writeMessage">#</a>
-		<code><a href="source-class-Bread.Logger.html#723-738" title="Go to source code">writeMessage</a>( <span>string <var>$message</var></span> )</code>
+		<code><a href="source-class-Bread.Logger.html#810-840" title="Go to source code">writeMessage</a>( <span>string <var>$string</var></span>, <span>string <var>$category</var> = <span class="php-quote">&quot;core&quot;</span></span> )</code>
 
 		<div class="description short">
 			
@@ -268,8 +242,10 @@ the message is a potential problem, use Logger-&gt;writeError.</p>
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
-					<dt><var>$message</var></dt>
-					<dd><code>string</code><br>$message Message to be written</dd>
+					<dt><var>$string</var></dt>
+					<dd><code>string</code><br>$string Message to be written</dd>
+					<dt><var>$category</var></dt>
+					<dd><code>string</code><br>$category Stream to use</dd>
 				</dl></div>
 
 
@@ -294,7 +270,7 @@ the message is a potential problem, use Logger-&gt;writeError.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_writeError">#</a>
-		<code><a href="source-class-Bread.Logger.html#740-761" title="Go to source code">writeError</a>( <span>string <var>$message</var></span>, <span>integer <var>$severity</var> = -<span class="php-num">1</span></span>, <span>boolean <var>$throw</var> = <span class="php-keyword1">False</span></span>, <span>string <var>$exception</var> = <span class="php-quote">&quot;\Exception&quot;</span></span> )</code>
+		<code><a href="source-class-Bread.Logger.html#842-876" title="Go to source code">writeError</a>( <span>string <var>$string</var></span>, <span>integer <var>$severity</var> = -<span class="php-num">1</span></span>, <span>string <var>$category</var> = <span class="php-quote">&quot;core&quot;</span></span>, <span>boolean <var>$throw</var> = <span class="php-keyword1">False</span></span>, <span>string <var>$exception</var> = <span class="php-quote">&quot;\Exception&quot;</span></span> )</code>
 
 		<div class="description short">
 			
@@ -312,10 +288,12 @@ Logger-&gt;writeMessage.</p>
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
-					<dt><var>$message</var></dt>
-					<dd><code>string</code><br>$message Message to be written</dd>
+					<dt><var>$string</var></dt>
+					<dd><code>string</code><br>$string Message to be written</dd>
 					<dt><var>$severity</var></dt>
 					<dd><code>integer</code><br>$severity Severity of the error</dd>
+					<dt><var>$category</var></dt>
+					<dd><code>string</code><br>$category Stream to write to.</dd>
 					<dt><var>$throw</var></dt>
 					<dd><code>boolean</code><br>$throw Should the logger throw an error</dd>
 					<dt><var>$exception</var></dt>
@@ -348,7 +326,7 @@ Logger-&gt;writeMessage.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_closeStream">#</a>
-		<code><a href="source-class-Bread.Logger.html#762-771" title="Go to source code">closeStream</a>( )</code>
+		<code><a href="source-class-Bread.Logger.html#877-887" title="Go to source code">closeStream</a>( )</code>
 
 		<div class="description short">
 			
@@ -363,6 +341,48 @@ Logger-&gt;writeMessage.</p>
 
 
 
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getSeverityText" id="_getSeverityText">
+
+		<td class="attributes"><code>
+			 public static
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getSeverityText">#</a>
+		<code><a href="source-class-Bread.Logger.html#889-909" title="Go to source code">getSeverityText</a>( <span>integer <var>$level</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Convert a Severity Level to its String representation.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Convert a Severity Level to its String representation.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$level</var></dt>
+					<dd><code>integer</code><br>$level Severity Level</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
 
 
 
@@ -385,18 +405,150 @@ Logger-&gt;writeMessage.</p>
 
 		<td class="attributes"><code>string</code></td>
 		<td class="name"><code>
-				<a href="source-class-Bread.Logger.html#679" title="Go to source code"><b>FILEMODE</b></a>
+				<a href="source-class-Bread.Logger.html#679-682" title="Go to source code"><b>FILEMODE</b></a>
 		</code></td>
-		<td class="value"><code><span class="php-quote">&quot;w&quot;</span></code></td>
+		<td class="value"><code><span class="php-quote">&quot;a&quot;</span></code></td>
 		<td class="description"><div>
 			<a href="#FILEMODE" class="anchor">#</a>
 
 			<div class="description short">
 				
+<p>Filemode to use when writing to files</p>
+
 			</div>
 
 			<div class="description detailed hidden">
 				
+<p>Filemode to use when writing to files</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="SEVERITY_MESSAGE" id="SEVERITY_MESSAGE">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+				<a href="source-class-Bread.Logger.html#683-686" title="Go to source code"><b>SEVERITY_MESSAGE</b></a>
+		</code></td>
+		<td class="value"><code>-<span class="php-num">1</span></code></td>
+		<td class="description"><div>
+			<a href="#SEVERITY_MESSAGE" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Non important message only useful for debugging.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Non important message only useful for debugging.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="SEVERITY_LOW" id="SEVERITY_LOW">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+				<a href="source-class-Bread.Logger.html#687-690" title="Go to source code"><b>SEVERITY_LOW</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">0</span></code></td>
+		<td class="description"><div>
+			<a href="#SEVERITY_LOW" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>A message that can ususally be safely ignored but can help the user with any
+problems.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>A message that can ususally be safely ignored but can help the user with any
+problems.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="SEVERITY_MEDIUM" id="SEVERITY_MEDIUM">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+				<a href="source-class-Bread.Logger.html#691-694" title="Go to source code"><b>SEVERITY_MEDIUM</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">1</span></code></td>
+		<td class="description"><div>
+			<a href="#SEVERITY_MEDIUM" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>A message that should be looked into which could interphere with the running
+of a module.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>A message that should be looked into which could interphere with the running
+of a module.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="SEVERITY_HIGH" id="SEVERITY_HIGH">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+				<a href="source-class-Bread.Logger.html#695-698" title="Go to source code"><b>SEVERITY_HIGH</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">2</span></code></td>
+		<td class="description"><div>
+			<a href="#SEVERITY_HIGH" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>A large issue that WILL prevent some features from running and could have
+large adverse effects on portions of the site.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>A large issue that WILL prevent some features from running and could have
+large adverse effects on portions of the site.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="SEVERITY_CRITICAL" id="SEVERITY_CRITICAL">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+				<a href="source-class-Bread.Logger.html#699-702" title="Go to source code"><b>SEVERITY_CRITICAL</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">2</span></code></td>
+		<td class="description"><div>
+			<a href="#SEVERITY_CRITICAL" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>A critial error which affects bread and will stop it from running properly at
+any capacity.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>A critial error which affects bread and will stop it from running properly at
+any capacity.</p>
+
 
 			</div>
 		</div></td>

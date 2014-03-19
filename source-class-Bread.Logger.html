@@ -8,7 +8,7 @@
 	<title>File modules/site.php | Bread</title>
 
 	<script type="text/javascript" src="resources/combined.js?174271566"></script>
-	<script type="text/javascript" src="elementlist.js?2014293178"></script>
+	<script type="text/javascript" src="elementlist.js?2491947360"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -45,6 +45,7 @@
 			<h3>Classes</h3>
 			<ul>
 				<li class="active"><a href="class-Bread.Logger.html">Logger</a></li>
+				<li><a href="class-Bread.LoggerMessage.html">LoggerMessage</a></li>
 				<li><a href="class-Bread.Site.html">Site</a></li>
 			</ul>
 
@@ -386,7 +387,7 @@
 </span></span><span id="296" class="l"><a class="l" href="#296">296: </a><span class="php-comment">         */</span>
 </span><span id="297" class="l"><a class="l" href="#297">297: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_SetupLogging" href="#_SetupLogging">SetupLogging</a>()
 </span><span id="298" class="l"><a class="l" href="#298">298: </a>    {
-</span><span id="299" class="l"><a class="l" href="#299">299: </a>        <span class="php-keyword1">static</span>::<span class="php-var">$Logger</span> = <span class="php-keyword1">new</span> Logger(<span class="php-keyword1">static</span>::<span class="php-var">$configuration</span>[<span class="php-quote">&quot;core&quot;</span>][<span class="php-quote">&quot;logto&quot;</span>]);
+</span><span id="299" class="l"><a class="l" href="#299">299: </a>        <span class="php-keyword1">static</span>::<span class="php-var">$Logger</span> = <span class="php-keyword1">new</span> Logger(<span class="php-keyword1">static</span>::<span class="php-var">$configuration</span>[<span class="php-quote">&quot;logger&quot;</span>][<span class="php-quote">&quot;path&quot;</span>],<span class="php-keyword1">static</span>::<span class="php-var">$configuration</span>[<span class="php-quote">&quot;logger&quot;</span>][<span class="php-quote">&quot;minseveritytolog&quot;</span>],<span class="php-keyword1">static</span>::<span class="php-var">$configuration</span>[<span class="php-quote">&quot;logger&quot;</span>][<span class="php-quote">&quot;maxlogfiles&quot;</span>],<span class="php-keyword1">static</span>::<span class="php-var">$configuration</span>[<span class="php-quote">&quot;logger&quot;</span>][<span class="php-quote">&quot;multifilelog&quot;</span>],<span class="php-keyword1">static</span>::<span class="php-var">$configuration</span>[<span class="php-quote">&quot;logger&quot;</span>][<span class="php-quote">&quot;maxlogfiles&quot;</span>],<span class="php-keyword1">static</span>::<span class="php-var">$configuration</span>[<span class="php-quote">&quot;logger&quot;</span>][<span class="php-quote">&quot;keepfor&quot;</span>]);
 </span><span id="300" class="l"><a class="l" href="#300">300: </a>    }
 </span><span id="301" class="l"><a class="l" href="#301">301: </a>        <span class="php-comment">/**
 </span></span><span id="302" class="l"><a class="l" href="#302">302: </a><span class="php-comment">         * Checks each module in the core modules that were previously loaded from
@@ -402,13 +403,13 @@
 </span><span id="312" class="l"><a class="l" href="#312">312: </a>        <span class="php-keyword1">foreach</span>(<span class="php-var">$RequiredModules</span> <span class="php-keyword1">as</span> <span class="php-var">$ModuleName</span>)
 </span><span id="313" class="l"><a class="l" href="#313">313: </a>        {
 </span><span id="314" class="l"><a class="l" href="#314">314: </a>            <span class="php-keyword1">if</span>(!<span class="php-keyword2">class_exists</span>(<span class="php-var">$ModuleName</span>)){
-</span><span id="315" class="l"><a class="l" href="#315">315: </a>                <span class="php-keyword1">static</span>::<span class="php-var">$Logger</span>-&gt;writeError(<span class="php-quote">&quot;Bread is missing module &quot;</span> . <span class="php-var">$ModuleName</span>,<span class="php-num">0</span>,<span class="php-keyword1">True</span>);
+</span><span id="315" class="l"><a class="l" href="#315">315: </a>                <span class="php-keyword1">static</span>::<span class="php-var">$Logger</span>-&gt;writeError(<span class="php-quote">&quot;Bread is missing module &quot;</span> . <span class="php-var">$ModuleName</span>,\Bread\Logger::SEVERITY_CRITICAL,<span class="php-quote">&quot;core&quot;</span>,<span class="php-keyword1">True</span>);
 </span><span id="316" class="l"><a class="l" href="#316">316: </a>                <span class="php-var">$Failed</span> = <span class="php-keyword1">true</span>;
 </span><span id="317" class="l"><a class="l" href="#317">317: </a>            }
 </span><span id="318" class="l"><a class="l" href="#318">318: </a>        }
 </span><span id="319" class="l"><a class="l" href="#319">319: </a>        <span class="php-keyword1">if</span>(<span class="php-var">$Failed</span>)
 </span><span id="320" class="l"><a class="l" href="#320">320: </a>        {
-</span><span id="321" class="l"><a class="l" href="#321">321: </a>            <span class="php-keyword1">static</span>::<span class="php-var">$Logger</span>-&gt;writeError(<span class="php-quote">&quot;Some core modules could not be found, please redownload them from the repository.&quot;</span>,<span class="php-num">0</span>,<span class="php-keyword1">true</span>);
+</span><span id="321" class="l"><a class="l" href="#321">321: </a>            <span class="php-keyword1">static</span>::<span class="php-var">$Logger</span>-&gt;writeError(<span class="php-quote">&quot;Some core modules could not be found, please redownload them from the repository.&quot;</span>,\Bread\Logger::SEVERITY_CRITICAL,<span class="php-quote">&quot;core&quot;</span>,<span class="php-keyword1">true</span>);
 </span><span id="322" class="l"><a class="l" href="#322">322: </a>            <span class="php-keyword1">die</span>();
 </span><span id="323" class="l"><a class="l" href="#323">323: </a>        }
 </span><span id="324" class="l"><a class="l" href="#324">324: </a>    }
@@ -518,7 +519,7 @@
 </span><span id="428" class="l"><a class="l" href="#428">428: </a>                <span class="php-keyword1">foreach</span>(<span class="php-var">$requestDB</span>-&gt;<span class="php-var">$requestName</span>-&gt;<span class="php-keyword1">include</span> <span class="php-keyword1">as</span> <span class="php-var">$includedRequest</span>)
 </span><span id="429" class="l"><a class="l" href="#429">429: </a>                {
 </span><span id="430" class="l"><a class="l" href="#430">430: </a>                    <span class="php-keyword1">if</span>(!<span class="php-keyword1">isset</span>(<span class="php-var">$requestDB</span>-&gt;<span class="php-var">$includedRequest</span>)){
-</span><span id="431" class="l"><a class="l" href="#431">431: </a>                        <span class="php-keyword1">static</span>::<span class="php-var">$Logger</span>-&gt;writeError (<span class="php-quote">&quot;Request includes &quot;</span> . <span class="php-var">$includedRequest</span> . <span class="php-quote">&quot; but is not defined in the file. Ignoring&quot;</span> , <span class="php-num">1</span>);
+</span><span id="431" class="l"><a class="l" href="#431">431: </a>                        <span class="php-keyword1">static</span>::<span class="php-var">$Logger</span>-&gt;writeError (<span class="php-quote">&quot;Request includes &quot;</span> . <span class="php-var">$includedRequest</span> . <span class="php-quote">&quot; but is not defined in the file. Ignoring&quot;</span> ,\Bread\Logger::SEVERITY_MEDIUM);
 </span><span id="432" class="l"><a class="l" href="#432">432: </a>                        <span class="php-keyword1">continue</span>;
 </span><span id="433" class="l"><a class="l" href="#433">433: </a>                    }
 </span><span id="434" class="l"><a class="l" href="#434">434: </a>                    <span class="php-var">$requestObject</span>-&gt;modules = <span class="php-keyword2">array_merge</span>(<span class="php-var">$requestObject</span>-&gt;modules,<span class="php-var">$requestDB</span>-&gt;<span class="php-var">$includedRequest</span>-&gt;modules);
@@ -587,7 +588,7 @@
 </span><span id="497" class="l"><a class="l" href="#497">497: </a>                }
 </span><span id="498" class="l"><a class="l" href="#498">498: </a>                <span class="php-keyword1">if</span>(<span class="php-var">$return</span> === <span class="php-keyword1">False</span>)
 </span><span id="499" class="l"><a class="l" href="#499">499: </a>                {
-</span><span id="500" class="l"><a class="l" href="#500">500: </a>                   <span class="php-keyword1">static</span>::<span class="php-var">$Logger</span>-&gt;writeError(<span class="php-quote">&quot;Couldn't hook Ajax Request to requested module.&quot;</span>);
+</span><span id="500" class="l"><a class="l" href="#500">500: </a>                   <span class="php-keyword1">static</span>::<span class="php-var">$Logger</span>-&gt;writeError(<span class="php-quote">&quot;Couldn't hook Ajax Request to requested module.&quot;</span>,\Bread\Logger::SEVERITY_CRITICAL,<span class="php-quote">&quot;core&quot;</span>);
 </span><span id="501" class="l"><a class="l" href="#501">501: </a>                   <span class="php-keyword1">return</span> <span class="php-keyword1">False</span>;
 </span><span id="502" class="l"><a class="l" href="#502">502: </a>                }
 </span><span id="503" class="l"><a class="l" href="#503">503: </a>                <span class="php-keyword1">static</span>::<span class="php-var">$Logger</span>-&gt;writeMessage(<span class="php-var">$realdata</span>);
@@ -601,10 +602,10 @@
 </span><span id="511" class="l"><a class="l" href="#511">511: </a>        <span class="php-keyword1">static</span>::<span class="php-var">$Logger</span>-&gt;writeMessage(<span class="php-quote">&quot;Request data:\n&quot;</span> . <span class="php-keyword2">var_export</span>(<span class="php-var">$requestData</span>,<span class="php-keyword1">True</span>));
 </span><span id="512" class="l"><a class="l" href="#512">512: </a>        <span class="php-comment">//Process request</span>
 </span><span id="513" class="l"><a class="l" href="#513">513: </a>        <span class="php-keyword1">if</span>(!<span class="php-keyword1">static</span>::<span class="php-var">$themeManager</span>-&gt;SelectTheme(<span class="php-var">$requestData</span>)){
-</span><span id="514" class="l"><a class="l" href="#514">514: </a>            <span class="php-keyword1">static</span>::<span class="php-var">$Logger</span>-&gt;writeError(<span class="php-quote">&quot;Couldn't select theme from request.&quot;</span>,<span class="php-num">0</span>,<span class="php-keyword1">True</span>);
+</span><span id="514" class="l"><a class="l" href="#514">514: </a>            <span class="php-keyword1">static</span>::<span class="php-var">$Logger</span>-&gt;writeError(<span class="php-quote">&quot;Couldn't select theme from request.&quot;</span>,\Bread\Logger::SEVERITY_CRITICAL,<span class="php-quote">&quot;core&quot;</span>,<span class="php-keyword1">True</span>);
 </span><span id="515" class="l"><a class="l" href="#515">515: </a>        }
 </span><span id="516" class="l"><a class="l" href="#516">516: </a>        <span class="php-keyword1">if</span>(!<span class="php-keyword1">static</span>::<span class="php-var">$themeManager</span>-&gt;SelectLayout(<span class="php-var">$requestData</span>)){
-</span><span id="517" class="l"><a class="l" href="#517">517: </a>            <span class="php-keyword1">static</span>::<span class="php-var">$Logger</span>-&gt;writeError(<span class="php-quote">&quot;Couldn't select layout from request.&quot;</span>,<span class="php-num">0</span>,<span class="php-keyword1">True</span>);
+</span><span id="517" class="l"><a class="l" href="#517">517: </a>            <span class="php-keyword1">static</span>::<span class="php-var">$Logger</span>-&gt;writeError(<span class="php-quote">&quot;Couldn't select layout from request.&quot;</span>,\Bread\Logger::SEVERITY_CRITICAL,<span class="php-quote">&quot;core&quot;</span>,<span class="php-keyword1">True</span>);
 </span><span id="518" class="l"><a class="l" href="#518">518: </a>        }
 </span><span id="519" class="l"><a class="l" href="#519">519: </a>
 </span><span id="520" class="l"><a class="l" href="#520">520: </a>        <span class="php-keyword1">static</span>::<span class="php-var">$themeManager</span>-&gt;ReadElementsFromLayout(<span class="php-keyword1">static</span>::<span class="php-var">$themeManager</span>-&gt;Theme[<span class="php-quote">&quot;layout&quot;</span>]);<span class="php-comment">#Build layout into HTML</span>
@@ -766,101 +767,256 @@
 </span></span><span id="676" class="l"><a class="l" href="#676">676: </a><span class="php-comment"> */</span>
 </span><span id="677" class="l"><a class="l" href="#677">677: </a><span class="php-keyword1">class</span> <a id="Logger" href="#Logger">Logger</a>
 </span><span id="678" class="l"><a class="l" href="#678">678: </a>{
-</span><span id="679" class="l"><a class="l" href="#679">679: </a>    <span class="php-keyword1">const</span> <a id="FILEMODE" href="#FILEMODE">FILEMODE</a> = <span class="php-quote">&quot;w&quot;</span>;
-</span><span id="680" class="l"><a class="l" href="#680">680: </a>    <span class="php-keyword1">private</span> <span class="php-var"><a id="$logpath" href="#$logpath">$logpath</a></span> = <span class="php-quote">&quot;NOLOG&quot;</span>;
-</span><span id="681" class="l"><a class="l" href="#681">681: </a>    <span class="php-keyword1">private</span> <span class="php-var"><a id="$errorstack" href="#$errorstack">$errorstack</a></span> = <span class="php-keyword1">array</span>();
-</span><span id="682" class="l"><a class="l" href="#682">682: </a>    <span class="php-keyword1">private</span> <span class="php-var"><a id="$messagestack" href="#$messagestack">$messagestack</a></span> = <span class="php-keyword1">array</span>();
-</span><span id="683" class="l"><a class="l" href="#683">683: </a>    <span class="php-keyword1">private</span> <span class="php-var"><a id="$fileStream" href="#$fileStream">$fileStream</a></span>;
-</span><span id="684" class="l"><a class="l" href="#684">684: </a>    
-</span><span id="685" class="l"><a class="l" href="#685">685: </a>    <span class="php-comment">/**
-</span></span><span id="686" class="l"><a class="l" href="#686">686: </a><span class="php-comment">     * Gets the messages passed to the logger since startup.
-</span></span><span id="687" class="l"><a class="l" href="#687">687: </a><span class="php-comment">     * @return array
-</span></span><span id="688" class="l"><a class="l" href="#688">688: </a><span class="php-comment">     */</span>
-</span><span id="689" class="l"><a class="l" href="#689">689: </a>    <span class="php-keyword1">function</span> <a id="_getMessagesstack" href="#_getMessagesstack">getMessagesstack</a>()
-</span><span id="690" class="l"><a class="l" href="#690">690: </a>    {
-</span><span id="691" class="l"><a class="l" href="#691">691: </a>        <span class="php-keyword1">return</span> <span class="php-var">$messagestack</span>;
-</span><span id="692" class="l"><a class="l" href="#692">692: </a>    }
-</span><span id="693" class="l"><a class="l" href="#693">693: </a>    
-</span><span id="694" class="l"><a class="l" href="#694">694: </a>    <span class="php-comment">/**
-</span></span><span id="695" class="l"><a class="l" href="#695">695: </a><span class="php-comment">     * Gets the errors passed to the logger since startup.
-</span></span><span id="696" class="l"><a class="l" href="#696">696: </a><span class="php-comment">     * @return array
+</span><span id="679" class="l"><a class="l" href="#679">679: </a>    <span class="php-comment">/**
+</span></span><span id="680" class="l"><a class="l" href="#680">680: </a><span class="php-comment">     * Filemode to use when writing to files
+</span></span><span id="681" class="l"><a class="l" href="#681">681: </a><span class="php-comment">     */</span>
+</span><span id="682" class="l"><a class="l" href="#682">682: </a>    <span class="php-keyword1">const</span> <a id="FILEMODE" href="#FILEMODE">FILEMODE</a> = <span class="php-quote">&quot;a&quot;</span>;
+</span><span id="683" class="l"><a class="l" href="#683">683: </a>    <span class="php-comment">/**
+</span></span><span id="684" class="l"><a class="l" href="#684">684: </a><span class="php-comment">     * Non important message only useful for debugging.
+</span></span><span id="685" class="l"><a class="l" href="#685">685: </a><span class="php-comment">     */</span>
+</span><span id="686" class="l"><a class="l" href="#686">686: </a>    <span class="php-keyword1">const</span> <a id="SEVERITY_MESSAGE" href="#SEVERITY_MESSAGE">SEVERITY_MESSAGE</a> = -<span class="php-num">1</span>;
+</span><span id="687" class="l"><a class="l" href="#687">687: </a>    <span class="php-comment">/**
+</span></span><span id="688" class="l"><a class="l" href="#688">688: </a><span class="php-comment">     * A message that can ususally be safely ignored but can help the user with any problems.
+</span></span><span id="689" class="l"><a class="l" href="#689">689: </a><span class="php-comment">     */</span>
+</span><span id="690" class="l"><a class="l" href="#690">690: </a>    <span class="php-keyword1">const</span> <a id="SEVERITY_LOW" href="#SEVERITY_LOW">SEVERITY_LOW</a> = <span class="php-num">0</span>;
+</span><span id="691" class="l"><a class="l" href="#691">691: </a>    <span class="php-comment">/**
+</span></span><span id="692" class="l"><a class="l" href="#692">692: </a><span class="php-comment">     * A message that should be looked into which could interphere with the running of a module.
+</span></span><span id="693" class="l"><a class="l" href="#693">693: </a><span class="php-comment">     */</span>
+</span><span id="694" class="l"><a class="l" href="#694">694: </a>    <span class="php-keyword1">const</span> <a id="SEVERITY_MEDIUM" href="#SEVERITY_MEDIUM">SEVERITY_MEDIUM</a> = <span class="php-num">1</span>;
+</span><span id="695" class="l"><a class="l" href="#695">695: </a>    <span class="php-comment">/**
+</span></span><span id="696" class="l"><a class="l" href="#696">696: </a><span class="php-comment">     * A large issue that WILL prevent some features from running and could have large adverse effects on portions of the site.
 </span></span><span id="697" class="l"><a class="l" href="#697">697: </a><span class="php-comment">     */</span>
-</span><span id="698" class="l"><a class="l" href="#698">698: </a>    <span class="php-keyword1">function</span> <a id="_getErrorstack" href="#_getErrorstack">getErrorstack</a>()
-</span><span id="699" class="l"><a class="l" href="#699">699: </a>    {
-</span><span id="700" class="l"><a class="l" href="#700">700: </a>        <span class="php-keyword1">return</span> <span class="php-var">$errorstack</span>;
-</span><span id="701" class="l"><a class="l" href="#701">701: </a>    }
-</span><span id="702" class="l"><a class="l" href="#702">702: </a>    
-</span><span id="703" class="l"><a class="l" href="#703">703: </a>    <span class="php-comment">/**
-</span></span><span id="704" class="l"><a class="l" href="#704">704: </a><span class="php-comment">     * Creates a new Logger object. 
-</span></span><span id="705" class="l"><a class="l" href="#705">705: </a><span class="php-comment">     * Throws an error if the logger can't create a file.
-</span></span><span id="706" class="l"><a class="l" href="#706">706: </a><span class="php-comment">     * Leave a blank string if you do not want to log to a file.
-</span></span><span id="707" class="l"><a class="l" href="#707">707: </a><span class="php-comment">     * @param string $filepath File name to log to.
-</span></span><span id="708" class="l"><a class="l" href="#708">708: </a><span class="php-comment">     * @return False
-</span></span><span id="709" class="l"><a class="l" href="#709">709: </a><span class="php-comment">     */</span>
-</span><span id="710" class="l"><a class="l" href="#710">710: </a>    <span class="php-keyword1">function</span> <a id="___construct" href="#___construct">__construct</a>(<span class="php-var">$filepath</span>)
-</span><span id="711" class="l"><a class="l" href="#711">711: </a>    {
-</span><span id="712" class="l"><a class="l" href="#712">712: </a>        <span class="php-keyword1">if</span>(<span class="php-var">$filepath</span> == <span class="php-quote">&quot;&quot;</span>)
-</span><span id="713" class="l"><a class="l" href="#713">713: </a>        <span class="php-var">$this</span>-&gt;logpath == <span class="php-quote">&quot;NOLOG&quot;</span>;
-</span><span id="714" class="l"><a class="l" href="#714">714: </a>        <span class="php-var">$this</span>-&gt;logpath = <span class="php-var">$filepath</span>;
-</span><span id="715" class="l"><a class="l" href="#715">715: </a>        <span class="php-var">$this</span>-&gt;fileStream = <span class="php-keyword2">fopen</span>(<span class="php-var">$this</span>-&gt;logpath,<span class="php-keyword1">static</span>::FILEMODE);
-</span><span id="716" class="l"><a class="l" href="#716">716: </a>        <span class="php-keyword1">if</span>(!<span class="php-var">$this</span>-&gt;fileStream){
-</span><span id="717" class="l"><a class="l" href="#717">717: </a>            <span class="php-var">$this</span>-&gt;fileStream = <span class="php-keyword2">fopen</span>(<span class="php-quote">&quot;php://temp&quot;</span>,<span class="php-keyword1">static</span>::FILEMODE);<span class="php-comment">// No writing possible</span>
-</span><span id="718" class="l"><a class="l" href="#718">718: </a>            <span class="php-keyword2">trigger_error</span>(<span class="php-quote">&quot;Couldn't write a new log file. File name &quot;</span> . <span class="php-var">$this</span>-&gt;logpath, E_USER_ERROR);
-</span><span id="719" class="l"><a class="l" href="#719">719: </a>        }
-</span><span id="720" class="l"><a class="l" href="#720">720: </a>        <span class="php-keyword1">static</span>::writeMessage(<span class="php-quote">&quot;Bread Version &quot;</span> . Site::Configuration()[<span class="php-quote">&quot;core&quot;</span>][<span class="php-quote">&quot;version&quot;</span>]);
-</span><span id="721" class="l"><a class="l" href="#721">721: </a>        <span class="php-keyword1">static</span>::writeMessage(<span class="php-quote">&quot;Log Date: &quot;</span> . <span class="php-keyword2">date</span>(<span class="php-quote">'l jS \of F Y'</span>));
-</span><span id="722" class="l"><a class="l" href="#722">722: </a>    }
-</span><span id="723" class="l"><a class="l" href="#723">723: </a>    <span class="php-comment">/**
-</span></span><span id="724" class="l"><a class="l" href="#724">724: </a><span class="php-comment">     * Write some infomation to the log stack. Purely for debugging or user info
-</span></span><span id="725" class="l"><a class="l" href="#725">725: </a><span class="php-comment">     * if the message is a potential problem, use Logger-&gt;writeError.
-</span></span><span id="726" class="l"><a class="l" href="#726">726: </a><span class="php-comment">     * @see Logger::writeError()
-</span></span><span id="727" class="l"><a class="l" href="#727">727: </a><span class="php-comment">     * @param string $message Message to be written
-</span></span><span id="728" class="l"><a class="l" href="#728">728: </a><span class="php-comment">     */</span>
-</span><span id="729" class="l"><a class="l" href="#729">729: </a>    <span class="php-keyword1">function</span> <a id="_writeMessage" href="#_writeMessage">writeMessage</a>(<span class="php-var">$message</span>)
-</span><span id="730" class="l"><a class="l" href="#730">730: </a>    {
-</span><span id="731" class="l"><a class="l" href="#731">731: </a>    <span class="php-keyword1">if</span>(<span class="php-var">$this</span>-&gt;logpath == <span class="php-quote">&quot;NOLOG&quot;</span>)
-</span><span id="732" class="l"><a class="l" href="#732">732: </a>        <span class="php-keyword1">return</span>;
-</span><span id="733" class="l"><a class="l" href="#733">733: </a>        <span class="php-var">$time</span> = Site::GetTimeSinceStart();
-</span><span id="734" class="l"><a class="l" href="#734">734: </a>        <span class="php-var">$messageStack</span>[<span class="php-var">$time</span>] = <span class="php-var">$message</span>;
-</span><span id="735" class="l"><a class="l" href="#735">735: </a>        <span class="php-var">$msg</span> = <span class="php-quote">&quot;[MSG][&quot;</span> . <span class="php-var">$time</span> . <span class="php-quote">&quot;]&quot;</span> . <span class="php-var">$message</span> . <span class="php-quote">&quot;\n&quot;</span>;
-</span><span id="736" class="l"><a class="l" href="#736">736: </a>        <span class="php-keyword2">fwrite</span>(<span class="php-var">$this</span>-&gt;fileStream,<span class="php-var">$msg</span>);
-</span><span id="737" class="l"><a class="l" href="#737">737: </a>        <span class="php-keyword2">fflush</span>(<span class="php-var">$this</span>-&gt;fileStream);
-</span><span id="738" class="l"><a class="l" href="#738">738: </a>    }
-</span><span id="739" class="l"><a class="l" href="#739">739: </a>    
-</span><span id="740" class="l"><a class="l" href="#740">740: </a>    <span class="php-comment">/**
-</span></span><span id="741" class="l"><a class="l" href="#741">741: </a><span class="php-comment">     * Write an error to the log stack. If the message is just infomation,
-</span></span><span id="742" class="l"><a class="l" href="#742">742: </a><span class="php-comment">     * use Logger-&gt;writeMessage. 
-</span></span><span id="743" class="l"><a class="l" href="#743">743: </a><span class="php-comment">     * @see Logger::writeMessage()
-</span></span><span id="744" class="l"><a class="l" href="#744">744: </a><span class="php-comment">     * @param string $message Message to be written
-</span></span><span id="745" class="l"><a class="l" href="#745">745: </a><span class="php-comment">     * @param integer $severity Severity of the error
-</span></span><span id="746" class="l"><a class="l" href="#746">746: </a><span class="php-comment">     * @param bool $throw Should the logger throw an error
-</span></span><span id="747" class="l"><a class="l" href="#747">747: </a><span class="php-comment">     * @param string $exception The Exception class to throw.
-</span></span><span id="748" class="l"><a class="l" href="#748">748: </a><span class="php-comment">     * @throws \Exception
-</span></span><span id="749" class="l"><a class="l" href="#749">749: </a><span class="php-comment">     */</span>
-</span><span id="750" class="l"><a class="l" href="#750">750: </a>    <span class="php-keyword1">function</span> <a id="_writeError" href="#_writeError">writeError</a>(<span class="php-var">$message</span>,<span class="php-var">$severity</span> = -<span class="php-num">1</span>,<span class="php-var">$throw</span> = <span class="php-keyword1">False</span>,<span class="php-var">$exception</span> = <span class="php-quote">&quot;\Exception&quot;</span>)
-</span><span id="751" class="l"><a class="l" href="#751">751: </a>    {
-</span><span id="752" class="l"><a class="l" href="#752">752: </a>    <span class="php-keyword1">if</span>(<span class="php-var">$this</span>-&gt;logpath == <span class="php-quote">&quot;NOLOG&quot;</span>)
-</span><span id="753" class="l"><a class="l" href="#753">753: </a>        <span class="php-keyword1">return</span>;
-</span><span id="754" class="l"><a class="l" href="#754">754: </a>        <span class="php-var">$time</span> = Site::GetTimeSinceStart();
-</span><span id="755" class="l"><a class="l" href="#755">755: </a>        <span class="php-var">$errorStack</span>[<span class="php-var">$time</span>] = <span class="php-var">$message</span>;
-</span><span id="756" class="l"><a class="l" href="#756">756: </a>        <span class="php-var">$msg</span> = <span class="php-quote">&quot;[ERR &quot;</span> . <span class="php-var">$severity</span> .<span class="php-quote">&quot;][&quot;</span> . (<span class="php-var">$time</span>) . <span class="php-quote">&quot;]&quot;</span> . <span class="php-var">$message</span> . <span class="php-quote">&quot;\n&quot;</span>;
-</span><span id="757" class="l"><a class="l" href="#757">757: </a>        <span class="php-keyword2">fwrite</span>(<span class="php-var">$this</span>-&gt;fileStream,<span class="php-var">$msg</span>);
-</span><span id="758" class="l"><a class="l" href="#758">758: </a>        <span class="php-keyword2">fflush</span>(<span class="php-var">$this</span>-&gt;fileStream);
-</span><span id="759" class="l"><a class="l" href="#759">759: </a>    <span class="php-keyword1">if</span>(<span class="php-var">$throw</span>)
-</span><span id="760" class="l"><a class="l" href="#760">760: </a>            <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> <span class="php-var">$exception</span>(<span class="php-var">$message</span>);
-</span><span id="761" class="l"><a class="l" href="#761">761: </a>    }
-</span><span id="762" class="l"><a class="l" href="#762">762: </a>    <span class="php-comment">/**
-</span></span><span id="763" class="l"><a class="l" href="#763">763: </a><span class="php-comment">     * Close the stream to the filestream. Also writes a closing statement.
-</span></span><span id="764" class="l"><a class="l" href="#764">764: </a><span class="php-comment">     */</span>
-</span><span id="765" class="l"><a class="l" href="#765">765: </a>    <span class="php-keyword1">function</span> <a id="_closeStream" href="#_closeStream">closeStream</a>()
-</span><span id="766" class="l"><a class="l" href="#766">766: </a>    {
-</span><span id="767" class="l"><a class="l" href="#767">767: </a>    <span class="php-keyword1">if</span>(<span class="php-var">$this</span>-&gt;logpath == <span class="php-quote">&quot;NOLOG&quot;</span>)
-</span><span id="768" class="l"><a class="l" href="#768">768: </a>        <span class="php-keyword1">return</span>;
-</span><span id="769" class="l"><a class="l" href="#769">769: </a>        <span class="php-keyword1">static</span>::writeMessage(<span class="php-quote">&quot;Closing Log&quot;</span>);
-</span><span id="770" class="l"><a class="l" href="#770">770: </a>        <span class="php-keyword2">fclose</span>(<span class="php-var">$this</span>-&gt;fileStream);
-</span><span id="771" class="l"><a class="l" href="#771">771: </a>    }
-</span><span id="772" class="l"><a class="l" href="#772">772: </a>}
-</span><span id="773" class="l"><a class="l" href="#773">773: </a></span><span class="xlang">?&gt;</span></code></pre>
+</span><span id="698" class="l"><a class="l" href="#698">698: </a>    <span class="php-keyword1">const</span> <a id="SEVERITY_HIGH" href="#SEVERITY_HIGH">SEVERITY_HIGH</a> = <span class="php-num">2</span>;
+</span><span id="699" class="l"><a class="l" href="#699">699: </a>    <span class="php-comment">/**
+</span></span><span id="700" class="l"><a class="l" href="#700">700: </a><span class="php-comment">     * A critial error which affects bread and will stop it from running properly at any capacity.
+</span></span><span id="701" class="l"><a class="l" href="#701">701: </a><span class="php-comment">     */</span>
+</span><span id="702" class="l"><a class="l" href="#702">702: </a>    <span class="php-keyword1">const</span> <a id="SEVERITY_CRITICAL" href="#SEVERITY_CRITICAL">SEVERITY_CRITICAL</a> = <span class="php-num">2</span>;
+</span><span id="703" class="l"><a class="l" href="#703">703: </a>    <span class="php-keyword1">private</span> <span class="php-var"><a id="$logpath" href="#$logpath">$logpath</a></span> = <span class="php-quote">&quot;NOLOG&quot;</span>;
+</span><span id="704" class="l"><a class="l" href="#704">704: </a>    <span class="php-keyword1">private</span> <span class="php-var"><a id="$minlog" href="#$minlog">$minlog</a></span> = -<span class="php-num">1</span>;
+</span><span id="705" class="l"><a class="l" href="#705">705: </a>    <span class="php-keyword1">private</span> <span class="php-var"><a id="$logpermodule" href="#$logpermodule">$logpermodule</a></span> = <span class="php-keyword1">true</span>;
+</span><span id="706" class="l"><a class="l" href="#706">706: </a>    <span class="php-keyword1">private</span> <span class="php-var"><a id="$messagestack" href="#$messagestack">$messagestack</a></span> = <span class="php-keyword1">array</span>();
+</span><span id="707" class="l"><a class="l" href="#707">707: </a>    <span class="php-keyword1">private</span> <span class="php-var"><a id="$fileStreams" href="#$fileStreams">$fileStreams</a></span> = <span class="php-keyword1">array</span>();
+</span><span id="708" class="l"><a class="l" href="#708">708: </a>    
+</span><span id="709" class="l"><a class="l" href="#709">709: </a>    <span class="php-comment">/**
+</span></span><span id="710" class="l"><a class="l" href="#710">710: </a><span class="php-comment">     * Gets the messages passed to the logger since startup.
+</span></span><span id="711" class="l"><a class="l" href="#711">711: </a><span class="php-comment">     * Stacked as category =&gt; LoggerMessage
+</span></span><span id="712" class="l"><a class="l" href="#712">712: </a><span class="php-comment">     * @return array
+</span></span><span id="713" class="l"><a class="l" href="#713">713: </a><span class="php-comment">     */</span>
+</span><span id="714" class="l"><a class="l" href="#714">714: </a>    <span class="php-keyword1">function</span> <a id="_getMessagesstack" href="#_getMessagesstack">getMessagesstack</a>()
+</span><span id="715" class="l"><a class="l" href="#715">715: </a>    {
+</span><span id="716" class="l"><a class="l" href="#716">716: </a>        <span class="php-keyword1">return</span> <span class="php-var">$messagestack</span>;
+</span><span id="717" class="l"><a class="l" href="#717">717: </a>    }
+</span><span id="718" class="l"><a class="l" href="#718">718: </a>    
+</span><span id="719" class="l"><a class="l" href="#719">719: </a>    <span class="php-comment">/**
+</span></span><span id="720" class="l"><a class="l" href="#720">720: </a><span class="php-comment">     * Creates a new Logger object. 
+</span></span><span id="721" class="l"><a class="l" href="#721">721: </a><span class="php-comment">     * Throws an error if the logger can't create a file.
+</span></span><span id="722" class="l"><a class="l" href="#722">722: </a><span class="php-comment">     * Leave a blank string if you do not want to log to a file.
+</span></span><span id="723" class="l"><a class="l" href="#723">723: </a><span class="php-comment">     * @param string $filepath File name to log to.
+</span></span><span id="724" class="l"><a class="l" href="#724">724: </a><span class="php-comment">     * @return False
+</span></span><span id="725" class="l"><a class="l" href="#725">725: </a><span class="php-comment">     */</span>
+</span><span id="726" class="l"><a class="l" href="#726">726: </a>    <span class="php-keyword1">function</span> <a id="___construct" href="#___construct">__construct</a>(<span class="php-var">$filepath</span>,<span class="php-var">$minlog</span> = <span class="php-num">1</span>,<span class="php-var">$maxlogs</span> = <span class="php-num">50</span>,<span class="php-var">$logpermodule</span> = <span class="php-keyword1">false</span>,<span class="php-var">$keepfor</span> = -<span class="php-num">1</span>)
+</span><span id="727" class="l"><a class="l" href="#727">727: </a>    {
+</span><span id="728" class="l"><a class="l" href="#728">728: </a>        <span class="php-keyword1">if</span>(<span class="php-var">$filepath</span> == <span class="php-quote">&quot;&quot;</span>){
+</span><span id="729" class="l"><a class="l" href="#729">729: </a>        <span class="php-var">$this</span>-&gt;logpath == <span class="php-quote">&quot;NOLOG&quot;</span>;
+</span><span id="730" class="l"><a class="l" href="#730">730: </a>                <span class="php-keyword1">return</span>;
+</span><span id="731" class="l"><a class="l" href="#731">731: </a>        }
+</span><span id="732" class="l"><a class="l" href="#732">732: </a>        <span class="php-var">$this</span>-&gt;logpermodule = <span class="php-var">$logpermodule</span>;
+</span><span id="733" class="l"><a class="l" href="#733">733: </a>        <span class="php-var">$this</span>-&gt;logpath = <span class="php-var">$filepath</span>. <span class="php-quote">&quot;/&quot;</span> . <span class="php-keyword2">date</span>(<span class="php-quote">&quot;DM_H_i_s&quot;</span>);
+</span><span id="734" class="l"><a class="l" href="#734">734: </a>        <span class="php-var">$this</span>-&gt;minlog = <span class="php-var">$minlog</span>;
+</span><span id="735" class="l"><a class="l" href="#735">735: </a>        <span class="php-var">$this</span>-&gt;cleanUpLogFiles(<span class="php-var">$maxlogs</span>,<span class="php-var">$filepath</span>,<span class="php-var">$keepfor</span>);
+</span><span id="736" class="l"><a class="l" href="#736">736: </a>        <span class="php-keyword1">static</span>::writeMessage(<span class="php-quote">&quot;Bread Version &quot;</span> . Site::Configuration()[<span class="php-quote">&quot;core&quot;</span>][<span class="php-quote">&quot;version&quot;</span>]);
+</span><span id="737" class="l"><a class="l" href="#737">737: </a>        <span class="php-keyword1">static</span>::writeMessage(<span class="php-quote">&quot;Log Date: &quot;</span> . <span class="php-keyword2">date</span>(<span class="php-quote">'l jS \of F Y'</span>));
+</span><span id="738" class="l"><a class="l" href="#738">738: </a>   }
+</span><span id="739" class="l"><a class="l" href="#739">739: </a>    <span class="php-comment">/**
+</span></span><span id="740" class="l"><a class="l" href="#740">740: </a><span class="php-comment">     * Function to clean up old log files from the log dir.
+</span></span><span id="741" class="l"><a class="l" href="#741">741: </a><span class="php-comment">     * @param int $limit How many can be stored.
+</span></span><span id="742" class="l"><a class="l" href="#742">742: </a><span class="php-comment">     * @param string $filepath The dir where files are stored.
+</span></span><span id="743" class="l"><a class="l" href="#743">743: </a><span class="php-comment">     * @param string $keepfor Longest time to store for (in seconds), if less than 1 then ignore.
+</span></span><span id="744" class="l"><a class="l" href="#744">744: </a><span class="php-comment">     */</span>
+</span><span id="745" class="l"><a class="l" href="#745">745: </a>    <span class="php-keyword1">private</span> <span class="php-keyword1">function</span> <a id="_cleanUpLogFiles" href="#_cleanUpLogFiles">cleanUpLogFiles</a>(<span class="php-var">$limit</span>,<span class="php-var">$filepath</span>,<span class="php-var">$keepfor</span>){
+</span><span id="746" class="l"><a class="l" href="#746">746: </a>        <span class="php-var">$logs</span> = <span class="php-keyword2">scandir</span>(<span class="php-var">$filepath</span>);
+</span><span id="747" class="l"><a class="l" href="#747">747: </a>        <span class="php-keyword1">unset</span>(<span class="php-var">$logs</span>[<span class="php-keyword2">array_search</span>(<span class="php-quote">&quot;.&quot;</span>, <span class="php-var">$logs</span>)]);
+</span><span id="748" class="l"><a class="l" href="#748">748: </a>        <span class="php-keyword1">unset</span>(<span class="php-var">$logs</span>[<span class="php-keyword2">array_search</span>(<span class="php-quote">&quot;..&quot;</span>, <span class="php-var">$logs</span>)]);
+</span><span id="749" class="l"><a class="l" href="#749">749: </a>        <span class="php-comment">//Past its sell by date.</span>
+</span><span id="750" class="l"><a class="l" href="#750">750: </a>        <span class="php-var">$i</span> = -<span class="php-num">1</span>;
+</span><span id="751" class="l"><a class="l" href="#751">751: </a>        <span class="php-keyword1">foreach</span>(<span class="php-var">$logs</span> <span class="php-keyword1">as</span> <span class="php-var">$file</span>)
+</span><span id="752" class="l"><a class="l" href="#752">752: </a>        {
+</span><span id="753" class="l"><a class="l" href="#753">753: </a>            <span class="php-var">$i</span>++;
+</span><span id="754" class="l"><a class="l" href="#754">754: </a>            <span class="php-var">$file</span> = <span class="php-var">$filepath</span> . <span class="php-quote">&quot;/&quot;</span> . <span class="php-var">$file</span>;
+</span><span id="755" class="l"><a class="l" href="#755">755: </a>            <span class="php-keyword1">if</span>(<span class="php-var">$keepfor</span> &lt; <span class="php-num">1</span>)
+</span><span id="756" class="l"><a class="l" href="#756">756: </a>                <span class="php-keyword1">continue</span>;
+</span><span id="757" class="l"><a class="l" href="#757">757: </a>            <span class="php-keyword1">if</span>(<span class="php-keyword2">time</span>() - <span class="php-keyword2">filemtime</span>(<span class="php-var">$file</span>) &gt; <span class="php-var">$keepfor</span>){
+</span><span id="758" class="l"><a class="l" href="#758">758: </a>                  <span class="php-var">$this</span>-&gt;RemoveLog(<span class="php-var">$file</span>);
+</span><span id="759" class="l"><a class="l" href="#759">759: </a>                  <span class="php-keyword1">unset</span>(<span class="php-var">$logs</span>[<span class="php-var">$i</span>]);
+</span><span id="760" class="l"><a class="l" href="#760">760: </a>            }
+</span><span id="761" class="l"><a class="l" href="#761">761: </a>            
+</span><span id="762" class="l"><a class="l" href="#762">762: </a>            <span class="php-keyword1">if</span>(<span class="php-keyword2">count</span>(<span class="php-var">$logs</span>) &gt; <span class="php-var">$limit</span>)
+</span><span id="763" class="l"><a class="l" href="#763">763: </a>            {
+</span><span id="764" class="l"><a class="l" href="#764">764: </a>                <span class="php-var">$this</span>-&gt;RemoveLog(<span class="php-var">$file</span>);
+</span><span id="765" class="l"><a class="l" href="#765">765: </a>                <span class="php-keyword1">unset</span>(<span class="php-var">$logs</span>[<span class="php-var">$i</span>]);
+</span><span id="766" class="l"><a class="l" href="#766">766: </a>            }
+</span><span id="767" class="l"><a class="l" href="#767">767: </a>        }
+</span><span id="768" class="l"><a class="l" href="#768">768: </a>        
+</span><span id="769" class="l"><a class="l" href="#769">769: </a>    } 
+</span><span id="770" class="l"><a class="l" href="#770">770: </a>    <span class="php-comment">/**
+</span></span><span id="771" class="l"><a class="l" href="#771">771: </a><span class="php-comment">     * Removes a file/directory and its contents.
+</span></span><span id="772" class="l"><a class="l" href="#772">772: </a><span class="php-comment">     * @param string $location
+</span></span><span id="773" class="l"><a class="l" href="#773">773: </a><span class="php-comment">     */</span>
+</span><span id="774" class="l"><a class="l" href="#774">774: </a>    <span class="php-keyword1">private</span> <span class="php-keyword1">function</span> <a id="_RemoveLog" href="#_RemoveLog">RemoveLog</a>(<span class="php-var">$location</span>)
+</span><span id="775" class="l"><a class="l" href="#775">775: </a>    {
+</span><span id="776" class="l"><a class="l" href="#776">776: </a>        <span class="php-keyword1">if</span>(\<span class="php-keyword2">is_dir</span>(<span class="php-var">$location</span>)){
+</span><span id="777" class="l"><a class="l" href="#777">777: </a>            <span class="php-keyword1">foreach</span>(<span class="php-keyword2">scandir</span>(<span class="php-var">$location</span>) <span class="php-keyword1">as</span> <span class="php-var">$logfile</span>){
+</span><span id="778" class="l"><a class="l" href="#778">778: </a>                <span class="php-keyword1">if</span>(<span class="php-var">$logfile</span> == <span class="php-quote">&quot;.&quot;</span> | <span class="php-var">$logfile</span> == <span class="php-quote">&quot;..&quot;</span>)
+</span><span id="779" class="l"><a class="l" href="#779">779: </a>                    <span class="php-keyword1">continue</span>;
+</span><span id="780" class="l"><a class="l" href="#780">780: </a>                <span class="php-keyword2">unlink</span>(<span class="php-var">$location</span> . <span class="php-quote">&quot;/&quot;</span>  . <span class="php-var">$logfile</span>); 
+</span><span id="781" class="l"><a class="l" href="#781">781: </a>            } 
+</span><span id="782" class="l"><a class="l" href="#782">782: </a>            <span class="php-keyword2">rmdir</span>(<span class="php-var">$location</span>);
+</span><span id="783" class="l"><a class="l" href="#783">783: </a>        }
+</span><span id="784" class="l"><a class="l" href="#784">784: </a>        <span class="php-keyword1">else</span>
+</span><span id="785" class="l"><a class="l" href="#785">785: </a>        {
+</span><span id="786" class="l"><a class="l" href="#786">786: </a>            <span class="php-keyword2">unlink</span>(<span class="php-var">$location</span>);
+</span><span id="787" class="l"><a class="l" href="#787">787: </a>        }
+</span><span id="788" class="l"><a class="l" href="#788">788: </a>    }
+</span><span id="789" class="l"><a class="l" href="#789">789: </a>    <span class="php-comment">/**
+</span></span><span id="790" class="l"><a class="l" href="#790">790: </a><span class="php-comment">     * Open a new stream if one does not already exist.
+</span></span><span id="791" class="l"><a class="l" href="#791">791: </a><span class="php-comment">     * @param string $category The category of log file to open the stream for.
+</span></span><span id="792" class="l"><a class="l" href="#792">792: </a><span class="php-comment">     */</span>
+</span><span id="793" class="l"><a class="l" href="#793">793: </a>    <span class="php-keyword1">private</span> <span class="php-keyword1">function</span> <a id="_openStream" href="#_openStream">openStream</a>(<span class="php-var">$category</span>)
+</span><span id="794" class="l"><a class="l" href="#794">794: </a>    {
+</span><span id="795" class="l"><a class="l" href="#795">795: </a>        <span class="php-keyword1">if</span>(!<span class="php-var">$this</span>-&gt;logpermodule){
+</span><span id="796" class="l"><a class="l" href="#796">796: </a>            <span class="php-var">$this</span>-&gt;fileStreams[<span class="php-quote">&quot;core&quot;</span>] = <span class="php-keyword2">fopen</span>(<span class="php-var">$this</span>-&gt;logpath . <span class="php-quote">&quot;.log&quot;</span>,<span class="php-keyword1">static</span>::FILEMODE);
+</span><span id="797" class="l"><a class="l" href="#797">797: </a>            
+</span><span id="798" class="l"><a class="l" href="#798">798: </a>            <span class="php-keyword1">return</span>;
+</span><span id="799" class="l"><a class="l" href="#799">799: </a>        }
+</span><span id="800" class="l"><a class="l" href="#800">800: </a>        <span class="php-keyword1">else</span>
+</span><span id="801" class="l"><a class="l" href="#801">801: </a>        {
+</span><span id="802" class="l"><a class="l" href="#802">802: </a>            <span class="php-keyword1">if</span>(!<span class="php-keyword2">file_exists</span>(<span class="php-var">$this</span>-&gt;logpath)){
+</span><span id="803" class="l"><a class="l" href="#803">803: </a>                    <span class="php-keyword2">mkdir</span>(<span class="php-var">$this</span>-&gt;logpath,<span class="php-num">0777</span>,<span class="php-keyword1">true</span>);<span class="php-comment">//TODO: Better filemode system.</span>
+</span><span id="804" class="l"><a class="l" href="#804">804: </a>            }
+</span><span id="805" class="l"><a class="l" href="#805">805: </a>            
+</span><span id="806" class="l"><a class="l" href="#806">806: </a>        }
+</span><span id="807" class="l"><a class="l" href="#807">807: </a>        <span class="php-var">$this</span>-&gt;fileStreams[<span class="php-var">$category</span>] = <span class="php-keyword2">fopen</span>(<span class="php-var">$this</span>-&gt;logpath . <span class="php-quote">&quot;/&quot;</span> . <span class="php-var">$category</span> .<span class="php-quote">&quot;.log&quot;</span>,<span class="php-keyword1">static</span>::FILEMODE);
+</span><span id="808" class="l"><a class="l" href="#808">808: </a>    }
+</span><span id="809" class="l"><a class="l" href="#809">809: </a>    
+</span><span id="810" class="l"><a class="l" href="#810">810: </a>    <span class="php-comment">/**
+</span></span><span id="811" class="l"><a class="l" href="#811">811: </a><span class="php-comment">     * Write some infomation to the log stack. Purely for debugging or user info
+</span></span><span id="812" class="l"><a class="l" href="#812">812: </a><span class="php-comment">     * if the message is a potential problem, use Logger-&gt;writeError.
+</span></span><span id="813" class="l"><a class="l" href="#813">813: </a><span class="php-comment">     * @see Logger::writeError()
+</span></span><span id="814" class="l"><a class="l" href="#814">814: </a><span class="php-comment">     * @param string $string Message to be written
+</span></span><span id="815" class="l"><a class="l" href="#815">815: </a><span class="php-comment">     * @param string $category Stream to use
+</span></span><span id="816" class="l"><a class="l" href="#816">816: </a><span class="php-comment">     * @todo Decide to chuck either this or writeError because its pointless having similar functions.
+</span></span><span id="817" class="l"><a class="l" href="#817">817: </a><span class="php-comment">     */</span>
+</span><span id="818" class="l"><a class="l" href="#818">818: </a>    <span class="php-keyword1">function</span> <a id="_writeMessage" href="#_writeMessage">writeMessage</a>(<span class="php-var">$string</span>,<span class="php-var">$category</span> = <span class="php-quote">&quot;core&quot;</span>)
+</span><span id="819" class="l"><a class="l" href="#819">819: </a>    {
+</span><span id="820" class="l"><a class="l" href="#820">820: </a>        <span class="php-keyword1">if</span>(!<span class="php-var">$this</span>-&gt;logpermodule)
+</span><span id="821" class="l"><a class="l" href="#821">821: </a>            <span class="php-var">$category</span> = <span class="php-quote">&quot;core&quot;</span>;
+</span><span id="822" class="l"><a class="l" href="#822">822: </a>    <span class="php-keyword1">if</span>(<span class="php-var">$this</span>-&gt;logpath == <span class="php-quote">&quot;NOLOG&quot;</span>)
+</span><span id="823" class="l"><a class="l" href="#823">823: </a>        <span class="php-keyword1">return</span>;
+</span><span id="824" class="l"><a class="l" href="#824">824: </a>        <span class="php-keyword1">if</span>(<span class="php-var">$this</span>-&gt;minlog &gt; self::SEVERITY_MESSAGE)
+</span><span id="825" class="l"><a class="l" href="#825">825: </a>            <span class="php-keyword1">return</span>;
+</span><span id="826" class="l"><a class="l" href="#826">826: </a>        
+</span><span id="827" class="l"><a class="l" href="#827">827: </a>        <span class="php-keyword1">if</span>(!<span class="php-keyword2">in_array</span>(<span class="php-var">$category</span>, <span class="php-var">$this</span>-&gt;fileStreams))
+</span><span id="828" class="l"><a class="l" href="#828">828: </a>                <span class="php-var">$this</span>-&gt;openStream(<span class="php-var">$category</span>);
+</span><span id="829" class="l"><a class="l" href="#829">829: </a>        
+</span><span id="830" class="l"><a class="l" href="#830">830: </a>        <span class="php-keyword1">if</span>(<span class="php-keyword1">isset</span>(Site::<span class="php-var">$moduleManager</span>))
+</span><span id="831" class="l"><a class="l" href="#831">831: </a>            Site::<span class="php-var">$moduleManager</span>-&gt;FireEvent(<span class="php-quote">&quot;Bread.LogMessage&quot;</span>,self::SEVERITY_MESSAGE);
+</span><span id="832" class="l"><a class="l" href="#832">832: </a>        
+</span><span id="833" class="l"><a class="l" href="#833">833: </a>        <span class="php-var">$message</span> = <span class="php-keyword1">new</span> LoggerMessage;
+</span><span id="834" class="l"><a class="l" href="#834">834: </a>        <span class="php-var">$message</span>-&gt;<span class="php-keyword2">time</span> = Site::GetTimeSinceStart();
+</span><span id="835" class="l"><a class="l" href="#835">835: </a>        <span class="php-var">$message</span>-&gt;category = <span class="php-var">$category</span>;
+</span><span id="836" class="l"><a class="l" href="#836">836: </a>        <span class="php-var">$message</span>-&gt;message = <span class="php-var">$string</span>;
+</span><span id="837" class="l"><a class="l" href="#837">837: </a>        <span class="php-var">$message</span>-&gt;severity = self::SEVERITY_MESSAGE;
+</span><span id="838" class="l"><a class="l" href="#838">838: </a>        <span class="php-var">$this</span>-&gt;messageStack[<span class="php-var">$category</span>][] = <span class="php-var">$message</span>;
+</span><span id="839" class="l"><a class="l" href="#839">839: </a>        <span class="php-keyword2">fwrite</span>(<span class="php-var">$this</span>-&gt;fileStreams[<span class="php-var">$category</span>],<span class="php-var">$message</span>-&gt;ToString() . <span class="php-quote">&quot;\n&quot;</span>);
+</span><span id="840" class="l"><a class="l" href="#840">840: </a>    }
+</span><span id="841" class="l"><a class="l" href="#841">841: </a>    
+</span><span id="842" class="l"><a class="l" href="#842">842: </a>    <span class="php-comment">/**
+</span></span><span id="843" class="l"><a class="l" href="#843">843: </a><span class="php-comment">     * Write an error to the log stack. If the message is just infomation,
+</span></span><span id="844" class="l"><a class="l" href="#844">844: </a><span class="php-comment">     * use Logger-&gt;writeMessage. 
+</span></span><span id="845" class="l"><a class="l" href="#845">845: </a><span class="php-comment">     * @see Logger::writeMessage()
+</span></span><span id="846" class="l"><a class="l" href="#846">846: </a><span class="php-comment">     * @param string $string Message to be written
+</span></span><span id="847" class="l"><a class="l" href="#847">847: </a><span class="php-comment">     * @param integer $severity Severity of the error
+</span></span><span id="848" class="l"><a class="l" href="#848">848: </a><span class="php-comment">     * @param string $category Stream to write to.
+</span></span><span id="849" class="l"><a class="l" href="#849">849: </a><span class="php-comment">     * @param bool $throw Should the logger throw an error
+</span></span><span id="850" class="l"><a class="l" href="#850">850: </a><span class="php-comment">     * @param string $exception The Exception class to throw.
+</span></span><span id="851" class="l"><a class="l" href="#851">851: </a><span class="php-comment">     * @throws \Exception
+</span></span><span id="852" class="l"><a class="l" href="#852">852: </a><span class="php-comment">     */</span>
+</span><span id="853" class="l"><a class="l" href="#853">853: </a>    <span class="php-keyword1">function</span> <a id="_writeError" href="#_writeError">writeError</a>(<span class="php-var">$string</span>,<span class="php-var">$severity</span> = -<span class="php-num">1</span>,<span class="php-var">$category</span> = <span class="php-quote">&quot;core&quot;</span>,<span class="php-var">$throw</span> = <span class="php-keyword1">False</span>,<span class="php-var">$exception</span> = <span class="php-quote">&quot;\Exception&quot;</span>)
+</span><span id="854" class="l"><a class="l" href="#854">854: </a>    {
+</span><span id="855" class="l"><a class="l" href="#855">855: </a>        <span class="php-keyword1">if</span>(!<span class="php-var">$this</span>-&gt;logpermodule)
+</span><span id="856" class="l"><a class="l" href="#856">856: </a>            <span class="php-var">$category</span> = <span class="php-quote">&quot;core&quot;</span>;
+</span><span id="857" class="l"><a class="l" href="#857">857: </a>    <span class="php-keyword1">if</span>(<span class="php-var">$this</span>-&gt;logpath == <span class="php-quote">&quot;NOLOG&quot;</span>)
+</span><span id="858" class="l"><a class="l" href="#858">858: </a>            <span class="php-keyword1">return</span>;
+</span><span id="859" class="l"><a class="l" href="#859">859: </a>        <span class="php-keyword1">if</span>(<span class="php-var">$this</span>-&gt;minlog &gt; self::SEVERITY_MESSAGE)
+</span><span id="860" class="l"><a class="l" href="#860">860: </a>            <span class="php-keyword1">return</span>;
+</span><span id="861" class="l"><a class="l" href="#861">861: </a>        
+</span><span id="862" class="l"><a class="l" href="#862">862: </a>        <span class="php-keyword1">if</span>(!<span class="php-keyword2">in_array</span>(<span class="php-var">$category</span>, <span class="php-var">$this</span>-&gt;fileStreams))
+</span><span id="863" class="l"><a class="l" href="#863">863: </a>                <span class="php-var">$this</span>-&gt;openStream(<span class="php-var">$category</span>);
+</span><span id="864" class="l"><a class="l" href="#864">864: </a>        <span class="php-var">$time</span> = Site::GetTimeSinceStart();
+</span><span id="865" class="l"><a class="l" href="#865">865: </a>        
+</span><span id="866" class="l"><a class="l" href="#866">866: </a>        <span class="php-keyword1">if</span>(<span class="php-keyword1">isset</span>(Site::<span class="php-var">$moduleManager</span>))
+</span><span id="867" class="l"><a class="l" href="#867">867: </a>            Site::<span class="php-var">$moduleManager</span>-&gt;FireEvent(<span class="php-quote">&quot;Bread.LogError&quot;</span>,<span class="php-var">$severity</span>);
+</span><span id="868" class="l"><a class="l" href="#868">868: </a>        
+</span><span id="869" class="l"><a class="l" href="#869">869: </a>        <span class="php-var">$message</span> = <span class="php-keyword1">new</span> LoggerMessage;
+</span><span id="870" class="l"><a class="l" href="#870">870: </a>        <span class="php-var">$message</span>-&gt;<span class="php-keyword2">time</span> = Site::GetTimeSinceStart();
+</span><span id="871" class="l"><a class="l" href="#871">871: </a>        <span class="php-var">$message</span>-&gt;category = <span class="php-var">$category</span>;
+</span><span id="872" class="l"><a class="l" href="#872">872: </a>        <span class="php-var">$message</span>-&gt;message = <span class="php-var">$string</span>;
+</span><span id="873" class="l"><a class="l" href="#873">873: </a>        <span class="php-var">$message</span>-&gt;severity = self::SEVERITY_MESSAGE;
+</span><span id="874" class="l"><a class="l" href="#874">874: </a>        <span class="php-var">$this</span>-&gt;messageStack[<span class="php-var">$category</span>][] = <span class="php-var">$message</span>;
+</span><span id="875" class="l"><a class="l" href="#875">875: </a>        <span class="php-keyword2">fwrite</span>(<span class="php-var">$this</span>-&gt;fileStreams[<span class="php-var">$category</span>],<span class="php-var">$message</span>-&gt;ToString());
+</span><span id="876" class="l"><a class="l" href="#876">876: </a>    }
+</span><span id="877" class="l"><a class="l" href="#877">877: </a>    <span class="php-comment">/**
+</span></span><span id="878" class="l"><a class="l" href="#878">878: </a><span class="php-comment">     * Close the stream to the filestream. Also writes a closing statement.
+</span></span><span id="879" class="l"><a class="l" href="#879">879: </a><span class="php-comment">     */</span>
+</span><span id="880" class="l"><a class="l" href="#880">880: </a>    <span class="php-keyword1">function</span> <a id="_closeStream" href="#_closeStream">closeStream</a>()
+</span><span id="881" class="l"><a class="l" href="#881">881: </a>    {
+</span><span id="882" class="l"><a class="l" href="#882">882: </a>    <span class="php-keyword1">if</span>(<span class="php-var">$this</span>-&gt;logpath == <span class="php-quote">&quot;NOLOG&quot;</span>)
+</span><span id="883" class="l"><a class="l" href="#883">883: </a>        <span class="php-keyword1">return</span>;
+</span><span id="884" class="l"><a class="l" href="#884">884: </a>        <span class="php-keyword1">static</span>::writeMessage(<span class="php-quote">&quot;Closing Log&quot;</span>);
+</span><span id="885" class="l"><a class="l" href="#885">885: </a>        <span class="php-keyword1">foreach</span>(<span class="php-var">$this</span>-&gt;fileStreams <span class="php-keyword1">as</span> <span class="php-var">$stream</span>)
+</span><span id="886" class="l"><a class="l" href="#886">886: </a>            <span class="php-keyword2">fclose</span>(<span class="php-var">$stream</span>);
+</span><span id="887" class="l"><a class="l" href="#887">887: </a>    }
+</span><span id="888" class="l"><a class="l" href="#888">888: </a>    
+</span><span id="889" class="l"><a class="l" href="#889">889: </a>    <span class="php-comment">/**
+</span></span><span id="890" class="l"><a class="l" href="#890">890: </a><span class="php-comment">     * Convert a Severity Level to its String representation.
+</span></span><span id="891" class="l"><a class="l" href="#891">891: </a><span class="php-comment">     * @param int $level Severity Level
+</span></span><span id="892" class="l"><a class="l" href="#892">892: </a><span class="php-comment">     * @return string
+</span></span><span id="893" class="l"><a class="l" href="#893">893: </a><span class="php-comment">     */</span>
+</span><span id="894" class="l"><a class="l" href="#894">894: </a>    <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_getSeverityText" href="#_getSeverityText">getSeverityText</a>(<span class="php-var">$level</span>)
+</span><span id="895" class="l"><a class="l" href="#895">895: </a>    {
+</span><span id="896" class="l"><a class="l" href="#896">896: </a>        <span class="php-keyword1">switch</span>(<span class="php-var">$level</span>)
+</span><span id="897" class="l"><a class="l" href="#897">897: </a>        {
+</span><span id="898" class="l"><a class="l" href="#898">898: </a>            <span class="php-keyword1">case</span> self::SEVERITY_MESSAGE:
+</span><span id="899" class="l"><a class="l" href="#899">899: </a>                <span class="php-keyword1">return</span> <span class="php-quote">&quot;MESSAGE&quot;</span>;
+</span><span id="900" class="l"><a class="l" href="#900">900: </a>            <span class="php-keyword1">case</span> self::SEVERITY_LOW:
+</span><span id="901" class="l"><a class="l" href="#901">901: </a>                <span class="php-keyword1">return</span> <span class="php-quote">&quot;LOW&quot;</span>;
+</span><span id="902" class="l"><a class="l" href="#902">902: </a>            <span class="php-keyword1">case</span> self::SEVERITY_MEDIUM:
+</span><span id="903" class="l"><a class="l" href="#903">903: </a>                <span class="php-keyword1">return</span> <span class="php-quote">&quot;WARN&quot;</span>;
+</span><span id="904" class="l"><a class="l" href="#904">904: </a>            <span class="php-keyword1">case</span> self::SEVERITY_HIGH:
+</span><span id="905" class="l"><a class="l" href="#905">905: </a>                <span class="php-keyword1">return</span> <span class="php-quote">&quot;ERROR&quot;</span>;
+</span><span id="906" class="l"><a class="l" href="#906">906: </a>            <span class="php-keyword1">case</span> self::SEVERITY_CRITICAL:
+</span><span id="907" class="l"><a class="l" href="#907">907: </a>                <span class="php-keyword1">return</span> <span class="php-quote">&quot;CRITICAL&quot;</span>;
+</span><span id="908" class="l"><a class="l" href="#908">908: </a>        }
+</span><span id="909" class="l"><a class="l" href="#909">909: </a>    }
+</span><span id="910" class="l"><a class="l" href="#910">910: </a>    
+</span><span id="911" class="l"><a class="l" href="#911">911: </a>}
+</span><span id="912" class="l"><a class="l" href="#912">912: </a>
+</span><span id="913" class="l"><a class="l" href="#913">913: </a><span class="php-keyword1">class</span> <a id="LoggerMessage" href="#LoggerMessage">LoggerMessage</a>
+</span><span id="914" class="l"><a class="l" href="#914">914: </a>{
+</span><span id="915" class="l"><a class="l" href="#915">915: </a>    <span class="php-keyword1">public</span> <span class="php-var"><a id="$time" href="#$time">$time</a></span> = <span class="php-num">0</span>;
+</span><span id="916" class="l"><a class="l" href="#916">916: </a>    <span class="php-keyword1">public</span> <span class="php-var"><a id="$category" href="#$category">$category</a></span> = <span class="php-quote">&quot;core&quot;</span>;
+</span><span id="917" class="l"><a class="l" href="#917">917: </a>    <span class="php-keyword1">public</span> <span class="php-var"><a id="$severity" href="#$severity">$severity</a></span> = -<span class="php-num">1</span>;
+</span><span id="918" class="l"><a class="l" href="#918">918: </a>    <span class="php-keyword1">public</span> <span class="php-var"><a id="$message" href="#$message">$message</a></span> = <span class="php-quote">&quot;No Message&quot;</span>;
+</span><span id="919" class="l"><a class="l" href="#919">919: </a>    <span class="php-comment">/**
+</span></span><span id="920" class="l"><a class="l" href="#920">920: </a><span class="php-comment">     * String representtion of the message.
+</span></span><span id="921" class="l"><a class="l" href="#921">921: </a><span class="php-comment">     * @return string
+</span></span><span id="922" class="l"><a class="l" href="#922">922: </a><span class="php-comment">     */</span>
+</span><span id="923" class="l"><a class="l" href="#923">923: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_ToString" href="#_ToString">ToString</a>()
+</span><span id="924" class="l"><a class="l" href="#924">924: </a>    {
+</span><span id="925" class="l"><a class="l" href="#925">925: </a>        <span class="php-keyword1">return</span> <span class="php-quote">&quot;[&quot;</span>. Logger::getSeverityText(<span class="php-var">$this</span>-&gt;severity) .<span class="php-quote">&quot;]&quot;</span> . (<span class="php-var">$this</span>-&gt;<span class="php-keyword2">time</span>) . <span class="php-quote">&quot;]&quot;</span> . <span class="php-var">$this</span>-&gt;message;
+</span><span id="926" class="l"><a class="l" href="#926">926: </a>    }
+</span><span id="927" class="l"><a class="l" href="#927">927: </a>}
+</span><span id="928" class="l"><a class="l" href="#928">928: </a></span><span class="xlang">?&gt;</span></code></pre>
 
 	<div id="footer">
 		Bread API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
