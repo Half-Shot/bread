@@ -54,7 +54,7 @@ class ModuleManager
 	
 	/**
          * Reads the processed request and only loads required modules, saving memory.
-         * @param /Bread/Structures/BreadLinkStructure $request The request object.
+         * @param /Bread/Structures/BreadRequest $request The request object.
          */
 	function LoadRequiredModules($request)
 	{
@@ -78,7 +78,7 @@ class ModuleManager
                 $json = Site::$settingsManager->RetriveSettings($path,true);
                 $ModuleName = $json->name;
 		if(array_key_exists($ModuleName,$this->modules))
-			Site::$Logger->writeError('Cannot register module. Module already exists');
+			Site::$Logger->writeError('Cannot register module. Module already exists',  \Bread\Logger::SEVERITY_MEDIUM);
 		
 		Site::$Logger->writeMessage('Registered module ' . $ModuleName);
 		//Stupid PHP cannot validate files without running command trickery.
@@ -196,17 +196,17 @@ class ModuleManager
 	function FireSpecifiedModuleEvent($eventName,$moduleName,$arguments = null)
 	{
             if(!array_key_exists($moduleName,$this->modules)){
-	        Site::$Logger->writeError ("Couldn't specifically hook module '" . $moduleName . "'. Module not loaded.", 3); //Module not found.
+	        Site::$Logger->writeError ("Couldn't specifically hook module '" . $moduleName . "'. Module not loaded.", \Bread\Logger::SEVERITY_MEDIUM); //Module not found.
                 return False;
             }
             
             if(!array_key_exists($eventName, $this->events)){
-                Site::$Logger->writeError ("Couldn't specifically hook module '" . $moduleName . "'. That event is not called by any module.", 3); //Module not found.
+                Site::$Logger->writeError ("Couldn't specifically hook module '" . $moduleName . "'. That event is not called by any module.", \Bread\Logger::SEVERITY_LOW);
                 return False;
             }
             
             if(!array_key_exists($moduleName, $this->events[$eventName])){
-                Site::$Logger->writeError ("Couldn't specifically hook module '" . $moduleName . "'. Module does not have that event set.", 3); //Module not found.
+                Site::$Logger->writeError ("Couldn't specifically hook module '" . $moduleName . "'. Module does not have that event set.", \Bread\Logger::SEVERITY_MEDIUM);
                 return False;
             }
             $data = $this->events[$eventName][$moduleName];

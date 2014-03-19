@@ -115,7 +115,7 @@ class ThemeManager
                 return True;
             }
             if(!array_key_exists($Request->layout, $this->layouts))
-                    Site::$Logger->writeError ("Layout does not exist!", 10, true);
+                    Site::$Logger->writeError ("Layout does not exist!", \Bread\Logger::SEVERITY_CRITICAL,"core", true);
             $this->Theme["layout"] = $this->layouts[$Request->layout];
             return True;
                 
@@ -158,7 +158,7 @@ class ThemeManager
                     try {
                         $cssfilepath = $this->FindFile($filepath);
                     } catch (\Exception $exc) {
-                        Site::$Logger->writeError("Failed to find CSS File '" . $filepath .", ignoring.'", 2, false);
+                        Site::$Logger->writeError("Failed to find CSS File '" . $filepath .", ignoring.'", \Bread\Logger::SEVERITY_MEDIUM,"core", false);
                         continue;
                     }
                     
@@ -187,7 +187,7 @@ class ThemeManager
 		{
                         $Layout = $Layout["JSON"];
 			if(!isset($Layout->elements))//No enclosed elements.
-				Site::$Logger->writeError("Layout contains no elements, page cannot be built.",1,True);
+				Site::$Logger->writeError("Layout contains no elements, page cannot be built.",\Bread\Logger::SEVERITY_CRITICAL,"core",True);
 			if(isset($Layout->css)){
                             $this->cssFiles = array_merge($this->cssFiles,$Layout->css);
                             $this->BuildCSS();
@@ -198,7 +198,7 @@ class ThemeManager
                                 try {
                                     Site::AddScript($this->FindFile($path));
                                 } catch (\Exception $exc) {
-                                    Site::$Logger->writeError("Failed to find Scriptfile File '" . $path .", ignoring.'", 2, false);
+                                    Site::$Logger->writeError("Failed to find Scriptfile File '" . $path .", ignoring.'",\Bread\Logger::SEVERITY_MEDIUM,"core", false);
                                     continue;
                                 }
                             }
@@ -274,7 +274,7 @@ class ThemeManager
             if(!\ctype_alpha($returnedElement["tag"]))
             {
                 //Non alpha chars in tag name. KILL
-                Site::$Logger->writeError("Layout " . $this->Theme["layout"]["JSON"]->name . " has problems. Not drawing problematic tag " . $element->name, 8);
+                Site::$Logger->writeError("Layout " . $this->Theme["layout"]["JSON"]->name . " has problems. Not drawing problematic tag " . $element->name,\Bread\Logger::SEVERITY_MEDIUM,"core");
                 return False;
             }
             

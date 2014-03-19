@@ -104,7 +104,7 @@ class BreadPageSystem extends Module
                 }
             }
             $this->settings->BuildTime = time();
-            Site::$Logger->writeMessage("BPS: Built Page Index!");
+            Site::$Logger->writeMessage("Built Page Index!","breadpagesystem");
         }
         
         function DrawPage()
@@ -204,7 +204,7 @@ class BreadPageSystem extends Module
         {
              $canSave = $this->manager->FireEvent("Bread.Security.GetPermission","Editor")[0];
              if(!$canSave){
-                 Site::$Logger->writeError("User tried to save markdown without permission somehow, blocked!");
+                 Site::$Logger->writeError("User tried to save markdown without permission somehow, blocked!",\Bread\Logger::SEVERITY_HIGH,"breadpagesystem");
                  return "0";
              }
              $url = $_POST["url"];
@@ -223,28 +223,25 @@ class BreadPageSystem extends Module
              }
              else
              {
-                 Site::$Logger->writeError("Coudln't find the post for saving markdown file. Nonstandard URL!'");
+                 Site::$Logger->writeError("Couldn't find the post for saving markdown file. Nonstandard URL!'",\Bread\Logger::SEVERITY_HIGH,"breadpagesystem");
                  return "0";
              }
              $url = $this->settings->postdir . "/" . $this->settings->postindex[$id]->url;
              file_put_contents($url, $md);
-             Site::$Logger->writeMessage("===BPS===");
-             Site::$Logger->writeMessage("Post Data:" . var_export($_POST,True));
              $pageData = Site::$settingsManager->RetriveSettings($this->settings->postindex[$id]->jsonurl,True); //Get actual file
              $this->BuildTime = 0; //Reset Index.
              $pageData->name = $title;
              $pageData->title = $subtitle; //Needs changing.
-             Site::$Logger->writeMessage("Post Index Data:" . var_export($this->settings->postindex[$id],True));
              try
              {
                 Site::$settingsManager->SaveSetting($pageData,$this->settings->postindex[$id]->jsonurl,True);
              }
              catch(Exception $e)
              {
-                 Site::$Logger->writeError("[BPS]Coudln't save bread page system settings. Gave an " . get_class($e));
+                 Site::$Logger->writeError("[BPS]Coudln't save bread page system settings. Gave an " . get_class($e),\Bread\Logger::SEVERITY_HIGH,"breadpagesystem");
                  return "0";
              }
-             Site::$Logger->writeMessage("Modified " . $url . " with new data.");
+             Site::$Logger->writeMessage("Modified " . $url . " with new data.","breadpagesystem");
              return "1";
         }
 }

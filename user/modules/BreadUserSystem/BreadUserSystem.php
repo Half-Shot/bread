@@ -34,7 +34,7 @@ class BreadUserSystem extends Module
             session_start();
             if(!isset($_POST["uname"]) || !isset($_POST["pw"]))
                 return json_encode($return);
-            Site::$Logger->writeMessage("Got Right Info!");
+            Site::$Logger->writeMessage("Login infomation is all here.",$this->name);
             $username = $_POST["uname"];
             $user = NULL;
             foreach($this->userDB as $u)
@@ -42,13 +42,13 @@ class BreadUserSystem extends Module
                 if($u->breaduserdata->username == $username)
                 {
                     $user = $u;
-                    Site::$Logger->writeMessage("Username identified!");
+                    Site::$Logger->writeMessage("Username identified!",$this->name);
                     break;
                 }
             }
             if(is_null($user))
             {
-                Site::$Logger->writeMessage("Could not log user in because the username is not correct.");
+                Site::$Logger->writeError("Could not log in because the username does not exist",  \Bread\Logger::SEVERITY_LOW,$this->name);
                 return json_encode($return);
             }
             
@@ -56,7 +56,7 @@ class BreadUserSystem extends Module
             $hasher = new \PasswordHash(8, false);
             if($hasher->CheckPassword($pw,$user->hash))
             {
-                Site::$Logger->writeMessage("Password was correct!");
+                Site::$Logger->writeMessage("Password was correct!",$this->name);
                 $_SESSION["lastlogin"] = time(); //Setting this is enough.
                 $_SESSION["REMOTE_ADDR"] = $_SERVER["REMOTE_ADDR"];
                 $_SESSION["HTTP_USER_AGENT"] = $_SERVER["HTTP_USER_AGENT"];
@@ -64,7 +64,7 @@ class BreadUserSystem extends Module
             }
             else
             {
-                Site::$Logger->writeMessage("Password failed!");
+                Site::$Logger->writeError("Password Failed!", \Bread\Logger::SEVERITY_LOW,$this->name);
                 return json_encode($return);
             }
             $return["status"] = 11;
@@ -74,8 +74,8 @@ class BreadUserSystem extends Module
         
         function FirstTime($path)
         {
-            Site::$Logger->writeMessage("First time setup for BreadUserSystem. If this is not the first time the module has started then there is an issue.");
-             $this->StoreNewUser("root","ILikeToast",0,array("root"));
+            Site::$Logger->writeError("First time setup, if this is not the first time then somethings wrong.",\Bread\Logger::SEVERITY_MEDIUM,$this->name);
+            $this->StoreNewUser("root","ILikeToast",0,array("root"));
             Site::$settingsManager->SaveSetting($this->userDB,$path);
         }
         
@@ -91,7 +91,7 @@ class BreadUserSystem extends Module
         
         function StoreNewUser($username,$password,$uid = -1,$rights = array(),$extrainfomation = array())
         {
-            Site::$Logger->writeMessage("Storing new user.");
+            Site::$Logger->writeMessage("Storing new user.",$this->name);
             $newUser = new BreadUser;
             $newUser->uid = 0;
             if($uid == -1){
@@ -120,7 +120,7 @@ class BreadUserSystem extends Module
             $return = array("status" => 10);
             if(!isset($_POST["uname"]) || !isset($_POST["pw"])|| !isset($_POST["extrainfo"]))
             {
-                Site::$Logger->writeMessage("Not enough infomation sent!");
+                Site::$Logger->writeMessage("Not enough infomation sent!",$this->name);
                 return json_encode($return);
             }
             
@@ -128,19 +128,19 @@ class BreadUserSystem extends Module
             {
                 if($user->breaduserdata->username == $_POST["uname"])
                 {
-                    Site::$Logger->writeMessage("Dupe username.");
+                    Site::$Logger->writeError("Dupe username.",\Bread\Logger::SEVERITY_LOW,$this->name);
                     $return["status"] = 12;
                     return json_encode($return);
                 }
             }
-            Site::$Logger->writeMessage("Username looks good.");
+            Site::$Logger->writeMessage("Username looks good.",$this->name);
             $extrainfomation = json_decode($_POST["extrainfo"]);
             $extrainfomation = get_object_vars($extrainfomation);
             $this->StoreNewUser($_POST["uname"],$_POST["pw"],-1,$extrainfomation);
-            Site::$Logger->writeMessage("Stored User OK");
+            Site::$Logger->writeMessage("Stored User OK",$this->name);
             $return["goto"] = $this->settings->successredirect->createURL();
             $return["status"] = 11;
-            Site::$Logger->writeMessage("Sent success response header.");
+            Site::$Logger->writeMessage("Sent success response header.",$this->name);
             return json_encode($return);
         }
         
@@ -164,7 +164,7 @@ class BreadUserSystem extends Module
             $this->CheckSession();
             if(Site::getRequest()->requestType == "login"){
                 if($this->currentUser){ //Logout
-                    Site::$Logger->writeMessage("User is logging out.");
+                    Site::$Logger->writeMessage("User is logging out.",$this->name);
                     $this->Logout();
                     Site::Redirect(Site::getBaseURL());
                 }
@@ -228,7 +228,7 @@ class BreadUserSystem extends Module
             }
             if(time() - $_SESSION["lastlogin"] > $this->settings->sessiontimeout){
                 $this->Logout();
-                Site::$Logger->writeMessage("Login session timed out.");
+                Site::$Logger->writeMessage("Login session timed out.",$this->name);
                 Site::$moduleManager->FireEvent("Bread.Security.SessionTimeout",NULL);
                 return False;
             }
@@ -239,17 +239,17 @@ class BreadUserSystem extends Module
                     || $_SESSION["HTTP_USER_AGENT"] != $_SERVER["HTTP_USER_AGENT"])
             {
                 Site::$moduleManager->FireEvent("Bread.Security.InvalidSession",0);
-                Site::$Logger->writeMessage("Session had a changed host,address,user agent or corrupt uid. Destroying");
+                Site::$Logger->writeMessage("Session had a changed host,address,user agent or corrupt uid. Destroying",$this->name);
                 $this->Logout();
                 return False;
             }    
-            Site::$Logger->writeMessage("User logged in.");
+            Site::$Logger->writeMessage("User logged in.",$this->name);
             session_regenerate_id ();
             $user = $this->GetUserByUID($_SESSION["uid"]);
             if(!$user)
             {
                 Site::$moduleManager->FireEvent("Bread.Security.InvalidSession",0);
-                Site::$Logger->writeMessage("Stored UID does not exist, whoa!");
+                Site::$Logger->writeMessage("Stored UID does not exist, whoa!",$this->name);
                 $this->Logout();
                 return False;
             }

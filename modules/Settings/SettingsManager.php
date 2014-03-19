@@ -93,7 +93,7 @@ class SettingsManager {
         }
             //Extract Settings File
         if(!file_exists($path))
-            Site::$Logger->writeError ("Couldn't load path '" . $path . "' for parsing settings.", 1, True, "Bread\Settings\FileNotFoundException");   
+            Site::$Logger->writeError ("Couldn't load path '" . $path . "' for parsing settings.", \Bread\Logger::SEVERITY_MEDIUM, "core" , True, "Bread\Settings\FileNotFoundException");   
         
         $jsonObj = $this->GetJsonObject($path);
         
@@ -119,11 +119,11 @@ class SettingsManager {
             $contents = "{}"; //The equivalent of a empty file but cleaner.
         }
         if($contents == FALSE)
-           Site::$Logger->writeError ("Couldn't open path '" . $path . "' for parsing settings.", 1, True, "Bread\Settings\FileNotFoundException");
+           Site::$Logger->writeError ("Couldn't open path '" . $path . "' for parsing settings.", \Bread\Logger::SEVERITY_MEDIUM, "core" , True, "Bread\Settings\FileNotFoundException");
         
         $jsonObj = \json_decode($contents);
         if(is_null($jsonObj)) //Stops php from interpreting a empty object as null. That was a really bad bug.
-           Site::$Logger->writeError ("Couldn't parse file '" . $path . "' for reading settings.", 1, True, "Bread\Settings\FailedToParseException");   
+           Site::$Logger->writeError ("Couldn't parse file '" . $path . "' for reading settings.", \Bread\Logger::SEVERITY_MEDIUM, "core" ,True, "Bread\Settings\FailedToParseException");   
         return $jsonObj;
     }
     /**
@@ -135,7 +135,7 @@ class SettingsManager {
     {
         $obj = json_encode($object,JSON_PRETTY_PRINT);
         if($obj == False)
-           Site::$Logger->writeError ("Couldn't parse object into json string.", 1, True, "Bread\Settings\FailedToParseException");   
+           Site::$Logger->writeError ("Couldn't parse object into json string.", \Bread\Logger::SEVERITY_MEDIUM, "core" , True, "Bread\Settings\FailedToParseException");   
         return $obj;
     }
     
@@ -159,6 +159,6 @@ class SettingsManager {
          $string = $this->CompileJson($object);
          $worked = \file_put_contents($path, $string);
          if($worked == False || $worked == "{}")    
-             Site::$Logger->writeError ("Couldn't write json to file. path: '" . $path . "'", 1, $shouldThrow, "Bread\Settings\FileNotWrittenException");                  
+             Site::$Logger->writeError ("Couldn't write json to file. path: '" . $path . "'", \Bread\Logger::SEVERITY_MEDIUM,"core" , $shouldThrow, "Bread\Settings\FileNotWrittenException");                  
     }
 }

@@ -1,13 +1,19 @@
 {
 	"core":{
-		"version":0.09,
-		"logto":"./temp/breadlog",
+		"version":0.11,
 		"debug":true,
 		"cache":true,
 		"banhammer":true,
                 "defaultrequest":"homepage",
                 "timezone":"GMT"
 		},
+        "logger":{
+            	"path":"./temp/breadlog",
+                "maxlogfiles":2,
+                "minseveritytolog":-1,
+                "multifilelog":false,
+                "keepfor":60
+                },
 	"strings":{
 		"sitename":"The Bakery"
 		},

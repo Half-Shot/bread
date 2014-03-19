@@ -24,7 +24,7 @@ class ReallyInsecureUserSystem extends Module
     
         function DoLogin()
         {
-            Site::$Logger->writeMessage("[RIUS] User logged in, but there is no login code in this module.");
+            Site::$Logger->writeMessage("User logged in, but there is no login code in this module.",$this->name);
             Site::Redirect("index.php");
         }
         
@@ -41,7 +41,7 @@ class ReallyInsecureUserSystem extends Module
             if(!$this->clientInSameSubnet() && $this->settings->limitToLocalConnections)
             {
                 $this->currentUser = false;
-                Site::$Logger->writeMessage("[RIUS] As requested, user was denied because the address wasn't local.");
+                Site::$Logger->writeMessage("As requested, user was denied because the address wasn't local.",$this->name);
                 return;
             }
             //NOT WORKING!!!!!
@@ -50,13 +50,13 @@ class ReallyInsecureUserSystem extends Module
                 if(isset($_SERVER["HTTPS"])){
                  if($_SERVER["HTTPS"] != "on"){
                     $this->currentUser = false;
-                    Site::$Logger->writeMessage("[RIUS] As requested, user was denied because the connection isn't HTTPS.");
+                    Site::$Logger->writeMessage("As requested, user was denied because the connection isn't HTTPS.",$this->name);
                     return;
                  }
                 }
                 else
                 {
-                    Site::$Logger->writeMessage("[RIUS] As requested, user was denied because the connection isn't HTTPS.");
+                    Site::$Logger->writeMessage("As requested, user was denied because the connection isn't HTTPS.",$this->name);
                     return;
                 }
             }

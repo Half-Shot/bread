@@ -296,7 +296,7 @@ class Site
          */
 	public static function SetupLogging()
 	{
-		static::$Logger = new Logger(static::$configuration["core"]["logto"]);
+		static::$Logger = new Logger(static::$configuration["logger"]["path"],static::$configuration["logger"]["minseveritytolog"],static::$configuration["logger"]["maxlogfiles"],static::$configuration["logger"]["multifilelog"],static::$configuration["logger"]["maxlogfiles"],static::$configuration["logger"]["keepfor"]);
 	}
         /**
          * Checks each module in the core modules that were previously loaded from
@@ -312,13 +312,13 @@ class Site
 		foreach($RequiredModules as $ModuleName)
 		{
 			if(!class_exists($ModuleName)){
-				static::$Logger->writeError("Bread is missing module " . $ModuleName,0,True);
+				static::$Logger->writeError("Bread is missing module " . $ModuleName,\Bread\Logger::SEVERITY_CRITICAL,"core",True);
 				$Failed = true;
 			}
 		}
 		if($Failed)
 		{
-			static::$Logger->writeError("Some core modules could not be found, please redownload them from the repository.",0,true);
+			static::$Logger->writeError("Some core modules could not be found, please redownload them from the repository.",\Bread\Logger::SEVERITY_CRITICAL,"core",true);
 			die();
 		}
 	}
@@ -428,7 +428,7 @@ class Site
                 foreach($requestDB->$requestName->include as $includedRequest)
                 {
                     if(!isset($requestDB->$includedRequest)){
-                        static::$Logger->writeError ("Request includes " . $includedRequest . " but is not defined in the file. Ignoring" , 1);
+                        static::$Logger->writeError ("Request includes " . $includedRequest . " but is not defined in the file. Ignoring" ,\Bread\Logger::SEVERITY_MEDIUM);
                         continue;
                     }
                     $requestObject->modules = array_merge($requestObject->modules,$requestDB->$includedRequest->modules);
@@ -497,7 +497,7 @@ class Site
                 }
                 if($return === False)
                 {
-                   static::$Logger->writeError("Couldn't hook Ajax Request to requested module.");
+                   static::$Logger->writeError("Couldn't hook Ajax Request to requested module.",\Bread\Logger::SEVERITY_CRITICAL,"core");
                    return False;
                 }
                 static::$Logger->writeMessage($realdata);
@@ -511,10 +511,10 @@ class Site
 	    static::$Logger->writeMessage("Request data:\n" . var_export($requestData,True));
 	    //Process request
 	    if(!static::$themeManager->SelectTheme($requestData)){
-			static::$Logger->writeError("Couldn't select theme from request.",0,True);
+			static::$Logger->writeError("Couldn't select theme from request.",\Bread\Logger::SEVERITY_CRITICAL,"core",True);
 	    }
 	    if(!static::$themeManager->SelectLayout($requestData)){
-			static::$Logger->writeError("Couldn't select layout from request.",0,True);
+			static::$Logger->writeError("Couldn't select layout from request.",\Bread\Logger::SEVERITY_CRITICAL,"core",True);
 	    }
 
 	    static::$themeManager->ReadElementsFromLayout(static::$themeManager->Theme["layout"]);#Build layout into HTML
@@ -676,28 +676,44 @@ class Site
  */
 class Logger
 {
-    const FILEMODE = "w";
+    /**
+     * Filemode to use when writing to files
+     */
+    const FILEMODE = "a";
+    /**
+     * Non important message only useful for debugging.
+     */
+    const SEVERITY_MESSAGE = -1;
+    /**
+     * A message that can ususally be safely ignored but can help the user with any problems.
+     */
+    const SEVERITY_LOW = 0;
+    /**
+     * A message that should be looked into which could interphere with the running of a module.
+     */
+    const SEVERITY_MEDIUM = 1;
+    /**
+     * A large issue that WILL prevent some features from running and could have large adverse effects on portions of the site.
+     */
+    const SEVERITY_HIGH = 2;
+    /**
+     * A critial error which affects bread and will stop it from running properly at any capacity.
+     */
+    const SEVERITY_CRITICAL = 2;
     private $logpath = "NOLOG";
-    private $errorstack = array();
+    private $minlog = -1;
+    private $logpermodule = true;
     private $messagestack = array();
-    private $fileStream;
+    private $fileStreams = array();
     
     /**
      * Gets the messages passed to the logger since startup.
+     * Stacked as category => LoggerMessage
      * @return array
      */
     function getMessagesstack()
     {
         return $messagestack;
-    }
-    
-    /**
-     * Gets the errors passed to the logger since startup.
-     * @return array
-     */
-    function getErrorstack()
-    {
-        return $errorstack;
     }
     
     /**
@@ -707,57 +723,156 @@ class Logger
      * @param string $filepath File name to log to.
      * @return False
      */
-    function __construct($filepath)
+    function __construct($filepath,$minlog = 1,$maxlogs = 50,$logpermodule = false,$keepfor = -1)
     {
-        if($filepath == "")
+        if($filepath == ""){
 		$this->logpath == "NOLOG";
-        $this->logpath = $filepath;
-        $this->fileStream = fopen($this->logpath,static::FILEMODE);
-        if(!$this->fileStream){
-            $this->fileStream = fopen("php://temp",static::FILEMODE);// No writing possible
-            trigger_error("Couldn't write a new log file. File name " . $this->logpath, E_USER_ERROR);
+                return;
         }
+        $this->logpermodule = $logpermodule;
+        $this->logpath = $filepath. "/" . date("DM_H_i_s");
+        $this->minlog = $minlog;
+        $this->cleanUpLogFiles($maxlogs,$filepath,$keepfor);
         static::writeMessage("Bread Version " . Site::Configuration()["core"]["version"]);
         static::writeMessage("Log Date: " . date('l jS \of F Y'));
+   }
+    /**
+     * Function to clean up old log files from the log dir.
+     * @param int $limit How many can be stored.
+     * @param string $filepath The dir where files are stored.
+     * @param string $keepfor Longest time to store for (in seconds), if less than 1 then ignore.
+     */
+    private function cleanUpLogFiles($limit,$filepath,$keepfor){
+        $logs = scandir($filepath);
+        unset($logs[array_search(".", $logs)]);
+        unset($logs[array_search("..", $logs)]);
+        //Past its sell by date.
+        $i = -1;
+        foreach($logs as $file)
+        {
+            $i++;
+            $file = $filepath . "/" . $file;
+            if($keepfor < 1)
+                continue;
+            if(time() - filemtime($file) > $keepfor){
+                  $this->RemoveLog($file);
+                  unset($logs[$i]);
+            }
+            
+            if(count($logs) > $limit)
+            {
+                $this->RemoveLog($file);
+                unset($logs[$i]);
+            }
+        }
+        
+    } 
+    /**
+     * Removes a file/directory and its contents.
+     * @param string $location
+     */
+    private function RemoveLog($location)
+    {
+        if(\is_dir($location)){
+            foreach(scandir($location) as $logfile){
+                if($logfile == "." | $logfile == "..")
+                    continue;
+                unlink($location . "/"  . $logfile); 
+            } 
+            rmdir($location);
+        }
+        else
+        {
+            unlink($location);
+        }
     }
+    /**
+     * Open a new stream if one does not already exist.
+     * @param string $category The category of log file to open the stream for.
+     */
+    private function openStream($category)
+    {
+        if(!$this->logpermodule){
+            $this->fileStreams["core"] = fopen($this->logpath . ".log",static::FILEMODE);
+            
+            return;
+        }
+        else
+        {
+            if(!file_exists($this->logpath)){
+                    mkdir($this->logpath,0777,true);//TODO: Better filemode system.
+            }
+            
+        }
+        $this->fileStreams[$category] = fopen($this->logpath . "/" . $category .".log",static::FILEMODE);
+    }
+    
     /**
      * Write some infomation to the log stack. Purely for debugging or user info
      * if the message is a potential problem, use Logger->writeError.
      * @see Logger::writeError()
-     * @param string $message Message to be written
+     * @param string $string Message to be written
+     * @param string $category Stream to use
+     * @todo Decide to chuck either this or writeError because its pointless having similar functions.
      */
-    function writeMessage($message)
+    function writeMessage($string,$category = "core")
     {
+        if(!$this->logpermodule)
+            $category = "core";
 	if($this->logpath == "NOLOG")
 		return;
-        $time = Site::GetTimeSinceStart();
-        $messageStack[$time] = $message;
-        $msg = "[MSG][" . $time . "]" . $message . "\n";
-        fwrite($this->fileStream,$msg);
-        fflush($this->fileStream);
+        if($this->minlog > self::SEVERITY_MESSAGE)
+            return;
+        
+        if(!in_array($category, $this->fileStreams))
+                $this->openStream($category);
+        
+        if(isset(Site::$moduleManager))
+            Site::$moduleManager->FireEvent("Bread.LogMessage",self::SEVERITY_MESSAGE);
+        
+        $message = new LoggerMessage;
+        $message->time = Site::GetTimeSinceStart();
+        $message->category = $category;
+        $message->message = $string;
+        $message->severity = self::SEVERITY_MESSAGE;
+        $this->messageStack[$category][] = $message;
+        fwrite($this->fileStreams[$category],$message->ToString() . "\n");
     }
     
     /**
      * Write an error to the log stack. If the message is just infomation,
      * use Logger->writeMessage. 
      * @see Logger::writeMessage()
-     * @param string $message Message to be written
+     * @param string $string Message to be written
      * @param integer $severity Severity of the error
+     * @param string $category Stream to write to.
      * @param bool $throw Should the logger throw an error
      * @param string $exception The Exception class to throw.
      * @throws \Exception
      */
-    function writeError($message,$severity = -1,$throw = False,$exception = "\Exception")
+    function writeError($string,$severity = -1,$category = "core",$throw = False,$exception = "\Exception")
     {
+        if(!$this->logpermodule)
+            $category = "core";
 	if($this->logpath == "NOLOG")
-		return;
+            return;
+        if($this->minlog > self::SEVERITY_MESSAGE)
+            return;
+        
+        if(!in_array($category, $this->fileStreams))
+                $this->openStream($category);
         $time = Site::GetTimeSinceStart();
-        $errorStack[$time] = $message;
-        $msg = "[ERR " . $severity ."][" . ($time) . "]" . $message . "\n";
-        fwrite($this->fileStream,$msg);
-        fflush($this->fileStream);
-	if($throw)
-            throw new $exception($message);
+        
+        if(isset(Site::$moduleManager))
+            Site::$moduleManager->FireEvent("Bread.LogError",$severity);
+        
+        $message = new LoggerMessage;
+        $message->time = Site::GetTimeSinceStart();
+        $message->category = $category;
+        $message->message = $string;
+        $message->severity = self::SEVERITY_MESSAGE;
+        $this->messageStack[$category][] = $message;
+        fwrite($this->fileStreams[$category],$message->ToString());
     }
     /**
      * Close the stream to the filestream. Also writes a closing statement.
@@ -767,7 +882,47 @@ class Logger
 	if($this->logpath == "NOLOG")
 		return;
         static::writeMessage("Closing Log");
-        fclose($this->fileStream);
+        foreach($this->fileStreams as $stream)
+            fclose($stream);
+    }
+    
+    /**
+     * Convert a Severity Level to its String representation.
+     * @param int $level Severity Level
+     * @return string
+     */
+    static function getSeverityText($level)
+    {
+        switch($level)
+        {
+            case self::SEVERITY_MESSAGE:
+                return "MESSAGE";
+            case self::SEVERITY_LOW:
+                return "LOW";
+            case self::SEVERITY_MEDIUM:
+                return "WARN";
+            case self::SEVERITY_HIGH:
+                return "ERROR";
+            case self::SEVERITY_CRITICAL:
+                return "CRITICAL";
+        }
+    }
+    
+}
+
+class LoggerMessage
+{
+    public $time = 0;
+    public $category = "core";
+    public $severity = -1;
+    public $message = "No Message";
+    /**
+     * String representtion of the message.
+     * @return string
+     */
+    public function ToString()
+    {
+        return "[". Logger::getSeverityText($this->severity) ."]" . ($this->time) . "]" . $this->message;
     }
 }
 ?>

@@ -29,7 +29,7 @@ class BreadFormBuilder extends Module
         {
             if(!is_array($args) && !is_int($args))
             {
-                Site::$Logger->writeError("Request to draw form, but no data supplied!");
+                Site::$Logger->writeError("Request to draw form, but no data supplied!", \Bread\Logger::SEVERITY_HIGH,"breadforms");
                 return Site::$moduleManager->FireEvent("Theme.Infomation","Couldn't draw form :(")[0];
             }
             //Primary Method, use existing form file.
@@ -39,7 +39,7 @@ class BreadFormBuilder extends Module
             }
             //3 parameters to a form.
             elseif(array_count_values($args) != 3){
-                Site::$Logger->writeError("Request to draw form, but parameters are not usable for BreadFormBuilder!");
+                Site::$Logger->writeError("Request to draw form, but parameters are not usable for BreadFormBuilder!", \Bread\Logger::SEVERITY_HIGH,"breadforms");
                 return Site::$moduleManager->FireEvent("Theme.Infomation","Couldn't draw form :(")[0];
             }
             else {
