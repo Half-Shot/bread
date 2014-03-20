@@ -15,6 +15,7 @@ class ModuleManager
          */
 	private $modules;
 	private $moduleList;
+        private $moduleConfig;
 	private $configuration;
 	private $events;
         private $completed;
@@ -65,6 +66,7 @@ class ModuleManager
                         $this->RegisterModule($path);
                     }
 	    }
+            $this->LoadModules();
 	}
         /**
          * Loads and register the module, constructing it and placing it in the ModuleManager::$modules array.
@@ -76,23 +78,91 @@ class ModuleManager
 	private function RegisterModule($path)
 	{
                 $json = Site::$settingsManager->RetriveSettings($path,true);
-                $ModuleName = $json->name;
+                if(isset($json->dependencies))
+                    $json->dependencies = get_object_vars ($json->dependencies);
+                $object = Site::CastStdObjectToStruct($json, "Bread\Structures\BreadModuleStructure");
+                $ModuleName = $object->name;
 		if(array_key_exists($ModuleName,$this->modules))
 			Site::$Logger->writeError('Cannot register module. Module already exists',  \Bread\Logger::SEVERITY_MEDIUM);
 		
 		Site::$Logger->writeMessage('Registered module ' . $ModuleName);
-		//Stupid PHP cannot validate files without running command trickery.
-		include_once(Site::ResolvePath("%user-modules") . "/" . $json->entryfile);
-		//Modules should be inside the namespace Bread\Modules but can differ if need be.
-		$class = 'Bread\Modules\\'  . $json->entryclass;
-		if(isset($json->namespace)){
-		    $namespace = $json->namespace;
-		    $class = $json->namespace . "\\" . $json->entryclass;
-		}
-		$this->moduleConfig[$json->name] = $json;
-		$this->modules[$json->name] = new $class($this,$ModuleName);
-		$this->modules[$json->name]->RegisterEvents();
+		$this->moduleConfig[$object->name] = $object;
 	}
+        /**
+         * Will load the module if the dependencies are met.
+         */
+        private function LoadModules()
+        {
+            foreach($this->moduleConfig as $name => $module)
+            {
+                $deps = $this->DependenciesRegistered($module);
+                if(empty($deps)){
+                    //Stupid PHP cannot validate files without running command trickery.
+                    include_once(Site::ResolvePath("%user-modules") . "/" . $module->entryfile);
+                    //Modules should be inside the namespace Bread\Modules but can differ if need be.
+                    $class = 'Bread\Modules\\'  . $module->entryclass;
+                    if(!is_null($module->namespace)){
+                        $namespace = $module->namespace;
+                        $class = $module->namespace . "\\" . $module->entryclass;
+                    }
+                    $this->modules[$name] = new $class($this,$name);
+                    $this->modules[$name]->RegisterEvents();
+                }
+                else
+                {
+                    Site::$Logger->writeError("Module '" . $name . "' could not be registered due to missing depedencies: ", \Bread\Logger::SEVERITY_HIGH);
+                    Site::$Logger->writeMessage(var_export($deps,true));
+                }
+            }
+        }
+        
+        function DependenciesRegistered($module)
+        {
+            $faillist = array();
+            Site::$Logger->writeMessage('Checking dependencies of ' . $module->name);
+            foreach($module->dependencies as $dep => $version)
+            {
+                Site::$Logger->writeMessage('Checking for '. $dep);
+                if(!key_exists($dep, $this->moduleConfig))
+                {
+                    Site::$Logger->writeMessage('No module named ' . $dep . ' is registered');
+                    $faillist[$dep] = "Failed to find module";
+                    continue;
+                }
+                
+                if($version == -1)
+                    continue;
+                
+                //We don't know if it is an equal, less than or more than.
+                Site::$Logger->writeMessage('Checking version ' . $version);
+                $operator = Site::findOperator($version);
+                $verNumber = (float)Site::filterNumeric($version);
+                switch($operator):
+                    case -2:
+                        if(!($module->version <= $verNumber))
+                            $faillist[$dep] = "Version number too high.";
+                        break;
+                    case -1:
+                        if(!($module->version < $verNumber))
+                            $faillist[$dep] = "Version number too high.";
+                        break;
+                    case 0:
+                        if(!($module->version == $verNumber))
+                            $faillist[$dep] = "Version number not equal.";
+                        break;
+                    case 1:
+                        if(!($module->version > $verNumber))
+                            $faillist[$dep] = "Version number too low.";
+                        break;
+                    case 2:
+                        if(!($module->version <= $verNumber))
+                            $faillist[$dep] = "Version number too low.";
+                        break;
+                endswitch;
+            }
+            return $faillist;
+        }
+        
 	/**
          * The selected theme from /Bread/Themes/ThemeManager is loaded as a module in here.
          * The method is simular to ModuleManager::RegisterModule()

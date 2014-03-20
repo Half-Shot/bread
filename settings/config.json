@@ -9,9 +9,9 @@
 		},
         "logger":{
             	"path":"./temp/breadlog",
-                "maxlogfiles":2,
+                "maxlogfiles":10,
                 "minseveritytolog":-1,
-                "multifilelog":false,
+                "multifilelog":true,
                 "keepfor":60
                 },
 	"strings":{

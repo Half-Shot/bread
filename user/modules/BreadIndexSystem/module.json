@@ -2,5 +2,11 @@
         "name":"BreadIndexSystem",
         "permissions":["read:user/resource"],
         "entryclass":"BreadIndexSystem",
-        "entryfile":"BreadIndexSystem/BreadIndexSystem.php"
+        "entryfile":"BreadIndexSystem/BreadIndexSystem.php",
+        "version":0.1,
+        "dependencies":{
+            "BreadUserSystem":"0.1"
+        },
+        "eventsfired":[],
+        "eventshooked":[]
 }

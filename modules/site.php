@@ -667,6 +667,57 @@ class Site
             static::Cleanup();
             header("Location: " . $url);
         }
+        
+        /**
+         * Find and return the operator in a string.
+         * -2 : <=
+         * -1 : <
+         *  0 : ==
+         *  1 : >
+         *  2 : >=
+         * @param \string $string
+         * @return int
+         */
+        public static function findOperator($string)
+        {
+            if(is_numeric($string[0])){
+                return 0; // Straightforward ==
+            }
+            elseif ($string[0] == '<') {
+                if($string[1] == '='){
+                    return -2; //<=
+                }
+                else
+                {
+                    return -1; //<
+                }
+            }
+            elseif($string[0] == '>'){
+                if($string[1] == '=')
+                {
+                    return 1; //>
+                }
+                else
+                {
+                    return 2; //>=
+                }
+            }
+        }
+        /**
+         * Return a string value from a string which has a mix of letters and
+         * numbers.
+         * @param \string $string
+         */
+
+        public static function filterNumeric($string)
+        {
+            $numeric = "";
+            foreach(str_split($string) as $char){
+                if(is_numeric($char) || $char == '.')
+                    $numeric .= $char;
+            }
+            return $numeric;
+        }
 }
 /**
  * A class that logs important infomation and also throws errors for bread.
@@ -773,7 +824,7 @@ class Logger
      */
     private function RemoveLog($location)
     {
-        if(\is_dir($location)){
+        if(is_dir($location)){
             foreach(scandir($location) as $logfile){
                 if($logfile == "." | $logfile == "..")
                     continue;
@@ -783,7 +834,14 @@ class Logger
         }
         else
         {
-            unlink($location);
+            try{
+                unlink($location);
+            }
+            catch(FileNotFoundException $e)
+            {
+                //Eh, must be just a bug.
+                $this->writeError("Couldn't delete file " . $location, self::SEVERITY_LOW);
+            }
         }
     }
     /**
