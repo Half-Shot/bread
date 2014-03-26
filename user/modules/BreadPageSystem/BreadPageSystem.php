@@ -38,7 +38,9 @@ class BreadPageSystem extends Module
         
         function DrawPlainMarkdown($args)
         {
-            return "<div class='bps-content'><div class='bps-markdown'>" . $args ."</div></div>";
+            if(count($args) == 0)
+                return False;
+            return "<div class='bps-content'><div class='bps-markdown'>" . $args[0] ."</div></div>";
         }
         
         function DrawMarkdownToggleswitch()
@@ -47,6 +49,8 @@ class BreadPageSystem extends Module
                 return "<button id='bps-mdtoggle' onclick='toggleMarkdown();'>Open Editor</button>"
                 . "<button id='bps-mdsave' onclick='saveMarkdown();'>Save/Publish</button>";
             }
+            
+            return "";
         }
         
         function GenerateNavbar()
@@ -134,7 +138,15 @@ class BreadPageSystem extends Module
         function DrawRecentPosts()
         {
             $pages = $this->GenerateNavbar();
-            return Site::$moduleManager->FireEvent("Theme.VerticalNavbar",$pages);
+            $links = array();
+            foreach($pages as $name => $url)
+            {
+                $link = new \Bread\Structures\BreadLinkStructure();
+                $link->url = $url;
+                $link->text = $name;
+                $links[] = $link;
+            }
+            return Site::$moduleManager->FireEvent("Theme.VerticalNavbar",$links)[0];
         }
         
         function DrawTitle()
@@ -142,8 +154,7 @@ class BreadPageSystem extends Module
            $page = $this->GetActivePost();
            if($page == False)
             return False;
-           $html = Site::$moduleManager->FireEvent("Theme.Post.Title","<div id='bps-title'>" . $page->name . "</div>")[0];
-           return $html . Site::$moduleManager->FireEvent("Theme.Post.Subtitle","<div id='bps-subtitle'>" . $page->title . "</div>")[0];
+           return Site::$moduleManager->FireEvent("Theme.Post.Title",array("<div id='bps-title'>" . $page->name . "</div>","<div id='bps-subtitle'>" . $page->title . "</div>"))[0];
         }
         
         function GetActivePost()
@@ -186,7 +197,8 @@ class BreadPageSystem extends Module
            if($page == False)
             return False;
            $breadcrumbs = $page->categorys;
-           return Site::$moduleManager->FireEvent("Theme.Post.Breadcrumbs",$breadcrumbs);
+           $HTML = Site::$moduleManager->FireEvent("Theme.Post.Breadcrumbs",$breadcrumbs)[0];
+           return $HTML;
         }
         
         function DrawPostInfomation()
@@ -197,7 +209,7 @@ class BreadPageSystem extends Module
             $info = array();
             $info["Author"] = $page->author;
             $info["Last Modified"] = \date("F d Y H:i:s.", \filemtime($this->settings->postdir . "/" . $page->url));;
-            return Site::$moduleManager->FireEvent("Theme.Post.Infomation",$info);
+            return Site::$moduleManager->FireEvent("Theme.Post.Infomation",$info)[0];
         }
         
         function SavePost()

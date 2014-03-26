@@ -39,7 +39,7 @@ class ThemeManager
 
 		foreach ($this->configuration->themes as $theme)
 		{
-			$json = Site::$settingsManager->RetriveSettings(Site::ResolvePath("%user-themes"). "/" . $theme->cpath,true);
+			$json = Site::$settingsManager->RetriveSettings(Site::ResolvePath("%user-themes"). "/" . $theme,true);
                         $this->themes[$json->module->name] = $json;
                         
                 }
@@ -92,7 +92,7 @@ class ThemeManager
             }
             if(isset($this->Theme["data"]->js)){
                 foreach($this->Theme["data"]->js as $script){
-                    Site::AddScript($script);
+                    Site::AddScript(static::FindFile($script));
                 }
             }
             Site::$moduleManager->RegisterSelectedTheme();
@@ -122,14 +122,14 @@ class ThemeManager
 	}
         
         /**
-         * Looks for a CSS file in the common user paths.
+         * Looks for a file in the common user paths.
          * Ordered by layout, theme and resource.
          * Useful for layouts overriding.
          * @param type $filepath
          * @return string
          * @throws Exception
          */
-        function FindFile($filepath)
+        static function FindFile($filepath)
         {
                 if(mb_substr($filepath, 0, 4) == "http")//Is remote.
                     return $filepath;
@@ -182,72 +182,27 @@ class ThemeManager
 	function ReadElementsFromLayout($Layout)
 	{
 		$IsRoot = ($Layout == $this->Theme["layout"]);
-                $endTag = "";
 		if($IsRoot)
-		{
-                        $Layout = $Layout["JSON"];
-			if(!isset($Layout->elements))//No enclosed elements.
-				Site::$Logger->writeError("Layout contains no elements, page cannot be built.",\Bread\Logger::SEVERITY_CRITICAL,"core",True);
-			if(isset($Layout->css)){
-                            $this->cssFiles = array_merge($this->cssFiles,$Layout->css);
-                            $this->BuildCSS();
-                        }
-                        if(isset($Layout->scripts)){
-                            foreach($Layout->scripts as $path)
-                            {
-                                try {
-                                    Site::AddScript($this->FindFile($path));
-                                } catch (\Exception $exc) {
-                                    Site::$Logger->writeError("Failed to find Scriptfile File '" . $path .", ignoring.'",\Bread\Logger::SEVERITY_MEDIUM,"core", false);
-                                    continue;
-                                }
-                            }
-                        }
-		}    
+                       $Layout = $Layout["JSON"];
+                       $this->DoRootStuff($Layout);
+                if(isset($Layout->elements))
+                {
+                    $ReturnedData = array();
+                    foreach ($Layout->elements as $element)
+                    {
+                       $ReturnedData[] = $this->ReadElementsFromLayout($element);
+                    }
+                    if(!$IsRoot){
+                       $ReturnedData = $this->ExamineElement($Layout,$ReturnedData);
+                    }
+                }
                 else
                 {
-                        /**
-                         * @todo Fix code to use stdClass and not arrays.
-                         */
-                        $element = $this->ExamineElement($Layout);
-                        if($element != False)
-                        {
-                            //Build tag.
-                            $tagStart = "<" . $element["tag"];
-                            foreach($element["attributes"] as $key => $data)
-                            {
-                                $tagStart .= " " . $key . "=" . "'" . $data . "'";
-                            }
-                            if(isset($element["id"]))
-                                $tagStart .= " id='" . $element["id"] . "'";
-                            //Not including name, but leaving it here for the future.
-                            //if(isset($element["name"]))
-                            //    $tagStart .= "name=" . $element["name"];
-                            $tagStart .= ">";
-                            Site::AddToBodyCode($tagStart);
-                            if(\is_array($element["guts"])){
-                                foreach($element["guts"] as $bodycode)
-                                {
-                                     Site::AddToBodyCode($bodycode);
-                                }
-                            }
-                            else {
-                                Site::AddToBodyCode($element["guts"]);
-                            }
-                            $endTag = "</". $element["tag"] .">\n";
-                        }
+                    $ReturnedData = $this->ExamineElement($Layout);
                 }
-		
-		//Draw enclosed elements.
-		if(!isset($Layout->elements)){//No enclosed elements.
-			Site::AddToBodyCode($endTag);
-                        return;
-                }
-		$elements = $Layout->elements;
-		foreach($elements as $element){
-			$this->ReadElementsFromLayout($element);
-                }
-                Site::AddToBodyCode($endTag);
+                if($IsRoot)
+                    $this->WriteHTML($ReturnedData);
+                return $ReturnedData;
 	}
         /**
          * Checks for missing propertys to the element AND
@@ -255,7 +210,7 @@ class ThemeManager
          * @param array $element Element to scan for hacks
          * @return array Returns a array to be drawn.
          */
-        function ExamineElement($element)
+        function ExamineElement($element,$extraargs = false)
         {
             $returnedElement = array();
             //Defaults
@@ -264,6 +219,7 @@ class ThemeManager
             $returnedElement["attributes"] = array();
             $returnedElement["tag"] = "div";
             $returnedElement["id"] = False;
+            
             foreach($returnedElement as $key => $default){
                     if(isset($element->$key)){
                         $returnedElement[$key] = $element->$key;
@@ -277,22 +233,77 @@ class ThemeManager
                 Site::$Logger->writeError("Layout " . $this->Theme["layout"]["JSON"]->name . " has problems. Not drawing problematic tag " . $element->name,\Bread\Logger::SEVERITY_MEDIUM,"core");
                 return False;
             }
-            
-            
+            if(!is_array($returnedElement["arguments"])){
+             $returnedElement["arguments"] = array($returnedElement["arguments"]);
+            }
+            $returnedElement["arguments"]["_inner"] = $extraargs;
+            if(isset($element->attributes))
+                $returnedElement["attributes"] = get_object_vars($element->attributes);
             if(isset($element->module))
             {
                     $returnedElement["guts"] = Site::$moduleManager->FireSpecifiedModuleEvent($returnedElement["event"],$element->module,$returnedElement["arguments"]);
             }
             else
             {
-                    $returnedElement["guts"] = Site::$moduleManager->FireEvent($returnedElement["event"],$returnedElement["arguments"]);
+                    $returnedElement["guts"] = Site::$moduleManager->FireEvent($returnedElement["event"],$returnedElement["arguments"])[0];
             }
             
-            if(!$returnedElement["guts"])
+            if(!is_string($returnedElement["guts"]))
             {
-                $returnedElement["guts"] = "";
+                Site::$Logger->writeError("Element failed to draw due to event returning non HTML.", \Bread\Logger::SEVERITY_MEDIUM);
+                $returnedElement["guts"] = false;
             }
             return $returnedElement;
+        }
+        
+        function DoRootStuff($Layout){
+            if(!isset($Layout->elements))//No enclosed elements.
+                   Site::$Logger->writeError("Layout contains no elements, page cannot be built.",\Bread\Logger::SEVERITY_CRITICAL,"core",True);
+            if(isset($Layout->css)){
+               $this->cssFiles = array_merge($this->cssFiles,$Layout->css);
+               $this->BuildCSS();
+            }
+            if(isset($Layout->scripts)){
+               foreach($Layout->scripts as $path)
+               {
+                   try {
+                       Site::AddScript($this->FindFile($path));
+                   } catch (\Exception $exc) {
+                       Site::$Logger->writeError("Failed to find Scriptfile File '" . $path .", ignoring.'",\Bread\Logger::SEVERITY_MEDIUM,"core", false);
+                       continue;
+                   }
+               }
+            }
+            return $Layout;
+        }
+        
+        function WriteHTML($ReturnedData)
+        {
+            foreach($ReturnedData as $Data)
+            {
+                if(!isset($Data["guts"]))
+                {
+                    $this->WriteHTML($Data);
+                }
+                else {
+                    Site::AddToBodyCode($this->FormatElementHTML($Data));
+                }
+            }
+        }
+        
+        function FormatElementHTML($returnedElement)
+        {
+            if(!$returnedElement["guts"]){
+                return "";
+            }
+            $HTML = "<" . $returnedElement["tag"] . " id='" . $returnedElement["id"] . "'";
+            foreach($returnedElement["attributes"] as $key => $data)
+            {
+                $HTML .= " " . $key . ":'" . $data . "'";
+            }
+            $HTML .= ">" . $returnedElement["guts"];
+            $HTML .= "</" . $returnedElement["tag"] . ">";
+            return $HTML;
         }
 }
 ?>

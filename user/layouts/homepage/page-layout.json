@@ -11,6 +11,8 @@
         "event":"Theme.DrawNavbar",
         "arguments":
         {
+                "title":"BreadTest",
+                "title-link":"http://www.google.co.uk",
 		"Home":"http://www.google.co.uk"
         }
     },
@@ -19,9 +21,8 @@
 	"id": "contents",
         "human": "Page Contents",
         "description": "Middle section where contents will be placed.",
-        "module": "BreadPageSystem",
-        "event":"Bread.DrawModule",
-        "tag":"section"
+        "event":"Theme.Post.Article",
+        "tag":"article"
     },
     {
         "name": "footer",

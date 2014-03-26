@@ -1,5 +1,0 @@
-Module Loading:
-	Generated Module File (/settings/modules/enabled.md)
-	Load each config inside
-	Check through each module file and find associated functions. e.g. "GeneratePage", "GenerateNavbar"
-	

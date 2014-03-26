@@ -2,7 +2,7 @@
     "master":
     {
         "layout":"post",
-        "theme":"theme-vanilla",
+        "theme":"theme-bootstrap",
         "modules":["BreadIndexSystem\/module.json","BreadUserSystem\/module.json"]
     },
     "homepage":{
