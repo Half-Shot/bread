@@ -23,10 +23,17 @@
         "id": "contents",
         "human": "Page Contents",
         "description": "Middle section where contents will be placed.",
-        "module": "BreadPageSystem",
-        "event":"Bread.DrawModule",
+        "event":"Theme.Layout.Block",
         "tag":"section",
         "elements":[
+            {
+              "id": "mainpost",
+              "human": "Page Contents",
+              "description": "The post.",
+              "module": "BreadPageSystem",
+              "event":"Bread.DrawModule",
+              "tag":"article"
+            },
             {
                 "id":"breadcrumbs",
                 "human":"Post Breadcrumbs",
@@ -50,8 +57,6 @@
                 "module": "BreadPageSystem",
                 "event":"BreadPageSystem.EditorButton"
             }
-            
-            
         ]
     },
     {

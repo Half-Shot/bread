@@ -11,19 +11,26 @@ class BootstrapTheme extends Bread\Modules\Module
 
 	function RegisterEvents()
 	{
+            //Base
             $this->manager->RegisterHook($this->name,"Theme.Load","Load"); //For each event you want to allow, specify: Name of theme, EventName and function name
             $this->manager->RegisterHook($this->name,"Theme.HeaderInfo","HeaderInfomation");
+            $this->manager->RegisterHook($this->name,"Theme.Unload","Unload");      
+            
             $this->manager->RegisterHook($this->name,"Theme.DrawSystemMenu","SystemMenu");
-            $this->manager->RegisterHook($this->name,"Theme.DrawNavbar","Navbar");
             $this->manager->RegisterHook($this->name,"Theme.DrawFooter","Footer");
-            $this->manager->RegisterHook($this->name,"Theme.Unload","Unload");
+            //Navigation
             $this->manager->RegisterHook($this->name,"Theme.VerticalNavbar","VerticalNavbar");
+            $this->manager->RegisterHook($this->name,"Theme.DrawNavbar","Navbar");
+            //Posts
             $this->manager->RegisterHook($this->name,"Theme.Post.Title","Title");
             $this->manager->RegisterHook($this->name,"Theme.Post.Breadcrumbs","Breadcrumbs");
             $this->manager->RegisterHook($this->name,"Theme.Post.Infomation","Infomation");
-            $this->manager->RegisterHook($this->name,"Theme.Post.Article","Article");
             $this->manager->RegisterHook($this->name,"Theme.Infomation","ShowInfomation");
+            //Forms
             $this->manager->RegisterHook($this->name,"Theme.Form","BuildForm");
+            //Layouts
+            $this->manager->RegisterHook($this->name,"Theme.Layout.Article","Article");
+            $this->manager->RegisterHook($this->name,"Theme.Layout.Block","LayoutBlock");
 	}
     
 	function Load()
@@ -44,7 +51,7 @@ class BootstrapTheme extends Bread\Modules\Module
         {
         }
         
-        function ProcessLink($link,$isactive)
+        function ProcessLink($link,$isactive = false,$tag = "li",$linkclass = "",$istitle = false)
         {
            $HTMLCode = "";
            if($link->hidden)
@@ -63,10 +70,17 @@ class BootstrapTheme extends Bread\Modules\Module
            {
                 $URL = $link->url;
            }
+           if($istitle)
+               return '<a class="navbar-brand" href="'. $URL .'">' . $link->text . '</a>';
            $class = "";
            if($isactive)
             $class = "class='active'";
-           $HTMLCode .= "<li " . $class ."><a href='" . $URL . "' target ='" . $link->targetWindow ."'>" . $link->text . "</a></li>";
+           if($linkclass != ""){
+               $linkclass = "class=" . $linkclass;
+               if($isactive)
+                   $linkclass .= " active";
+           }
+           $HTMLCode .= "<" . $tag ." " . $class ."><a ".$linkclass." href='" . $URL . "' target ='" . $link->targetWindow ."'>" . $link->text . "</a></" . $tag .">";
            return $HTMLCode;
         }
         
@@ -78,20 +92,23 @@ class BootstrapTheme extends Bread\Modules\Module
                 {
                    $Hooks = array();
                 }
-                $HTMLCode = '<nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header">';
-                
-                if(isset($args[0]->title))
-                    $HTMLCode .= '<a class="navbar-brand" href="'. $args[0]->title .'">' . $args[0]->title . '</a>';
-                $HTMLCode .= "</div><ul class='nav navbar-nav'>";
+                $MainBlock = '<nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header">';
+                $LinkBlock = "</div><ul class='nav navbar-nav'>";
                 foreach ($Hooks as $links)
                 {
                     foreach ($links as $link)
                     {
                         $isactive = (Site::getRequest()->requestType == $link->request);
-                        $HTMLCode .= $this->ProcessLink($link,$isactive);
+                        if(isset($link->title)){
+                            if($link->title){
+                                $MainBlock .= $this->ProcessLink($link,$isactive,"","",true);
+                                continue;
+                                }
+                        }
+                        $LinkBlock .= $this->ProcessLink($link,$isactive);
                     }
                 }
-                $HTMLCode .= "</ul></div></nav>";
+                $HTMLCode = $MainBlock . $LinkBlock . "</ul></div></nav>";
 		return $HTMLCode;
 	}
 
@@ -101,12 +118,12 @@ class BootstrapTheme extends Bread\Modules\Module
 	}
         function VerticalNavbar($args)
         {
-            $HTML = '<ul class="nav nav-pills nav-stacked">';
+            $HTML = '<div class="list-group">';
             foreach($args as $arg)
             {
-                $HTML .= $this->ProcessLink($arg,false);
+                $HTML .= $this->ProcessLink($arg,false,"div","list-group-item");
             }
-            return $HTML . '</ul>';
+            return $HTML . '</div>';
 
         }
 
@@ -127,7 +144,8 @@ class BootstrapTheme extends Bread\Modules\Module
         
         function Article($args)
         {
-            return var_export($args,true);
+            if($args["_inner"] === false)
+                return false;
         }
         
         function Breadcrumbs($args)
@@ -145,7 +163,12 @@ class BootstrapTheme extends Bread\Modules\Module
         
         function Infomation($args)
         {
-            return var_export($args,true);
+            $HTML = "";
+            foreach ($args as $label => $data)
+            {
+                $HTML .=  $label . ': <span class="label label-info">' .  $data . '</span></h3><br>';
+            }
+            return $HTML;
         }
         
         function BuildForm(Bread\Structures\BreadForm $form)
@@ -156,6 +179,17 @@ class BootstrapTheme extends Bread\Modules\Module
         function BuildInput($element)
         {
             return var_export($element,true);
+        }
+        
+        function LayoutBlock($args)
+        {
+            if($args["_inner"] === false)
+                return false;
+            $HTML = "";
+            foreach($args["_inner"] as $element){
+                $HTML .= $element["guts"];
+            }
+            return $HTML;
         }
 }
 ?>

@@ -137,14 +137,17 @@ class BreadPageSystem extends Module
         
         function DrawRecentPosts()
         {
+            $request = Site::getRequest();
             $pages = $this->GenerateNavbar();
             $links = array();
+            $id = 0;
             foreach($pages as $name => $url)
             {
                 $link = new \Bread\Structures\BreadLinkStructure();
                 $link->url = $url;
                 $link->text = $name;
                 $links[] = $link;
+                $id++;
             }
             return Site::$moduleManager->FireEvent("Theme.VerticalNavbar",$links)[0];
         }

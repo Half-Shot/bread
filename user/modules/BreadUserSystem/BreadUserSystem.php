@@ -178,6 +178,8 @@ class BreadUserSystem extends Module
         function CreateLoginLink()
         {
            $links = array();
+           if(!$this->settings->showNavbarlinks)
+               return $links;
            if(isset($this->currentUser))
            {
                $logout = new \Bread\Structures\BreadLinkStructure();
@@ -268,6 +270,7 @@ class BreadUserSystemSettings{
     public $userfile  = "users.json";
     public $sessiontimeout = 604800;
     public $successredirect;
+    public $showNavbarlinks = true;
 }
 
 class BreadUserPacket{

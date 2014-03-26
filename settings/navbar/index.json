@@ -4,7 +4,8 @@
         "args": {
             "name": "homepage"
         },
-        "text": "Homepage",
+        "title": true,
+        "text": "Bread Test Site",
         "hidden": false,
         "icon": "",
         "targetWindow": "_self"
@@ -14,15 +15,8 @@
         "args": {
             "name": "Hullo"
         },
-        "text": "A Welcome Message",
+        "text": "Posts",
         "hidden": false,
-        "icon": "",
-        "targetWindow": "_self"
-    },
-    {
-        "request": "loginform",
-        "text": "Login",
-        "hidden": true,
         "icon": "",
         "targetWindow": "_self"
     }

@@ -18,19 +18,24 @@
     },
     {
         "name": "contents",
-	"id": "contents",
+	"id": "homepage-contents",
         "human": "Page Contents",
         "description": "Middle section where contents will be placed.",
-        "event":"Theme.Post.Article",
+        "module":"BreadPageSystem",
+        "arguments":
+        {
+            "post":0
+        },
         "tag":"article"
     },
     {
         "name": "footer",
-	"id": "footer",
+        "id": "footer",
         "human": "Footer",
         "description": "Good place for copyright or author name.",
         "tag":"footer",
-        "event": "Theme.DrawFooter"
+        "event": "BreadPageSystem.PlainMarkdown",
+        "arguments":"####Absolutely no copyright, probably even copyleft. MIT Licence"
     }
 ]
 }

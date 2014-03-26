@@ -25,6 +25,12 @@ class BreadIndexSystem extends Module
         
         function GetPages()
         {
-            return $this->settings;//to meeeee.
+            //Filter hidden
+            $pages = array();
+            foreach($this->settings as $page){
+                if(!$page->hidden)
+                    $pages[] = $page;
+            }
+            return $pages;
         }
 }
