@@ -703,12 +703,12 @@ class Site
                 }
             }
         }
+        
         /**
          * Return a string value from a string which has a mix of letters and
          * numbers.
          * @param \string $string
          */
-
         public static function filterNumeric($string)
         {
             $numeric = "";
@@ -717,6 +717,33 @@ class Site
                     $numeric .= $char;
             }
             return $numeric;
+        }
+        
+        /**
+         * Looks for a file in the common user paths.
+         * Ordered by layout, theme and resource.
+         * Useful for layouts overriding.
+         * @param type $filepath
+         * @return string
+         * @throws Exception
+         */
+        static function FindFile($filepath)
+        {
+            if(mb_substr($filepath, 0, 4) == "http")//Is remote.
+                return $filepath;
+            $path = self::ResolvePath("%user-layouts/" . $filepath);
+            if(file_exists($path))
+                return $path;
+            $path = self::ResolvePath("%user-themes/" . $filepath);
+            if(file_exists($path))
+                return $path; 
+            $path = self::ResolvePath("%user-resource/" . $filepath);
+            if(file_exists($path))
+                return $path;
+            $path = self::ResolvePath("%user-modules/" . $filepath);
+            if(file_exists($path))
+                return $path;
+            throw new \Exception;
         }
 }
 /**

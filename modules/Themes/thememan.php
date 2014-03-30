@@ -92,7 +92,7 @@ class ThemeManager
             }
             if(isset($this->Theme["data"]->js)){
                 foreach($this->Theme["data"]->js as $script){
-                    Site::AddScript(static::FindFile($script));
+                    Site::AddScript(Site::FindFile($script));
                 }
             }
             Site::$moduleManager->RegisterSelectedTheme();
@@ -122,33 +122,6 @@ class ThemeManager
 	}
         
         /**
-         * Looks for a file in the common user paths.
-         * Ordered by layout, theme and resource.
-         * Useful for layouts overriding.
-         * @param type $filepath
-         * @return string
-         * @throws Exception
-         */
-        static function FindFile($filepath)
-        {
-                if(mb_substr($filepath, 0, 4) == "http")//Is remote.
-                    return $filepath;
-                $path = Site::ResolvePath("%user-layouts/" . $filepath);
-                if(file_exists($path))
-                    return $path;
-                $path = Site::ResolvePath("%user-themes/" . $filepath);
-                if(file_exists($path))
-                    return $path; 
-                $path = Site::ResolvePath("%user-resource/" . $filepath);
-                if(file_exists($path))
-                    return $path;
-                $path = Site::ResolvePath("%user-modules/" . $filepath);
-                if(file_exists($path))
-                    return $path;
-                throw new \Exception;
-        }
-        
-        /**
          * Add CSS to the HTML page for each file registered.
          */
 	function BuildCSS()
@@ -156,7 +129,7 @@ class ThemeManager
 		foreach($this->cssFiles as $filepath)
 		{
                     try {
-                        $cssfilepath = $this->FindFile($filepath);
+                        $cssfilepath = Site::FindFile($filepath);
                     } catch (\Exception $exc) {
                         Site::$Logger->writeError("Failed to find CSS File '" . $filepath .", ignoring.'", \Bread\Logger::SEVERITY_MEDIUM,"core", false);
                         continue;
@@ -267,7 +240,7 @@ class ThemeManager
                foreach($Layout->scripts as $path)
                {
                    try {
-                       Site::AddScript($this->FindFile($path));
+                       Site::AddScript(Site::FindFile($path));
                    } catch (\Exception $exc) {
                        Site::$Logger->writeError("Failed to find Scriptfile File '" . $path .", ignoring.'",\Bread\Logger::SEVERITY_MEDIUM,"core", false);
                        continue;

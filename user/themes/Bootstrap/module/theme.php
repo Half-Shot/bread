@@ -1,6 +1,7 @@
 <?php
 use Bread\Site as Site;
 use Bread\Structures\BreadFormElement as BreadFormElement;
+use Bread\Themes\BreadXML as BreadXML;
 class BootstrapTheme extends Bread\Modules\Module
 {
 	
@@ -118,11 +119,15 @@ class BootstrapTheme extends Bread\Modules\Module
 	}
         function VerticalNavbar($args)
         {
+            unset($args["_inner"]);//Useful practise for theme elements that do not do layout processing.
+            $breadXML = new BreadXML(Site::FindFile("Bootstrap/theme.xsl"));
+
             $HTML = '<div class="list-group">';
             foreach($args as $arg)
             {
                 $HTML .= $this->ProcessLink($arg,false,"div","list-group-item");
             }
+            return $breadXML->GetHTMLOfElement("VerticalNavbar",$args);
             return $HTML . '</div>';
 
         }
