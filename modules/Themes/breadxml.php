@@ -51,10 +51,13 @@ class BreadXML {
     }
     
     public function convertObjtoElement($obj,\DOMNode $root,\DOMDocument $doc,$id = NULL)
-    {
+{
+        $en = $id;
+        if($en == NULL)
+           $en = self::ELEMENT_VARIABLE;
+        $objRoot = $doc->createElement($en);
         if(is_object($obj) || is_array($obj))
         {
-            $objRoot = $doc->createElement(self::ELEMENT_VARIABLE);
             if($id !== NULL)
                 $objRoot->setAttribute ("id", $id);
             foreach($obj as $objtype => $value){
@@ -66,11 +69,23 @@ class BreadXML {
         }
         else
         {
-            $objRoot = $doc->createElement(self::ELEMENT_VARIABLE);
-            if(is_string($obj))
+            if(is_string($obj)){
                 $objRoot->appendChild ($doc->createTextNode ($obj));
+            }
+            elseif(is_bool($obj))
+            {
+                $objRoot->setAttribute("type", "xs:boolean");
+                if($obj){
+                    $objRoot->nodeValue = 1;
+                }
+                else{
+                    $objRoot->nodeValue = 0;
+                } 
+            }
             else
-                $objRoot->nodeValue = $obj;
+            {
+                $objRoot->nodeValue = (string)$obj;
+            }
             if($id !== NULL)
                 $objRoot->setAttribute ("id", $id);
             return $objRoot;

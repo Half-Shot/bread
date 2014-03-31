@@ -24,6 +24,7 @@ class VanillaBreadTheme extends Bread\Modules\Module
             $this->manager->RegisterHook($this->name,"Theme.Post.Infomation","Infomation");
             $this->manager->RegisterHook($this->name,"Theme.Infomation","ShowInfomation");
             $this->manager->RegisterHook($this->name,"Theme.Form","BuildForm");
+            $this->manager->RegisterHook($this->name,"Theme.Layout.Block","LayoutBlock");
 	}
     
 	function Load()
@@ -213,6 +214,17 @@ class VanillaBreadTheme extends Bread\Modules\Module
             }
             $html .= $endtag . ">";
             return $html;
+        }
+        
+        function LayoutBlock($args)
+        {
+            if($args["_inner"] === false)
+                return false;
+            $HTML = "";
+            foreach($args["_inner"] as $element){
+                $HTML .= $element["guts"];
+            }
+            return $HTML;
         }
 }
 ?>

@@ -9,7 +9,7 @@
         "layout":"homepage",
         "include":["master","post"],
         "modules":[],
-        "args":[{"post":0}]
+        "args":[{"post":"ea820284"}]
     },
     "post":{
         "layout":"post",

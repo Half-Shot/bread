@@ -8,5 +8,7 @@
     "liveedit": true,
     "isstatic": true,
     "author": "Will",
-    "thumb": "http:\/\/placehold.it\/400x150"
+    "thumb": "http:\/\/placehold.it\/400x150",
+    "jsonurl": "content\/posts\/TestPage.json",
+    "id": "b26cf33c"
 }

@@ -182,6 +182,7 @@ class ModuleManager
 		$this->moduleConfig[$theme->name] = $theme;
 		$this->modules[$theme->name] = Site::$themeManager->Theme["class"];
 		$this->modules[$theme->name]->RegisterEvents();
+                $this->FireEvent("Theme.Load");
                 Site::$Logger->writeMessage('Registered theme ' . $theme->name);
 
 

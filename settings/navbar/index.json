@@ -8,7 +8,9 @@
         "text": "Bread Test Site",
         "hidden": false,
         "icon": "",
-        "targetWindow": "_self"
+        "targetWindow": "_self",
+        "url": "\/devbread\/index.php?request=homepage&name=homepage",
+        "active": false
     },
     {
         "request": "post",
@@ -18,6 +20,8 @@
         "text": "Posts",
         "hidden": false,
         "icon": "",
-        "targetWindow": "_self"
+        "targetWindow": "_self",
+        "url": "\/devbread\/index.php?request=post&name=Hullo",
+        "active": true
     }
 ]

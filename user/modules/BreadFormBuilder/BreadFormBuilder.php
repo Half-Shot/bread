@@ -27,15 +27,16 @@ class BreadFormBuilder extends Module
         
         function DrawForm($args)
         {
+            unset($args["_inner"]);
             if(!is_array($args) && !is_int($args))
             {
                 Site::$Logger->writeError("Request to draw form, but no data supplied!", \Bread\Logger::SEVERITY_HIGH,"breadforms");
                 return Site::$moduleManager->FireEvent("Theme.Infomation","Couldn't draw form :(")[0];
             }
             //Primary Method, use existing form file.
-            if(is_int($args))
+            if(is_int($args[0]))
             {
-                $form = $this->forms[$args];
+                $form = $this->forms[$args[0]];
             }
             //3 parameters to a form.
             elseif(array_count_values($args) != 3){

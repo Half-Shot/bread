@@ -56,7 +56,7 @@ class BreadPageSystem extends Module
         function GenerateNavbar()
         {
             $pages = array();
-            foreach($this->settings->postindex as $id => $page)
+            foreach(get_object_vars($this->settings->postindex) as $id => $page)
             {
                 if(isset($page->hidden))
                     if($page->hidden)
@@ -94,21 +94,25 @@ class BreadPageSystem extends Module
         
         function BuildIndex()
         {
-            $this->settings->postindex = array();//Wipe array, we are rebuilding it.
+            $this->settings->postindex = new \stdClass;//Wipe object, we are rebuilding it.
             foreach(new \recursiveIteratorIterator( new \recursiveDirectoryIterator($this->settings->postdir)) as $file)
             {
                 if(pathinfo($file->getFilename())['extension'] == "json")
                 {
                     $path = $file->getPathname();
-                    $pageData = Site::$settingsManager->RetriveSettings($path,True);
+                    $pageData = Site::$settingsManager->RetriveSettings($path);
                     $pageData->jsonurl = $path;
                     if(isset(pathinfo($pageData->url)['extension']))
-                        if(pathinfo($pageData->url)['extension'] == "md")
-                            $this->settings->postindex[] = $pageData;
+                        if(pathinfo($pageData->url)['extension'] == "md"){
+                            if(!isset($pageData->id))
+                                $pageData->id = $this->GenerateID();
+                            $id = $pageData->id;
+                            $this->settings->postindex->$id = $pageData;
+                        }
                 }
             }
             $this->settings->BuildTime = time();
-            Site::$Logger->writeMessage("Built Page Index!","breadpagesystem");
+            Site::$Logger->writeMessage("Built Page Index!",$this->name);
         }
         
         function DrawPage()
@@ -117,6 +121,9 @@ class BreadPageSystem extends Module
            if($page == False)
             return False;
            $markdown = file_get_contents($this->settings->postdir . "/" . $page->url);
+           if(empty($markdown)){
+               Site::$Logger->writeError ("Couldn't retrive markdown for post!",  \Bread\Logger::SEVERITY_MEDIUM, $this->name);
+           }
            $editor = "";
            if(isset($page->liveedit) && $this->EnableEditor)
                 $this->EnableEditor = $page->liveedit;
@@ -140,16 +147,37 @@ class BreadPageSystem extends Module
             $request = Site::getRequest();
             $pages = $this->GenerateNavbar();
             $links = array();
-            $id = 0;
+            $currentid = $this->GetActivePostPageId();
             foreach($pages as $name => $url)
             {
                 $link = new \Bread\Structures\BreadLinkStructure();
                 $link->url = $url;
                 $link->text = $name;
+                $postid = Site::DigestURL($url)["post"];
+                $link->active = ($currentid == $postid);
                 $links[] = $link;
-                $id++;
             }
             return Site::$moduleManager->FireEvent("Theme.VerticalNavbar",$links)[0];
+        }
+        
+        function GenerateID()
+        {
+            $newIDNeeded = true;
+            while($newIDNeeded){
+                $randomString = substr(md5(microtime()),rand(0,26),8);
+                $newIDNeeded = false;
+                foreach($this->settings->postindex as $post)
+                {
+                    if(!isset($post->id))
+                        continue;
+                    if($post->id == $randomString){
+                        $newIDNeeded = true;
+                        break;
+                    }
+
+                }
+            }
+            return $randomString;
         }
         
         function DrawTitle()
@@ -160,19 +188,35 @@ class BreadPageSystem extends Module
            return Site::$moduleManager->FireEvent("Theme.Post.Title",array("<div id='bps-title'>" . $page->name . "</div>","<div id='bps-subtitle'>" . $page->title . "</div>"))[0];
         }
         
-        function GetActivePost()
+        function GetActivePostPageId()
         {
            $request = Site::getRequest();
            if(isset($request->arguments["post"]))
-               return $this->settings->postindex[$request->arguments["post"]];
+               return $request->arguments["post"];
            
            foreach($request->arguments as $key => $value)
            {
                $pageid = $this->GetPostIDByKey($key,$value);
-               if($pageid !== False)
-                   return $this->settings->postindex[$pageid];
+               if($pageid !== False){
+                   return $pageid;
+               }
            }
-           return False;
+           return false;
+        }
+        
+        function GetActivePost()
+        {
+           $postid = $this->GetActivePostPageId();
+           if($postid !== false)
+           {
+                if(!isset($this->settings->postindex->$postid))
+                   return false;
+                return $this->settings->postindex->$postid;
+           }
+           else
+           {
+                return False;
+           }
         }
         /**
          * Get the post ID by a key in the posts data.
