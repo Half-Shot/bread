@@ -25,6 +25,7 @@ class BreadFormElement
     public $onclick = "";
     public $value = "";
     public $placeholder = "";
+    public $id = "";
     public $options = array();
     public $dataset = array();
     public $attributes = array();

@@ -31,7 +31,6 @@ class BreadUserSystem extends Module
         function DoLogin()
         {
             $return = array("status" => 10,"goto" => "");
-            session_start();
             Site::$Logger->writeMessage("Post: " . var_export($_POST,true), $this->name);
             if(!array_key_exists("uname",$_POST) || !array_key_exists("uname",$_POST))
                 return json_encode($return);
@@ -58,6 +57,7 @@ class BreadUserSystem extends Module
             if($hasher->CheckPassword($pw,$user->hash))
             {
                 Site::$Logger->writeMessage("Password was correct!",$this->name);
+                session_start();
                 $_SESSION["lastlogin"] = time(); //Setting this is enough.
                 $_SESSION["REMOTE_ADDR"] = $_SERVER["REMOTE_ADDR"];
                 $_SESSION["HTTP_USER_AGENT"] = $_SERVER["HTTP_USER_AGENT"];
@@ -203,7 +203,7 @@ class BreadUserSystem extends Module
            return $links;
         }
         
-	function ReturnUser($arguments)
+	function ReturnUser()
 	{
 	    return $this->currentUser;
         }
@@ -224,7 +224,9 @@ class BreadUserSystem extends Module
         
         function CheckSession()
         {
-            session_start();
+            if(session_status() !== PHP_SESSION_ACTIVE)
+                session_start();
+            
             if(!isset($_SESSION["lastlogin"])){
                 Site::$moduleManager->FireEvent("Bread.Security.NotLoggedIn",NULL);
                 return False;          

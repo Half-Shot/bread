@@ -29,5 +29,9 @@
     "login":{
         "layout":"default",
         "modules":["BreadUserSystem\/module.json"]
+    },
+    "controlpanel":{
+        "layout":"controlpanel",
+        "modules":["BreadUserSystem\/module.json","BreadAdminTools\/module.json"]
     }
 }

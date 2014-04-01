@@ -14,7 +14,7 @@ class BreadPageSystem extends Module
         function RegisterEvents()
         {
             $this->manager->RegisterHook($this->name,"Bread.DrawModule","DrawPage");
-            $this->manager->RegisterHook($this->name,"Bread.ProcessRequest","Setup",array("Bread.Security.GetPermission"=>"BreadUserSystem"));
+            $this->manager->RegisterHook($this->name,"Bread.ProcessRequest","Setup",array("Bread.ProcessRequest"=>"BreadUserSystem"));
             $this->manager->RegisterHook($this->name,"Bread.LowPriorityScripts","GenerateHTML");
             $this->manager->RegisterHook($this->name,"BreadPageSystem.DrawRecentPosts","DrawRecentPosts");
             $this->manager->RegisterHook($this->name,"Bread.Title","DrawTitle");
@@ -66,6 +66,7 @@ class BreadPageSystem extends Module
                 $parts["post"] = $id;
                 $pages[$page->name] = Site::CondenseURLParams(false,$parts);
             }
+            
             return $pages;
         }
         
