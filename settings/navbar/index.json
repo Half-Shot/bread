@@ -9,7 +9,6 @@
         "hidden": false,
         "icon": "",
         "targetWindow": "_self",
-        "url": "\/devbread\/index.php?request=homepage&name=homepage",
         "active": false
     },
     {
@@ -21,7 +20,6 @@
         "hidden": false,
         "icon": "",
         "targetWindow": "_self",
-        "url": "\/devbread\/index.php?request=post&name=Hullo",
         "active": true
     }
 ]

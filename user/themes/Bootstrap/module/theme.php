@@ -64,8 +64,9 @@ class BootstrapTheme extends Bread\Modules\Module
                 
                 foreach ($Hooks as $links)
                 {
-                    foreach ($links as $link)
+                    foreach ($links as $srclink)
                     {
+                        $link = clone $srclink;
                         if($link->hidden)
                             continue;
                         $link->active = (Site::getRequest()->requestType == $link->request);
