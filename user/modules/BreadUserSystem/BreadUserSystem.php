@@ -32,7 +32,8 @@ class BreadUserSystem extends Module
         {
             $return = array("status" => 10,"goto" => "");
             session_start();
-            if(!isset($_POST["uname"]) || !isset($_POST["pw"]))
+            Site::$Logger->writeMessage("Post: " . var_export($_POST,true), $this->name);
+            if(!array_key_exists("uname",$_POST) || !array_key_exists("uname",$_POST))
                 return json_encode($return);
             Site::$Logger->writeMessage("Login infomation is all here.",$this->name);
             $username = $_POST["uname"];

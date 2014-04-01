@@ -99,6 +99,8 @@
             <xsl:attribute name="name"><xsl:value-of select="./name"/></xsl:attribute>
             <xsl:attribute name="type"><xsl:value-of select="./type"/></xsl:attribute>
             <xsl:attribute name="value"><xsl:value-of select="./value"/></xsl:attribute>
+            <xsl:attribute name="onclick"><xsl:value-of select="./onclick"/></xsl:attribute>
+            <xsl:attribute name="id"><xsl:value-of select="./id"/></xsl:attribute>
         </input>
         <br></br>
     </xsl:template>

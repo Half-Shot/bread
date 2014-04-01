@@ -285,15 +285,15 @@ class BreadPageSystem extends Module
                  Site::$Logger->writeError("Couldn't find the post for saving markdown file. Nonstandard URL!'",\Bread\Logger::SEVERITY_HIGH,"breadpagesystem");
                  return "0";
              }
-             $url = $this->settings->postdir . "/" . $this->settings->postindex[$id]->url;
+             $url = $this->settings->postdir . "/" . $this->settings->postindex->$id->url;
              file_put_contents($url, $md);
-             $pageData = Site::$settingsManager->RetriveSettings($this->settings->postindex[$id]->jsonurl,True); //Get actual file
+             $pageData = Site::$settingsManager->RetriveSettings($this->settings->postindex->$id->jsonurl,True); //Get actual file
              $this->BuildTime = 0; //Reset Index.
              $pageData->name = $title;
              $pageData->title = $subtitle; //Needs changing.
              try
              {
-                Site::$settingsManager->SaveSetting($pageData,$this->settings->postindex[$id]->jsonurl,True);
+                Site::$settingsManager->SaveSetting($pageData,$this->settings->postindex->$id->jsonurl,True);
              }
              catch(Exception $e)
              {
