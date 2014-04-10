@@ -137,7 +137,7 @@ class BreadUserSystem extends Module
             Site::$Logger->writeMessage("Username looks good.",$this->name);
             $extrainfomation = json_decode($_POST["extrainfo"]);
             $extrainfomation = get_object_vars($extrainfomation);
-            $this->StoreNewUser($_POST["uname"],$_POST["pw"],-1,$extrainfomation);
+            $this->StoreNewUser($_POST["uname"],$_POST["pw"],-1,array(),$extrainfomation);
             Site::$Logger->writeMessage("Stored User OK",$this->name);
             $return["goto"] = $this->settings->successredirect->createURL();
             $return["status"] = 11;

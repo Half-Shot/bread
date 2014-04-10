@@ -16,9 +16,12 @@
         "targetWindow": "_self"
     },
     {
-        "request": "controlpanel",
-        "text": "Control Panel",
+        "request": "post",
+        "text": "Add new post...",
+        "args": {
+            "newpost": "true"
+        },
         "targetWindow": "_self",
-        "permissionrequired": "root"
+        "permissionrequired": "NewPost"
     }
 ]
