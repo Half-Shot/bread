@@ -95,9 +95,11 @@ class BreadUserSystem extends Module
             Site::$Logger->writeMessage("Storing new user.",$this->name);
             $newUser = new BreadUser;
             $newUser->uid = 0;
+            $min = 1 * pow(10,8);
+            $max = 9 * pow(10,8);
             if($uid == -1){
                 while($this->GetUserByUID($newUser->uid) !== False){
-                    $newUser->uid = mt_rand(1 * pow(10,16),9 * pow(10,16)); 
+                    $newUser->uid = mt_rand($min,$max); 
                 }
             }
             else{
