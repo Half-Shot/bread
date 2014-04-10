@@ -77,6 +77,8 @@ class BootstrapTheme extends Bread\Modules\Module
                             if($link->hidden)
                                 continue;
                         $link->active = (Site::getRequest()->requestType == $link->request);
+                        if(isset($link->args) && $link->active )
+                            $link->active = (Site::getRequest()->arguments == $link->args);
                         if(!isset($link->url))
                         {
                              if(isset($link->args)){
