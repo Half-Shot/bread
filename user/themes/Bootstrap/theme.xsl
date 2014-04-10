@@ -8,6 +8,18 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
     <xsl:output method="html"/>
+    <xsl:template match="telement[@id='Panel']">
+        <div class="panel panel-default">
+        <xsl:if test="./variable/title">
+            <div class="panel-heading">
+              <h3 class="panel-title"><xsl:value-of select="./variable/title"/></h3>
+            </div>
+        </xsl:if>
+        <div class="panel-body">
+            <xsl:value-of select="./variable/body"/>
+        </div>
+      </div>
+    </xsl:template>
     <xsl:template match="telement[@id='VerticalNavbar']">
         <ul class="nav nav-pills nav-stacked">
         <xsl:for-each select="./variable/variable">
@@ -71,10 +83,10 @@
     </xsl:template>
     <xsl:template match="telement[@id='LabelValuePairs']">
         <xsl:for-each select="./variable/variable">
+            <xsl:value-of select="./label"/>
             <span class="label label-info">
                 <xsl:value-of select="./data"/>
             </span>
-            <xsl:value-of select="./label"/>
             <br></br>
         </xsl:for-each>
     </xsl:template>
@@ -85,23 +97,110 @@
             <xsl:attribute name="method"><xsl:value-of select="./variable/method"/></xsl:attribute>
             <xsl:attribute name="formtarget"><xsl:value-of select="./variable/formtarget"/></xsl:attribute>
             <xsl:attribute name="onsubmit"><xsl:value-of select="./variable/onsubmit"/></xsl:attribute>
+            <xsl:attribute name="id"><xsl:value-of select="./variable/id"/></xsl:attribute>
             <xsl:for-each select="./variable/elements/variable">
                <xsl:call-template name="FormElement"/>
+               <br></br>
             </xsl:for-each>
         </form>
     </xsl:template>
     <xsl:template name="FormElement" match="telement[@id='FormElement']">
-        <label>
-        <xsl:attribute name="for"><xsl:value-of select="./name"/></xsl:attribute>
-        <xsl:value-of select="./label"/>
-        </label>
-        <input>
-            <xsl:attribute name="name"><xsl:value-of select="./name"/></xsl:attribute>
-            <xsl:attribute name="type"><xsl:value-of select="./type"/></xsl:attribute>
-            <xsl:attribute name="value"><xsl:value-of select="./value"/></xsl:attribute>
-            <xsl:attribute name="onclick"><xsl:value-of select="./onclick"/></xsl:attribute>
-            <xsl:attribute name="id"><xsl:value-of select="./id"/></xsl:attribute>
-        </input>
-        <br></br>
+        <div class="input-group">
+            <xsl:if test="./label">
+                <span class="input-group-addon"><xsl:value-of select="./label"/></span>
+            </xsl:if>
+            <xsl:choose>
+                <xsl:when test="./type = 'button'">
+                    <button>
+                        <xsl:attribute name="name"><xsl:value-of select="./name"/></xsl:attribute>
+                        <xsl:attribute name="onclick"><xsl:value-of select="./onclick"/></xsl:attribute>
+                        <xsl:attribute name="id"><xsl:value-of select="./id"/></xsl:attribute>
+                        <xsl:if test="./readonly = 1">
+                            <xsl:attribute name="disabled"/>
+                        </xsl:if>
+                        <xsl:if test="./toggle = 1">
+                            <xsl:attribute name="data-toggle">button</xsl:attribute>
+                        </xsl:if>
+                        <xsl:attribute name="class">btn form-control <xsl:value-of select="./class"/></xsl:attribute>
+                        <xsl:value-of select="./value"/>
+                    </button>
+                </xsl:when>
+                <xsl:otherwise>
+                <input>
+                    <xsl:attribute name="name"><xsl:value-of select="./name"/></xsl:attribute>
+                    <xsl:attribute name="type"><xsl:value-of select="./type"/></xsl:attribute>
+                    <xsl:attribute name="value"><xsl:value-of select="./value"/></xsl:attribute>
+                    <xsl:attribute name="onclick"><xsl:value-of select="./onclick"/></xsl:attribute>
+                    <xsl:attribute name="id"><xsl:value-of select="./id"/></xsl:attribute>
+                    <xsl:if test="./readonly = 1">
+                        <xsl:attribute name="readonly"/>
+                    </xsl:if>
+                    <xsl:attribute name="placeholder"><xsl:value-of select="./placeholder"/></xsl:attribute>
+                    <xsl:attribute name="class">form-control <xsl:value-of select="./class"/></xsl:attribute>
+                </input>
+                </xsl:otherwise>
+            </xsl:choose>
+        </div>
+    </xsl:template>
+    <xsl:template name="InputElement" match="telement[@id='InputElement']">
+        <xsl:for-each select="./variable">
+           <xsl:call-template name="FormElement"/>
+        </xsl:for-each>
+    </xsl:template>
+    <xsl:template name="ErrorScreen" match="telement[@id='ErrorScreen']">
+            <xsl:if test="./variable/severity &lt; 1">
+                <div class="panel panel-info">
+                    <div class="panel-heading">Oh Noes - An error occured!</div>
+                      <div class="panel-body">
+                          <p>
+                              <b>Time:</b>
+                              <xsl:value-of select="./variable/time"/>
+                          </p>
+                          <p>
+                              <b>Category:</b>
+                              <xsl:value-of select="./variable/category"/>
+                          </p>
+                          <p>
+                              <xsl:value-of select="./variable/message"/>
+                          </p>
+                      </div>
+                </div>
+            </xsl:if>
+            <xsl:if test="./variable/severity = 2">
+                <div class="panel panel-warning">
+                    <div class="panel-heading">Oh Noes - An error occured!</div>
+                      <div class="panel-body">
+                          <p>
+                              <b>Time:</b>
+                              <xsl:value-of select="./variable/time"/>
+                          </p>
+                          <p>
+                              <b>Category:</b>
+                              <xsl:value-of select="./variable/category"/>
+                          </p>
+                          <p>
+                              <xsl:value-of select="./variable/message"/>
+                          </p>
+                      </div>
+                </div>
+            </xsl:if>
+            <xsl:if test="./variable/severity &gt; 3">
+                <div class="panel panel-danger">
+                      <div class="panel-heading">Oh Noes - An error occured!</div>
+                      <div class="panel-body">
+                          <p>
+                              <b>Time:</b>
+                              <xsl:value-of select="./variable/time"/>
+                          </p>
+                          <p>
+                              <b>Category:</b>
+                              <xsl:value-of select="./variable/category"/>
+                          </p>
+                          <p>
+                              <xsl:value-of select="./variable/message"/>
+                          </p>
+                      </div>
+                </div>
+            </xsl:if>
     </xsl:template>
 </xsl:stylesheet>

@@ -1,0 +1,22 @@
+{
+"name": "controlpanel",
+"css":["default/page-layout.css"],
+"elements": [
+    {
+        "name": "banner",
+	"id": "banher",
+        "human": "Banner",
+        "description": "Top of the page, ideal for banner.",
+        "tag":"header",
+        "event":"Theme.Banner"
+    },
+    {
+        "name": "sidetabs",
+	"id": "admin-sidetabs",
+        "human": "Sidebar for options",
+        "description": "Tabs for modules to provide option pages.",
+        "tag":"header",
+        "event":"Theme.Sidebar"
+    }
+]
+}

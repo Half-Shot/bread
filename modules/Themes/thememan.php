@@ -155,9 +155,10 @@ class ThemeManager
 	function ReadElementsFromLayout($Layout)
 	{
 		$IsRoot = ($Layout == $this->Theme["layout"]);
-		if($IsRoot)
+		if($IsRoot){
                        $Layout = $Layout["JSON"];
                        $this->DoRootStuff($Layout);
+                }
                 if(isset($Layout->elements))
                 {
                     $ReturnedData = array();

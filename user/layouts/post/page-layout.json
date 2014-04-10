@@ -48,14 +48,6 @@
                 "description": "Infomation about a post.",
                 "module": "BreadPageSystem",
                 "event":"BreadPageSystem.Infomation"
-            },
-            {
-                "name": "editorbutton",
-                "id": "editorbutton",
-                "human": "Editor Button",
-                "description": "Button to toggle editing markdown, editing HTML and the main post",
-                "module": "BreadPageSystem",
-                "event":"BreadPageSystem.EditorButton"
             }
         ]
     },
@@ -66,6 +58,14 @@
         "description": "Section for recent posts.",
         "module": "BreadPageSystem",
         "event":"BreadPageSystem.DrawRecentPosts"
+    },
+    {
+        "name": "editor-infomation",
+        "id": "editor-infomation",
+        "human": "Editor Infomation Panel",
+        "description": "A sidebar for displaying infomation about an edit.",
+        "module": "BreadPageSystem",
+        "event":"BreadPageSystem.EditorInfomation"
     },
     {
         "name": "footer",

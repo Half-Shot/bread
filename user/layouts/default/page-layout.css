@@ -51,7 +51,14 @@
         top:20%;
         left:0%;
 }
-
+#editor-infomation
+{
+        position:absolute;
+        width:13%;
+        height:10%;
+        top:20%;
+        left:87%;
+}
 body
 {
    	font-family: 'Ledger', serif; 

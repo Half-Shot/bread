@@ -1,7 +1,8 @@
 {
     "url": "Hullo.md",
     "name": "Hullo",
-    "title": "Welcome to the blog, watch the gaps.",
+    "title": "Hullo",
+    "subtitle": "Welcome to the blog, watch the gaps.",
     "categorys": [
         "firstpost"
     ],

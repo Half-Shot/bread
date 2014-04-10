@@ -27,11 +27,17 @@ class BootstrapTheme extends Bread\Modules\Module
             $this->manager->RegisterHook($this->name,"Theme.Post.Breadcrumbs","Breadcrumbs");
             $this->manager->RegisterHook($this->name,"Theme.Post.Infomation","Infomation");
             $this->manager->RegisterHook($this->name,"Theme.Infomation","ShowInfomation");
-            //Forms
+            $this->manager->RegisterHook($this->name,"Theme.Panel","Panel");            //Forms
             $this->manager->RegisterHook($this->name,"Theme.Form","BuildForm");
+            $this->manager->RegisterHook($this->name,"Theme.InputElement","BuildInput");
             //Layouts
             $this->manager->RegisterHook($this->name,"Theme.Layout.Article","Article");
             $this->manager->RegisterHook($this->name,"Theme.Layout.Block","LayoutBlock");
+            $this->manager->RegisterHook($this->name,"Theme.Layout.ButtonGroup","ButtonGroup");
+            $this->manager->RegisterHook($this->name,"Theme.Layout.ButtonToolbar","ButtonToolbar");
+            $this->manager->RegisterHook($this->name,"Theme.DrawError","ShowErrorScreen");
+            //Misc
+            $this->manager->RegisterHook($this->name,"Theme.Icon","DrawIcon");
 	}
     
 	function Load()
@@ -67,8 +73,9 @@ class BootstrapTheme extends Bread\Modules\Module
                     foreach ($links as $srclink)
                     {
                         $link = clone $srclink;
-                        if($link->hidden)
-                            continue;
+                        if(isset($link->hidden))
+                            if($link->hidden)
+                                continue;
                         $link->active = (Site::getRequest()->requestType == $link->request);
                         if(!isset($link->url))
                         {
@@ -142,7 +149,7 @@ class BootstrapTheme extends Bread\Modules\Module
         
         function BuildInput($element)
         {
-            return $this->breadXML->GetHTMLOfElement("FormElement",$element);
+            return $this->breadXML->GetHTMLOfElement("InputElement",$element);
         }
         
         function LayoutBlock($args)
@@ -154,6 +161,45 @@ class BootstrapTheme extends Bread\Modules\Module
                 $HTML .= $element["guts"];
             }
             return $HTML;
+        }
+        
+        function ShowErrorScreen($message){
+            $HTML = $this->breadXML->GetHTMLOfElement("ErrorScreen",$message);
+            return $HTML;
+        }
+        
+        function Panel($args)
+        {
+            return $this->breadXML->GetHTMLOfElement("Panel",$args);
+        }
+        
+        function ButtonGroup($args)
+        {
+            return '<div class="btn-group">' . $args . '</div>';
+        }
+        
+        function ButtonToolbar($args)
+        {
+            return '<div class="btn-toolbar" role="toolbar">' . $args . '</div>';
+        }
+        
+        function DrawIcon($args)
+        {
+            switch($args)
+            {
+                case "bold":
+                    return '<span class="glyphicon glyphicon-bold"></span>';
+                    break;
+                case "italic":
+                    return '<span class="glyphicon glyphicon-italic"></span>';
+                    break;
+                case "list":
+                    return '<span class="glyphicon glyphicon glyphicon-list"></span>';
+                    break;
+                default :
+                    return '<small>' . $args . '</small>';
+                    break;
+            }
         }
 }
 ?>

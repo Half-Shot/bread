@@ -1,25 +1,24 @@
 [
     {
         "request": "homepage",
-        "args": {
-            "name": "homepage"
-        },
         "title": true,
         "text": "Bread Test Site",
         "hidden": false,
-        "icon": "",
-        "targetWindow": "_self",
-        "active": false
+        "targetWindow": "_self"
     },
     {
         "request": "post",
+        "text": "Posts",
         "args": {
             "name": "Hullo"
         },
-        "text": "Posts",
         "hidden": false,
-        "icon": "",
+        "targetWindow": "_self"
+    },
+    {
+        "request": "controlpanel",
+        "text": "Control Panel",
         "targetWindow": "_self",
-        "active": true
+        "permissionrequired": "root"
     }
 ]

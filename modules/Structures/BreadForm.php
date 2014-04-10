@@ -9,9 +9,10 @@ class BreadForm
 {
     public $name = "";
     public $action = "";
+    public $id = "";
     public $method = "";
     public $formtarget = "";
-    public $onsubmit = "return true;";
+    public $onsubmit = "return false;";
     public $elements = array();
     public $attributes = array();
 }
@@ -22,10 +23,13 @@ class BreadFormElement
 {
     public $name = "";
     public $type = "";
+    public $class = "";
+    public $toggle = false;
     public $onclick = "";
     public $value = "";
     public $placeholder = "";
     public $id = "";
+    public $readonly = false;
     public $options = array();
     public $dataset = array();
     public $attributes = array();

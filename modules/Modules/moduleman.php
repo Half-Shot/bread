@@ -203,9 +203,60 @@ class ModuleManager
 		}
 		
 	    $this->events[$eventName][$moduleName] = array($function,$dependencies);
-
+            Site::$Logger->writeMessage('Hook registered ' . $moduleName . '::' . $eventName);    
 	}
-	
+        /**
+         * Same as RegisterHook but uses an array of hooks instead.
+         * Format of ["event"],["function"],["dependencies"]
+         * @see self::RegisterHook()
+         * @param type $moduleName The module name as set when the module was registered.
+         * @param type $hookArray The array of hooks.
+         */
+        function RegisterHooks($moduleName, $hookArray)
+        {
+            foreach($hookArray as $hook)
+            {
+                if(!array_key_exists($hook, "dependencies"))
+                        $hook["dependencies"] = array();
+                $this->RegisterHook($moduleName, $hook["event"], $hook["function"],$hook["dependencies"]);
+            }
+        }
+	/*
+         * Unregister a set hook.
+         */
+        function UnregisterHook($moduleName,$eventName,$removeModule = true)
+        {
+            unset($this->events[$eventName][$moduleName]);
+            Site::$Logger->writeMessage('Hook unregistered ' . $moduleName . '::' . $eventName);   
+            if(count($this->GetModuleEvents($moduleName)) == 0 && $removeModule){
+                Site::$Logger->writeMessage($moduleName . ' automatically removed from stack.');  
+                unset($this->modules[$moduleName]);
+            }
+
+        }
+        
+        function GetModuleEvents($moduleName)
+        {
+            $events = array();
+            foreach($this->events as $eventname => $event)
+            {
+                if(array_key_exists($moduleName, $event))
+                        $events[$eventname] = $event;
+            }
+            return $events;
+        }
+        
+        function UnregisterModule($moduleName)
+        {
+            $events = $this->GetModuleEvents($moduleName);
+            foreach($events as $eventName => $event)
+            {
+                $this->UnregisterHook($moduleName,$eventName,false);
+            }
+            unset($this->modules[$moduleName]);
+            Site::$Logger->writeMessage($moduleName . ' was manually removed from stack.');  
+        }
+        
         /**
          * Can the event be run in regards to its dependencies.
          * @param type $dependencies A list of dependencies. format of EventName => ModuleName.
@@ -244,11 +295,17 @@ class ModuleManager
             {
                 $function = $data[0];
                 $dependencies = $data[1];
+                
+                if(!method_exists($this->modules[$module],$function)){
+                    Site::$Logger->writeError("Event failed to fire because the listed function does not exist. Event Name: " . $eventName . ", Module Name: " . $module, \Bread\Logger::SEVERITY_HIGH, "core");
+                    return False;
+                }
                 $toRun = $this->CanRunEvent($dependencies);
                 foreach($toRun as $depEvt => $depMod)
                 {
                     $this->FireSpecifiedModuleEvent($depEvt,$depMod);
                 }
+                
                 $returnData[] = $this->modules[$module]->$function($arguments);
                 $this->completed[$eventName] = $module;
             }

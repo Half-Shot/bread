@@ -1,7 +1,8 @@
 {
     "url": "TestPage.md",
-    "name": "The Best Test Page Of Them All",
-    "title": "Now in Bootstrap!",
+    "name": "TestPage",
+    "subtitle": "Now in Bootstrap!",
+    "title": "The Best Test Page Of Them All",
     "categorys": [
         "test"
     ],

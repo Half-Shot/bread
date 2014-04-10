@@ -902,26 +902,7 @@ class Logger
      */
     function writeMessage($string,$category = "core")
     {
-        if(!$this->logpermodule)
-            $category = "core";
-	if($this->logpath == "NOLOG")
-		return;
-        if($this->minlog > self::SEVERITY_MESSAGE)
-            return;
-        
-        if(!in_array($category, $this->fileStreams))
-                $this->openStream($category);
-        
-        if(isset(Site::$moduleManager))
-            Site::$moduleManager->FireEvent("Bread.LogMessage",self::SEVERITY_MESSAGE);
-        
-        $message = new LoggerMessage;
-        $message->time = Site::GetTimeSinceStart();
-        $message->category = $category;
-        $message->message = $string;
-        $message->severity = self::SEVERITY_MESSAGE;
-        $this->messageStack[$category][] = $message;
-        fwrite($this->fileStreams[$category],$message->ToString() . "\n");
+        $this->writeError($string,static::SEVERITY_MESSAGE,$category);
     }
     
     /**
@@ -939,25 +920,29 @@ class Logger
     {
         if(!$this->logpermodule)
             $category = "core";
-	if($this->logpath == "NOLOG")
-            return;
-        if($this->minlog > self::SEVERITY_MESSAGE)
-            return;
-        
-        if(!in_array($category, $this->fileStreams))
-                $this->openStream($category);
         $time = Site::GetTimeSinceStart();
-        
-        if(isset(Site::$moduleManager))
-            Site::$moduleManager->FireEvent("Bread.LogError",$severity);
         
         $message = new LoggerMessage;
         $message->time = Site::GetTimeSinceStart();
         $message->category = $category;
         $message->message = $string;
-        $message->severity = self::SEVERITY_MESSAGE;
+        $message->severity = $severity;
         $this->messageStack[$category][] = $message;
-        fwrite($this->fileStreams[$category],$message->ToString());
+        
+        if(isset(Site::$moduleManager)){
+            Site::$moduleManager->FireEvent("Bread.LogError",$severity);
+            if($severity > static::SEVERITY_MESSAGE)
+            echo Site::$moduleManager->FireEvent("Theme.DrawError",$message)[0];
+        }
+        
+	if($this->logpath != "NOLOG" && $this->minlog <= $severity){
+            if(!in_array($category, $this->fileStreams))
+                    $this->openStream($category);
+            fwrite($this->fileStreams[$category],$message->ToString() . "\n");
+        }
+        if($throw)
+            throw new $exception($string);
+        
     }
     /**
      * Close the stream to the filestream. Also writes a closing statement.
@@ -1007,7 +992,7 @@ class LoggerMessage
      */
     public function ToString()
     {
-        return "[". Logger::getSeverityText($this->severity) ."]" . ($this->time) . "]" . $this->message;
+        return "[". Logger::getSeverityText($this->severity) ."][" . ($this->time) . "]" . $this->message;
     }
 }
 ?>

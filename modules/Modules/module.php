@@ -14,10 +14,12 @@ class Module
          * @var type 
          */
 	protected $name;
-	function __construct($manager,$name)
+        protected $path;
+	function __construct($manager,$name,$path = "")
 	{
 		$this->manager = $manager;
 		$this->name = $name;
+                $this->path = $path;
 	}
         /**
          * Every module should use this function to set its hooks.

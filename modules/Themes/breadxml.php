@@ -101,12 +101,9 @@ class BreadXML {
         $elementStuff->setAttribute("id", $ElementId);
         $elementStuff->appendChild($this->convertObjtoElement($Variables,$elementStuff,$xmldoc));
         $root->appendChild($elementStuff);
+        $xmldoc->save(Site::ResolvePath("%system-temp/$ElementId.xml"));
         $proc = new \XSLTProcessor();
         $proc->importStylesheet($this->xsldoc);
-        Site::$Logger->writeMessage($xmldoc->saveHTML(), "XML");
-        $xmldoc->formatOutput = true;
-        $xmldoc->save(Site::ResolvePath("%system-temp/XML" . $ElementId . ".xml"));
-        $xmldoc->formatOutput = false;
         $output = $proc->transformToXML($xmldoc);
         $properoutput = htmlspecialchars_decode($output);
         return $properoutput;

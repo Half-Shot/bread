@@ -8,13 +8,7 @@
         "human": "Navigation Bar",
         "description": "Top of the page, ideal for navbars.",
         "tag":"header",
-        "event":"Theme.DrawNavbar",
-        "arguments":
-        {
-                "title":"BreadTest",
-                "title-link":"http://www.google.co.uk",
-		"Home":"http://www.google.co.uk"
-        }
+        "event":"Theme.DrawNavbar"
     },
     {
         "name": "contents",

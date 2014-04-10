@@ -66,6 +66,7 @@ function DoMarkdown()
             editor.on('autosave', function () {
                 $(editorHTML).html(mdParser.makeHtml(editor.exportFile())); 
             });
+            $("#bps-editor-toolbar").prependTo("#bps-editor");
             $("#bps-editor").hide();
         }
     });
@@ -77,23 +78,36 @@ function toggleMarkdown()
     switch(editorState){
         case 0:
             //Content
+            $.each($(".bps-editorinfo-input"),function(){
+                $(this).removeAttr( "readonly" )
+            });
+            $("button.bps-editorinfo-input").removeAttr( "disabled" );
             $(".bps-html").animate({"height": "400px"},400,function(){$(".bps-html").css( "overflow-y", "scroll" )});
             $("#bps-editor").slideDown();
             $("#bps-editor").animate({"height": "400px"},400,function(){editor.reflow();});
             $("#bps-mdsave").show();
+            $("#bps-editor-toolbar").show();
             $("#bps-title").attr('contentEditable',true);
             $("#bps-subtitle").attr('contentEditable',true);
             $.each($("#bps-mdtoggle"),function(){$(this).html("Close Editor") });
+            $("#bps-title").css("border","black dashed 1px");
+            $("#bps-subtitle").css("border","black dashed 1px");
             editorState = 1;
             break;
         case 1:
+            $.each($(".bps-editorinfo-input"),function(){
+                $(this).attr("readonly",true);
+            });
+            $("button.bps-editorinfo-input").attr("disabled",true);
             $(".bps-html").animate({"height": "100%"},400,function(){$(".bps-html").css( "overflow-y", "none" )});
             $("#bps-editor").slideUp();
             $("#bps-mdsave").hide();
+            $("#bps-editor-toolbar").hide();
             $("#bps-title").attr('contentEditable',false);
-            $("#bps-title").css("border","black dashed 1px");
             $("#bps-subtitle").attr('contentEditable',false);
-            $("#bps-subtitle").css("border","black dashed 1px");
+            
+            $("#bps-title").css("border","none");
+            $("#bps-subtitle").css("border","none");
             $.each($("#bps-mdtoggle"),function(){$(this).html("Open Editor") });
             editorState = 0;
             break;
@@ -103,7 +117,7 @@ function toggleMarkdown()
 function saveMarkdown()
 {
     var md = editor.exportFile();
-    $.post( "index.php", { ajaxEvent: "BreadPageSystem.SavePost",ajaxModule:"BreadPageSystem", url: document.URL, markdown: md, title: $("#bps-title").text(), subtitle: $("#bps-subtitle").text() }, function(returndata)
+    $.post( "index.php", { ajaxEvent: "BreadPageSystem.SavePost",ajaxModule:"BreadPageSystem", url: document.URL, markdown: md, title: $("#bps-title").text(), subtitle: $("#bps-subtitle").text(), name: $("#e_postname")[0].value ,author: $("#e_author")[0].value}, function(returndata)
     {
         if(returndata = "1")
             alert("Saved :D");
@@ -111,4 +125,28 @@ function saveMarkdown()
             alert("Something went wrong :|");
     });
 }
+
+function wrap(tagStart,tagEnd) {
+    var sel, range;
+    var selectedText;
+    var editorDocument = $('#bps-editor').find('iframe')[0].contentDocument.body.firstChild.firstChild.contentDocument;
+    var editorWindow =   $('#bps-editor').find('iframe')[0].contentDocument.body.firstChild.firstChild.contentWindow
+    if (editorWindow.getSelection) {
+        sel = editorWindow.getSelection();
+
+        if (sel.rangeCount) {
+            range = sel.getRangeAt(0);
+            selectedText = range.toString();
+            range.deleteContents();
+            range.insertNode(editorDocument.createTextNode(tagStart + selectedText + tagEnd));
+        }
+    }
+    else if (editorDocument.selection && editorDocument.selection.createRange) {
+        range = editorDocument.selection.createRange();
+        selectedText = editorDocument.selection.createRange().text + "";
+        range.text = tagStart + selectedText + tagEnd;
+    }
+
+}
+
 $("#bps-mdsave").hide();

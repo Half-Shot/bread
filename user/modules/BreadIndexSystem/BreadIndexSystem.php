@@ -28,8 +28,13 @@ class BreadIndexSystem extends Module
             //Filter hidden
             $pages = array();
             foreach($this->settings as $page){
-                if(!$page->hidden)
-                    $pages[] = $page;
+                if(isset($page->permissionrequired))
+                    if(!$this->manager->FireEvent("Bread.Security.GetPermission",$page->permissionrequired))
+                        continue;
+                if(isset($page->hidden))
+                    if($page->hidden)
+                        continue;
+                $pages[] = $page;
             }
             return $pages;
         }
