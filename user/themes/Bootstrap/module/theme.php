@@ -38,6 +38,8 @@ class BootstrapTheme extends Bread\Modules\Module
             $this->manager->RegisterHook($this->name,"Theme.DrawError","ShowErrorScreen");
             //Misc
             $this->manager->RegisterHook($this->name,"Theme.Icon","DrawIcon");
+            $this->manager->RegisterHook($this->name,"Theme.Modal","SpawnModal");
+            $this->manager->RegisterHook($this->name,"Theme.Button","Button");
 	}
     
 	function Load()
@@ -202,6 +204,16 @@ class BootstrapTheme extends Bread\Modules\Module
                     return '<small>' . $args . '</small>';
                     break;
             }
+        }
+        
+        function Button($args)
+        {
+            return $this->breadXML->GetHTMLOfElement("Button",$args);
+        }
+        
+        function SpawnModal($args)
+        {
+            return $this->breadXML->GetHTMLOfElement("Modal",$args);
         }
 }
 ?>

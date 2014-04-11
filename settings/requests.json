@@ -3,7 +3,7 @@
     {
         "layout":"post",
         "theme":"theme-bootstrap",
-        "modules":["BreadIndexSystem\/module.json","BreadUserSystem\/module.json"]
+        "modules":["BreadIndexSystem\/module.json","WebShim\/module.json","BreadUserSystem\/module.json"]
     },
     "homepage":{
         "layout":"homepage",

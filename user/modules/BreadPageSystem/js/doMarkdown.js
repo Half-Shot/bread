@@ -42,7 +42,7 @@ var opts = {
     toggleEdit: 'Toggle Edit Mode',
     toggleFullscreen: 'Enter Fullscreen'
   },
-  autogrow: false
+  autogrow: true
 };
 
 function DoMarkdown()
@@ -82,9 +82,9 @@ function toggleMarkdown()
                 $(this).removeAttr( "readonly" )
             });
             $("button.bps-editorinfo-input").removeAttr( "disabled" );
-            $(".bps-html").animate({"height": "400px"},400,function(){$(".bps-html").css( "overflow-y", "scroll" )});
+            $(".bps-html").animate({"height": "100%"},400,function(){$(".bps-html").css( "overflow-y", "scroll" )});
             $("#bps-editor").slideDown();
-            $("#bps-editor").animate({"height": "400px"},400,function(){editor.reflow();});
+            $("#bps-editor").animate({"height": "100%"},400,function(){editor.reflow();});
             $("#bps-mdsave").show();
             $("#bps-editor-toolbar").show();
             $("#bps-title").attr('contentEditable',true);
@@ -117,13 +117,35 @@ function toggleMarkdown()
 function saveMarkdown()
 {
     var md = editor.exportFile();
-    $.post( "index.php", { ajaxEvent: "BreadPageSystem.SavePost",ajaxModule:"BreadPageSystem", url: document.URL, markdown: md, title: $("#bps-title").text(), subtitle: $("#bps-subtitle").text(), name: $("#e_postname")[0].value ,author: $("#e_author")[0].value}, function(returndata)
+    $.post( "index.php", { ajaxEvent: "BreadPageSystem.SavePost",ajaxModule:"BreadPageSystem", url: document.URL, markdown: md, title: $("#bps-title").text(), subtitle: $("#bps-subtitle").text(), name: $("#e_postname")[0].value ,author: $("#e_author")[0].value, timereleased: $("#e_timereleased")[0].value}, function(returndata)
     {
-        if(returndata = "1")
+        if(returndata != "0"){
             alert("Saved :D");
+            window.location = returndata;
+        }
         else
             alert("Something went wrong :|");
     });
+}
+
+function deletePost()
+{
+    $.post( "index.php", { ajaxEvent: "BreadPageSystem.DeletePost",ajaxModule:"BreadPageSystem", url: document.URL}, function(returndata)
+    {
+        if(returndata === "1"){
+            alert("The deed is done.");
+        }
+        else if(returndata === "2"){
+            alert("You're trying to delete a new post that hasn't been created yet!");
+        }
+        else if(returndata === "3"){
+            alert("Couldn't remove the post! This is a failure on bread!");
+        }
+        else if(returndata === "0"){
+            alert("Something went wrong :|");
+        }
+    });
+    window.location = '//' + location.host + location.pathname;
 }
 
 function wrap(tagStart,tagEnd) {

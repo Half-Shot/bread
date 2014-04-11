@@ -135,6 +135,9 @@
                     <xsl:if test="./readonly = 1">
                         <xsl:attribute name="readonly"/>
                     </xsl:if>
+                    <xsl:if test="./required = 1">
+                        <xsl:attribute name="required"/>
+                    </xsl:if>
                     <xsl:attribute name="placeholder"><xsl:value-of select="./placeholder"/></xsl:attribute>
                     <xsl:attribute name="class">form-control <xsl:value-of select="./class"/></xsl:attribute>
                 </input>
@@ -202,5 +205,45 @@
                       </div>
                 </div>
             </xsl:if>
+    </xsl:template>
+    <xsl:template name="Modal" match="telement[@id='Modal']">
+        <!-- Modal -->
+        <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+            <xsl:attribute name="id">
+                <xsl:value-of select="./variable/id"/>
+            </xsl:attribute>
+            <xsl:attribute name="aria-labelledby">
+                <xsl:value-of select="./variable/label"/>
+            </xsl:attribute>
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove-circle"></span></button>
+                    <h4 class="modal-title"><xsl:value-of select="./variable/title"/></h4>
+                </div>
+                <div class="modal-body">
+                    <xsl:value-of select="./variable/body"/>
+                </div>
+                <div class="modal-footer">
+                    <xsl:value-of select="./variable/footer"/>
+                </div>
+              </div>
+            </div>
+        </div>
+    </xsl:template>
+    <xsl:template name="Button" match="telement[@id='Button']">
+          <button type="button">
+                <xsl:attribute name="name"><xsl:value-of select="./variable/name"/></xsl:attribute>
+                <xsl:attribute name="id"><xsl:value-of select="./variable/id"/></xsl:attribute>
+                <xsl:attribute name="class">btn <xsl:value-of select="./variable/class"/></xsl:attribute>
+                <xsl:attribute name="onclick"><xsl:value-of select="./variable/onclick"/></xsl:attribute>
+                <xsl:if test="./variable/readonly = 1">
+                    <xsl:attribute name="disabled"/>
+                </xsl:if>
+                <xsl:if test="./variable/toggle = 1">
+                    <xsl:attribute name="data-toggle">button</xsl:attribute>
+                </xsl:if>
+                <xsl:value-of select="./variable/value"/>
+          </button>
     </xsl:template>
 </xsl:stylesheet>

@@ -33,6 +33,7 @@ class BreadFormElement
     public $options = array();
     public $dataset = array();
     public $attributes = array();
+    public $required = false;
     
     const TYPE_TEXTBOX = "text";
     const TYPE_PASSWORD = "password";
