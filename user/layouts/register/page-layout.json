@@ -1,16 +1,7 @@
 {
 "name": "register",
-"css":["register/page-layout.css"],
-"scripts":["register/register.js"],
+"master":["default"],
 "elements": [
-    {
-        "name": "navbar",
-	"id": "navbar",
-        "human": "Navigation Bar",
-        "description": "Top of the page, ideal for navbars.",
-        "tag":"header",
-        "event":"Theme.DrawNavbar"
-    },
     {
         "name": "contents",
 	"id": "contents",
@@ -20,14 +11,6 @@
         "event":"BreadFormBuilder.DrawForm",
         "arguments":1,
         "tag":"section"
-    },
-    {
-        "name": "footer",
-	"id": "footer",
-        "human": "Footer",
-        "description": "Good place for copyright or author name.",
-        "tag":"footer",
-        "event": "Theme.DrawFooter"
     }
 ]
 }

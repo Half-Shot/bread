@@ -116,10 +116,52 @@ class ThemeManager
             }
             if(!array_key_exists($Request->layout, $this->layouts))
                     Site::$Logger->writeError ("Layout does not exist!", \Bread\Logger::SEVERITY_CRITICAL,"core", true);
-            $this->Theme["layout"] = $this->layouts[$Request->layout];
+            $this->Theme["layout"] = $this->ApplyMaster($this->layouts[$Request->layout]);
             return True;
                 
 	}
+        
+        function ApplyMaster($layout)
+        {
+            $LayoutStruct = $layout["JSON"];
+            if(!isset($LayoutStruct->master))
+                return $layout;
+            $problemKeys = array_keys($LayoutStruct->master, $LayoutStruct->name);
+            foreach($problemKeys as $key){unset($LayoutStruct->master[$key]);}
+            foreach($LayoutStruct->master as $layoutName)
+            {
+                if(!array_key_exists($layoutName, $this->layouts)){
+                    Site::$Logger->writeError("Can't apply master layout" . $layoutName . " to child layout. Master not loaded.", \Bread\Logger::SEVERITY_HIGH, "ThemeManager");
+                }
+                $masterLayout = $this->ApplyMaster($this->layouts[$layoutName])["JSON"];
+                if(isset($masterLayout->css)){
+                    if(!isset($LayoutStruct->css)){
+                        $LayoutStruct->css = array();
+                    }
+                    else if(!is_array($LayoutStruct->css)){
+                        $LayoutStruct->css = array($LayoutStruct->css);
+                    }
+                    $LayoutStruct->css = array_merge ($masterLayout->css,$LayoutStruct->css);
+                }
+                
+                if(isset($masterLayout->Scripts)){
+                    if(!isset($LayoutStruct->Scripts)){
+                        $LayoutStruct->Scripts = array();
+                    }
+                    else if(!is_array($LayoutStruct->Scripts)){
+                        $LayoutStruct->Scripts = array($LayoutStruct->Scripts);
+                    }
+                    $LayoutStruct->Scripts = array_merge ($masterLayout->Scripts,$LayoutStruct->Scripts);
+                }
+                
+                $LayoutElements = Site::ArraySetKeyByProperty($LayoutStruct->elements, 'name');
+                $MasterElements = Site::ArraySetKeyByProperty($masterLayout->elements, 'name');
+                $LayoutElements = array_merge($MasterElements,$LayoutElements);
+                $LayoutStruct->elements = $LayoutElements;
+            }
+            $layout["JSON"] = $LayoutStruct;
+            return $layout;
+        }
         
         /**
          * Add CSS to the HTML page for each file registered.

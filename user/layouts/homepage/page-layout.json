@@ -1,15 +1,7 @@
 {
 "name": "homepage",
-"css":["default/page-layout.css"],
+"master":["default"],
 "elements": [
-    {
-        "name": "navbar",
-	"id": "navbar",
-        "human": "Navigation Bar",
-        "description": "Top of the page, ideal for navbars.",
-        "tag":"header",
-        "event":"Theme.DrawNavbar"
-    },
     {
         "name": "contents",
 	"id": "homepage-contents",
@@ -21,15 +13,6 @@
             "post":0
         },
         "tag":"article"
-    },
-    {
-        "name": "footer",
-        "id": "footer",
-        "human": "Footer",
-        "description": "Good place for copyright or author name.",
-        "tag":"footer",
-        "event": "BreadPageSystem.PlainMarkdown",
-        "arguments":"####Absolutely no copyright, probably even copyleft. MIT Licence"
     }
 ]
 }

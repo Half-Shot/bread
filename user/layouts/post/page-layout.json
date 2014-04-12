@@ -1,16 +1,10 @@
 {
 "name": "post",
 "css":["default/page-layout.css"],
+"master":["default"],
 "elements": [
     {
-        "name": "navbar",
-	    "id": "navbar",
-        "human": "Navigation Bar",
-        "description": "Top of the page, ideal for navbars.",
-        "tag":"header",
-        "event":"Theme.DrawNavbar"
-    },
-    {
+        "name": "title",
         "id": "title",
         "human": "Title",
         "description": "The title of the current document.",
@@ -27,6 +21,7 @@
         "tag":"section",
         "elements":[
             {
+              "name":"mainpost",
               "id": "mainpost",
               "human": "Page Contents",
               "description": "The post.",
@@ -35,6 +30,7 @@
               "tag":"article"
             },
             {
+                "name":"breadcrumbs",
                 "id":"breadcrumbs",
                 "human":"Post Breadcrumbs",
                 "description":"Tags n stuff that goes with the post",
@@ -66,15 +62,6 @@
         "description": "A sidebar for displaying infomation about an edit.",
         "module": "BreadPageSystem",
         "event":"BreadPageSystem.EditorInfomation"
-    },
-    {
-        "name": "footer",
-        "id": "footer",
-        "human": "Footer",
-        "description": "Good place for copyright or author name.",
-        "tag":"footer",
-        "event": "BreadPageSystem.PlainMarkdown",
-        "arguments":"####Absolutely no copyright, probably even copyleft. MIT Licence"
     }
 ]
 }

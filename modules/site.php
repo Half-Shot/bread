@@ -703,6 +703,31 @@ class Site
                 }
             }
         }
+        /**
+         * Merges 2 objects.
+         * @param object $objA The least important object, will be overwritten.
+         * @param object $objB The more important object, will override keys.
+         * @return type
+         */
+        public static function ObjMerge($objA,$objB)
+        {
+            $A_finalObj = array();
+            $A_objA = (array)$objA;
+            $A_objB = (array)$objB;
+            $A_finalObj = \array_replace_recursive($A_objA,$A_objB);
+            $finalObj = (object)$A_finalObj;
+            return $finalObj;
+        }
+        
+        public static function ArraySetKeyByProperty($array,$propName)
+        {
+           $newArray = array();
+           foreach($array as $item)
+           {
+               $newArray[$item->$propName] = $item;
+           }
+           return $newArray;
+        }
         
         /**
          * Return a string value from a string which has a mix of letters and

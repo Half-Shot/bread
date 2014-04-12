@@ -1,6 +1,6 @@
 {
 "name": "default",
-"css":["post/page-layout.css"],
+"css":["default/page-layout.css"],
 "elements": [
     {
         "name": "navbar",
@@ -21,11 +21,12 @@
     },
     {
         "name": "footer",
-	"id": "footer",
+        "id": "footer",
         "human": "Footer",
         "description": "Good place for copyright or author name.",
         "tag":"footer",
-        "event": "Theme.DrawFooter"
+        "event": "BreadPageSystem.PlainMarkdown",
+        "arguments":"####Absolutely no copyright, probably even copyleft. MIT Licence"
     }
 ]
 }
