@@ -9,7 +9,8 @@
 
 #title
 {
-    margin-top: 6%;
+    position:absolute;
+    top:5%;
 }
 
 #contents
@@ -17,7 +18,7 @@
     	position:absolute;
 	width:60%;
 	height:90%;
-        margin-top:5%;
+        top:20%;
         padding-bottom:10%;
 	margin-left:16%;
         margin-right:6%;

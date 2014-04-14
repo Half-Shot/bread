@@ -284,8 +284,10 @@ class BreadPageSystem extends Module
                   )
                 {
                     $URL = substr($string, 6,  strlen($string) - 7);
-                    $type = substr($URL,strlen($URL) - 4,3);
-                    $article[$i] = "<audio style='width:100%' controls><source src='" . $URL . "' type='audio/ " . $type . "'></audio>";
+                    $type = substr($URL,strlen($URL) - 3,3);
+                    if($type == "mp3")
+                        $type = "mpeg";
+                    $article[$i] = "<audio style='width:100%' controls><source src='" . $URL . "' type='audio/" . $type . "'></audio>";
                     continue;
                 }
                 
@@ -299,6 +301,21 @@ class BreadPageSystem extends Module
                     $type = substr($URL,strlen($URL) - 3,3);
                     $article[$i] = "<video controls><source src='" . $URL . "' type='video/" . $type . "'></video>";
                     continue;
+                }
+                if(
+                        (strpos($string, "github(") === 0) &&
+                        (strpos($string, ")") == strlen($string) - 1) &&
+                        (strlen($string) > 8) 
+                  )
+                {
+                    $URLSTR = substr($string, 7,  strlen($string) - 8);
+                    $URL = explode('/',$URLSTR);
+                    if(count($URL) == 5){
+                        $article[$i] = '<iframe allowtransparency="true" frameborder="0" scrolling="no" seamless="seamless" src="http://colmdoyle.github.io/gh-activity/gh-activity.html?user=' . $URL[3] . '&repo=' . $URL[4] . '&type=repo" allowtransparency="true" frameborder="0" scrolling="0" width="292" height="290"></iframe>';
+                    }
+                    elseif(count($URL) == 4){
+                        $article[$i] = '<iframe allowtransparency="true" frameborder="0" scrolling="no" seamless="seamless" src="http://colmdoyle.github.io/gh-activity/gh-activity.html?user=' . $URL[3] . '&type=user" allowtransparency="true" frameborder="0" scrolling="0" width="292" height="290"></iframe>';
+                    }
                 }
             }
             return $article;
