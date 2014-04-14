@@ -506,7 +506,7 @@ class Site
             }
             
 	    //Draw
-	    static::$htmlcode .= "<!DOCTYPE html>\n<html>\n"; //Obviously.
+	    static::$htmlcode .= "<!DOCTYPE html5>\n<html>\n"; //Obviously.
 	    static::$Logger->writeMessage("Beginning build of page");
 	    static::$Logger->writeMessage("Request data:\n" . var_export($requestData,True));
 	    //Process request
@@ -521,6 +521,9 @@ class Site
             static::$moduleManager->FireEvent("Bread.FinishedLayoutProcess",NULL);
 	    static::$htmlcode .= "<head>\n";
 	    static::$htmlcode .= static::ProcessMetadata($requestData);
+            $title = static::$moduleManager->FireEvent("Bread.PageTitle")[0];
+            if($title)
+                Site::AddToHeaderCode("<title>" . $title . " - " . self::$configuration["strings"]["sitename"] ."</title>");
             static::$htmlcode .= static::$headercode;
 	    static::$htmlcode .= static::$themeManager->CSSLines;
             static::$htmlcode .= static::$ScriptLines;

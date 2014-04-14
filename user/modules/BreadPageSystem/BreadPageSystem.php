@@ -8,6 +8,7 @@ class BreadPageSystem extends Module
         private $isnewpost = false;
         private $activePost = false;
         public $EnableEditor = false;
+        const TOKEN_SPLIT_STR = "[%]";
         function __construct($manager,$name)
         {
 	        parent::__construct($manager,$name,__DIR__);
@@ -29,6 +30,9 @@ class BreadPageSystem extends Module
             $this->manager->RegisterHook($this->name,"BreadPageSystem.DeletePost","DeletePost");
             $this->manager->RegisterHook($this->name,"Bread.Security.LoggedIn","CheckEditorRights");
             $this->manager->RegisterHook($this->name,"BreadPageSystem.EditorInfomation","PostEditorInfomationPanel");
+            $this->manager->RegisterHook($this->name,"Bread.PageTitle","SetSiteTitle");
+            $this->manager->RegisterHook($this->name,"Bread.TokenizeText","BasicTokens");
+            $this->manager->RegisterHook($this->name,"Bread.TokenizePost","TokenizeArticle");
         }
         
         function AddPages()
@@ -105,7 +109,6 @@ class BreadPageSystem extends Module
                 $this->BuildIndex();
             }
             Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/showdown.js")); //For just parsing.
-            
             $this->EnableEditor = $this->CheckEditorRights();
             if(array_key_exists("newpost", Site::getRequest()->arguments))
             {   
@@ -120,6 +123,12 @@ class BreadPageSystem extends Module
                $pageData = Site::$settingsManager->RetriveSettings($path);
                $this->activePost = $pageData;
             }
+        }
+        
+        function SetSiteTitle()
+        {
+            $Post = $this->GetActivePost();
+            return $Post->title;
         }
         
         function CheckEditorRights()
@@ -245,6 +254,56 @@ class BreadPageSystem extends Module
             Site::$Logger->writeMessage("Built Page Index!",$this->name);
         }
         
+        function TokenizeArticle($article)
+        {
+            if(is_null($article))
+                $article = $_POST["markdown"];
+            $articleArray = \explode(self::TOKEN_SPLIT_STR,$article);
+            $result = Site::$moduleManager->FireEvent("Bread.TokenizeText",$articleArray);
+            if(!is_array($result))
+                return $article;
+            foreach($result as $res){
+                    $articleArray = $res + $articleArray;
+            }
+            $article = implode("", $articleArray);
+            return $article;
+        }
+        
+        function BasicTokens($article)
+        {
+            foreach($article as $i => $string)
+            {
+                if($string == "breadver"){
+                    $article[$i] = Site::Configuration ()["core"]["version"];
+                    continue;
+                }
+                if(
+                        (strpos($string, "audio(") === 0) &&
+                        (strpos($string, ")") == strlen($string) - 1) &&
+                        (strlen($string) > 7) 
+                  )
+                {
+                    $URL = substr($string, 6,  strlen($string) - 7);
+                    $type = substr($URL,strlen($URL) - 4,3);
+                    $article[$i] = "<audio style='width:100%' controls><source src='" . $URL . "' type='audio/ " . $type . "'></audio>";
+                    continue;
+                }
+                
+                if(
+                        (strpos($string, "video(") === 0) &&
+                        (strpos($string, ")") == strlen($string) - 1) &&
+                        (strlen($string) > 7) 
+                  )
+                {
+                    $URL = substr($string, 6,  strlen($string) - 7);
+                    $type = substr($URL,strlen($URL) - 3,3);
+                    $article[$i] = "<video controls><source src='" . $URL . "' type='video/" . $type . "'></video>";
+                    continue;
+                }
+            }
+            return $article;
+        }
+        
         function DrawPage()
         {
            $page = $this->GetActivePost();
@@ -257,11 +316,11 @@ class BreadPageSystem extends Module
            if(empty($markdown)){
                Site::$Logger->writeError ("Couldn't retrive markdown for post!",  \Bread\Logger::SEVERITY_MEDIUM, $this->name);
            }
-           $editor = "";
            if(isset($page->liveedit) && $this->EnableEditor){
                 $this->EnableEditor = $page->liveedit;
            }
            $ToolbarHTML = "";
+           $editor = "";
            if($this->EnableEditor){
                //Toolbar
                $ToolbarHTML = $this->GenerateEditorToolbar();

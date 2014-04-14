@@ -8,6 +8,10 @@ var mdParser = new Showdown.converter();
 var editorState = 0;
 var editorHTML ;
 var editor;
+var ReqPerSec = 0.2;
+var timeSinceLastRequest = 0;
+var tokenizedMarkdown = "";
+var lastTokens;
 var opts = {
   container: 'bps-editor',
   textarea: null,
@@ -15,7 +19,7 @@ var opts = {
   clientSideStorage: true,
   localStorageName: 'epiceditor',
   useNativeFullscreen: true,
-  parser: mdParser.makeHtml,
+  parser: ParseMarkdown,
   file: {
     name: 'epiceditor',
     defaultContent: '',
@@ -45,13 +49,49 @@ var opts = {
   autogrow: true
 };
 
+function GetTokens(markdown)
+{
+    var tokens = markdown.split("[%]");
+    for (var i=0;i<tokens.length;i += 2)
+    {
+        tokens.splice(i,1);
+    }
+    for (var i=0;i<tokens.length;i++)
+    {
+        if(!/[^\s]/.test(tokens[i]))
+            tokens.splice(i,1);
+    }
+    return tokens;
+}
+
+function ParseMarkdown(markdown,overrideTimer)
+{
+    var tokens = GetTokens(markdown);
+    var time = new Date().getTime();//Milliseconds.
+    if(((time > timeSinceLastRequest + 1000 * (1 / ReqPerSec) || overrideTimer)) && (markdown.indexOf("[%]") != -1) && lastTokens !== tokens)
+    {
+        timeSinceLastRequest = time;
+        $.ajax("index.php",{type:"POST",async:false,data:{ ajaxEvent: "Bread.TokenizePost",ajaxModule:"BreadPageSystem", markdown: markdown},success:function(newMarkdown)
+        {
+            tokenizedMarkdown = newMarkdown;
+            tokenizedMarkdown = mdParser.makeHtml(tokenizedMarkdown);
+            lastTokens = tokens;
+        }});
+    }
+    else
+    {
+        tokenizedMarkdown = mdParser.makeHtml(markdown);
+    }
+    return tokenizedMarkdown;
+}
+
 function DoMarkdown()
 {
     $(".bps-content").each(function(i,parent)
     {
         var child = parent.firstChild;
         var markdown = child.innerHTML;
-        parent.innerHTML += "<div class='bps-html'>" + mdParser.makeHtml(markdown) + "</div>";
+        parent.innerHTML += "<div class='bps-html'>" + ParseMarkdown(markdown,true) + "</div>";
         parent.innerHTML += "<hr/>";
         var html = parent.children[1];
         //Add an editor too.
@@ -64,7 +104,7 @@ function DoMarkdown()
             editor = new EpicEditor(opts).load();
             editor.importFile('filename', markdown);
             editor.on('autosave', function () {
-                $(editorHTML).html(mdParser.makeHtml(editor.exportFile())); 
+                $(editorHTML).html(ParseMarkdown(editor.exportFile()),false); 
             });
             $("#bps-editor-toolbar").prependTo("#bps-editor");
             $("#bps-editor").hide();
@@ -95,6 +135,7 @@ function toggleMarkdown()
             editorState = 1;
             break;
         case 1:
+            ParseMarkdown(editor.exportFile(),true);
             $.each($(".bps-editorinfo-input"),function(){
                 $(this).attr("readonly",true);
             });
