@@ -91,7 +91,7 @@ function DoMarkdown()
     {
         var child = parent.firstChild;
         var markdown = child.innerHTML;
-        parent.innerHTML += "<div class='bps-html'>" + ParseMarkdown(markdown,true) + "</div>";
+        parent.innerHTML += "<div class='bps-html'></div>";
         parent.innerHTML += "<hr/>";
         var html = parent.children[1];
         //Add an editor too.
@@ -103,13 +103,11 @@ function DoMarkdown()
             $(parent).append(editorDOM); 
             editor = new EpicEditor(opts).load();
             editor.importFile('filename', markdown);
-            editor.on('autosave', function () {
-                $(editorHTML).html(ParseMarkdown(editor.exportFile()),false); 
-            });
             $("#bps-editor-toolbar").prependTo("#bps-editor");
             $("#bps-editor").hide();
         }
     });
+    $(editorHTML).html(ParseMarkdown(editor.exportFile()),true); 
     $(".bps-markdown").hide();
 }
 
@@ -117,6 +115,9 @@ function toggleMarkdown()
 {
     switch(editorState){
         case 0:
+            editor.on('autosave', function () {
+                $(editorHTML).html(editor.exportFile()); 
+            });
             //Content
             $.each($(".bps-editorinfo-input"),function(){
                 $(this).removeAttr( "readonly" )
@@ -136,7 +137,8 @@ function toggleMarkdown()
             editorState = 1;
             break;
         case 1:
-            ParseMarkdown(editor.exportFile(),true);
+            editor.removeListener('save');
+            $(editorHTML).html(ParseMarkdown(editor.exportFile()),true); 
             $.each($(".bps-editorinfo-input"),function(){
                 $(this).attr("readonly",true);
             });
