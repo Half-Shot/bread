@@ -106,10 +106,19 @@
     </xsl:template>
     <xsl:template name="FormElement" match="telement[@id='FormElement']">
         <div class="input-group">
+            <xsl:if test="./id">
+                <xsl:attribute name="id">ig-<xsl:value-of select="./id"/></xsl:attribute>
+            </xsl:if>
+            <xsl:if test="./hidden = '1'">
+                <xsl:attribute name="style">display:none;</xsl:attribute>
+            </xsl:if>
             <xsl:if test="./label">
                 <span class="input-group-addon"><xsl:value-of select="./label"/></span>
             </xsl:if>
             <xsl:choose>
+                <xsl:when test="./type = 'rawhtml'">
+                    <xsl:value-of select="./value"/>
+                </xsl:when>
                 <xsl:when test="./type = 'button'">
                     <button>
                         <xsl:attribute name="name"><xsl:value-of select="./name"/></xsl:attribute>
@@ -245,5 +254,44 @@
                 </xsl:if>
                 <xsl:value-of select="./variable/value"/>
           </button>
+    </xsl:template>
+    <xsl:template name="Well" match="telement[@id='Well']">
+        <div>
+            <xsl:attribute name="class">well</xsl:attribute>
+            <xsl:if test="./variable/small = 1">
+                <xsl:attribute name="class">well well-sm</xsl:attribute>
+            </xsl:if>
+            <xsl:attribute name="name"><xsl:value-of select="./variable/name"/></xsl:attribute>
+            <xsl:attribute name="id"><xsl:value-of select="./variable/id"/></xsl:attribute>
+            <xsl:value-of select="./variable/value"/>
+        </div>
+    </xsl:template>
+    <xsl:template name="Label" match="telement[@id='Label']">
+        <span>
+            <xsl:attribute name="class">label label-<xsl:value-of select="./variable/type"/></xsl:attribute>
+            <xsl:value-of select="./variable/value"/>
+        </span>
+    </xsl:template>
+    <xsl:template name="Badge" match="telement[@id='Badge']">
+        <span class="badge">
+            <xsl:value-of select="./variable/value"/>
+        </span>
+    </xsl:template>
+    <xsl:template match="telement[@id='Breadcrumbs']">
+        <ol class="breadcrumb">
+            <xsl:for-each select="./variable/variable">
+                <li>
+                    <xsl:if test="./active = 1">
+                        <xsl:attribute name="class">active</xsl:attribute>
+                    </xsl:if>
+                    <a href="#">
+                        <xsl:if test="./url = 1">
+                            <xsl:attribute name="ahref"><xsl:value-of select="./url"/></xsl:attribute>
+                        </xsl:if>
+                        <xsl:value-of select="./value"/>
+                    </a>
+                </li>
+            </xsl:for-each>
+        </ol>
     </xsl:template>
 </xsl:stylesheet>

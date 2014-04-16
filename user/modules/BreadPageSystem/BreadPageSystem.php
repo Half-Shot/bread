@@ -146,6 +146,12 @@ class BreadPageSystem extends Module
             $form = new \Bread\Structures\BreadForm;
             $form->id = "bps-editorinfo";
             $form->onsubmit = "saveMarkdown();return false;";
+            
+            $E_Header_Basic = new \Bread\Structures\BreadFormElement;
+            $E_Header_Basic->type = \Bread\Structures\BreadFormElement::TYPE_RAWHTML;
+            $E_Header_Basic->value = "<h4>Basic Settings</h4>";
+            $form->elements[] = $E_Header_Basic;
+            
             $E_PostName = new \Bread\Structures\BreadFormElement;
             $E_PostName->id = "e_postname";
             $E_PostName->class = "bps-editorinfo-input";
@@ -189,7 +195,6 @@ class BreadPageSystem extends Module
                 $E_Submit->value = "Save New Post";
             $E_Submit->readonly = true;
             $form->elements[] = $E_Submit;
-            
             if(!$this->isnewpost)
             {
                 $E_Delete = new \Bread\Structures\BreadFormElement;
@@ -200,7 +205,40 @@ class BreadPageSystem extends Module
                 $E_Delete->onclick = "$('#warnDeletePost').modal('show');return false;";
                 $form->elements[] = $E_Delete;
             }
-             
+            $HTML_Categorys = new \Bread\Structures\BreadFormElement;
+            $HTML_Categorys->type = \Bread\Structures\BreadFormElement::TYPE_RAWHTML;
+            $HTML_Categorys->value = "<h4>Categorys</h4>";
+            $HTML_Categorys->id ="e_categorys";
+            $HTML_Categorys->hidden = true;
+            $E_New_Category = new \Bread\Structures\BreadFormElement;
+            $E_New_Category->id = "e_newcategory";
+            $E_New_Category->type = \Bread\Structures\BreadFormElement::TYPE_TEXTBOX;
+            $E_New_Category->label = "Add a new category";
+            $HTML_Categorys->value .= $this->manager->FireEvent("Theme.InputElement",$E_New_Category)[0];
+            
+            $E_New_Category_Button = new \Bread\Structures\BreadFormElement;
+            $E_New_Category_Button->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+            $E_New_Category_Button->value = "Add Category";
+            $E_New_Category_Button->onclick = "addNewCategory();";
+            $E_New_Category_Button->class = "btn-default";
+            $HTML_Categorys->value .= "<br>" . $this->manager->FireEvent("Theme.Button",$E_New_Category_Button)[0];
+            
+            $E_Categorys_List = new \stdClass();
+            $E_Categorys_List->id = "bps-listcategories";
+            $E_Categorys_List->small = true;
+            $E_Categorys_List->value = $this->manager->FireEvent("Theme.Badge","Yay")[0];
+            $HTML_Categorys->value .= "<h5>Available Categorys</h5>" . $this->manager->FireEvent("Theme.Layout.Well",$E_Categorys_List)[0];
+            
+            $E_Categorys_Selected = new \stdClass();
+            $E_Categorys_Selected->id = "bps-selectcategories";
+            $E_Categorys_Selected->small = true;
+            $E_Categorys_Selected->value = "";
+            foreach($this->GetActivePost ()->categorys as $category)
+                $E_Categorys_Selected->value .= $this->manager->FireEvent("Theme.Badge",$category)[0];
+            $HTML_Categorys->value .= "<h5>Selected Categorys</h5>" . $this->manager->FireEvent("Theme.Layout.Well",$E_Categorys_Selected)[0];
+            
+            $form->elements[] = $HTML_Categorys;
+                    
             $E_Modal_Confirm = new \Bread\Structures\BreadFormElement;
             $E_Modal_Confirm->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
             $E_Modal_Confirm->value = "Yeah, burn it!";
@@ -212,9 +250,9 @@ class BreadPageSystem extends Module
             $E_Modal_Cancel->value = "Acutally...";
             $E_Modal_Cancel->onclick = "$('#warnDeletePost').modal('hide');";
             $E_Modal_Cancel->class = "btn-info";
-            
             $Buttons = $this->manager->FireEvent("Theme.Button",$E_Modal_Confirm)[0] . $this->manager->FireEvent("Theme.Button",$E_Modal_Cancel)[0];
             $Buttons = $this->manager->FireEvent("Theme.Layout.ButtonGroup",$Buttons)[0];
+            
             //Modal for deleting posts.
             $ModalHTML = $this->manager->FireEvent("Theme.Modal",array("id"=>"warnDeletePost","label"=>"modalDeletePost","title"=>"Are You Sure?","body"=>"Are you sure you want to delete <strong>" . $this->GetActivePost ()->name . "</strong>?","footer"=>$Buttons))[0];
             
@@ -354,13 +392,13 @@ class BreadPageSystem extends Module
             $E_ButtonA->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
             $E_ButtonA->value = $this->manager->FireEvent("Theme.Icon","bold")[0];
             $E_ButtonA->onclick = "wrap('**','**');";
-            $ButtonAHTML = $this->manager->FireEvent("Theme.InputElement",$E_ButtonA)[0];
+            $ButtonAHTML = $this->manager->FireEvent("Theme.Button",$E_ButtonA)[0];
             
             $E_ButtonB = new \Bread\Structures\BreadFormElement;
             $E_ButtonB->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
             $E_ButtonB->value = $this->manager->FireEvent("Theme.Icon","italic")[0];
             $E_ButtonB->onclick = "wrap('*','*');";
-            $ButtonBHTML = $this->manager->FireEvent("Theme.InputElement",$E_ButtonB)[0];
+            $ButtonBHTML = $this->manager->FireEvent("Theme.Button",$E_ButtonB)[0];
             
             $Group = $this->manager->FireEvent("Theme.Layout.ButtonGroup",$ButtonAHTML . $ButtonBHTML)[0];
             
@@ -368,9 +406,26 @@ class BreadPageSystem extends Module
             $E_List->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
             $E_List->value = $this->manager->FireEvent("Theme.Icon","list")[0];
             $E_List->onclick = "wrap('*  ','');";
-            $GroupTwo = $this->manager->FireEvent("Theme.Layout.ButtonGroup",$this->manager->FireEvent("Theme.InputElement",$E_List)[0])[0];
+            $GroupTwo = $this->manager->FireEvent("Theme.Button",$E_List)[0];
             
-            $Toolbar = $this->manager->FireEvent("Theme.Layout.ButtonToolbar",$Group . $GroupTwo)[0];
+            $E_Audio = new \Bread\Structures\BreadFormElement;
+            $E_Audio->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+            $E_Audio->value = $this->manager->FireEvent("Theme.Icon","audio")[0];
+            $E_Audio->onclick = "wrap('[%]audio(',')[%]');";
+            
+            $E_Video = new \Bread\Structures\BreadFormElement;
+            $E_Video->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+            $E_Video->value = $this->manager->FireEvent("Theme.Icon","video")[0];
+            $E_Video->onclick = "wrap('[%]video(',')[%]');";
+            $GroupMedia = $this->manager->FireEvent("Theme.Layout.ButtonGroup",$this->manager->FireEvent("Theme.Button",$E_Audio)[0] . $this->manager->FireEvent("Theme.Button",$E_Video)[0])[0];
+            
+            $E_Github = new \Bread\Structures\BreadFormElement;
+            $E_Github->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+            $E_Github->value = $this->manager->FireEvent("Theme.Icon","github")[0];
+            $E_Github->onclick = "wrap('[%]github(',')[%]');";
+            $GithubHTML = $this->manager->FireEvent("Theme.Button",$E_Github)[0];
+            
+            $Toolbar = $this->manager->FireEvent("Theme.Layout.ButtonToolbar",$Group . $GroupTwo . $GroupMedia . $GithubHTML)[0];
             
             return "<div id='bps-editor-toolbar' style='display:none;'>" . $Toolbar . "</div>";
         }
@@ -483,7 +538,15 @@ class BreadPageSystem extends Module
            if($page == False)
             return False;
            $breadcrumbs = $page->categorys;
-           $HTML = Site::$moduleManager->FireEvent("Theme.Post.Breadcrumbs",$breadcrumbs)[0];
+           $links = array();
+           foreach($breadcrumbs as $i => $text)
+           {
+               $link = new \stdClass();
+               $link->active = ($i == 0);
+               $link->value = $text;
+               $links[] = $link;
+           }
+           $HTML = Site::$moduleManager->FireEvent("Theme.Breadcrumbs",$links)[0];
            return $HTML;
         }
     
@@ -561,7 +624,9 @@ class BreadPageSystem extends Module
              $pageData->subtitle = $subtitle; //Needs changing.
              $pageData->time_modified = time();
              $pageData->time_released = strtotime($_POST["timereleased"]);
-
+             $pageData->categorys = $_POST["categorys"];
+             if(is_null($pageData->categorys))
+                 $pageData->categorys = array();
              if($pageData->name != $_POST["name"])
              {
                  Site::$Logger->writeError("Page got renamed (" . $pageData->name . "=>" . $_POST["name"] . ")",\Bread\Logger::SEVERITY_MESSAGE,$this->name);

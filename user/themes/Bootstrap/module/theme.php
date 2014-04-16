@@ -24,7 +24,6 @@ class BootstrapTheme extends Bread\Modules\Module
             $this->manager->RegisterHook($this->name,"Theme.DrawNavbar","Navbar");
             //Posts
             $this->manager->RegisterHook($this->name,"Theme.Post.Title","Title");
-            $this->manager->RegisterHook($this->name,"Theme.Post.Breadcrumbs","Breadcrumbs");
             $this->manager->RegisterHook($this->name,"Theme.Post.Infomation","Infomation");
             $this->manager->RegisterHook($this->name,"Theme.Infomation","ShowInfomation");
             $this->manager->RegisterHook($this->name,"Theme.Panel","Panel");            //Forms
@@ -33,6 +32,7 @@ class BootstrapTheme extends Bread\Modules\Module
             //Layouts
             $this->manager->RegisterHook($this->name,"Theme.Layout.Article","Article");
             $this->manager->RegisterHook($this->name,"Theme.Layout.Block","LayoutBlock");
+            $this->manager->RegisterHook($this->name,"Theme.Layout.Well","LayoutWell");
             $this->manager->RegisterHook($this->name,"Theme.Layout.ButtonGroup","ButtonGroup");
             $this->manager->RegisterHook($this->name,"Theme.Layout.ButtonToolbar","ButtonToolbar");
             $this->manager->RegisterHook($this->name,"Theme.DrawError","ShowErrorScreen");
@@ -40,6 +40,9 @@ class BootstrapTheme extends Bread\Modules\Module
             $this->manager->RegisterHook($this->name,"Theme.Icon","DrawIcon");
             $this->manager->RegisterHook($this->name,"Theme.Modal","SpawnModal");
             $this->manager->RegisterHook($this->name,"Theme.Button","Button");
+            $this->manager->RegisterHook($this->name,"Theme.Badge","Badge");
+            $this->manager->RegisterHook($this->name,"Theme.Label","Label");
+            $this->manager->RegisterHook($this->name,"Theme.Breadcrumbs","Breadcrumbs");
 	}
     
 	function Load()
@@ -130,12 +133,6 @@ class BootstrapTheme extends Bread\Modules\Module
                 return false;
         }
         
-        function Breadcrumbs($args)
-        {
-            unset($args["_inner"]);//Useful practise for theme elements that do not do layout processing.
-            return $this->breadXML->GetHTMLOfElement("Title",$args);
-        }
-        
         function Infomation($args)
         {
             $Vars = array();
@@ -198,7 +195,13 @@ class BootstrapTheme extends Bread\Modules\Module
                     return '<span class="glyphicon glyphicon-italic"></span>';
                     break;
                 case "list":
-                    return '<span class="glyphicon glyphicon glyphicon-list"></span>';
+                    return '<span class="glyphicon glyphicon-list"></span>';
+                    break;
+                case "audio":
+                    return '<span class="glyphicon glyphicon-volume-up"></span>';
+                    break;
+                case "video":
+                    return '<span class="glyphicon glyphicon-film"></span>';
                     break;
                 default :
                     return '<small>' . $args . '</small>';
@@ -214,6 +217,37 @@ class BootstrapTheme extends Bread\Modules\Module
         function SpawnModal($args)
         {
             return $this->breadXML->GetHTMLOfElement("Modal",$args);
+        }
+        
+        function LayoutWell($args)
+        {
+            return $this->breadXML->GetHTMLOfElement("Well",$args);
+        }
+        
+        function Breadcrumbs($args)
+        {
+            return $this->breadXML->GetHTMLOfElement("Breadcrumbs",$args);
+        }
+        function Badge($args)
+        {
+            if(is_string($args))
+            {
+                $object = new stdClass;
+                $object->value = (string)$args;
+                $args = $object;
+            }
+            return $this->breadXML->GetHTMLOfElement("Badge",$args);
+        }
+        function Label($args)
+        {
+            if(is_string($args))
+            {
+                $object = new stdClass;
+                $object->value = (string)$args;
+                $object->type = "default";
+                $args = $object;
+            }
+            return $this->breadXML->GetHTMLOfElement("Label",$args);
         }
 }
 ?>

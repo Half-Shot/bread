@@ -124,6 +124,7 @@ function toggleMarkdown()
             $("button.bps-editorinfo-input").removeAttr( "disabled" );
             $(".bps-html").animate({"height": "100%"},400,function(){$(".bps-html").css( "overflow-y", "scroll" )});
             $("#bps-editor").slideDown();
+            $("#ig-e_categorys").slideDown();
             $("#bps-editor").animate({"height": "100%"},400,function(){editor.reflow();});
             $("#bps-mdsave").show();
             $("#bps-editor-toolbar").show();
@@ -146,7 +147,7 @@ function toggleMarkdown()
             $("#bps-editor-toolbar").hide();
             $("#bps-title").attr('contentEditable',false);
             $("#bps-subtitle").attr('contentEditable',false);
-            
+            $("#ig-e_categorys").slideUp();
             $("#bps-title").css("border","none");
             $("#bps-subtitle").css("border","none");
             $.each($("#bps-mdtoggle"),function(){$(this).html("Open Editor") });
@@ -158,7 +159,7 @@ function toggleMarkdown()
 function saveMarkdown()
 {
     var md = editor.exportFile();
-    $.post( "index.php", { ajaxEvent: "BreadPageSystem.SavePost",ajaxModule:"BreadPageSystem", url: document.URL, markdown: md, title: $("#bps-title").text(), subtitle: $("#bps-subtitle").text(), name: $("#e_postname")[0].value ,author: $("#e_author")[0].value, timereleased: $("#e_timereleased")[0].value}, function(returndata)
+    $.post( "index.php", { ajaxEvent: "BreadPageSystem.SavePost",ajaxModule:"BreadPageSystem", url: document.URL, markdown: md, title: $("#bps-title").text(), subtitle: $("#bps-subtitle").text(), name: $("#e_postname")[0].value ,author: $("#e_author")[0].value, timereleased: $("#e_timereleased")[0].value, categorys: CategoryArray()}, function(returndata)
     {
         if(returndata != "0"){
             alert("Saved :D");
@@ -213,3 +214,50 @@ function wrap(tagStart,tagEnd) {
 }
 
 $("#bps-mdsave").hide();
+
+//Category Selector
+
+AddOnClick = function(event){
+    if(ContainsCategory($(this),$('#bps-selectcategories')) == false){
+        $(this).clone().click(RemoveOnClick).appendTo('#bps-selectcategories');
+    }
+}
+
+$('#bps-listcategories .badge').click(AddOnClick);
+
+RemoveOnClick = function(event){
+    $(this).remove();
+}
+
+function ContainsCategory(category,element)
+{
+    isContained = false;
+    element.each(function(i,scategory){
+        if(category.text() == scategory.textContent){
+            isContained = true;
+            return true;
+        }
+    });
+    return isContained;
+}
+$('#bps-selectcategories .badge').click(RemoveOnClick);
+
+function addNewCategory()
+{
+    if($('#e_newcategory').val() == ""){
+        return false;
+    }
+    var Element = $('#bps-listcategories .badge').first().clone().text($('#e_newcategory').val()).click(AddOnClick);;
+    if(!ContainsCategory(Element,$('#bps-listcategories .badge'))){
+        Element.appendTo('#bps-listcategories');
+    }
+}
+
+function CategoryArray()
+{
+    var categorys = [];
+    $('#bps-selectcategories .badge').each(function(){
+        categorys.push($(this).text());
+    });
+    return categorys;
+}
