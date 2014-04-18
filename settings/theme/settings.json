@@ -9,7 +9,8 @@
         "viewpost": "post\/page-layout.json",
         "login": "login\/page-layout.json",
         "register": "register\/page-layout.json",
-        "controlpanel": "controlpanel\/page-layout.json"
+        "controlpanel": "controlpanel\/page-layout.json",
+        "search": "search\/page-layout.json"
     },
     "settings": {
 

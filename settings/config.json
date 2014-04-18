@@ -31,5 +31,5 @@
 		"user-pages":"content/pages",
 		"user-posts":"content/posts",
 		"system-temp":"temp"
-		}
+        }
 }

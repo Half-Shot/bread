@@ -10,6 +10,8 @@ class BreadForm
     public $name = "";
     public $action = "";
     public $id = "";
+    public $class = "";
+    public $standonly = 1;
     public $method = "";
     public $formtarget = "";
     public $onsubmit = "return false;";
@@ -32,6 +34,7 @@ class BreadFormElement
     public $readonly = false;
     public $options = array();
     public $dataset = array();
+    public $action = "";
     public $attributes = array();
     public $required = false;
     public $hidden = false;

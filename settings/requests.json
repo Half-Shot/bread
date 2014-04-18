@@ -34,5 +34,10 @@
         "layout":"controlpanel",
         "theme":"theme-vanilla",
         "modules":["BreadUserSystem\/module.json","BreadAdminTools\/module.json"]
+    },
+    "search":{
+        "include":["master"],
+        "layout":"search",
+        "modules":["BreadPageSystem\/module.json"]
     }
 }

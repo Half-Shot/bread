@@ -106,8 +106,8 @@ function DoMarkdown()
             $("#bps-editor-toolbar").prependTo("#bps-editor");
             $("#bps-editor").hide();
         }
+        $(html).html(ParseMarkdown(markdown),true); 
     });
-    $(editorHTML).html(ParseMarkdown(editor.exportFile()),true); 
     $(".bps-markdown").hide();
 }
 

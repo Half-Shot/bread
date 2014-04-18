@@ -126,7 +126,7 @@ class Site
          * Get the data parsed from the input url, useful for modules.
          * Set in static::DigestRequest()
          * @see static::DigestRequest()
-         * @return Bread\Structures\BreadRequestData The requested data by the user.
+         * @return \Bread\Structures\BreadRequestData The requested data by the user.
          */
         public static function getRequest()
         {
@@ -772,6 +772,49 @@ class Site
             if(file_exists($path))
                 return $path;
             throw new \Exception;
+        }
+        /**
+         * Converts a array of arrays into one single array.
+         * @param array $arrays
+         * @return array
+         */
+        static function MashArraysToSingleArray($arrays)
+        {
+            $newArray = array();
+            foreach($arrays as $array)
+                $newArray += $array;
+            return $newArray;
+        }
+        
+        /**
+         * Removes empty values from arrays.
+         * @param array $haystack
+         * @return array
+         */
+        static function array_clean(array $haystack)
+        {
+            foreach ($haystack as $key => $value) {
+                if (is_array($value)) {
+                    $haystack[$key] = Site::array_clean($value);
+                } elseif (is_string($value)) {
+                    $value = trim($value);
+                }
+
+                if (!$value) {
+                    unset($haystack[$key]);
+                }
+            }
+
+            return $haystack;
+        }
+        /**
+         * Removes punctuation from a string, leaving only letters and numbers.
+         * @param string $string Input String
+         * @return string
+         */
+        static function RemovePunctuation($string)
+        {
+            return trim( preg_replace( "/[^0-9a-z]+/i", " ", $string ) );
         }
 }
 /**

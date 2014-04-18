@@ -8,7 +8,14 @@
         "human": "Navigation Bar",
         "description": "Top of the page, ideal for navbars.",
         "tag":"header",
-        "event":"Theme.DrawNavbar"
+        "event":"Theme.DrawNavbar",
+        "elements":[
+            {
+                "name": "search-bar",
+                "id": "text-element",
+                "event": "BreadIndexSystem.SearchForm"
+            }
+        ]
     },
     {
         "name": "contents",

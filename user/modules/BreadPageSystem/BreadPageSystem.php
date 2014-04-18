@@ -33,6 +33,7 @@ class BreadPageSystem extends Module
             $this->manager->RegisterHook($this->name,"Bread.PageTitle","SetSiteTitle");
             $this->manager->RegisterHook($this->name,"Bread.TokenizeText","BasicTokens");
             $this->manager->RegisterHook($this->name,"Bread.TokenizePost","TokenizeArticle");
+            $this->manager->RegisterHook($this->name,"Bread.GetAllPages","ReturnBreadPages");
         }
         
         function AddPages()
@@ -693,6 +694,25 @@ class BreadPageSystem extends Module
                  return "3";
              }
              $this->settings->BuildTime = 0;
+        }
+        
+        function ReturnBreadPages()
+        {
+            $Pages = array();
+            $parts = array();
+            $parts["request"] = $this->settings->RequestToLinkTo;
+            foreach($this->settings->postindex as $post)
+            {
+                $Page = new \Bread\Structures\BreadSearchItem;
+                $Page->Name = $post->title;
+                $Page->Categorys = $post->categorys;
+                $Page->Content = file_get_contents($this->GetPostPath($post->url));
+                //URL
+                $parts["post"] = $post->id;
+                $Page->Url = Site::CondenseURLParams(false,$parts);
+                $Pages[] = $Page;
+            }
+            return $Pages;
         }
 }
 

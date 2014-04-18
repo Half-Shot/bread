@@ -24,6 +24,7 @@ class BootstrapTheme extends Bread\Modules\Module
             $this->manager->RegisterHook($this->name,"Theme.DrawNavbar","Navbar");
             //Posts
             $this->manager->RegisterHook($this->name,"Theme.Post.Title","Title");
+            $this->manager->RegisterHook($this->name,"Theme.Title","Title");
             $this->manager->RegisterHook($this->name,"Theme.Post.Infomation","Infomation");
             $this->manager->RegisterHook($this->name,"Theme.Infomation","ShowInfomation");
             $this->manager->RegisterHook($this->name,"Theme.Panel","Panel");            //Forms
@@ -35,6 +36,7 @@ class BootstrapTheme extends Bread\Modules\Module
             $this->manager->RegisterHook($this->name,"Theme.Layout.Well","LayoutWell");
             $this->manager->RegisterHook($this->name,"Theme.Layout.ButtonGroup","ButtonGroup");
             $this->manager->RegisterHook($this->name,"Theme.Layout.ButtonToolbar","ButtonToolbar");
+            $this->manager->RegisterHook($this->name,"Theme.Layout.Grid.HorizonalStack","GridHorizontalStack");
             $this->manager->RegisterHook($this->name,"Theme.DrawError","ShowErrorScreen");
             //Misc
             $this->manager->RegisterHook($this->name,"Theme.Icon","DrawIcon");
@@ -43,6 +45,7 @@ class BootstrapTheme extends Bread\Modules\Module
             $this->manager->RegisterHook($this->name,"Theme.Badge","Badge");
             $this->manager->RegisterHook($this->name,"Theme.Label","Label");
             $this->manager->RegisterHook($this->name,"Theme.Breadcrumbs","Breadcrumbs");
+            $this->manager->RegisterHook($this->name,"Theme.Comment","Comment");
 	}
     
 	function Load()
@@ -97,13 +100,10 @@ class BootstrapTheme extends Bread\Modules\Module
                         $Vars[] = $link;
                     }
                 }
-                unset($args["_inner"]);//Useful practise for theme elements that do not do layout processing.
+                $Vars["inner"] = array();
+                foreach($args["_inner"] as $html)
+                    $Vars["inner"][] = $html["guts"];
                 return $this->breadXML->GetHTMLOfElement("Navbar",$Vars);
-	}
-
-	function Footer($args)
-	{
-		return var_export($args,true);
 	}
         function VerticalNavbar($args)
         {
@@ -114,6 +114,8 @@ class BootstrapTheme extends Bread\Modules\Module
         function Title($args)
         {
             unset($args["_inner"]);//Useful practise for theme elements that do not do layout processing.
+            if(count($args) < 2)
+                $args[1] = "";
             return $this->breadXML->GetHTMLOfElement("Title",array("title"=>$args[0],"subtitle"=>$args[1]));
         }
         
@@ -248,6 +250,42 @@ class BootstrapTheme extends Bread\Modules\Module
                 $args = $object;
             }
             return $this->breadXML->GetHTMLOfElement("Label",$args);
+        }
+        
+        function GridHorizontalStack($args){
+            $listOfCells = $args[0];
+            $HTML = "<div class='row'>";
+            $spaceLeft = 12;
+            foreach($listOfCells as $i => $cell)
+            {
+                $offset = "";
+                if(isset($cell->offset)){
+                    $offset = " col-md-offset-" . $cell->offset;
+                }
+                else
+                {
+                    $cell->offset = 0;
+                }
+                $spaceLeft -= $cell->offset;
+                $cellsLeft = count($listOfCells) - ($i);
+                if(!isset($cell->size))
+                if($cellsLeft > 1)
+                {
+                    $cell->size = $spaceLeft / $cellsLeft;
+                }
+                else
+                {
+                    $cell->size = $spaceLeft;
+                }
+                $HTML .= '<div class="col-md-'. $cell->size . $offset . '">'. $cell->body .'</div>';
+                $spaceLeft -= $cell->size;
+            }
+            return $HTML . "</div>";
+        }
+        
+        function Comment($args)
+        {
+            return $this->breadXML->GetHTMLOfElement("Comment",$args);
         }
 }
 ?>
