@@ -11,7 +11,7 @@ class BreadForm
     public $action = "";
     public $id = "";
     public $class = "";
-    public $standonly = 1;
+    public $standalone = true;
     public $method = "";
     public $formtarget = "";
     public $onsubmit = "return false;";

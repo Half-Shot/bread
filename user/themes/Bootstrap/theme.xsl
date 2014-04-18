@@ -106,7 +106,7 @@
             <xsl:attribute name="class"><xsl:value-of select="./variable/class"/></xsl:attribute>
             <xsl:for-each select="./variable/elements/variable">
                 <xsl:choose>
-                    <xsl:when test="../../standonly = 1">
+                    <xsl:when test="../../standalone = '1'">
                         <div class="input-group">
                             <xsl:if test="./id">
                                 <xsl:attribute name="id">ig-<xsl:value-of select="./id"/></xsl:attribute>
@@ -118,8 +118,8 @@
                                 <span class="input-group-addon"><xsl:value-of select="./label"/></span>
                             </xsl:if>
                             <xsl:call-template name="FormElement"/>
-                            <br></br>
                         </div>
+                        <br></br>
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:call-template name="FormElement"/>

@@ -258,7 +258,7 @@ class BreadIndexSystem extends Module
             $Form->onsubmit = "";
             $Form->action = Site::getBaseURL();
             $Form->class = "navbar-form";
-            $Form->standonly = false;
+            $Form->standalone = false;
             
             $RequestElement = new \Bread\Structures\BreadFormElement;
             $RequestElement->type = "hidden";

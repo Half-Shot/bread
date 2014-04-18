@@ -703,6 +703,8 @@ class BreadPageSystem extends Module
             $parts["request"] = $this->settings->RequestToLinkTo;
             foreach($this->settings->postindex as $post)
             {
+                if($post->hidden)
+                    continue;
                 $Page = new \Bread\Structures\BreadSearchItem;
                 $Page->Name = $post->title;
                 $Page->Categorys = $post->categorys;
