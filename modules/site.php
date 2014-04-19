@@ -1,5 +1,7 @@
 <?php
 namespace Bread;
+
+use Bread\Utilitys as Utilitys;
 use Bread\Structures\BreadRequestData as BreadRequestData;
 use Bread\Structures\BreadRequestCommand as BreadRequestCommand;
 /**
@@ -363,12 +365,14 @@ class Site
 		$Metadata .= "</meta>";
 		return $Metadata;
 	}
+        
+        
         /**
-         * Digests a request into the bits we want and puts it into a object.
-         * No return values but instead puts in Site::$Request.
-         * Users have no need to call this, its done automatically.
-         * @see Site::$Request
-         */
+        * Digests a request into the bits we want and puts it into a object.
+        * No return values but instead puts in Site::$Request.
+        * Users have no need to call this, its done automatically.
+        * @see Site::$Request
+        */
         public static function DigestRequest()
         {
             //Load the requests file.
@@ -538,6 +542,7 @@ class Site
 	    static::$htmlcode .= "</html>\n";
 	    echo static::$htmlcode;
 	}
+        
         /**
          * Closes the logger and gives any modules a chance to clean up their work
          * by calling "Bread.Cleanup".
@@ -548,6 +553,7 @@ class Site
                 static::$settingsManager->SaveChanges(); //Save all changes.
 		static::$Logger->closeStream();
 	}
+        
         /**
          * Splits a string path up and locates wildcard paths such as %user-themes
          * and creates the correct path.
@@ -566,8 +572,8 @@ class Site
                     continue;
                 if($part[0] == "%"){
                    $dir = substr($part, 1,strlen($part) - 1);
-                   if(isset(static::$configuration["directorys"][$dir])){
-                       $realdir = static::$configuration["directorys"][$dir];
+                   if(isset(Site::$configuration["directorys"][$dir])){
+                       $realdir = Site::$configuration["directorys"][$dir];
                        $parts[$i] = $realdir;
                    }
                 }
@@ -576,61 +582,34 @@ class Site
             //Returns whatever we changed.
             return implode("/",$parts);
         }
+        
         /**
          * Converts a URL into a array of parameters and the base url.
          * @param type $url
+         * @deprecated since version 0.2
          */
         public static function DigestURL($url)
         {
-            
-            $parts = \explode("?",$url);
-            $baseURL = $parts[0];
-            if(count($parts) > 1){
-                $parts = \explode("&",$parts[1]);
-            }
-            $returnedArray = array();
-            $returnedArray["BASEURL"] = $baseURL;
-            foreach($parts as $part)
-            {
-               $pair = \explode("=",$part);
-               if(count($pair) > 1)
-                $returnedArray[$pair[0]] = $pair[1];
-               else
-                $returnedArray[$pair[0]] = False;
-            }
-            return $returnedArray;
+            return Utilitys::DigestURL($url);
         }
+        
         /**
          * Create a URL from a baseurl and a array of params.
          * @param type $baseurl The base url of the site. Use False to use the current site baseurl.
          * @param type $params The array of params to append to the url. Leave as a blank array for none.
          * @return string The URL
+         * @deprecated since version 0.2
          */
         public static function CondenseURLParams($baseurl,$params)
         {
-            if(!$baseurl)
-                $baseurl = static::$baseurl;
-            
-            $url = $baseurl;
-            if(array_count_values($params) < 1)
-                return $url;
-            $key = array_keys($params)[0];
-            $url .= "?" . $key . "=" .$params[$key];
-            unset($params[$key]);
-            if(array_count_values($params) < 1)
-                return $url;
-            foreach ($params as $key => $value)
-            {
-                $url .= "&" . $key . "=" . $value;
-            }
-            return $url;
+            return Utilitys::CondenseURLParams($baseurl, $params);
         }
         
         /**
-         * Gets the seconds of time since PHP got the request.
-         * @param int $dec The decimal time to account to.
-         * @return float Microsecond Time.
-         */
+        * Gets the seconds of time since PHP got the request.
+        * @param int $dec The decimal time to account to.
+        * @return float Microsecond Time.
+        */
         public static function GetTimeSinceStart($dec = 3)
         {
             return round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], $dec, PHP_ROUND_HALF_UP);
@@ -647,16 +626,11 @@ class Site
         
         /**
          * Cast a standard object (say a unserialzed object) into its proper object.
+         * @deprecated since version 0.2
          */
         public static function CastStdObjectToStruct($obj,$type)
         {
-            $newObj = new $type;
-            
-            foreach((array)$obj as $key =>$value)
-                if(isset($newObj->$key))
-                    $newObj->$key = $value;
-            
-            return $newObj;
+           return Utilitys::CastStdObjectToStruct($obj, $type);
         }
         
         /**
@@ -680,71 +654,46 @@ class Site
          *  2 : >=
          * @param \string $string
          * @return int
+         * @deprecated since version 0.2
          */
         public static function findOperator($string)
         {
-            if(is_numeric($string[0])){
-                return 0; // Straightforward ==
-            }
-            elseif ($string[0] == '<') {
-                if($string[1] == '='){
-                    return -2; //<=
-                }
-                else
-                {
-                    return -1; //<
-                }
-            }
-            elseif($string[0] == '>'){
-                if($string[1] == '=')
-                {
-                    return 1; //>
-                }
-                else
-                {
-                    return 2; //>=
-                }
-            }
+            return Utilitys::findOperator($string);
         }
+        
         /**
          * Merges 2 objects.
          * @param object $objA The least important object, will be overwritten.
          * @param object $objB The more important object, will override keys.
          * @return type
+         * @deprecated since version 0.2
          */
         public static function ObjMerge($objA,$objB)
         {
-            $A_finalObj = array();
-            $A_objA = (array)$objA;
-            $A_objB = (array)$objB;
-            $A_finalObj = \array_replace_recursive($A_objA,$A_objB);
-            $finalObj = (object)$A_finalObj;
-            return $finalObj;
+            return Utilitys::ObjMerge($objA, $objB);
         }
         
+        /**
+        * Sets the index of each element by one of its propertys.
+        * @param array $array
+        * @param string $propName
+        * @return array
+        * @deprecated since version 0.2
+        */
         public static function ArraySetKeyByProperty($array,$propName)
         {
-           $newArray = array();
-           foreach($array as $item)
-           {
-               $newArray[$item->$propName] = $item;
-           }
-           return $newArray;
+            return Utilitys::ArraySetKeyByProperty($array, $propName);
         }
         
         /**
          * Return a string value from a string which has a mix of letters and
          * numbers.
          * @param \string $string
+         * @deprecated since version 0.2
          */
         public static function filterNumeric($string)
         {
-            $numeric = "";
-            foreach(str_split($string) as $char){
-                if(is_numeric($char) || $char == '.')
-                    $numeric .= $char;
-            }
-            return $numeric;
+            return Utilitys::filterNumeric($string);
         }
         
         /**
@@ -754,67 +703,42 @@ class Site
          * @param type $filepath
          * @return string
          * @throws Exception
+         * @deprecated since version 0.2
          */
         static function FindFile($filepath)
         {
-            if(mb_substr($filepath, 0, 4) == "http")//Is remote.
-                return $filepath;
-            $path = self::ResolvePath("%user-layouts/" . $filepath);
-            if(file_exists($path))
-                return $path;
-            $path = self::ResolvePath("%user-themes/" . $filepath);
-            if(file_exists($path))
-                return $path; 
-            $path = self::ResolvePath("%user-resource/" . $filepath);
-            if(file_exists($path))
-                return $path;
-            $path = self::ResolvePath("%user-modules/" . $filepath);
-            if(file_exists($path))
-                return $path;
-            throw new \Exception;
+            return Utilitys::FindFile($filepath);
         }
         /**
          * Converts a array of arrays into one single array.
          * @param array $arrays
          * @return array
+         * @deprecated since version 0.2
          */
         static function MashArraysToSingleArray($arrays)
         {
-            $newArray = array();
-            foreach($arrays as $array)
-                $newArray += $array;
-            return $newArray;
+            return Utilitys::MashArraysToSingleArray($arrays);
         }
         
         /**
          * Removes empty values from arrays.
          * @param array $haystack
          * @return array
+         * @deprecated since version 0.2
          */
         static function array_clean(array $haystack)
         {
-            foreach ($haystack as $key => $value) {
-                if (is_array($value)) {
-                    $haystack[$key] = Site::array_clean($value);
-                } elseif (is_string($value)) {
-                    $value = trim($value);
-                }
-
-                if (!$value) {
-                    unset($haystack[$key]);
-                }
-            }
-
-            return $haystack;
+            return Utilitys::array_clean($haystack);
         }
         /**
          * Removes punctuation from a string, leaving only letters and numbers.
          * @param string $string Input String
          * @return string
+         * @deprecated since version 0.2
          */
         static function RemovePunctuation($string)
         {
-            return trim( preg_replace( "/[^0-9a-z]+/i", " ", $string ) );
+            return Utilitys::RemovePunctuation($string);
         }
 }
 /**
