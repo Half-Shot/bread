@@ -109,7 +109,8 @@ class BreadPageSystem extends Module
             if( ( time() - $this->settings->BuildTime) > $this->settings->CheckIndexEvery){
                 $this->BuildIndex();
             }
-            Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/showdown.js")); //For just parsing.
+            Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/Markdown.Converter.js"));
+            Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/Markdown.Extra.js"));
             $this->EnableEditor = $this->CheckEditorRights();
             if(array_key_exists("newpost", Site::getRequest()->arguments))
             {   

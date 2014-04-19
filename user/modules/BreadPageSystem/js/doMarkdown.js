@@ -4,7 +4,8 @@
  * and open the template in the editor.
  */
 
-var mdParser = new Showdown.converter();
+var mdParser = new Markdown.Converter();
+Markdown.Extra.init(mdParser);
 var editorState = 0;
 var editorHTML ;
 var editor;
