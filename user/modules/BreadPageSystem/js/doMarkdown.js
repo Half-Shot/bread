@@ -117,7 +117,7 @@ function toggleMarkdown()
     switch(editorState){
         case 0:
             editor.on('autosave', function () {
-                $(editorHTML).html(editor.exportFile()); 
+                $(editorHTML).html(ParseMarkdown(editor.exportFile(),false)); 
             });
             //Content
             $.each($(".bps-editorinfo-input"),function(){
