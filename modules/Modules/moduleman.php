@@ -19,6 +19,11 @@ class ModuleManager
 	private $configuration;
 	private $events;
         private $completed;
+        
+        const EVENT_INTERNAL = 0;
+        const EVENT_EXTERNAL = 1;
+        
+        
 	function __construct()
 	{
 		$this->modules = array();
@@ -196,18 +201,18 @@ class ModuleManager
          * @param string $function Function identifer of the object/module, just put the identifier, not the full location.
          * @param array $dependencies Any depedencies of another event that must be run first, format of EventName => ModuleName
          */
-	function RegisterHook($moduleName,$eventName,$function,$dependencies = array())
+	function RegisterHook($moduleName,$eventName,$function,$securitylevel = 0,$dependencies = array())
 	{
 	    if(!array_key_exists($eventName,$this->events)){
 	        $this->events[$eventName] = array();
 		}
 		
-	    $this->events[$eventName][$moduleName] = array($function,$dependencies);
+	    $this->events[$eventName][$moduleName] = array($function,$dependencies,$securitylevel);
             Site::$Logger->writeMessage('Hook registered ' . $moduleName . '::' . $eventName);    
 	}
         /**
          * Same as RegisterHook but uses an array of hooks instead.
-         * Format of ["event"],["function"],["dependencies"]
+         * Format of ["event"],["function"],["dependencies"],["security"]
          * @see self::RegisterHook()
          * @param type $moduleName The module name as set when the module was registered.
          * @param type $hookArray The array of hooks.
@@ -218,7 +223,9 @@ class ModuleManager
             {
                 if(!array_key_exists($hook, "dependencies"))
                         $hook["dependencies"] = array();
-                $this->RegisterHook($moduleName, $hook["event"], $hook["function"],$hook["dependencies"]);
+                if(!array_key_exists($hook, "security"))
+                        $hook["security"] = 0;
+                $this->RegisterHook($moduleName, $hook["event"], $hook["function"],$hook["dependencies"],$hook["security"]);
             }
         }
 	/*
@@ -285,7 +292,7 @@ class ModuleManager
          * @param any $arguments An array or any datatype to be passed to the function.
          * @return array|bool An array of the returned data or false if no data was returned.
          */
-	function FireEvent($eventName,$arguments = null)
+	function FireEvent($eventName,$arguments = null,$isInternal = true)
 	{
             $returnData = array();
             if(!array_key_exists($eventName,$this->events))
@@ -295,7 +302,9 @@ class ModuleManager
             {
                 $function = $data[0];
                 $dependencies = $data[1];
-                
+                $security = $data[2];
+                if(!$isInternal && $security < 1)
+                    continue;
                 if(!method_exists($this->modules[$module],$function)){
                     Site::$Logger->writeError("Event failed to fire because the listed function does not exist. Event Name: " . $eventName . ", Module Name: " . $module, \Bread\Logger::SEVERITY_HIGH, "core");
                     return False;
@@ -321,7 +330,7 @@ class ModuleManager
          * @param string $moduleName The module to use.
          * @return boolean|any Returns data from the module or false if it failed.
          */
-	function FireSpecifiedModuleEvent($eventName,$moduleName,$arguments = null)
+	function FireSpecifiedModuleEvent($eventName,$moduleName,$arguments = null,$isInternal = true)
 	{
             if(!array_key_exists($moduleName,$this->modules)){
 	        Site::$Logger->writeError ("Couldn't specifically hook module '" . $moduleName . "'. Module not loaded.", \Bread\Logger::SEVERITY_MEDIUM); //Module not found.
@@ -340,6 +349,9 @@ class ModuleManager
             $data = $this->events[$eventName][$moduleName];
             $function = $data[0];
             $dependencies = $data[1];
+            $security = $data[2];
+            if(!$isInternal && $security < 1)
+                return False;
             if(!$this->CanRunEvent($dependencies))
             {
                 foreach($dependencies as $event => $module)

@@ -112,6 +112,7 @@ class Site
          * @var array key=> value
          */
         private static $URLParameters;
+        
         public static function Configuration()
 	{
 		return static::$configuration;
@@ -461,6 +462,7 @@ class Site
          */
 	public static function ProcessRequest()
 	{
+            
             $requestData = static::$Request;
 	    //Load required modules.
 	    static::$moduleManager->LoadRequiredModules($requestData);
@@ -491,11 +493,11 @@ class Site
                 if($module != "")
                 {
                     static::$Logger->writeMessage("Module: " . $module);
-                    $return = static::$moduleManager->FireSpecifiedModuleEvent($event,$module,NULL);
+                    $return = static::$moduleManager->FireSpecifiedModuleEvent($event,$module,NULL,false);
                     $realdata = $return;
                 }
                 else {
-                    $return = static::$moduleManager->FireEvent($event,NULL);
+                    $return = static::$moduleManager->FireEvent($event,NULL,false);
                     if(is_array($return))
                         $realdata = $return[0];
                 }

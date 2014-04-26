@@ -17,7 +17,7 @@ class BreadPageSystem extends Module
         function RegisterEvents()
         {
             $this->manager->RegisterHook($this->name,"Bread.DrawModule","DrawPage");
-            $this->manager->RegisterHook($this->name,"Bread.ProcessRequest","Setup",array("Bread.ProcessRequest"=>"BreadUserSystem"));
+            $this->manager->RegisterHook($this->name,"Bread.ProcessRequest","Setup",0,array("Bread.ProcessRequest"=>"BreadUserSystem"));
             $this->manager->RegisterHook($this->name,"Bread.LowPriorityScripts","GenerateHTML");
             $this->manager->RegisterHook($this->name,"BreadPageSystem.DrawRecentPosts","DrawRecentPosts");
             $this->manager->RegisterHook($this->name,"Bread.Title","DrawTitle");
@@ -26,13 +26,13 @@ class BreadPageSystem extends Module
             $this->manager->RegisterHook($this->name,"BreadPageSystem.Infomation","DrawPostInfomation");
             $this->manager->RegisterHook($this->name,"BreadPageSystem.EditorButton","DrawMarkdownToggleswitch");
             $this->manager->RegisterHook($this->name,"BreadPageSystem.EditorToolbar","EditorToolbar");
-            $this->manager->RegisterHook($this->name,"BreadPageSystem.SavePost","SavePost");
-            $this->manager->RegisterHook($this->name,"BreadPageSystem.DeletePost","DeletePost");
+            $this->manager->RegisterHook($this->name,"BreadPageSystem.SavePost","SavePost",  ModuleManager::EVENT_EXTERNAL);
+            $this->manager->RegisterHook($this->name,"BreadPageSystem.DeletePost","DeletePost",ModuleManager::EVENT_EXTERNAL);
             $this->manager->RegisterHook($this->name,"Bread.Security.LoggedIn","CheckEditorRights");
             $this->manager->RegisterHook($this->name,"BreadPageSystem.EditorInfomation","PostEditorInfomationPanel");
             $this->manager->RegisterHook($this->name,"Bread.PageTitle","SetSiteTitle");
-            $this->manager->RegisterHook($this->name,"Bread.TokenizeText","BasicTokens");
-            $this->manager->RegisterHook($this->name,"Bread.TokenizePost","TokenizeArticle");
+            $this->manager->RegisterHook($this->name,"Bread.TokenizeText","BasicTokens",ModuleManager::EVENT_EXTERNAL);
+            $this->manager->RegisterHook($this->name,"Bread.TokenizePost","TokenizeArticle",ModuleManager::EVENT_EXTERNAL);
             $this->manager->RegisterHook($this->name,"Bread.GetAllPages","ReturnBreadPages");
         }
         

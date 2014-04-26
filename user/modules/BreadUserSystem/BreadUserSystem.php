@@ -22,9 +22,9 @@ class BreadUserSystem extends Module
             $this->manager->RegisterHook($this->name,"Bread.Security.GetCurrentUser","ReturnUser");
             $this->manager->RegisterHook($this->name,"Bread.Security.GetPermission","HasPermission");
             $this->manager->RegisterHook($this->name,"Bread.ProcessRequest","Setup");
-            $this->manager->RegisterHook($this->name,"Bread.Security.LoginUser","DoLogin");
-            $this->manager->RegisterHook($this->name,"Bread.Security.RegisterNewUser","RegisterNewUser");
-            $this->manager->RegisterHook($this->name,"Bread.Security.Logout","Logout");
+            $this->manager->RegisterHook($this->name,"Bread.Security.LoginUser","DoLogin",ModuleManager::EVENT_EXTERNAL);
+            $this->manager->RegisterHook($this->name,"Bread.Security.RegisterNewUser","RegisterNewUser",ModuleManager::EVENT_EXTERNAL);
+            $this->manager->RegisterHook($this->name,"Bread.Security.Logout","Logout",ModuleManager::EVENT_EXTERNAL);
             $this->manager->RegisterHook($this->name,"Bread.GetNavbarIndex","CreateLoginLink");
 	}
         
