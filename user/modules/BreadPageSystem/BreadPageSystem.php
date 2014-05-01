@@ -91,7 +91,7 @@ class BreadPageSystem extends Module
                     if($page->hidden)
                         continue;
                 $parts = array();
-                $parts["request"] = $this->settings->RequestToLinkTo;
+                $parts["request"] = $this->settings->postRequest;
                 $parts["post"] = $page->id;
                 $pages[$page->name] = Site::CondenseURLParams(false,$parts);
             }
@@ -546,6 +546,15 @@ class BreadPageSystem extends Module
                $link = new \stdClass();
                $link->active = ($i == 0);
                $link->value = $text;
+               $breadLink = new \Bread\Structures\BreadLinkStructure();
+               $breadLink->request = $this->settings->searchRequest;
+               $breadLink->args->content = 0;
+               $breadLink->args->author = 0;
+               $breadLink->args->category = 5;
+               $breadLink->args->tags = 0;
+               $breadLink->args->name = 0;
+               $breadLink->args->terms = $text;
+               $link->url = $breadLink->createURL();
                $links[] = $link;
            }
            $HTML = Site::$moduleManager->FireEvent("Theme.Breadcrumbs",$links)[0];
@@ -650,7 +659,7 @@ class BreadPageSystem extends Module
              }
              
              Site::$Logger->writeMessage("Modified " . $url . " with new data.","breadpagesystem");
-             return Site::getBaseURL() . "?request=" . $this->settings->RequestToLinkTo . "&post=" . $id;
+             return Site::getBaseURL() . "?request=" . $this->settings->postRequest . "&post=" . $id;
         }
         
         function DeletePost()
@@ -701,7 +710,7 @@ class BreadPageSystem extends Module
         {
             $Pages = array();
             $parts = array();
-            $parts["request"] = $this->settings->RequestToLinkTo;
+            $parts["request"] = $this->settings->postRequest;
             foreach($this->settings->postindex as $post)
             {
                 if($post->hidden)
@@ -725,7 +734,8 @@ class BreadPageSystemSettings
     public $postdir;
     public $BuildTime = 0;
     public $CheckIndexEvery = 4;
-    public $RequestToLinkTo = "post";
+    public $postRequest = "post";
+    public $searchRequest = "search";
     public $maxRecentPosts = 5;
     public $templatePath = "template.json";
     public $navbar;

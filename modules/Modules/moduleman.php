@@ -33,15 +33,6 @@ class ModuleManager
                 $this->heldevents = array();
 	}
         /**
-         * Loads settings/
-         * @todo This actually does pretty much nothing since the configuration is not used.
-         * @param string $filepath Filepath of the configuration file.
-         */
-	function LoadSettings($filepath)
-	{
-		$this->configuration = Site::$settingsManager->RetriveSettings($filepath);
-	}
-        /**
          * Loads the modulelist from its json file.
          * @param string $filepath Filepath of the modulelist.
          */

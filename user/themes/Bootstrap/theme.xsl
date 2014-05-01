@@ -18,6 +18,11 @@
         <div class="panel-body">
             <xsl:value-of select="./variable/body"/>
         </div>
+        <xsl:if test="./variable/footer">
+            <div class="panel-footer">
+                <xsl:value-of select="./variable/footer"/>
+            </div>
+        </xsl:if>
       </div>
     </xsl:template>
     <xsl:template match="telement[@id='VerticalNavbar']">
@@ -68,23 +73,14 @@
                             </li>
                         </xsl:for-each>
                     </ul>
-                    <div class="navbar-right">
+                    <ul class="nav navbar-nav navbar-right">
                         <xsl:for-each select="./variable/inner/variable">
-                            <xsl:value-of select="."/>
+                            <li><xsl:value-of select="."/></li>
                         </xsl:for-each>
-                    </div>
+                    </ul>
                 </div>
             </div>
         </nav>
-    </xsl:template>
-    <xsl:template match="telement[@id='Post-Breadcrumbs']">
-        <ol class="breadcrumb">
-           <xsl:for-each select="./variable">
-            <li>
-                <a><xsl:value-of select="./variable"/></a>
-            </li>
-           </xsl:for-each>
-        </ol>
     </xsl:template>
     <xsl:template match="telement[@id='LabelValuePairs']">
         <xsl:for-each select="./variable/variable">
@@ -97,13 +93,20 @@
     </xsl:template>
     <xsl:template match="telement[@id='Form']">
         <form>
+            <xsl:choose>
+                <xsl:when test="./variable/isinline = '1'">
+                    <xsl:attribute name="class">form-inline <xsl:value-of select="./variable/class"/></xsl:attribute>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:attribute name="class">form-horizontal <xsl:value-of select="./variable/class"/></xsl:attribute>
+                </xsl:otherwise>
+            </xsl:choose>
             <xsl:attribute name="name"><xsl:value-of select="./variable/name"/></xsl:attribute>
             <xsl:attribute name="action"><xsl:value-of select="./variable/action"/></xsl:attribute>
             <xsl:attribute name="method"><xsl:value-of select="./variable/method"/></xsl:attribute>
             <xsl:attribute name="formtarget"><xsl:value-of select="./variable/formtarget"/></xsl:attribute>
             <xsl:attribute name="onsubmit"><xsl:value-of select="./variable/onsubmit"/></xsl:attribute>
             <xsl:attribute name="id"><xsl:value-of select="./variable/id"/></xsl:attribute>
-            <xsl:attribute name="class"><xsl:value-of select="./variable/class"/></xsl:attribute>
             <xsl:for-each select="./variable/elements/variable">
                 <xsl:choose>
                     <xsl:when test="../../standalone = '1'">
@@ -114,12 +117,16 @@
                             <xsl:if test="./hidden = '1'">
                                 <xsl:attribute name="style">display:none;</xsl:attribute>
                             </xsl:if>
-                            <xsl:if test="./label">
+                            <xsl:if test="./label != ''">
                                 <span class="input-group-addon"><xsl:value-of select="./label"/></span>
                             </xsl:if>
                             <xsl:call-template name="FormElement"/>
                         </div>
-                        <br></br>
+                        <xsl:if test="not(../../isinline = '1')">
+                            <xsl:if test="not(position() = last())">
+                                <br></br>
+                            </xsl:if>
+                        </xsl:if>
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:call-template name="FormElement"/>
@@ -156,6 +163,9 @@
                 <xsl:attribute name="value"><xsl:value-of select="./value"/></xsl:attribute>
                 <xsl:attribute name="onclick"><xsl:value-of select="./onclick"/></xsl:attribute>
                 <xsl:attribute name="id"><xsl:value-of select="./id"/></xsl:attribute>
+                <xsl:if test="./type = 'checkbox'">
+                    <xsl:attribute name="checked"><xsl:value-of select="./value"/></xsl:attribute>
+                </xsl:if>
                 <xsl:if test="./readonly = 1">
                     <xsl:attribute name="readonly"/>
                 </xsl:if>
@@ -299,7 +309,7 @@
                         <xsl:attribute name="class">active</xsl:attribute>
                     </xsl:if>
                     <a href="#">
-                        <xsl:if test="./url = 1">
+                        <xsl:if test="./url">
                             <xsl:attribute name="href"><xsl:value-of select="./url"/></xsl:attribute>
                         </xsl:if>
                         <xsl:value-of select="./value"/>
@@ -332,5 +342,20 @@
               <xsl:value-of select="./variable/body"/>
             </div>
         </div>
+    </xsl:template>
+    <xsl:template match="telement[@id='Tabs']">
+        <ul class="nav nav-tabs">
+            <xsl:for-each select="./variable/variable">
+                <li>
+                    <xsl:if test="./active = 1">
+                        <xsl:attribute name="class">active</xsl:attribute>
+                    </xsl:if>
+                    <a>
+                        <xsl:attribute name="href"><xsl:value-of select="./url"/></xsl:attribute>
+                        <xsl:value-of select="./text"/>
+                    </a>
+                </li>
+            </xsl:for-each>
+        </ul>
     </xsl:template>
 </xsl:stylesheet>

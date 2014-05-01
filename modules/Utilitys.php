@@ -273,4 +273,21 @@ class Utilitys {
         {
             return trim( preg_replace( "/[^0-9a-z]+/i", " ", $string ) );
         }
+        
+        /**
+         * Gets a path, splits it up and works it way backwards
+         * @param type $path
+         * @param type $start
+         * @param type $end
+         */
+        static function GetDirectorySubsection($path,$start = 0,$end = 1)
+        {
+           $parts = explode("/", $path);
+           $len = count($parts);
+           $newpath = "";
+           for($i=$len - $start - 1;$i >= $len - $end;$i--){
+               $newpath = $parts[$i] . "/" . $newpath;
+           }
+           return $newpath;
+        }
 }

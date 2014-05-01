@@ -47,6 +47,11 @@ class BreadLinkStructure
      */
     public $sublinks;
     
+    function __construct()
+    {
+        $this->args = new \stdClass();
+    }
+    
     /**
      * Create a URL from the structure.
      * @return type

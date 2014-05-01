@@ -22,6 +22,8 @@ class BreadUserSystem extends Module
             $this->manager->RegisterHook($this->name,"Bread.Security.GetCurrentUser","ReturnUser");
             $this->manager->RegisterHook($this->name,"Bread.Security.GetPermission","HasPermission");
             $this->manager->RegisterHook($this->name,"Bread.ProcessRequest","Setup");
+            $this->manager->RegisterHook($this->name,"BreadUserSystem.LoginName","LoginName");
+            $this->manager->RegisterHook($this->name,"BreadUserSystem.LoginButton","LoginButton");
             $this->manager->RegisterHook($this->name,"Bread.Security.LoginUser","DoLogin",ModuleManager::EVENT_EXTERNAL);
             $this->manager->RegisterHook($this->name,"Bread.Security.RegisterNewUser","RegisterNewUser",ModuleManager::EVENT_EXTERNAL);
             $this->manager->RegisterHook($this->name,"Bread.Security.Logout","Logout",ModuleManager::EVENT_EXTERNAL);
@@ -205,6 +207,61 @@ class BreadUserSystem extends Module
            return $links;
         }
         
+        function LoginName($args)
+        {
+            if(!$this->currentUser)
+                return false;
+            $Class = "";
+            $LoggedInText = "Signed in as ";
+            if(isset($args[0]))
+            {
+                if(isset($args[0]->Class))
+                    $Class = $args[0]->Class;
+            }
+            $Name = $this->currentUser->username;
+            if(isset($this->currentUser->infomation["Name"]))
+                $Name = $this->currentUser->infomation["Name"];
+            if($this->currentUser && $Name)
+                return "<p class='" . $Class ."'>" . $LoggedInText . $Name . "</p>";
+        }
+        
+        function LoginButton($args)
+        {
+            $link = array();
+            if(isset($this->currentUser))
+            {
+                $link = new \Bread\Structures\BreadLinkStructure();
+                $link->request = "login";
+            }
+            else
+            {
+                $link = new \Bread\Structures\BreadLinkStructure();
+                $link->request = "loginform";
+            }
+            $ButtonClass = "";
+            if(isset($args[0]))
+            {
+                if(isset($args[0]->Class))
+                    $ButtonClass = $args[0]->Class;
+            }
+            
+            $NotLoggedInButton = "Sign In";
+            $LoggedInButton = "Sign Out";
+            $Button = array();
+            $Button["onclick"] = "window.location = '" . $link->createURL() .  "'";
+            if($this->currentUser){
+                $Button["class"] = "btn-danger " . $ButtonClass;
+                $Button["value"] = $LoggedInButton;
+            }
+            else
+            {
+                $Button["class"] = "btn-success " . $ButtonClass;
+                $Button["value"] = $NotLoggedInButton;
+            }
+            
+            return $this->manager->FireEvent("Theme.Button",$Button)[0];
+        }
+        
 	function ReturnUser()
 	{
 	    return $this->currentUser;
@@ -260,7 +317,13 @@ class BreadUserSystem extends Module
                 $this->Logout();
                 return False;
             }
-            $this->currentUser = $user->breaduserdata;
+            $this->currentUser = clone $user->breaduserdata;
+            $info_array = array();
+            foreach($this->currentUser->infomation as $info)
+            {
+                $info_array += get_object_vars($info);
+            }
+            $this->currentUser->infomation = $info_array;
             Site::$moduleManager->FireEvent("Bread.Security.LoggedIn",NULL);
         }
 }

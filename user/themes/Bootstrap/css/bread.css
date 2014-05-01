@@ -26,6 +26,10 @@ THE SOFTWARE.
     Author     : Half-Shot
 */
 
+body{
+    padding:40px;
+}
+
 #title
 {
     position: relative;

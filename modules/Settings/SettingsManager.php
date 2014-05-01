@@ -96,7 +96,6 @@ class SettingsManager {
             Site::$Logger->writeError ("Couldn't load path '" . $path . "' for parsing settings.", \Bread\Logger::SEVERITY_MEDIUM, "core" , True, "Bread\Settings\FileNotFoundException");   
         
         $jsonObj = $this->GetJsonObject($path);
-        
         if(!$dontsave)
             $this->settings[$path] = $jsonObj;
         

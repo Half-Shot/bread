@@ -7,14 +7,15 @@ namespace Bread\Structures;
  */
 class BreadForm
 {
-    public $name = "";
+    public $name = "breadform";
     public $action = "";
-    public $id = "";
+    public $id = "breadform";
     public $class = "";
     public $standalone = true;
-    public $method = "";
+    public $method = "GET";
     public $formtarget = "";
     public $onsubmit = "return false;";
+    public $isinline = false;
     public $elements = array();
     public $attributes = array();
 }
@@ -38,6 +39,7 @@ class BreadFormElement
     public $attributes = array();
     public $required = false;
     public $hidden = false;
+    public $label = "";
     const TYPE_TEXTBOX = "text";
     const TYPE_PASSWORD = "password";
     const TYPE_HTMLFIVEBUTTON = "button";

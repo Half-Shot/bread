@@ -13,13 +13,6 @@
             "post":0
         },
         "tag":"article"
-    },
-    {
-        "name":"titlesetter",
-        "human":"Title",
-        "description":"Set the title in here for this layout",
-        "event":"Bread.SetTitle",
-        "arguments":"Welcome to Bread!"
     }
 ]
 }

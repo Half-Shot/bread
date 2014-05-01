@@ -1,22 +1,31 @@
 {
 "name": "controlpanel",
-"css":["default/page-layout.css"],
+"css":["default/page-layout.css","controlpanel/page-layout.css"],
+"master":["default"],
 "elements": [
     {
         "name": "banner",
-	"id": "banher",
+	"id": "banner",
         "human": "Banner",
         "description": "Top of the page, ideal for banner.",
         "tag":"header",
-        "event":"Theme.Banner"
+        "event":"BreadAdminTools.Banner"
     },
     {
         "name": "sidetabs",
 	"id": "admin-sidetabs",
-        "human": "Sidebar for options",
+        "human": "Sidebar",
         "description": "Tabs for modules to provide option pages.",
-        "tag":"header",
-        "event":"Theme.Sidebar"
+        "tag":"side",
+        "event":"BreadAdminTools.Sidebar"
+    },
+    {
+        "name": "mainpanel",
+	"id": "admin-mainpanel",
+        "human": "Main Panel",
+        "description": "Shows detail about the selected module page.",
+        "tag":"article",
+        "event":"BreadAdminTools.Mainpanel"
     }
 ]
 }

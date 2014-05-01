@@ -6,13 +6,6 @@
 	top:0%;
         
 }
-
-#title
-{
-    position:absolute;
-    top:5%;
-}
-
 #contents
 {
     	position:absolute;
@@ -29,7 +22,6 @@
         position:absolute;
 	width:70%;
 	height:90%;
-        margin-top:4%;
         padding-bottom:10%;
 	margin-left:16%;
         margin-right:6%;
@@ -63,4 +55,8 @@
 body
 {
    	font-family: 'Ledger', serif; 
+}
+
+.breadcrumb{
+    margin-top:3%;
 }

@@ -3,7 +3,7 @@
     {
         "layout":"post",
         "theme":"theme-bootstrap",
-        "modules":["BreadIndexSystem\/module.json","WebShim\/module.json","BreadUserSystem\/module.json"]
+        "modules":["BreadIndexSystem\/module.json","WebShim\/module.json","BreadUserSystem\/module.json","BreadAdminTools\/module.json"]
     },
     "homepage":{
         "layout":"homepage",
@@ -32,8 +32,7 @@
     },
     "controlpanel":{
         "layout":"controlpanel",
-        "theme":"theme-vanilla",
-        "modules":["BreadUserSystem\/module.json","BreadAdminTools\/module.json"]
+        "include":["master"]
     },
     "search":{
         "include":["master"],

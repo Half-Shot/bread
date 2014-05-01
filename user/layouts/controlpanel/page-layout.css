@@ -1,0 +1,23 @@
+#banner
+{
+    position:absolute;
+    top:8%;
+    width:95%; 
+    height:5%;
+}
+
+#admin-sidetabs
+{
+    position:absolute;
+    left:2%;
+    top:22%;
+    width:7%;
+}
+
+#admin-mainpanel
+{
+    position:absolute;
+    left:10%;
+    top:17%;
+    width:90%;
+}

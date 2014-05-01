@@ -19,7 +19,9 @@ use Bread\Structures\BreadRequestCommand as BreadRequestCommand;
  * @see ThemeManager
  */
 class Site
-{       /**
+{       
+        private static $configurl;
+        /**
         * Bread's Master configuration file, the only hardcoded path in bread.
         * File path is set in the index.php file.
         * @see LoadConfig()
@@ -215,6 +217,7 @@ class Site
          */
 	public static function LoadConfig($configurl)
 	{
+                static::$configurl = $configurl;
 		$tmp = file_get_contents($configurl);
 		if(!$tmp)
 		{
@@ -341,7 +344,6 @@ class Site
                 static::$themeManager = new Themes\ThemeManager();
             static::$moduleManager = new Modules\ModuleManager();
             static::$settingsManager = new Settings\SettingsManager();
-            static::$moduleManager->LoadSettings($path . "/modules/settings.json");
             if(!static::$isAjax){
                 static::$themeManager->LoadSettings($path . "/theme/settings.json");
                 static::$themeManager->LoadLayouts();
@@ -366,6 +368,12 @@ class Site
 		$Metadata .= "</meta>";
 		return $Metadata;
 	}
+        
+        public static function EditConfigurationValue($cat,$prop,$val)
+        {
+            static::$configuration[$cat][$prop] = $val;
+            file_put_contents(static::$configurl, json_encode(static::$configuration));
+        }
         
         
         /**
@@ -486,7 +494,6 @@ class Site
                 }
                 else if(isset(static::$URLParameters["ajax"]))
                 {
-                    static::$Logger->writeMessage("Using crappy GET based ajax. Please use POST for production sites.");
                     $module = static::$URLParameters["ajax"];
                 }
                 static::$Logger->writeMessage("Event: " . $event);
@@ -528,8 +535,12 @@ class Site
 	    static::$htmlcode .= "<head>\n";
 	    static::$htmlcode .= static::ProcessMetadata($requestData);
             $title = static::$moduleManager->FireEvent("Bread.PageTitle")[0];
-            if($title)
+            if($title){
                 Site::AddToHeaderCode("<title>" . $title . " - " . self::$configuration["strings"]["sitename"] ."</title>");
+            }
+            else {
+                Site::AddToHeaderCode("<title>" . self::$configuration["strings"]["sitename"] ."</title>");
+            }
             static::$htmlcode .= static::$headercode;
 	    static::$htmlcode .= static::$themeManager->CSSLines;
             static::$htmlcode .= static::$ScriptLines;

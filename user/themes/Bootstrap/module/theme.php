@@ -14,11 +14,7 @@ class BootstrapTheme extends Bread\Modules\Module
 	{
             //Base
             $this->manager->RegisterHook($this->name,"Theme.Load","Load"); //For each event you want to allow, specify: Name of theme, EventName and function name
-            $this->manager->RegisterHook($this->name,"Theme.HeaderInfo","HeaderInfomation");
-            $this->manager->RegisterHook($this->name,"Theme.Unload","Unload");      
-            
-            $this->manager->RegisterHook($this->name,"Theme.DrawSystemMenu","SystemMenu");
-            $this->manager->RegisterHook($this->name,"Theme.DrawFooter","Footer");
+            $this->manager->RegisterHook($this->name,"Theme.Unload","Unload");     
             //Navigation
             $this->manager->RegisterHook($this->name,"Theme.VerticalNavbar","VerticalNavbar");
             $this->manager->RegisterHook($this->name,"Theme.DrawNavbar","Navbar");
@@ -30,6 +26,7 @@ class BootstrapTheme extends Bread\Modules\Module
             $this->manager->RegisterHook($this->name,"Theme.Panel","Panel");            //Forms
             $this->manager->RegisterHook($this->name,"Theme.Form","BuildForm");
             $this->manager->RegisterHook($this->name,"Theme.InputElement","BuildInput");
+            $this->manager->RegisterHook($this->name,"Theme.Tabs","Tabs");
             //Layouts
             $this->manager->RegisterHook($this->name,"Theme.Layout.Article","Article");
             $this->manager->RegisterHook($this->name,"Theme.Layout.Block","LayoutBlock");
@@ -52,19 +49,6 @@ class BootstrapTheme extends Bread\Modules\Module
 	{
             $this->breadXML = new BreadXML(Site::FindFile("Bootstrap/theme.xsl"));
 	}
-
-	function HeaderInfomation()
-	{
-            
-	}
-
-	function SystemMenu($args)
-	{
-	}
-        
-        function ShowInfomation($args)
-        {
-        }
         
 	function Navbar($args)
 	{
@@ -101,8 +85,10 @@ class BootstrapTheme extends Bread\Modules\Module
                     }
                 }
                 $Vars["inner"] = array();
-                foreach($args["_inner"] as $html)
-                    $Vars["inner"][] = $html["guts"];
+                foreach($args["_inner"] as $html){
+                    if($html["guts"])
+                        $Vars["inner"][] = $html["guts"];
+                }
                 return $this->breadXML->GetHTMLOfElement("Navbar",$Vars);
 	}
         function VerticalNavbar($args)
@@ -178,7 +164,21 @@ class BootstrapTheme extends Bread\Modules\Module
         
         function ButtonGroup($args)
         {
-            return '<div class="btn-group">' . $args . '</div>';
+            $HTML = "";
+            if(is_array($args)){
+                if(isset($args["_inner"])){
+                    foreach($args["_inner"] as $element)
+                    {
+                        $HTML .= $element["guts"];
+                    }
+                }
+            }
+            else {
+                $HTML = $args;
+            }
+            
+                        
+            return '<div class="btn-group">' . $HTML . '</div>';
         }
         
         function ButtonToolbar($args)
@@ -205,6 +205,18 @@ class BootstrapTheme extends Bread\Modules\Module
                 case "video":
                     return '<span class="glyphicon glyphicon-film"></span>';
                     break;
+                case "cog":
+                    return '<span class="glyphicon glyphicon-cog"></span>';
+                    break;
+                case "file":
+                    return '<span class="glyphicon glyphicon-file"></span>';
+                    break;
+                case "pencil":
+                    return '<span class="glyphicon glyphicon-pencil"></span>';
+                    break;
+                case "book":
+                    return '<span class="glyphicon glyphicon-book"></span>';
+                    break;
                 default :
                     return '<small>' . $args . '</small>';
                     break;
@@ -224,6 +236,11 @@ class BootstrapTheme extends Bread\Modules\Module
         function LayoutWell($args)
         {
             return $this->breadXML->GetHTMLOfElement("Well",$args);
+        }
+        
+        function Tabs($args)
+        {
+            return $this->breadXML->GetHTMLOfElement("Tabs",$args);
         }
         
         function Breadcrumbs($args)
@@ -253,7 +270,11 @@ class BootstrapTheme extends Bread\Modules\Module
         }
         
         function GridHorizontalStack($args){
+            if(count($args) < 1)
+                return "";
             $listOfCells = $args[0];
+            if(is_object($listOfCells))
+                $listOfCells = $args;
             $HTML = "<div class='row'>";
             $spaceLeft = 12;
             foreach($listOfCells as $i => $cell)
@@ -268,14 +289,15 @@ class BootstrapTheme extends Bread\Modules\Module
                 }
                 $spaceLeft -= $cell->offset;
                 $cellsLeft = count($listOfCells) - ($i);
-                if(!isset($cell->size))
-                if($cellsLeft > 1)
-                {
-                    $cell->size = $spaceLeft / $cellsLeft;
-                }
-                else
-                {
-                    $cell->size = $spaceLeft;
+                if(!isset($cell->size)){
+                    if($cellsLeft > 1)
+                    {
+                        $cell->size = $spaceLeft / $cellsLeft;
+                    }
+                    else
+                    {
+                        $cell->size = $spaceLeft;
+                    }
                 }
                 $HTML .= '<div class="col-md-'. $cell->size . $offset . '">'. $cell->body .'</div>';
                 $spaceLeft -= $cell->size;

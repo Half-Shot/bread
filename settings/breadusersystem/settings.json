@@ -2,7 +2,7 @@
     "limitToHTTPS": true,
     "userfile": "users.json",
     "sessiontimeout": 604800,
-    "showNavbarlinks": true,
+    "showNavbarlinks": false,
     "successredirect": {
         "request": "homepage",
         "args": null,

@@ -6,7 +6,7 @@ class Module
          * The parent module manager. Should be the same as Site::$moduleManager
          * unless your platform is rolling its own exotic manager.
          * Unless your a hipster, use the $manager variable.
-         * @var type \Bread\Modules\ModuleManager
+         * @var \Bread\Modules\ModuleManager
          */
         protected $manager;
         /**

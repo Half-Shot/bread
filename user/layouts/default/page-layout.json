@@ -11,6 +11,38 @@
         "event":"Theme.DrawNavbar",
         "elements":[
             {
+                "name":"login-name",
+                "id":"login-name",
+                "event":"BreadUserSystem.LoginName",
+                "arguments":
+                {
+                   "Class":"navbar-text"
+                }
+            },
+            {
+                "name":"button-squisher",
+                "id":"loginbuttongroup",
+                "event":"Theme.Layout.ButtonGroup",
+                "elements":
+                [
+                    {
+                        "name":"login-button",
+                        "id":"login-button",
+                        "event":"BreadUserSystem.LoginButton",
+                        "arguments":
+                        {
+                           "Class":"navbar-btn"
+                        }
+                    },
+                    {
+                        "name":"controlpanel-button",
+                        "id":"controlpanel-button",
+                        "event":"BreadAdminTools.Button",
+                        "arguments":"navbar-btn"
+                    }
+                ]
+            },
+            {
                 "name": "search-bar",
                 "id": "text-element",
                 "event": "BreadIndexSystem.SearchForm"
