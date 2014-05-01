@@ -29,7 +29,20 @@ $(".BATapplyButton").click( function(){
     $(inputs).each(function(i,element) {
         name = element.id;
         val = element.value;
-        jString = '{"' + name + '":"' + val + '"}';
+        if(element.type == "number")
+        {
+            jString = '{"' + name + '":' + val + '}';
+        }
+        else if(element.type == "checkbox") 
+        {
+            val = element.checked;
+            jString = '{"' + name + '":' + val + '}';
+        }
+        else
+        {
+            jString = '{"' + name + '":"' + val + '"}';
+        }
+        
         $.extend(jsonObject,$.parseJSON(jString))
     });
     $.post( "index.php", jsonObject, function(returndata)

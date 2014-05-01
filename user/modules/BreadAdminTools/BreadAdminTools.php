@@ -63,6 +63,17 @@ class BreadAdminTools extends Module
                 if($cat != ""){
                     if(!isset(Site::Configuration()[$cat][$key]))
                         return 1; //Failed Value, Could be a hack!
+                    if(is_numeric($val)){
+                        $val = floatval ($val);
+                    }
+                    elseif($val === "true")
+                    {
+                        $val = true;
+                    }
+                    elseif($val === "false")
+                    {
+                        $val = false;
+                    }
                     Site::EditConfigurationValue($cat,$key,$val);
                     }
                 }

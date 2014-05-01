@@ -372,7 +372,7 @@ class Site
         public static function EditConfigurationValue($cat,$prop,$val)
         {
             static::$configuration[$cat][$prop] = $val;
-            file_put_contents(static::$configurl, json_encode(static::$configuration));
+            file_put_contents(static::$configurl, json_encode(static::$configuration,JSON_PRETTY_PRINT));
         }
         
         
