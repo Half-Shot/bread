@@ -380,7 +380,14 @@ class Site
            if(!Site::$settingsManager)
                return false;
            $setting = self::$settingsManager->RetriveSettings(self::$configurl);
-           self::$settingsManager->ChangeSetting(self::$configurl,Utilitys::ObjMerge($setting, $newObj));
+           foreach($newObj as $catname => $category)
+           {
+               foreach($category as $key => $value)
+               {
+                   $setting->$catname->$key = $value;
+               }
+           }
+           self::$settingsManager->ChangeSetting(self::$configurl,$setting);
            
         }
         

@@ -21,31 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+AdminPanelJsonObject = {ajaxEvent: "BreadAdminTools.SaveCoreSettings",ajaxModule:"BreadAdminTools"};
+$("#admin-mainpanel input").change( function(){
+    element = $(this)[0];
+    name = element.id;
+    val = element.value;
+    if(element.type == "number")
+    {
+        jString = '{"' + name + '":' + val + '}';
+    }
+    else if(element.type == "checkbox") 
+    {
+        val = element.checked;
+        jString = '{"' + name + '":' + val + '}';
+    }
+    else
+    {
+        jString = '{"' + name + '":"' + val + '"}';
+    }
+    
+    $.extend(AdminPanelJsonObject,$.parseJSON(jString))
+});
+
 $(".BATapplyButton").click( function(){
-    div = $(this.parentElement.parentElement.parentElement.parentElement); //Pro code.
-    form = div.find("form")[0];
-    inputs = $(form).find("input");
-    jsonObject = {ajaxEvent: "BreadAdminTools.SaveCoreSettings",ajaxModule:"BreadAdminTools"};
-    $(inputs).each(function(i,element) {
-        name = element.id;
-        val = element.value;
-        if(element.type == "number")
-        {
-            jString = '{"' + name + '":' + val + '}';
-        }
-        else if(element.type == "checkbox") 
-        {
-            val = element.checked;
-            jString = '{"' + name + '":' + val + '}';
-        }
-        else
-        {
-            jString = '{"' + name + '":"' + val + '"}';
-        }
-        
-        $.extend(jsonObject,$.parseJSON(jString))
-    });
-    $.post( "index.php", jsonObject, function(returndata)
+    $.post( "index.php", AdminPanelJsonObject, function(returndata)
     {
         if(returndata != "0"){
             alert("Something went wrong :|");
