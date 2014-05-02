@@ -43,6 +43,7 @@ class BootstrapTheme extends Bread\Modules\Module
             $this->manager->RegisterHook($this->name,"Theme.Label","Label");
             $this->manager->RegisterHook($this->name,"Theme.Breadcrumbs","Breadcrumbs");
             $this->manager->RegisterHook($this->name,"Theme.Comment","Comment");
+            $this->manager->RegisterHook($this->name,"Theme.Alert","Alert");
 	}
     
 	function Load()
@@ -192,34 +193,26 @@ class BootstrapTheme extends Bread\Modules\Module
             {
                 case "bold":
                     return '<span class="glyphicon glyphicon-bold"></span>';
-                    break;
                 case "italic":
                     return '<span class="glyphicon glyphicon-italic"></span>';
-                    break;
                 case "list":
                     return '<span class="glyphicon glyphicon-list"></span>';
-                    break;
                 case "audio":
                     return '<span class="glyphicon glyphicon-volume-up"></span>';
-                    break;
                 case "video":
                     return '<span class="glyphicon glyphicon-film"></span>';
-                    break;
                 case "cog":
                     return '<span class="glyphicon glyphicon-cog"></span>';
-                    break;
                 case "file":
                     return '<span class="glyphicon glyphicon-file"></span>';
-                    break;
                 case "pencil":
                     return '<span class="glyphicon glyphicon-pencil"></span>';
-                    break;
                 case "book":
                     return '<span class="glyphicon glyphicon-book"></span>';
-                    break;
+                case "close":
+                    return '<span class="glyphicon glyphicon-remove-circle"></span>';
                 default :
                     return '<small>' . $args . '</small>';
-                    break;
             }
         }
         
@@ -308,6 +301,20 @@ class BootstrapTheme extends Bread\Modules\Module
         function Comment($args)
         {
             return $this->breadXML->GetHTMLOfElement("Comment",$args);
+        }
+        
+        function Alert($args)
+        {
+            $class = "alert " . $args["class"];
+            $closeButton = false;
+            if(isset($args["canClose"])){
+                if($args["canClose"]){
+                    $closeButton = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">' . $this->manager->FireEvent("Theme.Icon","close")[0] . '</button>';
+                    $class .= " alert-dismissable";
+                }
+            }
+            $body = $args["body"];
+            return '<div class="alert '. $class .'">' . $closeButton .  $body . "</div>";
         }
 }
 ?>

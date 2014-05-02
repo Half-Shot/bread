@@ -12,6 +12,13 @@
         "event":"BreadAdminTools.Banner"
     },
     {
+      "name":"messagetray",
+      "id":"admin-messagetray",
+      "human":"Message Tray",
+      "description":"Where messages to users will go.",
+      "event":"BreadAdminTools.MessageTray"
+    },
+    {
         "name": "sidetabs",
 	"id": "admin-sidetabs",
         "human": "Sidebar",

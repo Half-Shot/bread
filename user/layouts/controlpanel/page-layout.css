@@ -1,8 +1,17 @@
 #banner
 {
     position:absolute;
-    top:8%;
+    top:9%;
     width:95%; 
+    height:5%;
+}
+
+#admin-messagetray
+{
+    position:relative;
+    top:1%;
+    width:80%;
+    left:10%;
     height:5%;
 }
 
@@ -20,4 +29,8 @@
     left:10%;
     top:17%;
     width:90%;
+}
+
+.alert{
+    display:none;
 }

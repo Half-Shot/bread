@@ -47,7 +47,34 @@ $(".BATapplyButton").click( function(){
     $.post( "index.php", AdminPanelJsonObject, function(returndata)
     {
         if(returndata != "0"){
-            alert("Something went wrong :|");
+            ShowAlert(3,"Internal Server Problem!");
+        }
+        else
+        {
+            ShowAlert(0,"Saved Ok!");
         }
     });
 });
+
+
+function ShowAlert(type,text)
+{
+    switch(type){
+        case 0:
+            element = $("#admin-messagetray .alert-success");
+            break;
+        case 1:
+            element = $("#admin-messagetray .alert-info");
+            break;
+        case 2:
+            element = $("#admin-messagetray .alert-warning");
+            break;
+        case 3:
+            element = $("#admin-messagetray .alert-danger");
+            break;
+    }
+    newElement = element.clone().appendTo("#admin-messagetray");
+    newElement.append("<p>" + text + "</p>");
+    newElement.fadeIn();
+    
+}

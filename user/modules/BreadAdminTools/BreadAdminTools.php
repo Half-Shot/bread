@@ -21,11 +21,26 @@ class BreadAdminTools extends Module
             $this->manager->RegisterHook($this->name,"BreadAdminTools.AddModuleSettings","AddCoreSettings");
             $this->manager->RegisterHook($this->name,"BreadAdminTools.Banner","Banner");
             $this->manager->RegisterHook($this->name,"BreadAdminTools.Sidebar","Sidebar");
+            $this->manager->RegisterHook($this->name,"BreadAdminTools.MessageTray","SetupMessageTray");
             $this->manager->RegisterHook($this->name,"BreadAdminTools.Mainpanel","Mainpanel");
             $this->manager->RegisterHook($this->name,"BreadAdminTools.SaveCoreSettings", "SaveCore",array(), \Bread\Modules\ModuleManager::EVENT_EXTERNAL);
             $this->manager->RegisterHook($this->name,"Bread.PageTitle", "SetTitle");
 
 	}
+        
+        function SetupMessageTray()
+        {
+            $messageStruct = array("class"=>"alert-success","canClose"=>true,"body"=>"");
+            $successAlert = $this->manager->FireEvent("Theme.Alert",$messageStruct)[0];
+            $messageStruct = array("class"=>"alert-info","canClose"=>true,"body"=>"");
+            $infoAlert = $this->manager->FireEvent("Theme.Alert",$messageStruct)[0];
+            $messageStruct = array("class"=>"alert-warning","canClose"=>true,"body"=>"");
+            $warningAlert = $this->manager->FireEvent("Theme.Alert",$messageStruct)[0];
+            $messageStruct = array("class"=>"alert-danger","canClose"=>true,"body"=>"");
+            $dangerAlert = $this->manager->FireEvent("Theme.Alert",$messageStruct)[0];
+            
+            return $successAlert . $infoAlert . $warningAlert . $dangerAlert;
+        }
     
         function SetTitle()
         {
