@@ -805,7 +805,7 @@ class Logger
     private $logpath = "NOLOG";
     private $minlog = -1;
     private $logpermodule = true;
-    private $messagestack = array();
+    private $messageStack = array();
     private $fileStreams = array();
     
     /**
@@ -813,9 +813,9 @@ class Logger
      * Stacked as category => LoggerMessage
      * @return array
      */
-    function getMessagesstack()
+    function getMessageStack()
     {
-        return $messagestack;
+        return $this->messageStack;
     }
     
     /**

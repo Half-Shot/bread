@@ -86,7 +86,7 @@ class BreadAdminTools extends Module
         {
             if($this->HasGenerated)
                 return true;
-            $this->ModuleSettings += ($this->manager->FireEvent("BreadAdminTools.AddModuleSettings"));
+            $this->ModuleSettings += ($this->manager->FireEvent("BreadAdminTools.AddModuleSettings",array($this->CurrentModuleIndex == count($this->ModuleSettings),  $this->CurrentTabIndex)));
             if(count($this->ModuleSettings) - 1){
                 Site::$Logger->writeError("The specifed module index is invalid for the Admin Panel", \Bread\Logger::SEVERITY_MEDIUM, $this->name, true);
             }
@@ -139,8 +139,15 @@ class BreadAdminTools extends Module
             $TabsHTML = $this->manager->FireEvent("Theme.Tabs",$Tabs)[0];    
             $SettingsPanels = array();
             foreach($this->ModuleSettings[$this->CurrentModuleIndex]->SettingsGroups[$this->CurrentTabIndex]->Panels as $Setting){
+                $Footer = "";
                 $Panel = new \stdClass();
-                $Panel->body = $this->manager->FireEvent("Theme.Panel",array("title"=>$Setting->HumanTitle,"body"=>$Setting->Body,"footer"=>$this->manager->FireEvent("Theme.Form",$Setting->ApplyButtons)[0]))[0];
+                if($Setting->ApplyButtons){
+                    $Panel->body = $this->manager->FireEvent("Theme.Panel",array("title"=>$Setting->HumanTitle,"body"=>$Setting->Body,"footer"=>$this->manager->FireEvent("Theme.Form",$Setting->ApplyButtons)[0]))[0];
+                }
+                else
+                {  
+                    $Panel->body = $this->manager->FireEvent("Theme.Panel",array("title"=>$Setting->HumanTitle,"body"=>$Setting->Body))[0];
+                }
                 $SettingsPanels[] = $Panel;
             }
             $TabsHTML = $this->manager->FireEvent("Theme.Tabs",$Tabs)[0];    
@@ -180,18 +187,33 @@ class BreadAdminTools extends Module
             }
         }
         
-        function AddCoreSettings()
+        function CoreSetting_Logging($Tab_Logging)
         {
-            if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadAdminTools.CorePanel.Read")[0])
-                return false;
-            Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/corepanel.js") , true);
-            $CoreSettingsCP = new \Bread\Structures\BreadConfigurationPanel;
-            $CoreSettingsCP->Name = "Core";
+            $Panel_Cur = new \Bread\Structures\BreadCPPanel;
+            $Panel_Cur->Name = "currentLog";
+            $Panel_Cur->HumanTitle = "Current Log";
             
-            $Tab_CoreSettings = new \Bread\Structures\BreadCPSetting;
-            $Tab_CoreSettings->Name = "coreSettings";
-            $Tab_CoreSettings->HumanTitle = $this->manager->FireEvent("Theme.Icon","cog")[0] . " General";
+            $Panel_Prev = new \Bread\Structures\BreadCPPanel;
+            $Panel_Prev->Name = "previousLogs";
+            $Panel_Prev->HumanTitle = "Previous Logs";
             
+            $Tab_Logging->Panels[] = $Panel_Cur;
+            $LogMsgBody = "";
+            foreach(Site::$Logger->getMessageStack() as $categoryName => $messages)
+            {
+                $LogMsgBody .= "<h4>" . $categoryName . "</h4><pre style='width:100%;height:500px;overflow:scroll;'>";
+                foreach($messages as $msg)
+                {
+                    $LogMsgBody .= $msg->ToString() . "<br>";
+                }
+                $LogMsgBody .= "</pre>";
+            }
+            $Panel_Cur->Body = "<code>" . $LogMsgBody . "</pre></code>";
+            $Tab_Logging->Panels[] = $Panel_Prev;
+        }
+        
+        function CoreSetting_Settings($Tab_CoreSettings)
+        {
             $ApplyButtonsForm = new \Bread\Structures\BreadForm();
             $ApplyButtonsForm->action = "";
             $ApplyButtonsForm->isinline = true;
@@ -314,14 +336,45 @@ class BreadAdminTools extends Module
             $TCS_Panel_Directorys->Body = $this->manager->FireEvent("Theme.Form",$SettingFormDirectorys); //Form
             
             $Tab_CoreSettings->Panels[] = $TCS_Panel_Directorys;
+        }
+        
+        function AddCoreSettings($args)
+        {
+            if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadAdminTools.CorePanel.Read")[0])
+                return false;
+            $CoreSettingsCP = new \Bread\Structures\BreadConfigurationPanel;
+            $CoreSettingsCP->Name = "Core";
             
-            $CoreSettingsCP->SettingsGroups[] = $Tab_CoreSettings;
+            if(!$args[0])
+                return $CoreSettingsCP;
+            $Tab_CoreSettings = new \Bread\Structures\BreadCPSetting;
+            $Tab_CoreSettings->Name = "coreSettings";
+            $Tab_CoreSettings->HumanTitle = $this->manager->FireEvent("Theme.Icon","cog")[0] . " General";
+            
+            $Tab_Logging = new \Bread\Structures\BreadCPSetting;
+            $Tab_Logging->Name = "loggingSettings";
+            $Tab_Logging->HumanTitle = $this->manager->FireEvent("Theme.Icon","book")[0] . " Logs";
             
             $Tab_JSONEditor = new \Bread\Structures\BreadCPSetting;
             $Tab_JSONEditor->Name = "JsonEditor";
             $Tab_JSONEditor->HumanTitle = "Settings File Editor";
+            //Tab Index;
+            switch($args[1]){
+                case 0:
+                    Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/corepanelSettings.js") , true);
+                    $this->CoreSetting_Settings($Tab_CoreSettings);
+                    break;
+                case 1:
+                    $this->CoreSetting_Logging($Tab_Logging);
+                    break;
+                default:
+                    break;
+            }
             
+            $CoreSettingsCP->SettingsGroups[] = $Tab_CoreSettings;
+            $CoreSettingsCP->SettingsGroups[] = $Tab_Logging;
             $CoreSettingsCP->SettingsGroups[] = $Tab_JSONEditor;
+            
             return $CoreSettingsCP;
             
         }
