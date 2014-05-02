@@ -221,7 +221,7 @@ $("#bps-mdsave").hide();
 //Category Selector
 
 AddOnClick = function(event){
-    if(ContainsCategory($(this),$('#bps-selectcategories')) == false){
+    if(ContainsCategory($(this),$('#bps-selectcategories .badge')) == false){
         $(this).clone().click(RemoveOnClick).appendTo('#bps-selectcategories');
     }
 }
@@ -234,14 +234,12 @@ RemoveOnClick = function(event){
 
 function ContainsCategory(category,element)
 {
-    isContained = false;
     element.each(function(i,scategory){
         if(category.text() == scategory.textContent){
-            isContained = true;
             return true;
         }
     });
-    return isContained;
+    return false;
 }
 $('#bps-selectcategories .badge').click(RemoveOnClick);
 
