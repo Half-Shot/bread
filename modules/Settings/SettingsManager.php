@@ -78,6 +78,11 @@ class SettingsManager {
         return True;
     }
     
+    function ChangeSetting($path,$newObj)
+    {
+        $this->settings[$path] = $newObj;
+    }
+    
     /**
      * Retrives the settings file.
      * @param string $path The path of the file.
@@ -157,7 +162,7 @@ class SettingsManager {
     {
          $string = $this->CompileJson($object);
          $worked = \file_put_contents($path, $string);
-         if($worked == False || $worked == "{}" || is_null($worked))    
+         if($worked == False || $string == "{}" || is_null($string))    
              Site::$Logger->writeError ("Couldn't write json to file. path: '" . $path . "'", \Bread\Logger::SEVERITY_MEDIUM,"core" , $shouldThrow, "Bread\Settings\FileNotWrittenException");                  
     }
 }

@@ -1,1 +1,37 @@
-{"core":{"version":0.12,"debug":true,"cache":true,"banhammer":true,"defaultrequest":"homepage","timezone":"GMT"},"logger":{"path":".\/temp\/breadlog","maxlogfiles":10,"minseveritytolog":-1,"multifilelog":true,"keepfor":60},"strings":{"sitename":"Cakeorama"},"bans":[],"directorys":{"system-modules":"modules","system-settings":"settings","system-requests":"settings\/requests.json","settings-moduleloadlist":"settings\/modules\/modlist.json","user-modules":"user\/modules","user-themes":"user\/themes","user-layouts":"user\/layouts","user-resource":"user\/resource","user-media":"content\/media","user-pages":"content\/pages","user-posts":"content\/posts","system-temp":"temp"}}
+{
+    "core": {
+        "version": 0.12,
+        "debug": false,
+        "cache": true,
+        "banhammer": true,
+        "defaultrequest": "homepage",
+        "timezone": "GMT"
+    },
+    "logger": {
+        "path": ".\/temp\/breadlog",
+        "maxlogfiles": 10,
+        "minseveritytolog": -1,
+        "multifilelog": true,
+        "keepfor": 60
+    },
+    "strings": {
+        "sitename": "Cakeorama"
+    },
+    "bans": [
+
+    ],
+    "directorys": {
+        "system-modules": "modules",
+        "system-settings": "settings",
+        "system-requests": "settings\/requests.json",
+        "settings-moduleloadlist": "settings\/modules\/modlist.json",
+        "user-modules": "user\/modules",
+        "user-themes": "user\/themes",
+        "user-layouts": "user\/layouts",
+        "user-resource": "user\/resource",
+        "user-media": "content\/media",
+        "user-pages": "content\/pages",
+        "user-posts": "content\/posts",
+        "system-temp": "temp"
+    }
+}

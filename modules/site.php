@@ -25,28 +25,28 @@ class Site
         * Bread's Master configuration file, the only hardcoded path in bread.
         * File path is set in the index.php file.
         * @see LoadConfig()
-        * @type array
+        * @type stdObject
         */
 	private static $configuration;
 
         /**
         * The global theme manager. There is only one ThemeManager and this
         * is it.
-        * @var ThemeManager
+        * @var Bread\Themes\ThemeManager
         */
 	public static $themeManager;
         
         /**
         * The global module manager.There is only one ModuleManager and this
         * is it.
-        * @var ModuleManager
+        * @var Bread\Modules\ModuleManager
         */
 	public static $moduleManager;
         
         /**
          * The global settings manager. Although advanced modules may wish to
          * use their own SettingsManager instance, this is the one most will use.
-         * @var SettingsManager
+         * @var \Bread\Settings\SettingsManager
          */
         public static $settingsManager;
         
@@ -223,12 +223,12 @@ class Site
 		{
 			throw new \Exception($tmp . " could not be loaded. Game Over!");
 		}
-		static::$configuration = json_decode($tmp,true);
+		static::$configuration = json_decode($tmp);
 		if(!static::$configuration)
 		{
 			throw new \Exception("Configuration could be <b>read</b> but not be <b>loaded</b>. Game Over!");
 		}
-                date_default_timezone_set(static::$configuration["core"]["timezone"]);//Setting timezone before its too late.
+                date_default_timezone_set(static::$configuration->core->timezone);//Setting timezone before its too late.
 	}
         /**
          * Enables/Disables Debug Statements. Very useful for a developer
@@ -257,11 +257,11 @@ class Site
          */
 	public static function CheckBans()
 	{
-		if(static::$configuration["core"]["banhammer"])
+		if(static::$configuration->core->banhammer)
 		{
 			//Check for banned user.
 			$uip = $_SERVER["REMOTE_ADDR"];
-			foreach (static::$configuration["bans"] as $banneduser)
+			foreach (static::$configuration->bans as $banneduser)
 			{	
 				if($banneduser == $uip){
                                         http_response_code(401); //Be really mean. 404s should deter people.
@@ -302,7 +302,12 @@ class Site
          */
 	public static function SetupLogging()
 	{
-		static::$Logger = new Logger(static::$configuration["logger"]["path"],static::$configuration["logger"]["minseveritytolog"],static::$configuration["logger"]["maxlogfiles"],static::$configuration["logger"]["multifilelog"],static::$configuration["logger"]["maxlogfiles"],static::$configuration["logger"]["keepfor"]);
+		static::$Logger = new Logger(static::$configuration->logger->path,
+                        static::$configuration->logger->minseveritytolog,
+                        static::$configuration->logger->maxlogfiles,
+                        static::$configuration->logger->multifilelog,
+                        static::$configuration->logger->maxlogfiles,
+                        static::$configuration->logger->keepfor);
 	}
         /**
          * Checks each module in the core modules that were previously loaded from
@@ -369,10 +374,14 @@ class Site
 		return $Metadata;
 	}
         
-        public static function EditConfigurationValue($cat,$prop,$val)
+        public static function EditConfigurationValues($newObj)
         {
-            static::$configuration[$cat][$prop] = $val;
-            file_put_contents(static::$configurl, json_encode(static::$configuration,JSON_PRETTY_PRINT));
+           self::$Logger->writeMessage("Editing the core config!", $category);
+           if(!Site::$settingsManager)
+               return false;
+           $setting = self::$settingsManager->RetriveSettings(self::$configurl);
+           self::$settingsManager->ChangeSetting(self::$configurl,Utilitys::ObjMerge($setting, $newObj));
+           
         }
         
         
@@ -393,7 +402,7 @@ class Site
             static::$URLParameters = $Params;
             //Override for ajax.
             //TODO: Allow use to turn this off, could be used as a backdoor.
-            if(static::$configuration["core"]["debug"] && array_key_exists("ajax", $Params)){
+            if(static::$configuration->core->debug && array_key_exists("ajax", $Params)){
                     static::$isAjax = true;
             }
             if(isset($requestDB->master->layout))
@@ -413,7 +422,7 @@ class Site
             }
             else
             {
-                $requestName = static::$configuration["core"]["defaultrequest"];
+                $requestName = static::$configuration->core->defaultrequest;
             }
 
             if(isset($requestDB->$requestName->layout))
@@ -536,10 +545,10 @@ class Site
 	    static::$htmlcode .= static::ProcessMetadata($requestData);
             $title = static::$moduleManager->FireEvent("Bread.PageTitle")[0];
             if($title){
-                Site::AddToHeaderCode("<title>" . $title . " - " . self::$configuration["strings"]["sitename"] ."</title>");
+                Site::AddToHeaderCode("<title>" . $title . " - " . self::$configuration->strings->sitename ."</title>");
             }
             else {
-                Site::AddToHeaderCode("<title>" . self::$configuration["strings"]["sitename"] ."</title>");
+                Site::AddToHeaderCode("<title>" . self::$configuration->strings->sitename ."</title>");
             }
             static::$htmlcode .= static::$headercode;
 	    static::$htmlcode .= static::$themeManager->CSSLines;
@@ -585,8 +594,8 @@ class Site
                     continue;
                 if($part[0] == "%"){
                    $dir = substr($part, 1,strlen($part) - 1);
-                   if(isset(Site::$configuration["directorys"][$dir])){
-                       $realdir = Site::$configuration["directorys"][$dir];
+                   if(isset(Site::$configuration->directorys->$dir)){
+                       $realdir = Site::$configuration->directorys->$dir;
                        $parts[$i] = $realdir;
                    }
                 }
@@ -819,7 +828,7 @@ class Logger
         $this->logpath = $filepath. "/" . date("DM_H_i_s");
         $this->minlog = $minlog;
         $this->cleanUpLogFiles($maxlogs,$filepath,$keepfor);
-        static::writeMessage("Bread Version " . Site::Configuration()["core"]["version"]);
+        static::writeMessage("Bread Version " . Site::Configuration()->core->version);
         static::writeMessage("Log Date: " . date('l jS \of F Y'));
    }
     /**

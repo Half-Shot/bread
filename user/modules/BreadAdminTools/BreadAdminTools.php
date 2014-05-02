@@ -40,6 +40,7 @@ class BreadAdminTools extends Module
         {
             if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadAdminTools.CorePanel.Write")[0])
                 return 0;
+            $newObj = new \stdClass();
             foreach($_POST as $prop => $val)
             {
                 $key = substr($prop, 3);
@@ -61,10 +62,10 @@ class BreadAdminTools extends Module
                         break;
                 }
                 if($cat != ""){
-                    if(!isset(Site::Configuration()[$cat][$key]))
+                    if(!isset(Site::Configuration()->$cat->$key))
                         return 1; //Failed Value, Could be a hack!
                     if(is_numeric($val)){
-                        $val = floatval ($val);
+                        $val = floatval($val);
                     }
                     elseif($val === "true")
                     {
@@ -74,9 +75,10 @@ class BreadAdminTools extends Module
                     {
                         $val = false;
                     }
-                    Site::EditConfigurationValue($cat,$key,$val);
-                    }
+                    $newObj->$cat->$key = $val;
                 }
+            }
+            Site::EditConfigurationValues($newObj);
             return 0;
         }
                 
@@ -226,7 +228,7 @@ class BreadAdminTools extends Module
             $SettingFormCore->name = "coreform";
             $SettingFormCore->id = "coreform";
             
-            foreach(Site::Configuration()["core"] as $key => $value)
+            foreach(Site::Configuration()->core as $key => $value)
             {
                 if(is_object($value) || is_array($value))
                     continue;
@@ -251,7 +253,7 @@ class BreadAdminTools extends Module
             $SettingFormDebug->name = "debugform";
             $SettingFormDebug->id = "debugform";
             
-            foreach(Site::Configuration()["logger"] as $key => $value)
+            foreach(Site::Configuration()->logger as $key => $value)
             {
                 if(is_object($value) || is_array($value))
                     continue;
@@ -276,7 +278,7 @@ class BreadAdminTools extends Module
             $SettingFormStrings->name = "stringform";
             $SettingFormStrings->id = "stringform";
             
-            foreach(Site::Configuration()["strings"] as $key => $value)
+            foreach(Site::Configuration()->strings as $key => $value)
             {
                 if(is_object($value) || is_array($value))
                     continue;
@@ -297,7 +299,7 @@ class BreadAdminTools extends Module
             $SettingFormDirectorys->name = "directorysform";
             $SettingFormDirectorys->id = "directorysform";
             
-            foreach(Site::Configuration()["directorys"] as $key => $value)
+            foreach(Site::Configuration()->directorys as $key => $value)
             {
                 if(is_object($value) || is_array($value))
                     continue;
