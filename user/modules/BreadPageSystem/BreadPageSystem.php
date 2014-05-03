@@ -500,7 +500,13 @@ class BreadPageSystem extends Module
                    return $pageid;
                }
            }
-           return false;
+           //Hacky way to get first post.
+           $posts = get_object_vars($this->settings->postindex);
+           $posts = \Bread\Utilitys::ArraySetKeyByProperty ($posts, "time_released");
+           ksort($posts);
+           foreach($posts as $id => $post)
+               if(!$post->hidden)
+                    return $post->id;
         }
         
         function GetActivePost()
