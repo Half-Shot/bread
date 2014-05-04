@@ -30,16 +30,23 @@ class BreadAdminTools extends Module
         
         function SetupMessageTray()
         {
-            $messageStruct = array("class"=>"alert-success","canClose"=>true,"body"=>"");
+            $messageStruct = array("class"=>"alert-success alert-template","canClose"=>true,"body"=>"");
             $successAlert = $this->manager->FireEvent("Theme.Alert",$messageStruct)[0];
-            $messageStruct = array("class"=>"alert-info","canClose"=>true,"body"=>"");
+            $messageStruct = array("class"=>"alert-info alert-template","canClose"=>true,"body"=>"");
             $infoAlert = $this->manager->FireEvent("Theme.Alert",$messageStruct)[0];
-            $messageStruct = array("class"=>"alert-warning","canClose"=>true,"body"=>"");
+            $messageStruct = array("class"=>"alert-warning alert-template","canClose"=>true,"body"=>"");
             $warningAlert = $this->manager->FireEvent("Theme.Alert",$messageStruct)[0];
-            $messageStruct = array("class"=>"alert-danger","canClose"=>true,"body"=>"");
+            $messageStruct = array("class"=>"alert-danger alert-template","canClose"=>true,"body"=>"");
             $dangerAlert = $this->manager->FireEvent("Theme.Alert",$messageStruct)[0];
-            
-            return $successAlert . $infoAlert . $warningAlert . $dangerAlert;
+            $extraMessagesHTML = "";
+            $extraMessages = $this->manager->FireEvent("Bread.ShowAdminMessage", $messageStruct);
+            if(is_array($extraMessages)){
+                $extraMessages = Util::MashArraysToSingleArray($extraMessages);
+                foreach($extraMessages as $messageStruct){
+                    $extraMessagesHTML += $this->manager->FireEvent("Theme.Alert",$messageStruct)[0];
+                }
+            }
+            return $successAlert . $infoAlert . $warningAlert . $dangerAlert . $extraMessagesHTML;
         }
     
         function SetTitle()

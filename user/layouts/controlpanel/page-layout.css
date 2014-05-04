@@ -1,7 +1,7 @@
 #banner
 {
     position:absolute;
-    top:9%;
+    top:5%;
     width:95%; 
     height:5%;
 }
@@ -9,17 +9,18 @@
 #admin-messagetray
 {
     position:relative;
-    top:1%;
+    top:8%;
     width:80%;
     left:10%;
-    height:5%;
+    height:14%;
+    min-height: 14%;
 }
 
 #admin-sidetabs
 {
     position:absolute;
     left:2%;
-    top:22%;
+    top:30%;
     width:7%;
 }
 
@@ -27,7 +28,7 @@
 {
     position:absolute;
     left:10%;
-    top:17%;
+    top:25%;
     width:90%;
 }
 

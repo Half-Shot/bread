@@ -314,7 +314,7 @@ class BootstrapTheme extends Bread\Modules\Module
                 }
             }
             $body = $args["body"];
-            return '<div class="alert '. $class .'">' . $closeButton .  $body . "</div>";
+            return '<div class="'. $class .'">' . $closeButton .  $body . "</div>";
         }
 }
 ?>

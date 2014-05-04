@@ -503,7 +503,7 @@ class BreadPageSystem extends Module
            //Hacky way to get first post.
            $posts = get_object_vars($this->settings->postindex);
            $posts = \Bread\Utilitys::ArraySetKeyByProperty ($posts, "time_released");
-           ksort($posts);
+           krsort($posts);
            foreach($posts as $id => $post)
                if(!$post->hidden)
                     return $post->id;

@@ -104,7 +104,7 @@ class Site
          */
         private static $baseurl = "";
         /**
-         * Is the request an AJAX based one
+         * Is the request an AJAX one.
          * (Do we need to draw any UI)
          * @var bool 
          */
@@ -114,6 +114,15 @@ class Site
          * @var array key=> value
          */
         private static $URLParameters;
+        
+        /**
+         * Is the request Ajax?
+         * @return bool
+         */
+        public static function GetisAjax()
+        {
+            return static::$isAjax;
+        }
         
         public static function Configuration()
 	{
@@ -411,13 +420,22 @@ class Site
             //TODO: Allow use to turn this off, could be used as a backdoor.
             if(static::$configuration->core->debug && array_key_exists("ajax", $Params)){
                     static::$isAjax = true;
+                    $requestObject->theme = false;
+                    $requestObject->layout = false;
+                    $requestObject->modules = $requestDB->master->modules;
+                    $requestObject->requestType = "ajax";
+                    $requestObject->arguments = $Params;
+                    static::$Request = $requestObject;
+                    return true;
             }
             if(isset($requestDB->master->layout))
                 $requestObject->layout = $requestDB->master->layout;
             
             if(isset($requestDB->master->theme))
                 $requestObject->theme  = $requestDB->master->theme;
-            
+            /**
+             * @todo Find a way to make sure only needed modules are loaded.
+             */
             if(isset($requestDB->master->modules))
                 $requestObject->modules = $requestDB->master->modules;
             
@@ -473,6 +491,7 @@ class Site
             
             $requestObject->arguments = $Params;
             static::$Request = $requestObject;
+            return true;
         }
         
 	/**
@@ -955,8 +974,9 @@ class Logger
         
         if(isset(Site::$moduleManager)){
             Site::$moduleManager->FireEvent("Bread.LogError",$severity);
-            if($severity > static::SEVERITY_MESSAGE)
-            echo Site::$moduleManager->FireEvent("Theme.DrawError",$message)[0];
+            if($severity > static::SEVERITY_MESSAGE){
+                echo Site::$moduleManager->FireEvent("Theme.DrawError",$message)[0];
+            }
         }
         
 	if($this->logpath != "NOLOG" && $this->minlog <= $severity){

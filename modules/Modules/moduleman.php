@@ -22,6 +22,7 @@ class ModuleManager
         
         const EVENT_INTERNAL = 0;
         const EVENT_EXTERNAL = 1;
+        const EVENT_EXTERNAL_NONAJAX = 2;
         
         
 	function __construct()
@@ -294,8 +295,9 @@ class ModuleManager
                 $function = $data[0];
                 $dependencies = $data[1];
                 $security = $data[2];
-                if(!$isInternal && $security < 1)
-                    continue;
+                if((!$isInternal && $security < 1)|| ($security == static::EVENT_EXTERNAL && !Site::GetisAjax())){
+                    Site::$Logger->writeError("Security Failed on Event Call.\n EventName: " . $eventName, \Bread\Logger::SEVERITY_CRITICAL, "core", true);
+                }
                 if(!method_exists($this->modules[$module],$function)){
                     Site::$Logger->writeError("Event failed to fire because the listed function does not exist. Event Name: " . $eventName . ", Module Name: " . $module, \Bread\Logger::SEVERITY_HIGH, "core");
                     return False;
@@ -341,8 +343,9 @@ class ModuleManager
             $function = $data[0];
             $dependencies = $data[1];
             $security = $data[2];
-            if(!$isInternal && $security < 1)
-                return False;
+            if((!$isInternal && $security < 1)|| ($security == static::EVENT_EXTERNAL && !Site::GetisAjax())){
+                Site::$Logger->writeError("Security Failed on Event Call.\n EventName: " . $eventName . "\n ModuleName: " . $moduleName, \Bread\Logger::SEVERITY_CRITICAL, "core", true);
+            }
             if(!$this->CanRunEvent($dependencies))
             {
                 foreach($dependencies as $event => $module)

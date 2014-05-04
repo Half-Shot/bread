@@ -61,20 +61,36 @@ function ShowAlert(type,text)
 {
     switch(type){
         case 0:
-            element = $("#admin-messagetray .alert-success");
+            element = $("#admin-messagetray .alert-template.alert-success");
             break;
         case 1:
-            element = $("#admin-messagetray .alert-info");
+            element = $("#admin-messagetray .alert-template.alert-info");
             break;
         case 2:
-            element = $("#admin-messagetray .alert-warning");
+            element = $("#admin-messagetray .alert-template.alert-warning");
             break;
         case 3:
-            element = $("#admin-messagetray .alert-danger");
+            element = $("#admin-messagetray .alert-template.alert-danger");
             break;
     }
-    newElement = element.clone().appendTo("#admin-messagetray");
+    newElement = element.clone().removeClass("alert-template").appendTo("#admin-messagetray");
     newElement.append("<p>" + text + "</p>");
     newElement.fadeIn();
     
+    getHeight = function(){
+        elements = $("#admin-messagetray .alert").not(".alert-template");
+        var elementsHeight = 0;
+        elements.each(function(){
+            elementsHeight += $(this).outerHeight();
+        });
+        return elementsHeight;
+    }
+    
+    //Check Size
+    containerHeight = $("#admin-messagetray").height();
+    elementsHeight = getHeight();
+    if(elementsHeight > containerHeight && $("#admin-messagetray .alert").not(".alert-template").length > 1){
+        elements.first().slideUp(400, function() { $(this).remove(); } );
+        elementsHeight = getHeight();
+    }
 }
