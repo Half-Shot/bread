@@ -8,7 +8,11 @@ class BreadAdminTools extends Module
         private $CurrentTabIndex = 0;
         private $ModuleSettings = array();
         private $HasGenerated = false;
-        
+        /**
+         *
+         * @var Bread\Modules\BreadAdminToolsSettings
+         */
+        private $settings;
 	function __construct($manager,$name)
 	{
 		parent::__construct($manager,$name);
@@ -24,6 +28,7 @@ class BreadAdminTools extends Module
             $this->manager->RegisterHook($this->name,"BreadAdminTools.MessageTray","SetupMessageTray");
             $this->manager->RegisterHook($this->name,"BreadAdminTools.Mainpanel","Mainpanel");
             $this->manager->RegisterHook($this->name,"BreadAdminTools.SaveCoreSettings", "SaveCore",array(), \Bread\Modules\ModuleManager::EVENT_EXTERNAL);
+            $this->manager->RegisterHook($this->name,"BreadAdminTools.DoUpdate", "UpdateBread",array(), \Bread\Modules\ModuleManager::EVENT_EXTERNAL);
             $this->manager->RegisterHook($this->name,"Bread.PageTitle", "SetTitle");
 
 	}
@@ -200,12 +205,27 @@ class BreadAdminTools extends Module
                 $this->manager->UnregisterModule($this->name);
                 return false;
             }
+            
+            //Get a settings file.
+            $rootSettings = Site::$settingsManager->FindModuleDir("breadadmintools");
+            $this->settingspath = $rootSettings . "settings.json";
+            Site::$settingsManager->CreateSettingsFiles($this->settingspath, new BreadAdminToolsSettings());
+            $this->settings = Site::$settingsManager->RetriveSettings($this->settingspath);
+            
             $Params = Site::getURLParams();
             if(array_key_exists("cpanel_cpindex", $Params)){
                 $this->CurrentModuleIndex = $Params["cpanel_cpindex"];
                 if(array_key_exists("cpanel_tabindex", $Params)){
                     $this->CurrentTabIndex = $Params["cpanel_tabindex"];
                 }
+                else
+                {
+                    $this->CurrentTabIndex = $this->settings->defaultModule;
+                }
+            }
+            else
+            {
+            $this->CurrentTabIndex = $this->settings->defaultTab;
             }
         }
         
@@ -360,6 +380,140 @@ class BreadAdminTools extends Module
             $Tab_CoreSettings->Panels[] = $TCS_Panel_Directorys;
         }
         
+        function CoreSetting_UpdateBread($Tab_UpdateBread)
+        {
+            $TimeBetweenChecks = 15;
+            $CurrentVer = Site::Configuration()->core->version;
+            $IsGit = !is_numeric($CurrentVer);
+                
+            $Panel_About = new \Bread\Structures\BreadCPPanel;
+            $Panel_About->Name = "aboutUpdater";
+            $Panel_About->HumanTitle = $this->manager->FireEvent("Theme.Icon","megaphone")[0] . " About Updates";
+            $Panel_About->Body = file_get_contents(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "aboutUpdater.html"));
+            $Tab_UpdateBread->Panels[] = $Panel_About;
+            
+            $Panel_Updater = new \Bread\Structures\BreadCPPanel;
+            $Panel_Updater->Name = "updaterPanel";
+            $Panel_Updater->HumanTitle = $this->manager->FireEvent("Theme.Icon","cog")[0] . "Deploy THAR Update!";
+            if(time() - ($this->settings->coreSettings->lastRequest + $TimeBetweenChecks) > 0){
+                $this->settings->coreSettings->lastRequest = time();
+                $ReleaseRequest = \Unirest::get("https://api.github.com/repos/Half-Shot/bread/releases");
+                if($ReleaseRequest->code != 200)
+                {
+                    $Panel_Updater->Body = "<h3 style='text-align:center;'>You are running Bread <strong>". Site::Configuration()->core->version ."</strong></h3><br><p> Couldn't reach github at the moment. Please try again later.</p><pre>" . var_export($ReleaseRequest->body,true) . "</pre>";
+                    $Tab_UpdateBread->Panels[] = $Panel_Updater;
+                    return false;
+                }
+                $StableDate   = new \DateTime("1-1-1970");
+                $StableBuild  = false;
+                $ReleaseDate  = new \DateTime("1-1-1970");
+                $ReleaseBuild = false;
+                foreach($ReleaseRequest->body as $Release)
+                {
+                    $time = new \DateTime($Release->published_at);
+                    if($Release->prerelease = true && $time > $ReleaseDate){
+                        $ReleaseDate = $time;
+                        $ReleaseBuild = $Release;
+                    }
+                    elseif($Release->prerelease = false && $time > $StableDate){
+                        $StableDate = $time;
+                        $StableBuild = $Release;
+                    }
+                }
+                $this->settings->coreSettings->releaseBuild = $ReleaseBuild;
+                $this->settings->coreSettings->stableBuild = $StableBuild;
+            }
+            else
+            {
+                $ReleaseBuild = $this->settings->coreSettings->releaseBuild;
+                $StableBuild = $this->settings->coreSettings->stableBuild;
+            }
+            //Stable Data
+            $StablePanel = new \stdClass();
+            $StablePanel->id = "lts-panel";
+            $StablePanel->header = "LTS Channel";
+            
+                        
+            //ApplyButton
+            $ApplyButtonsForm = new \Bread\Structures\BreadForm();
+            $ApplyButtonsForm->action = "";
+            $ApplyButtonsForm->isinline = true;
+            $ApplyButton = new \Bread\Structures\BreadFormElement();
+            $ApplyButton->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+            $ApplyButton->value = "Update";
+            $ApplyButton->class = "btn-info BATapplyButton";
+            $ApplyButtonsForm->elements[] = $ApplyButton;
+            if($StableBuild){
+                $version = Site::filterNumeric($StableBuild->target_commitish);
+                if($version > Site::Configuration()->core->version || $IsGit)
+                {
+                    $ApplyButton->readonly = false;
+                    $ApplyButton->onclick="requestUpdate(0)";
+                    $Message = "See About Updates for infomation on this channel.";
+                }
+                else
+                {
+                    $ApplyButton->readonly = true;
+                    $Message = "You are already up to date on this channel!";
+                }
+                $StablePanel->body = "<p>The latest LTS release is " . $StableBuild->target_commitish . ", " . $StableBuild->name . "</p>"
+                                    ."<p><u>Release Notes:</u></p><p>" . $StableBuild->body . "</p>" . "<small>". $Message."</small>"
+                                    . $this->manager->FireEvent("Theme.Form",$ApplyButtonsForm)[0];
+            }
+            else
+            {
+                $StablePanel->body = "No stable builds have been released yet. Please use the Release Channel."; 
+            }
+            
+            $version = Site::filterNumeric($ReleaseBuild->target_commitish);
+            if($version > Site::Configuration()->core->version || $IsGit)
+            {
+                $ApplyButton->readonly = false;
+                $ApplyButton->onclick="requestUpdate(1)";
+                $Message = "See About Updates for infomation on this channel.";
+            }
+            else
+            {
+                $ApplyButton->readonly = true;
+                $Message = "You are already up to date on this channel!";
+            }
+            
+            //Release Data
+            $ReleasePanel = new \stdClass();
+            $ReleasePanel->id = "release-panel";
+            $ReleasePanel->header = "Release Channel";
+            $ReleasePanel->body = "<p>The latest release is " . $ReleaseBuild->target_commitish . ", " . $ReleaseBuild->name . "</p>"
+                                 ."<p><u>Release Notes:</u></p><p>" . $ReleaseBuild->body . "</p>" . "<small>". $Message."</small>"
+                                 . $this->manager->FireEvent("Theme.Form",$ApplyButtonsForm)[0];
+
+            
+            
+            if(time() - ($this->settings->coreSettings->lastRequest + 15) > 0){
+                $ReleaseRequest = \Unirest::get("https://api.github.com/repos/Half-Shot/bread/commits");
+                $LatestGit = $ReleaseRequest->body[0];
+                $this->settings->coreSettings->GitData = $LatestGit;
+            }
+            else
+            {
+                $LatestGit = $this->settings->coreSettings->GitData;
+            }
+            $ApplyButton->readonly = false;
+            $ApplyButton->onclick="requestUpdate(2)";
+            $ApplyButton->class = "btn-warning BATapplyButton";
+            //Git Data
+            $GitPanel = new \stdClass();
+            $GitPanel->id = "git-panel";
+            $GitPanel->header = "Git Channel";
+            $GitPanel->body = "The latest commit was by " . $LatestGit->commit->author->name . "&lt" . $LatestGit->commit->author->email . "&gt </br>"
+                            . "The SHA is:" . $LatestGit->sha . "</br>"
+                            . "The Message was: <pre>" . $LatestGit->commit->message . "</pre></br>"
+                            . $this->manager->FireEvent("Theme.Form",$ApplyButtonsForm)[0];
+            
+            $Panel_Updater->Body = "<h3 style='text-align:center;'>You are running Bread <strong>". Site::Configuration()->core->version ."</strong></h3><br>" . $this->manager->FireEvent("Theme.Collapse",array("id"=>"ReleaseList","panels"=>array($ReleasePanel,$StablePanel,$GitPanel)))[0];
+            $Tab_UpdateBread->Panels[] = $Panel_Updater;
+
+        }
+        
         function AddCoreSettings($args)
         {
             if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadAdminTools.CorePanel.Read")[0])
@@ -377,28 +531,78 @@ class BreadAdminTools extends Module
             $Tab_Logging->Name = "loggingSettings";
             $Tab_Logging->HumanTitle = $this->manager->FireEvent("Theme.Icon","book")[0] . " Logs";
             
-            $Tab_JSONEditor = new \Bread\Structures\BreadCPSetting;
-            $Tab_JSONEditor->Name = "JsonEditor";
-            $Tab_JSONEditor->HumanTitle = "Settings File Editor";
+            $Tab_UpdateBread = new \Bread\Structures\BreadCPSetting;
+            $Tab_UpdateBread->Name = "BreadUpdate";
+            $Tab_UpdateBread->HumanTitle = $this->manager->FireEvent("Theme.Icon","download-alt")[0] . " Update Bread";
+            
+            $Tab_LayoutEditor = new \Bread\Structures\BreadCPSetting;
+            $Tab_LayoutEditor->Name = "LayoutEditor";
+            $Tab_LayoutEditor->HumanTitle = $this->manager->FireEvent("Theme.Icon","pencil")[0] . " Edit Layouts";           
+            
+            $Tab_RequestSettings = new \Bread\Structures\BreadCPSetting;
+            $Tab_RequestSettings->Name = "RequestSettings";
+            $Tab_RequestSettings->HumanTitle = $this->manager->FireEvent("Theme.Icon","tasks")[0] . " Request Settings";   
+            
             //Tab Index;
             switch($args[1]){
                 case 0:
+                    if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadAdminTools.CorePanel.Settings.Read")[0]){
+                        break;
+                    }
                     Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/corepanelSettings.js") , true);
                     $this->CoreSetting_Settings($Tab_CoreSettings);
                     break;
                 case 1:
+                    if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadAdminTools.CorePanel.Logger.Read")[0]){
+                        break;
+                    }
                     $this->CoreSetting_Logging($Tab_Logging);
                     break;
+                case 2:
+                    if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadAdminTools.CorePanel.Updater.Read")[0]){
+                        break;
+                    }
+                    $this->CoreSetting_UpdateBread($Tab_UpdateBread);
                 default:
                     break;
             }
             
             $CoreSettingsCP->SettingsGroups[] = $Tab_CoreSettings;
             $CoreSettingsCP->SettingsGroups[] = $Tab_Logging;
-            $CoreSettingsCP->SettingsGroups[] = $Tab_JSONEditor;
-            
+            $CoreSettingsCP->SettingsGroups[] = $Tab_UpdateBread;
+            $CoreSettingsCP->SettingsGroups[] = $Tab_RequestSettings;
             return $CoreSettingsCP;
             
         }
+        
+        function UpdateBread()
+        {            
+            if(!$this->manager->FireEvent("Bread.Security.GetPermission","Bread.SystemUpdate")[0])
+                return false;
+            $updatePackage = -1;
+            return false;
+        }
 
+}
+
+class BreadAdminToolsSettings{
+    function __construct() {
+        $this->coreSettings = new \Bread\Modules\BATCoreSettings();
+    }
+    /**
+     *
+     * @var Bread\Modules\BATCoreSettings
+     */
+    public $coreSettings;
+    public $defaultModule = 0;
+    public $defaultTab = 0;
+}
+
+class BATCoreSettings{
+    public $updateChannel = 1; //Release
+    public $lastUpdate = 0;
+    public $lastRequest = 0;
+    public $releaseBuild = false;
+    public $stableBuild = false;
+    public $GitData = false;
 }

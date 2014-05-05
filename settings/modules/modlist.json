@@ -8,7 +8,5 @@
         "WebShim\/module.json",
         "BreadFormBuilder\/module.json"
     ],
-    "blacklisted": [
-
-    ]
+    "blacklisted": []
 }

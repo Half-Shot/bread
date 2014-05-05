@@ -27,6 +27,7 @@ class BootstrapTheme extends Bread\Modules\Module
             $this->manager->RegisterHook($this->name,"Theme.Form","BuildForm");
             $this->manager->RegisterHook($this->name,"Theme.InputElement","BuildInput");
             $this->manager->RegisterHook($this->name,"Theme.Tabs","Tabs");
+            $this->manager->RegisterHook($this->name,"Theme.Collapse","Collapse");
             //Layouts
             $this->manager->RegisterHook($this->name,"Theme.Layout.Article","Article");
             $this->manager->RegisterHook($this->name,"Theme.Layout.Block","LayoutBlock");
@@ -211,6 +212,16 @@ class BootstrapTheme extends Bread\Modules\Module
                     return '<span class="glyphicon glyphicon-book"></span>';
                 case "close":
                     return '<span class="glyphicon glyphicon-remove-circle"></span>';
+                case "download-alt":
+                    return '<span class="glyphicon glyphicon-download-alt"></span>';
+                case "download":
+                    return '<span class="glyphicon glyphicon-download"></span>';
+                case "upload":
+                    return '<span class="glyphicon glyphicon-upload"></span>';
+                case "tasks":
+                    return '<span class="glyphicon glyphicon-tasks"></span>';
+                case "megaphone":
+                    return '<span class="glyphicon glyphicon-bullhorn"></span>';
                 default :
                     return '<small>' . $args . '</small>';
             }
@@ -315,6 +326,10 @@ class BootstrapTheme extends Bread\Modules\Module
             }
             $body = $args["body"];
             return '<div class="'. $class .'">' . $closeButton .  $body . "</div>";
+        }
+        function Collapse($args)
+        {
+            return $this->breadXML->GetHTMLOfElement("Collapse",$args);
         }
 }
 ?>

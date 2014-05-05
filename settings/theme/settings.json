@@ -12,7 +12,5 @@
         "controlpanel": "controlpanel\/page-layout.json",
         "search": "search\/page-layout.json"
     },
-    "settings": {
-
-    }
+    "settings": {}
 }

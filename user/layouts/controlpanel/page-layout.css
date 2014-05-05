@@ -35,3 +35,19 @@
 .alert{
     display:none;
 }
+#ReleaseList .panel-heading{
+    background-image: none;
+    color:whitesmoke;
+}
+
+#release-panel-header{
+    background-color: #e38d13;
+}
+
+#lts-panel-header{
+    background-color: #4cae4c;
+}
+
+#git-panel-header{
+    background-color: #d43f3a;
+}

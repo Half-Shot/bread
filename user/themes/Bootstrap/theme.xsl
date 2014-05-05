@@ -384,5 +384,35 @@
                 </li>
             </xsl:for-each>
         </ul>
+    </xsl:template>   
+    <xsl:template match="telement[@id='Collapse']">
+        <div>
+            <xsl:attribute name="name"><xsl:value-of select="./variable/name"/></xsl:attribute>
+            <xsl:attribute name="id"><xsl:value-of select="./variable/id"/></xsl:attribute>
+            <xsl:attribute name="class">panel-group <xsl:value-of select="./variable/class"/></xsl:attribute>
+            <xsl:for-each select="./variable/panels/variable">
+                <div class="panel panel-default">
+                    <a data-toggle="collapse" data-parent="#accordion">
+                        <xsl:attribute name="href">#<xsl:value-of select="./id"/></xsl:attribute>
+                        <div class="panel-heading">
+                            <xsl:attribute name="id"><xsl:value-of select="./id"/>-header</xsl:attribute>
+                            <h4 class="panel-title">
+                                <xsl:value-of select="./header"/>
+                            </h4>
+                        </div>
+                    </a>
+                    <div class="panel-collapse collapse">
+                        <xsl:if test="position() = 1">
+                            <xsl:attribute name="class">panel-collapse collapse in</xsl:attribute>
+                        </xsl:if>
+                        
+                        <xsl:attribute name="id"><xsl:value-of select="./id"/></xsl:attribute>
+                        <div class="panel-body">
+                            <xsl:value-of select="./body"/>
+                        </div>
+                    </div>
+                </div>
+            </xsl:for-each>
+        </div>
     </xsl:template>
 </xsl:stylesheet>
