@@ -174,6 +174,13 @@ class BootstrapTheme extends Bread\Modules\Module
                         $HTML .= $element["guts"];
                     }
                 }
+                else
+                {
+                    foreach($args as $button)
+                    {
+                        $HTML .= $button;
+                    }
+                }
             }
             else {
                 $HTML = $args;

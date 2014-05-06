@@ -8,6 +8,7 @@ class BreadAdminTools extends Module
         private $CurrentTabIndex = 0;
         private $ModuleSettings = array();
         private $HasGenerated = false;
+        private $updateFileCache = false;
         /**
          *
          * @var Bread\Modules\BreadAdminToolsSettings
@@ -21,14 +22,15 @@ class BreadAdminTools extends Module
 	{
             $this->manager->RegisterHook($this->name,"Bread.DrawModule","ReturnFirstArgument");
             $this->manager->RegisterHook($this->name,"BreadAdminTools.Button","CPButton");
-            $this->manager->RegisterHook($this->name,"Bread.ProcessRequest","Setup",array("Bread.ProcessRequest"=>"BreadUserSystem"));
+            $this->manager->RegisterHook($this->name,"Bread.ProcessRequest","Setup",\Bread\Modules\ModuleManager::EVENT_INTERNAL,array("Bread.ProcessRequest"=>"BreadUserSystem"));
             $this->manager->RegisterHook($this->name,"BreadAdminTools.AddModuleSettings","AddCoreSettings");
             $this->manager->RegisterHook($this->name,"BreadAdminTools.Banner","Banner");
             $this->manager->RegisterHook($this->name,"BreadAdminTools.Sidebar","Sidebar");
             $this->manager->RegisterHook($this->name,"BreadAdminTools.MessageTray","SetupMessageTray");
             $this->manager->RegisterHook($this->name,"BreadAdminTools.Mainpanel","Mainpanel");
-            $this->manager->RegisterHook($this->name,"BreadAdminTools.SaveCoreSettings", "SaveCore",array(), \Bread\Modules\ModuleManager::EVENT_EXTERNAL);
-            $this->manager->RegisterHook($this->name,"BreadAdminTools.DoUpdate", "UpdateBread",array(), \Bread\Modules\ModuleManager::EVENT_EXTERNAL);
+            $this->manager->RegisterHook($this->name,"BreadAdminTools.SaveCoreSettings", "SaveCore", \Bread\Modules\ModuleManager::EVENT_EXTERNAL);
+            $this->manager->RegisterHook($this->name,"BreadAdminTools.DoUpdate","UpdateBread",\Bread\Modules\ModuleManager::EVENT_EXTERNAL);
+            $this->manager->RegisterHook($this->name,"BreadAdminTools.UpdatePing","UpdatePing", \Bread\Modules\ModuleManager::EVENT_EXTERNAL);
             $this->manager->RegisterHook($this->name,"Bread.PageTitle", "SetTitle");
 
 	}
@@ -508,10 +510,29 @@ class BreadAdminTools extends Module
                             . "The SHA is:" . $LatestGit->sha . "</br>"
                             . "The Message was: <pre>" . $LatestGit->commit->message . "</pre></br>"
                             . $this->manager->FireEvent("Theme.Form",$ApplyButtonsForm)[0];
+            $releasePanels = array($StablePanel,$ReleasePanel,$GitPanel);
+            $currentChannel = $this->settings->coreSettings->updateChannel;
+            $temp = $releasePanels[0];
+            $releasePanels[0] = $releasePanels[$currentChannel];
+            $releasePanels[$currentChannel] = $temp;
+            $listOfReleases = $this->manager->FireEvent("Theme.Collapse",array("id"=>"ReleaseList","panels"=>$releasePanels))[0];
             
-            $Panel_Updater->Body = "<h3 style='text-align:center;'>You are running Bread <strong>". Site::Configuration()->core->version ."</strong></h3><br>" . $this->manager->FireEvent("Theme.Collapse",array("id"=>"ReleaseList","panels"=>array($ReleasePanel,$StablePanel,$GitPanel)))[0];
+            $Panel_Updater->Body = "<h3 style='text-align:center;'>You are running Bread <strong>". Site::Configuration()->core->version ."</strong></h3><h4 style='text-align:center;'>" . $releasePanels[0]->header . "</h4>" . $listOfReleases;
             $Tab_UpdateBread->Panels[] = $Panel_Updater;
-
+            
+            //Also add a modal for the update dialog!
+            //
+            //Footer
+            $StartButton = array("onclick"=>"startUpdate();","class"=>"btn-info","value"=>"Start Update");
+            $CancelButton = array("onclick"=>"cancelUpdate();","class"=>"btn-danger","value"=>"Cancel Update");
+            $StartButtonHTML = $this->manager->FireEvent("Theme.Button",$StartButton)[0];
+            $CancelButtonHTML = $this->manager->FireEvent("Theme.Button",$CancelButton)[0];
+            $footerButtons = $this->manager->FireEvent("Theme.Layout.ButtonGroup",array($StartButtonHTML,$CancelButtonHTML))[0];
+            
+            $modalBody = "<h4>Update Progress</h4><hr>";
+            $modalBody .= "<h2  id='label-status' style='display:none;'>" . $this->manager->FireEvent("Theme.Label","In Progress!")[0] . "</h2>";
+            $modal = $this->manager->FireEvent("Theme.Modal", array("id"=>"update-modal","label"=>"update-modal","title"=>"Updating Bread","body"=>$modalBody,"footer"=>$footerButtons))[0];
+            Site::AddToBodyCode($modal);
         }
         
         function AddCoreSettings($args)
@@ -562,6 +583,7 @@ class BreadAdminTools extends Module
                     if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadAdminTools.CorePanel.Updater.Read")[0]){
                         break;
                     }
+                    Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/corepanelUpdater.js") , true);
                     $this->CoreSetting_UpdateBread($Tab_UpdateBread);
                 default:
                     break;
@@ -578,9 +600,72 @@ class BreadAdminTools extends Module
         function UpdateBread()
         {            
             if(!$this->manager->FireEvent("Bread.Security.GetPermission","Bread.SystemUpdate")[0])
-                return false;
-            $updatePackage = -1;
-            return false;
+                return "FAIL";
+            Site::$Logger->writeMessage("Bread Update Requested!", "backuplog");
+            //Get all needed data
+            $URL = "";
+            $channel = intval($_POST["channel"]);
+            if($channel === 1)
+            {
+               $URL = $this->settings->coreSettings->releaseBuild->zipball_url;
+            }
+            else if($channel === 0)
+            {
+               $URL = $this->settings->coreSettings->stableBuild->zipball_url;
+            }
+            else if($channel === 2)
+            {
+               $URL = "https://github.com/Half-Shot/bread/archive/devbread.zip";
+            }
+            else {
+                return "FAIL";
+            }
+            Site::$Logger->writeMessage("Bread Update Channel " . $channel . " Selected", "backuplog");
+            //Cache setup
+            $file = Util::ResolvePath("./%system-temp/update.zip");
+            //Destroy any lingering files.
+            if(file_exists($file)){
+                unlink($file);
+            }
+            //Stage 1 -- Download
+            $this->DownloadNewFile($URL,$file);
+            //Stage 2 -- Unzip
+            $updateZip = new \ZipArchive();
+            $extractPath = Site::GetRootPath() .  Util::ResolvePath("/%system-temp/newUpdate");
+            if($updateZip->open($file) === TRUE){
+                $updateZip->extractTo($extractPath);
+                $updateZip->close();
+            }
+            else
+            {
+                Site::$Logger->writeError("Couldn't extract new update. Either the download or the extraction method failed!", \Bread\Logger::SEVERITY_HIGH, "backuplog");
+                return "FAIL";
+            }
+            //Install New Update.
+            $rootBread = $extractPath . "/" . scandir($extractPath,1)[0] . "/";
+            Util::xcopy($extractPath . "modules", Site::GetRootPath());
+            Util::xcopy($extractPath . "user/modules", Site::GetRootPath() . "/user/");
+            //Remove stuff.
+            Util::RecursiveRemove($extractPath);
+            unlink($file);
+            return "OK";
+        }
+        
+        function DownloadNewFile($url,$file)
+        {
+            
+            Site::$Logger->writeMessage("Initial URL:" . $url, "backuplog");
+            //Initial Request - Using Unirest beacause curl has issues.
+            $response = \Unirest::get($url);
+            while($response->code == 300 | 302)
+            {
+                if($response->code == 200)
+                    break;
+                $url = $response->headers["Location"];  
+                Site::$Logger->writeMessage("URL Redirect to" . $url, "backuplog");
+                $response = \Unirest::get($url);
+            }
+            file_put_contents($file, $response->raw_body);
         }
 
 }
@@ -605,4 +690,10 @@ class BATCoreSettings{
     public $releaseBuild = false;
     public $stableBuild = false;
     public $GitData = false;
+}
+
+class UpdatePacket{
+    public $stage = 0;
+    public $done = false;
+    public $data = 0;
 }

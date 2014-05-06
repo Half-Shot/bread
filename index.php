@@ -11,7 +11,7 @@ $BREAD_SITEMODFILE = "modules/site.php";
 include($BREAD_SITEMODFILE);
 //Early stage loading.
 Site::ShowDebug(true);
-Site::LoadConfig($BREAD_CONFIGURL);
+Site::LoadConfig($BREAD_CONFIGURL,__DIR__);
 Site::CheckBans();
 Site::SetupLogging();
 //Core loading.

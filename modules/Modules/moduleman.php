@@ -264,6 +264,8 @@ class ModuleManager
         function CanRunEvent($dependencies)
         {
             $needToRun = array();
+            if(!is_array($dependencies))
+                return $needToRun;
             foreach($dependencies as $event => $module)
             {
                 if(array_key_exists($event, $this->completed)){

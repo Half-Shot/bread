@@ -114,6 +114,11 @@ class Site
          * @var array key=> value
          */
         private static $URLParameters;
+        /**
+         * The root of the site.
+         * @var string
+         */
+        private static $rootPath;
         
         /**
          * Is the request Ajax?
@@ -122,6 +127,15 @@ class Site
         public static function GetisAjax()
         {
             return static::$isAjax;
+        }
+        
+        /**
+         * The root directory of the site.
+         * @return string
+         */
+        public static function GetRootPath()
+        {
+            return static::$rootPath;
         }
         
         public static function Configuration()
@@ -224,20 +238,21 @@ class Site
          * @throws \Exception
          * @see static::$configuration
          */
-	public static function LoadConfig($configurl)
+	public static function LoadConfig($configurl,$basepath)
 	{
-                static::$configurl = $configurl;
-		$tmp = file_get_contents($configurl);
-		if(!$tmp)
-		{
-			throw new \Exception($tmp . " could not be loaded. Game Over!");
-		}
-		static::$configuration = json_decode($tmp);
-		if(!static::$configuration)
-		{
-			throw new \Exception("Configuration could be <b>read</b> but not be <b>loaded</b>. Game Over!");
-		}
-                date_default_timezone_set(static::$configuration->core->timezone);//Setting timezone before its too late.
+            static::$rootPath = $basepath;
+            static::$configurl = $configurl;
+            $tmp = file_get_contents($configurl);
+            if(!$tmp)
+            {
+                    throw new \Exception($tmp . " could not be loaded. Game Over!");
+            }
+            static::$configuration = json_decode($tmp);
+            if(!static::$configuration)
+            {
+                    throw new \Exception("Configuration could be <b>read</b> but not be <b>loaded</b>. Game Over!");
+            }
+            date_default_timezone_set(static::$configuration->core->timezone);//Setting timezone before its too late.
 	}
         /**
          * Enables/Disables Debug Statements. Very useful for a developer
@@ -514,18 +529,18 @@ class Site
             if(static::$isAjax)
             {
                 // Turn off all error reporting
-                error_reporting(0);
+                self::ShowDebug(true);
                 site::$Logger->writeMessage("Request is AJAX!");
                 $module = "";
                 $event = "Bread.AjaxRequest";
-                if(isset($_POST["ajaxEvent"]))
+                if(isset($_REQUEST["ajaxEvent"]))
                 {
-                    $event = $_POST["ajaxEvent"];
+                    $event = $_REQUEST["ajaxEvent"];
                 }
                 
-                if(isset($_POST["ajaxModule"]))
+                if(isset($_REQUEST["ajaxModule"]))
                 {
-                    $module = $_POST["ajaxModule"];
+                    $module = $_REQUEST["ajaxModule"];
                 }
                 else if(isset(static::$URLParameters["ajax"]))
                 {
@@ -535,11 +550,11 @@ class Site
                 if($module != "")
                 {
                     static::$Logger->writeMessage("Module: " . $module);
-                    $return = static::$moduleManager->FireSpecifiedModuleEvent($event,$module,NULL,false);
+                    $return = static::$moduleManager->FireSpecifiedModuleEvent($event,$module,array(),false);
                     $realdata = $return;
                 }
                 else {
-                    $return = static::$moduleManager->FireEvent($event,NULL,false);
+                    $return = static::$moduleManager->FireEvent($event,array(),false);
                     if(is_array($return))
                         $realdata = $return[0];
                 }

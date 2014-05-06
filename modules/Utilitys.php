@@ -290,4 +290,145 @@ class Utilitys {
            }
            return $newpath;
         }
+        
+        static function curl_exec_follow($ch, &$maxredirect = null) {
+
+          $mr = $maxredirect === null ? 5 : intval($maxredirect);
+
+          if (ini_get('open_basedir') == '' && ini_get('safe_mode') == 'Off') {
+
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, $mr > 0);
+            curl_setopt($ch, CURLOPT_MAXREDIRS, $mr);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+          } else {
+
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
+
+            if ($mr > 0)
+            {
+              $original_url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+              $newurl = $original_url;
+
+              $rch = curl_copy_handle($ch);
+
+              curl_setopt($rch, CURLOPT_HEADER, true);
+              curl_setopt($rch, CURLOPT_NOBODY, true);
+              curl_setopt($rch, CURLOPT_FORBID_REUSE, false);
+              do
+              {
+                curl_setopt($rch, CURLOPT_URL, $newurl);
+                $header = curl_exec($rch);
+                if (curl_errno($rch)) {
+                  $code = 0;
+                } else {
+                  $code = curl_getinfo($rch, CURLINFO_HTTP_CODE);
+                  if ($code == 301 || $code == 302) {
+                    preg_match('/Location:(.*?)\n/', $header, $matches);
+                    $newurl = trim(array_pop($matches));
+
+                    // if no scheme is present then the new url is a
+                    // relative path and thus needs some extra care
+                    if(!preg_match("/^https?:/i", $newurl)){
+                      $newurl = $original_url . $newurl;
+                    }   
+                  } else {
+                    $code = 0;
+                  }
+                }
+              } while ($code && --$mr);
+
+              curl_close($rch);
+
+              if (!$mr)
+              {
+                if ($maxredirect === null)
+                trigger_error('Too many redirects.', E_USER_WARNING);
+                else
+                $maxredirect = 0;
+
+                return false;
+              }
+              curl_setopt($ch, CURLOPT_URL, $newurl);
+            }
+          }
+          return curl_exec($ch);
+        }
+        static function http_parse_headers( $header )
+        {
+            $retVal = array();
+            $fields = explode("\r\n", preg_replace('/\x0D\x0A[\x09\x20]+/', ' ', $header));
+            foreach( $fields as $field ) {
+                if( preg_match('/([^:]+): (.+)/m', $field, $match) ) {
+                    $match[1] = preg_replace('/(?<=^|[\x09\x20\x2D])./e', 'strtoupper("\0")', strtolower(trim($match[1])));
+                    if( isset($retVal[$match[1]]) ) {
+                        $retVal[$match[1]] = array($retVal[$match[1]], $match[2]);
+                    } else {
+                        $retVal[$match[1]] = trim($match[2]);
+                    }
+                }
+            }
+            return $retVal;
+        }
+        /**
+        * Copy a file, or recursively copy a folder and its contents
+        * @param       string   $source    Source path
+        * @param       string   $dest      Destination path
+        * @param       string   $permissions New folder creation permissions
+        * @return      bool     Returns true on success, false on failure
+        * @author      mjolnic <http://stackoverflow.com/a/12763962>
+        */
+        static function xcopy($source, $dest, $permissions = 0755)
+        {
+           // Check for symlinks
+           if (is_link($source)) {
+               return symlink(readlink($source), $dest);
+           }
+           // Simple copy for a file
+           if (is_file($source)) {
+               return copy($source, $dest);
+           }
+
+           // Make destination directory
+           if (!is_dir($dest)) {
+               mkdir($dest, $permissions);
+           }
+
+           // Loop through the folder
+           $dir = dir($source);
+           while (false !== $entry = $dir->read()) {
+               // Skip pointers
+               if ($entry == '.' || $entry == '..') {
+                   continue;
+               }
+                
+               // Deep copy directories
+               self::xcopy("$source/$entry", "$dest/$entry");
+           }
+
+           // Clean up
+           $dir->close();
+           return true;
+        }
+        
+        /**
+         * Does what it says on the tin, removes a directory recursively.
+         * @param string $directory Directory to remove.
+         */
+        static function RecursiveRemove($directory)
+        {
+            $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($directory, \RecursiveDirectoryIterator::SKIP_DOTS),\RecursiveIteratorIterator::CHILD_FIRST);
+            foreach ($files as $fileinfo) {
+                if(is_dir($fileinfo))
+                {
+                    self::RecursiveRemove($fileinfo->getRealPath());
+                }
+                else
+                {
+                    \unlink($fileinfo->getRealPath());
+                }
+            }
+            \rmdir($directory);
+        }
 }
