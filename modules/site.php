@@ -1,6 +1,5 @@
 <?php
 namespace Bread;
-
 use Bread\Utilitys as Utilitys;
 use Bread\Structures\BreadRequestData as BreadRequestData;
 use Bread\Structures\BreadRequestCommand as BreadRequestCommand;
@@ -836,6 +835,8 @@ class Logger
      * A critial error which affects bread and will stop it from running properly at any capacity.
      */
     const SEVERITY_CRITICAL = 2;
+    
+    const DATEFORMAT = "DM_H_i_s";
     private $logpath = "NOLOG";
     private $minlog = -1;
     private $logpermodule = true;
@@ -866,7 +867,7 @@ class Logger
                 return;
         }
         $this->logpermodule = $logpermodule;
-        $this->logpath = $filepath. "/" . date("DM_H_i_s");
+        $this->logpath = $filepath. "/" . date(self::DATEFORMAT);
         $this->minlog = $minlog;
         $this->cleanUpLogFiles($maxlogs,$filepath,$keepfor);
         static::writeMessage("Bread Version " . Site::Configuration()->core->version);
@@ -937,7 +938,6 @@ class Logger
     {
         if(!$this->logpermodule){
             $this->fileStreams["core"] = fopen($this->logpath . ".log",static::FILEMODE);
-            
             return;
         }
         else

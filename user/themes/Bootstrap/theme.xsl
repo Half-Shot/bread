@@ -163,23 +163,21 @@
                 </button>
             </xsl:when>
             <xsl:when test="./type = 'dropdown'">
-                <xsl:attribute name="name"><xsl:value-of select="./name"/></xsl:attribute>
-                <xsl:attribute name="type"><xsl:value-of select="./type"/></xsl:attribute>
-                <xsl:attribute name="onclick"><xsl:value-of select="./onclick"/></xsl:attribute>
-                    <xsl:if test="./multiple = 1">
-                        <xsl:attribute name="multiple"/>
-                    </xsl:if>
-                <xsl:attribute name="id"><xsl:value-of select="./id"/></xsl:attribute>
-                <xsl:attribute name="class">form-control <xsl:value-of select="./class"/></xsl:attribute>
-                <xsl:for-each select="./dataset/variable">
-                    <option>
-                        <xsl:attribute name="value"><xsl:value-of select="./dataset/variable"/></xsl:attribute>
-                            <xsl:if test="../../value = ./dataset/variable">
-                                <xsl:attribute name="multiple"/>
-                            </xsl:if>
-                        <xsl:value-of select="./dataset/variable"/>
-                    </option>
-                </xsl:for-each>
+                <select>
+                    <xsl:attribute name="name"><xsl:value-of select="./name"/></xsl:attribute>
+                    <xsl:attribute name="onclick"><xsl:value-of select="./onclick"/></xsl:attribute>
+                    <xsl:attribute name="value"><xsl:value-of select="./value"/></xsl:attribute>
+                        <xsl:if test="./multiple = 1">
+                            <xsl:attribute name="multiple"/>
+                        </xsl:if>
+                    <xsl:attribute name="id"><xsl:value-of select="./id"/></xsl:attribute>
+                    <xsl:attribute name="class">form-control <xsl:value-of select="./class"/></xsl:attribute>
+                    <xsl:for-each select="./dataset/variable">
+                        <option>
+                                <xsl:value-of select="."/>
+                        </option>
+                    </xsl:for-each>
+                </select>
             </xsl:when>
             <xsl:otherwise>
             <input>

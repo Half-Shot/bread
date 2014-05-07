@@ -235,11 +235,7 @@ class BreadAdminTools extends Module
         {
             $Panel_Cur = new \Bread\Structures\BreadCPPanel;
             $Panel_Cur->Name = "currentLog";
-            $Panel_Cur->HumanTitle = "Current Log";
-            
-            $Panel_Prev = new \Bread\Structures\BreadCPPanel;
-            $Panel_Prev->Name = "previousLogs";
-            $Panel_Prev->HumanTitle = "Previous Logs";
+            $Panel_Cur->HumanTitle = "Current Log";date("DM_H_i_s");
             
             $Tab_Logging->Panels[] = $Panel_Cur;
             $LogMsgBody = "";
@@ -253,7 +249,56 @@ class BreadAdminTools extends Module
                 $LogMsgBody .= "</pre>";
             }
             $Panel_Cur->Body = "<code>" . $LogMsgBody . "</pre></code>";
+            
+            $Panel_Prev = new \Bread\Structures\BreadCPPanel;
+            $Panel_Prev->Name = "previousLogs";
+            $Panel_Prev->HumanTitle = "Previous Logs";
             $Tab_Logging->Panels[] = $Panel_Prev;
+            
+            $LogLocations = Util::ResolvePath("%system-temp/breadlog");
+            $LogFiles = \scandir($LogLocations);
+            $Form = new \Bread\Structures\BreadForm();
+            $Form->id = "log-form";
+            $SelectionBox = new \Bread\Structures\BreadFormElement();
+            $SelectionBox->id = "log-fileselectorbox";
+            $SelectionBox->type = "dropdown";
+            $SelectionBox->dataset = array();
+            $SelectionBox->label = "Select a Log File";
+            $InitialLog = "";
+            foreach(array_reverse($LogFiles) as $file){
+                if(is_link($file) || $file == "." || $file == ".."){
+                    continue;
+                }
+                $fileName = $file;
+                $file = $LogLocations . "/" . $file;
+                $SelectionBox->dataset[] = $fileName;
+                $SelectionBox->value = $fileName;
+                if(is_dir($file)){
+                    $logdata = "";
+                    foreach(scandir($file) as $logfile){
+                        if(is_link($logfile) || $logfile == "." || $logfile == ".."){
+                            continue;
+                        }
+                        $logdata .= file_get_contents($file . "/" . $logfile) . "</br>";
+                    }
+                }
+                else
+                {
+                    $logdata .= file_get_contents($file);
+                }
+                if(empty($InitialLog))
+                {
+                    $InitialLog = $logdata;
+                }
+               Site::AddToBodyCode("<logfile hidden filename='" . $fileName . "'>" . nl2br($logdata) . "</logfile>");
+            }
+            $Form->elements[] = $SelectionBox;
+            $LogText = new \Bread\Structures\BreadFormElement();
+            $LogText->type = \Bread\Structures\BreadFormElement::TYPE_RAWHTML;
+            $LogText->value = "<code><pre id='log-output' style='width:100%;height:500px;overflow:scroll;'>" . $InitialLog . "</pre></code>";
+            $Form->elements[] = $LogText;
+            $FormHTML = $this->manager->FireEvent("Theme.Form",$Form);        
+            $Panel_Prev->Body = $FormHTML;
         }
         
         function CoreSetting_Settings($Tab_CoreSettings)
@@ -582,6 +627,7 @@ class BreadAdminTools extends Module
                     if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadAdminTools.CorePanel.Logger.Read")[0]){
                         break;
                     }
+                    Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/corepanelLogger.js") , true);
                     $this->CoreSetting_Logging($Tab_Logging);
                     break;
                 case 2:
@@ -636,7 +682,7 @@ class BreadAdminTools extends Module
             //Destroy any lingering files.
             if(file_exists($file)){
                 unlink($file);
-            }
+            } 
             //Stage 1 -- Download
             $this->DownloadNewFile($URL,$file);
             //Stage 2 -- Unzip
@@ -655,6 +701,7 @@ class BreadAdminTools extends Module
             $rootBread = $extractPath . "/" . scandir($extractPath,1)[0] . "/";
             Util::xcopy($rootBread . "modules", Site::GetRootPath() . "/modules");
             Util::xcopy($rootBread . "user/modules", Site::GetRootPath() . "/user/modules");
+            Util::xcopy($rootBread . "user/modules", Site::GetRootPath() . "/user/themes");
             //Set Version
             $Settings = new \stdClass();
             $Settings->core->version = $version;

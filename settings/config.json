@@ -9,10 +9,10 @@
     },
     "logger": {
         "path": ".\/temp\/breadlog",
-        "maxlogfiles": 10,
+        "maxlogfiles": 100,
         "minseveritytolog": -1,
         "multifilelog": true,
-        "keepfor": 60
+        "keepfor": 120
     },
     "strings": {
         "sitename": "The Bakery"
