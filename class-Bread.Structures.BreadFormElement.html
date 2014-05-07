@@ -7,7 +7,7 @@
 	<title>Class Bread\Structures\BreadFormElement | Bread</title>
 
 	<script type="text/javascript" src="resources/combined.js?174271566"></script>
-	<script type="text/javascript" src="elementlist.js?2491947360"></script>
+	<script type="text/javascript" src="elementlist.js?2841844939"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -32,7 +32,11 @@
 				<li><a href="namespace-Bread.Themes.html">Themes</a>
 						</li>
 							</ul></li>
+				<li><a href="namespace-None.html">None</a>
+						</li>
 				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+				<li><a href="namespace-Unirest.html">Unirest</a>
 						</li>
 			</ul>
 		</div>
@@ -43,10 +47,16 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
+				<li><a href="class-Bread.Structures.BreadConfigurationPanel.html">BreadConfigurationPanel</a></li>
+				<li><a href="class-Bread.Structures.BreadCPPanel.html">BreadCPPanel</a></li>
+				<li><a href="class-Bread.Structures.BreadCPSetting.html">BreadCPSetting</a></li>
 				<li><a href="class-Bread.Structures.BreadForm.html">BreadForm</a></li>
 				<li class="active"><a href="class-Bread.Structures.BreadFormElement.html">BreadFormElement</a></li>
 				<li><a href="class-Bread.Structures.BreadLinkStructure.html">BreadLinkStructure</a></li>
+				<li><a href="class-Bread.Structures.BreadModuleStructure.html">BreadModuleStructure</a></li>
 				<li><a href="class-Bread.Structures.BreadRequestData.html">BreadRequestData</a></li>
+				<li><a href="class-Bread.Structures.BreadSearchItem.html">BreadSearchItem</a></li>
+				<li><a href="class-Bread.Structures.BreadSearchRequest.html">BreadSearchRequest</a></li>
 				<li><a href="class-Bread.Structures.BreadUser.html">BreadUser</a></li>
 			</ul>
 
@@ -113,7 +123,7 @@
 		<b>Namespace:</b> <a href="namespace-Bread.html">Bread</a>\<a href="namespace-Bread.Structures.html">Structures</a><br />
 		
 
-		<b>Located at</b> <a href="source-class-Bread.Structures.BreadFormElement.html#18-35" title="Go to source code">modules/Structures/BreadForm.php</a><br />
+		<b>Located at</b> <a href="source-class-Bread.Structures.BreadFormElement.html#22-47" title="Go to source code">modules/Structures/BreadForm.php</a><br />
 	</div>
 
 
@@ -132,7 +142,7 @@
 
 		<td class="attributes"><code>string</code></td>
 		<td class="name"><code>
-				<a href="source-class-Bread.Structures.BreadFormElement.html#32" title="Go to source code"><b>TYPE_TEXTBOX</b></a>
+				<a href="source-class-Bread.Structures.BreadFormElement.html#43" title="Go to source code"><b>TYPE_TEXTBOX</b></a>
 		</code></td>
 		<td class="value"><code><span class="php-quote">&quot;text&quot;</span></code></td>
 		<td class="description"><div>
@@ -152,7 +162,7 @@
 
 		<td class="attributes"><code>string</code></td>
 		<td class="name"><code>
-				<a href="source-class-Bread.Structures.BreadFormElement.html#33" title="Go to source code"><b>TYPE_PASSWORD</b></a>
+				<a href="source-class-Bread.Structures.BreadFormElement.html#44" title="Go to source code"><b>TYPE_PASSWORD</b></a>
 		</code></td>
 		<td class="value"><code><span class="php-quote">&quot;password&quot;</span></code></td>
 		<td class="description"><div>
@@ -172,11 +182,31 @@
 
 		<td class="attributes"><code>string</code></td>
 		<td class="name"><code>
-				<a href="source-class-Bread.Structures.BreadFormElement.html#34" title="Go to source code"><b>TYPE_HTMLFIVEBUTTON</b></a>
+				<a href="source-class-Bread.Structures.BreadFormElement.html#45" title="Go to source code"><b>TYPE_HTMLFIVEBUTTON</b></a>
 		</code></td>
 		<td class="value"><code><span class="php-quote">&quot;button&quot;</span></code></td>
 		<td class="description"><div>
 			<a href="#TYPE_HTMLFIVEBUTTON" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="TYPE_RAWHTML" id="TYPE_RAWHTML">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name"><code>
+				<a href="source-class-Bread.Structures.BreadFormElement.html#46" title="Go to source code"><b>TYPE_RAWHTML</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-quote">&quot;rawhtml&quot;</span></code></td>
+		<td class="description"><div>
+			<a href="#TYPE_RAWHTML" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -202,7 +232,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Bread.Structures.BreadFormElement.html#23" title="Go to source code"><var>$name</var></a>
+				<a href="source-class-Bread.Structures.BreadFormElement.html#27" title="Go to source code"><var>$name</var></a>
 		</td>
 		<td class="value"><code><span class="php-quote">&quot;&quot;</span></code></td>
 		<td class="description"><div>
@@ -225,11 +255,57 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Bread.Structures.BreadFormElement.html#24" title="Go to source code"><var>$type</var></a>
+				<a href="source-class-Bread.Structures.BreadFormElement.html#28" title="Go to source code"><var>$type</var></a>
 		</td>
 		<td class="value"><code><span class="php-quote">&quot;&quot;</span></code></td>
 		<td class="description"><div>
 			<a href="#$type" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="class" id="$class">
+		<td class="attributes"><code>
+			public  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Bread.Structures.BreadFormElement.html#29" title="Go to source code"><var>$class</var></a>
+		</td>
+		<td class="value"><code><span class="php-quote">&quot;&quot;</span></code></td>
+		<td class="description"><div>
+			<a href="#$class" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="toggle" id="$toggle">
+		<td class="attributes"><code>
+			public  
+			boolean
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Bread.Structures.BreadFormElement.html#30" title="Go to source code"><var>$toggle</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">false</span></code></td>
+		<td class="description"><div>
+			<a href="#$toggle" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -248,7 +324,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Bread.Structures.BreadFormElement.html#25" title="Go to source code"><var>$onclick</var></a>
+				<a href="source-class-Bread.Structures.BreadFormElement.html#31" title="Go to source code"><var>$onclick</var></a>
 		</td>
 		<td class="value"><code><span class="php-quote">&quot;&quot;</span></code></td>
 		<td class="description"><div>
@@ -271,7 +347,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Bread.Structures.BreadFormElement.html#26" title="Go to source code"><var>$value</var></a>
+				<a href="source-class-Bread.Structures.BreadFormElement.html#32" title="Go to source code"><var>$value</var></a>
 		</td>
 		<td class="value"><code><span class="php-quote">&quot;&quot;</span></code></td>
 		<td class="description"><div>
@@ -294,11 +370,57 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Bread.Structures.BreadFormElement.html#27" title="Go to source code"><var>$placeholder</var></a>
+				<a href="source-class-Bread.Structures.BreadFormElement.html#33" title="Go to source code"><var>$placeholder</var></a>
 		</td>
 		<td class="value"><code><span class="php-quote">&quot;&quot;</span></code></td>
 		<td class="description"><div>
 			<a href="#$placeholder" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="id" id="$id">
+		<td class="attributes"><code>
+			public  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Bread.Structures.BreadFormElement.html#34" title="Go to source code"><var>$id</var></a>
+		</td>
+		<td class="value"><code><span class="php-quote">&quot;&quot;</span></code></td>
+		<td class="description"><div>
+			<a href="#$id" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="readonly" id="$readonly">
+		<td class="attributes"><code>
+			public  
+			boolean
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Bread.Structures.BreadFormElement.html#35" title="Go to source code"><var>$readonly</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">false</span></code></td>
+		<td class="description"><div>
+			<a href="#$readonly" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -317,7 +439,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Bread.Structures.BreadFormElement.html#28" title="Go to source code"><var>$options</var></a>
+				<a href="source-class-Bread.Structures.BreadFormElement.html#36" title="Go to source code"><var>$options</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
 		<td class="description"><div>
@@ -340,11 +462,34 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Bread.Structures.BreadFormElement.html#29" title="Go to source code"><var>$dataset</var></a>
+				<a href="source-class-Bread.Structures.BreadFormElement.html#37" title="Go to source code"><var>$dataset</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
 		<td class="description"><div>
 			<a href="#$dataset" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="action" id="$action">
+		<td class="attributes"><code>
+			public  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Bread.Structures.BreadFormElement.html#38" title="Go to source code"><var>$action</var></a>
+		</td>
+		<td class="value"><code><span class="php-quote">&quot;&quot;</span></code></td>
+		<td class="description"><div>
+			<a href="#$action" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -363,11 +508,80 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Bread.Structures.BreadFormElement.html#30" title="Go to source code"><var>$attributes</var></a>
+				<a href="source-class-Bread.Structures.BreadFormElement.html#39" title="Go to source code"><var>$attributes</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
 		<td class="description"><div>
 			<a href="#$attributes" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="required" id="$required">
+		<td class="attributes"><code>
+			public  
+			boolean
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Bread.Structures.BreadFormElement.html#40" title="Go to source code"><var>$required</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">false</span></code></td>
+		<td class="description"><div>
+			<a href="#$required" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="hidden" id="$hidden">
+		<td class="attributes"><code>
+			public  
+			boolean
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Bread.Structures.BreadFormElement.html#41" title="Go to source code"><var>$hidden</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">false</span></code></td>
+		<td class="description"><div>
+			<a href="#$hidden" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="label" id="$label">
+		<td class="attributes"><code>
+			public  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Bread.Structures.BreadFormElement.html#42" title="Go to source code"><var>$label</var></a>
+		</td>
+		<td class="value"><code><span class="php-quote">&quot;&quot;</span></code></td>
+		<td class="description"><div>
+			<a href="#$label" class="anchor">#</a>
 
 			<div class="description short">
 				

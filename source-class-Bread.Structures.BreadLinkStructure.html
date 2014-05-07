@@ -8,7 +8,7 @@
 	<title>File modules/Structures/BreadLinkStructure.php | Bread</title>
 
 	<script type="text/javascript" src="resources/combined.js?174271566"></script>
-	<script type="text/javascript" src="elementlist.js?2491947360"></script>
+	<script type="text/javascript" src="elementlist.js?2841844939"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -33,7 +33,11 @@
 				<li><a href="namespace-Bread.Themes.html">Themes</a>
 						</li>
 							</ul></li>
+				<li><a href="namespace-None.html">None</a>
+						</li>
 				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+				<li><a href="namespace-Unirest.html">Unirest</a>
 						</li>
 			</ul>
 		</div>
@@ -44,10 +48,16 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
+				<li><a href="class-Bread.Structures.BreadConfigurationPanel.html">BreadConfigurationPanel</a></li>
+				<li><a href="class-Bread.Structures.BreadCPPanel.html">BreadCPPanel</a></li>
+				<li><a href="class-Bread.Structures.BreadCPSetting.html">BreadCPSetting</a></li>
 				<li><a href="class-Bread.Structures.BreadForm.html">BreadForm</a></li>
 				<li><a href="class-Bread.Structures.BreadFormElement.html">BreadFormElement</a></li>
 				<li class="active"><a href="class-Bread.Structures.BreadLinkStructure.html">BreadLinkStructure</a></li>
+				<li><a href="class-Bread.Structures.BreadModuleStructure.html">BreadModuleStructure</a></li>
 				<li><a href="class-Bread.Structures.BreadRequestData.html">BreadRequestData</a></li>
+				<li><a href="class-Bread.Structures.BreadSearchItem.html">BreadSearchItem</a></li>
+				<li><a href="class-Bread.Structures.BreadSearchRequest.html">BreadSearchRequest</a></li>
 				<li><a href="class-Bread.Structures.BreadUser.html">BreadUser</a></li>
 			</ul>
 
@@ -140,30 +150,35 @@
 </span></span><span id="47" class="l"><a class="l" href="#47">47: </a><span class="php-comment">     */</span>
 </span><span id="48" class="l"><a class="l" href="#48">48: </a>    <span class="php-keyword1">public</span> <span class="php-var"><a id="$sublinks" href="#$sublinks">$sublinks</a></span>;
 </span><span id="49" class="l"><a class="l" href="#49">49: </a>    
-</span><span id="50" class="l"><a class="l" href="#50">50: </a>    <span class="php-comment">/**
-</span></span><span id="51" class="l"><a class="l" href="#51">51: </a><span class="php-comment">     * Create a URL from the structure.
-</span></span><span id="52" class="l"><a class="l" href="#52">52: </a><span class="php-comment">     * @return type
-</span></span><span id="53" class="l"><a class="l" href="#53">53: </a><span class="php-comment">     */</span>
-</span><span id="54" class="l"><a class="l" href="#54">54: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_createURL" href="#_createURL">createURL</a>()
-</span><span id="55" class="l"><a class="l" href="#55">55: </a>    {
-</span><span id="56" class="l"><a class="l" href="#56">56: </a>        <span class="php-keyword1">if</span>(!<span class="php-keyword1">isset</span>(<span class="php-var">$this</span>-&gt;url))
-</span><span id="57" class="l"><a class="l" href="#57">57: </a>        {
-</span><span id="58" class="l"><a class="l" href="#58">58: </a>             <span class="php-keyword1">if</span>(<span class="php-keyword1">isset</span>(<span class="php-var">$this</span>-&gt;args)){
-</span><span id="59" class="l"><a class="l" href="#59">59: </a>                 <span class="php-var">$params</span> = <span class="php-keyword2">get_object_vars</span>(<span class="php-var">$this</span>-&gt;args); <span class="php-comment">//Fixes JSON not supporting arrays with key=&gt;values.</span>
-</span><span id="60" class="l"><a class="l" href="#60">60: </a>             }
-</span><span id="61" class="l"><a class="l" href="#61">61: </a>             <span class="php-keyword1">else</span>{
-</span><span id="62" class="l"><a class="l" href="#62">62: </a>                 <span class="php-var">$params</span> = <span class="php-keyword1">array</span>();
-</span><span id="63" class="l"><a class="l" href="#63">63: </a>             }
-</span><span id="64" class="l"><a class="l" href="#64">64: </a>
-</span><span id="65" class="l"><a class="l" href="#65">65: </a>             <span class="php-var">$URL</span> = Site::CondenseURLParams(<span class="php-keyword1">false</span>, <span class="php-keyword2">array_merge</span>(<span class="php-keyword1">array</span>(<span class="php-quote">&quot;request&quot;</span> =&gt; <span class="php-var">$this</span>-&gt;request),<span class="php-var">$params</span>));
-</span><span id="66" class="l"><a class="l" href="#66">66: </a>        }
-</span><span id="67" class="l"><a class="l" href="#67">67: </a>        <span class="php-keyword1">else</span>
-</span><span id="68" class="l"><a class="l" href="#68">68: </a>        {
-</span><span id="69" class="l"><a class="l" href="#69">69: </a>             <span class="php-var">$URL</span> = <span class="php-var">$this</span>-&gt;url;
-</span><span id="70" class="l"><a class="l" href="#70">70: </a>        }
-</span><span id="71" class="l"><a class="l" href="#71">71: </a>        <span class="php-keyword1">return</span> <span class="php-var">$URL</span>;
-</span><span id="72" class="l"><a class="l" href="#72">72: </a>    }
-</span><span id="73" class="l"><a class="l" href="#73">73: </a></span>}</code></pre>
+</span><span id="50" class="l"><a class="l" href="#50">50: </a>    <span class="php-keyword1">function</span> <a id="___construct" href="#___construct">__construct</a>()
+</span><span id="51" class="l"><a class="l" href="#51">51: </a>    {
+</span><span id="52" class="l"><a class="l" href="#52">52: </a>        <span class="php-var">$this</span>-&gt;args = <span class="php-keyword1">new</span> \stdClass();
+</span><span id="53" class="l"><a class="l" href="#53">53: </a>    }
+</span><span id="54" class="l"><a class="l" href="#54">54: </a>    
+</span><span id="55" class="l"><a class="l" href="#55">55: </a>    <span class="php-comment">/**
+</span></span><span id="56" class="l"><a class="l" href="#56">56: </a><span class="php-comment">     * Create a URL from the structure.
+</span></span><span id="57" class="l"><a class="l" href="#57">57: </a><span class="php-comment">     * @return type
+</span></span><span id="58" class="l"><a class="l" href="#58">58: </a><span class="php-comment">     */</span>
+</span><span id="59" class="l"><a class="l" href="#59">59: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_createURL" href="#_createURL">createURL</a>()
+</span><span id="60" class="l"><a class="l" href="#60">60: </a>    {
+</span><span id="61" class="l"><a class="l" href="#61">61: </a>        <span class="php-keyword1">if</span>(!<span class="php-keyword1">isset</span>(<span class="php-var">$this</span>-&gt;url))
+</span><span id="62" class="l"><a class="l" href="#62">62: </a>        {
+</span><span id="63" class="l"><a class="l" href="#63">63: </a>             <span class="php-keyword1">if</span>(<span class="php-keyword1">isset</span>(<span class="php-var">$this</span>-&gt;args)){
+</span><span id="64" class="l"><a class="l" href="#64">64: </a>                 <span class="php-var">$params</span> = <span class="php-keyword2">get_object_vars</span>(<span class="php-var">$this</span>-&gt;args); <span class="php-comment">//Fixes JSON not supporting arrays with key=&gt;values.</span>
+</span><span id="65" class="l"><a class="l" href="#65">65: </a>             }
+</span><span id="66" class="l"><a class="l" href="#66">66: </a>             <span class="php-keyword1">else</span>{
+</span><span id="67" class="l"><a class="l" href="#67">67: </a>                 <span class="php-var">$params</span> = <span class="php-keyword1">array</span>();
+</span><span id="68" class="l"><a class="l" href="#68">68: </a>             }
+</span><span id="69" class="l"><a class="l" href="#69">69: </a>
+</span><span id="70" class="l"><a class="l" href="#70">70: </a>             <span class="php-var">$URL</span> = Site::CondenseURLParams(<span class="php-keyword1">false</span>, <span class="php-keyword2">array_merge</span>(<span class="php-keyword1">array</span>(<span class="php-quote">&quot;request&quot;</span> =&gt; <span class="php-var">$this</span>-&gt;request),<span class="php-var">$params</span>));
+</span><span id="71" class="l"><a class="l" href="#71">71: </a>        }
+</span><span id="72" class="l"><a class="l" href="#72">72: </a>        <span class="php-keyword1">else</span>
+</span><span id="73" class="l"><a class="l" href="#73">73: </a>        {
+</span><span id="74" class="l"><a class="l" href="#74">74: </a>             <span class="php-var">$URL</span> = <span class="php-var">$this</span>-&gt;url;
+</span><span id="75" class="l"><a class="l" href="#75">75: </a>        }
+</span><span id="76" class="l"><a class="l" href="#76">76: </a>        <span class="php-keyword1">return</span> <span class="php-var">$URL</span>;
+</span><span id="77" class="l"><a class="l" href="#77">77: </a>    }
+</span><span id="78" class="l"><a class="l" href="#78">78: </a></span>}</code></pre>
 
 	<div id="footer">
 		Bread API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>

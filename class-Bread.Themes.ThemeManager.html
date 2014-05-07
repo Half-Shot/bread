@@ -7,7 +7,7 @@
 	<title>Class Bread\Themes\ThemeManager | Bread</title>
 
 	<script type="text/javascript" src="resources/combined.js?174271566"></script>
-	<script type="text/javascript" src="elementlist.js?2491947360"></script>
+	<script type="text/javascript" src="elementlist.js?2841844939"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -32,7 +32,11 @@
 				<li class="active"><a href="namespace-Bread.Themes.html">Themes</a>
 						</li>
 							</ul></li>
+				<li><a href="namespace-None.html">None</a>
+						</li>
 				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+				<li><a href="namespace-Unirest.html">Unirest</a>
 						</li>
 			</ul>
 		</div>
@@ -43,6 +47,7 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
+				<li><a href="class-Bread.Themes.BreadXML.html">BreadXML</a></li>
 				<li class="active"><a href="class-Bread.Themes.ThemeManager.html">ThemeManager</a></li>
 			</ul>
 
@@ -111,7 +116,7 @@ by a module file. The final result is appended to the html.</p>
 		<b>Namespace:</b> <a href="namespace-Bread.html">Bread</a>\<a href="namespace-Bread.Themes.html">Themes</a><br />
 		
 
-		<b>Located at</b> <a href="source-class-Bread.Themes.ThemeManager.html#4-297" title="Go to source code">modules/Themes/thememan.php</a><br />
+		<b>Located at</b> <a href="source-class-Bread.Themes.ThemeManager.html#4-324" title="Go to source code">modules/Themes/thememan.php</a><br />
 	</div>
 
 
@@ -338,48 +343,29 @@ well.</p>
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="FindFile" id="_FindFile">
+	<tr data-order="ApplyMaster" id="_ApplyMaster">
 
 		<td class="attributes"><code>
 			 public 
-			string
+			
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_FindFile">#</a>
-		<code><a href="source-class-Bread.Themes.ThemeManager.html#124-149" title="Go to source code">FindFile</a>( <span>type <var>$filepath</var></span> )</code>
+		<a class="anchor" href="#_ApplyMaster">#</a>
+		<code><a href="source-class-Bread.Themes.ThemeManager.html#124-164" title="Go to source code">ApplyMaster</a>( <span>mixed <var>$layout</var></span> )</code>
 
 		<div class="description short">
 			
-<p>Looks for a CSS file in the common user paths. Ordered by layout, theme and
-resource. Useful for layouts overriding.</p>
-
 		</div>
 
 		<div class="description detailed hidden">
 			
-<p>Looks for a CSS file in the common user paths. Ordered by layout, theme and
-resource. Useful for layouts overriding.</p>
 
 
 
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$filepath</var></dt>
-					<dd><code>type</code><br>$filepath</dd>
-				</dl></div>
 
-				<h4>Returns</h4>
-				<div class="list">
-					<code>string</code><br />
-				</div>
-
-				<h4>Throws</h4>
-				<div class="list">
-					<code><code><a href="class-Exception.html">Exception</a></code></code><br />
-				</div>
 
 
 
@@ -397,7 +383,7 @@ resource. Useful for layouts overriding.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_BuildCSS">#</a>
-		<code><a href="source-class-Bread.Themes.ThemeManager.html#151-167" title="Go to source code">BuildCSS</a>( )</code>
+		<code><a href="source-class-Bread.Themes.ThemeManager.html#166-182" title="Go to source code">BuildCSS</a>( )</code>
 
 		<div class="description short">
 			
@@ -430,7 +416,7 @@ resource. Useful for layouts overriding.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_AddCSSFile">#</a>
-		<code><a href="source-class-Bread.Themes.ThemeManager.html#168-175" title="Go to source code">AddCSSFile</a>( <span>string <var>$filepath</var></span> )</code>
+		<code><a href="source-class-Bread.Themes.ThemeManager.html#183-190" title="Go to source code">AddCSSFile</a>( <span>string <var>$filepath</var></span> )</code>
 
 		<div class="description short">
 			
@@ -468,7 +454,7 @@ resource. Useful for layouts overriding.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_ReadElementsFromLayout">#</a>
-		<code><a href="source-class-Bread.Themes.ThemeManager.html#178-251" title="Go to source code">ReadElementsFromLayout</a>( <span><code><a href="class-stdClass.html">stdClass</a></code> <var>$Layout</var></span> )</code>
+		<code><a href="source-class-Bread.Themes.ThemeManager.html#193-222" title="Go to source code">ReadElementsFromLayout</a>( <span><code><a href="class-stdClass.html">stdClass</a></code> <var>$Layout</var></span> )</code>
 
 		<div class="description short">
 			
@@ -506,7 +492,7 @@ resource. Useful for layouts overriding.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_ExamineElement">#</a>
-		<code><a href="source-class-Bread.Themes.ThemeManager.html#252-296" title="Go to source code">ExamineElement</a>( <span>array <var>$element</var></span> )</code>
+		<code><a href="source-class-Bread.Themes.ThemeManager.html#223-273" title="Go to source code">ExamineElement</a>( <span>array <var>$element</var></span>, <span>mixed <var>$extraargs</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			
@@ -526,12 +512,101 @@ injected.</p>
 				<div class="list"><dl>
 					<dt><var>$element</var></dt>
 					<dd><code>array</code><br>$element Element to scan for hacks</dd>
+					<dt><var>$extraargs</var></dt>
+					<dd></dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
 					<code>array</code><br>Returns a array to be drawn.<br />
 				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="DoRootStuff" id="_DoRootStuff">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_DoRootStuff">#</a>
+		<code><a href="source-class-Bread.Themes.ThemeManager.html#275-294" title="Go to source code">DoRootStuff</a>( <span>mixed <var>$Layout</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="WriteHTML" id="_WriteHTML">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_WriteHTML">#</a>
+		<code><a href="source-class-Bread.Themes.ThemeManager.html#296-308" title="Go to source code">WriteHTML</a>( <span>mixed <var>$ReturnedData</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="FormatElementHTML" id="_FormatElementHTML">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_FormatElementHTML">#</a>
+		<code><a href="source-class-Bread.Themes.ThemeManager.html#310-323" title="Go to source code">FormatElementHTML</a>( <span>mixed <var>$returnedElement</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
 
 
 
