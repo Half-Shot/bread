@@ -499,7 +499,9 @@ class BreadAdminTools extends Module
             {
                 $LatestGit = $this->settings->coreSettings->GitData;
             }
-            $ApplyButton->readonly = false;
+            if(substr($LatestGit->sha, 0,6) !== Site::Configuration()->core->version){
+                $ApplyButton->readonly = true;
+            }
             $ApplyButton->onclick="requestUpdate(2)";
             $ApplyButton->class = "btn-warning BATapplyButton";
             //Git Data
@@ -605,19 +607,24 @@ class BreadAdminTools extends Module
             //Get all needed data
             $URL = "";
             $channel = intval($_POST["channel"]);
-            if($channel === 1)
+            $version = 0;
+            if($channel === 1 && is_object($this->settings->coreSettings->releaseBuild))
             {
                $URL = $this->settings->coreSettings->releaseBuild->zipball_url;
+               $version = $this->settings->coreSettings->releaseBuild->target_commitish;
             }
-            else if($channel === 0)
+            else if($channel === 0 && is_object($this->settings->coreSettings->stableBuild))
             {
                $URL = $this->settings->coreSettings->stableBuild->zipball_url;
+               $version = $this->settings->coreSettings->stableBuild->target_commitish;
             }
-            else if($channel === 2)
+            else if($channel === 2 && is_object($this->settings->coreSettings->gitData))
             {
-               $URL = "https://github.com/Half-Shot/bread/archive/devbread.zip";
+               $URL = "https://github.com/Half-Shot/bread/archive/devbread.zip"; //Current master git download.
+               $version = substr($this->settings->coreSettings->gitData->sha, 0,6);
             }
             else {
+                Site::$Logger->writeMessage("Channel does not exist or no infomation is present for selected channel.", "backuplog");
                 return "FAIL";
             }
             Site::$Logger->writeMessage("Bread Update Channel " . $channel . " Selected", "backuplog");
@@ -645,6 +652,10 @@ class BreadAdminTools extends Module
             $rootBread = $extractPath . "/" . scandir($extractPath,1)[0] . "/";
             Util::xcopy($extractPath . "modules", Site::GetRootPath());
             Util::xcopy($extractPath . "user/modules", Site::GetRootPath() . "/user/");
+            //Set Version
+            $Settings = new \stdClass();
+            $Settings->core->version = $version;
+            Site::EditConfigurationValues($Settings);
             //Remove stuff.
             Util::RecursiveRemove($extractPath);
             unlink($file);
