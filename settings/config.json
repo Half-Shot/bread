@@ -1,6 +1,6 @@
 {
     "core": {
-        "version": 0.12,
+        "version": 0.15,
         "debug": true,
         "cache": true,
         "banhammer": true,
@@ -17,9 +17,7 @@
     "strings": {
         "sitename": "The Bakery"
     },
-    "bans": [
-
-    ],
+    "bans": [],
     "directorys": {
         "system-modules": "modules",
         "system-settings": "settings",

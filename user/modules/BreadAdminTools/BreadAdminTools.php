@@ -398,7 +398,6 @@ class BreadAdminTools extends Module
             $Panel_Updater->Name = "updaterPanel";
             $Panel_Updater->HumanTitle = $this->manager->FireEvent("Theme.Icon","cog")[0] . "Deploy THAR Update!";
             if(time() - ($this->settings->coreSettings->lastRequest + $TimeBetweenChecks) > 0){
-                $this->settings->coreSettings->lastRequest = time();
                 $ReleaseRequest = \Unirest::get("https://api.github.com/repos/Half-Shot/bread/releases");
                 if($ReleaseRequest->code != 200)
                 {
@@ -491,6 +490,7 @@ class BreadAdminTools extends Module
             
             
             if(time() - ($this->settings->coreSettings->lastRequest + $TimeBetweenChecks) > 0){
+                $this->settings->coreSettings->lastRequest = time();
                 $ReleaseRequest = \Unirest::get("https://api.github.com/repos/Half-Shot/bread/commits/devbread");
                 $LatestGit = $ReleaseRequest->body;
                 $this->settings->coreSettings->GitData = $LatestGit;
