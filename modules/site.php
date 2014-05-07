@@ -529,7 +529,6 @@ class Site
             if(static::$isAjax)
             {
                 // Turn off all error reporting
-                self::ShowDebug(true);
                 site::$Logger->writeMessage("Request is AJAX!");
                 $module = "";
                 $event = "Bread.AjaxRequest";
