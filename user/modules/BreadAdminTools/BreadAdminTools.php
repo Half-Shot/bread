@@ -499,7 +499,7 @@ class BreadAdminTools extends Module
             {
                 $LatestGit = $this->settings->coreSettings->GitData;
             }
-            if(substr($LatestGit->sha, 0,6) == Site::Configuration()->core->version){
+            if(substr($LatestGit->sha, 0,7) == Site::Configuration()->core->version){
                 $ApplyButton->readonly = true;
             }
             else {
@@ -624,7 +624,7 @@ class BreadAdminTools extends Module
             elseif($channel === 2 && is_object($this->settings->coreSettings->GitData))
             {
                $URL = "https://github.com/Half-Shot/bread/archive/devbread.zip"; //Current master git download.
-               $version = substr($this->settings->coreSettings->gitData->sha, 0,6);
+               $version = substr($this->settings->coreSettings->GitData->sha, 0,7);
             }
             else {
                 Site::$Logger->writeMessage("Channel does not exist or no infomation is present for selected channel.", "backuplog");
@@ -653,8 +653,8 @@ class BreadAdminTools extends Module
             }
             //Install New Update.
             $rootBread = $extractPath . "/" . scandir($extractPath,1)[0] . "/";
-            Util::xcopy($extractPath . "modules", Site::GetRootPath());
-            Util::xcopy($extractPath . "user/modules", Site::GetRootPath() . "/user/");
+            Util::xcopy($rootBread . "modules", Site::GetRootPath() . "/modules");
+            Util::xcopy($rootBread . "user/modules", Site::GetRootPath() . "/user/modules");
             //Set Version
             $Settings = new \stdClass();
             $Settings->core->version = $version;
