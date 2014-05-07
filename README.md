@@ -2,7 +2,7 @@ dev-bread
 =====
 ![Bread Logo](./docs/breadlogo0_1.png)
 
-**[Bread Test Site](http://molrams.no-ip.org/bread/devbread/)
+**[Bread Test Site](http://molrams.no-ip.org/bread/devbread/)**
 
 ##Usage
 * Get permissions set up properly, in particular block access to /settings /temp in your
