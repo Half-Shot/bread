@@ -39,7 +39,7 @@ class ModuleManager
          */
 	function LoadModulesFromConfig($filepath)
 	{
-                $mods = Site::$settingsManager->RetriveSettings($filepath);
+                $mods = Site::$settingsManager->RetriveSettings($filepath,true);
                 if(!array_key_exists("enabled", $this->moduleList))
                     $this->moduleList["enabled"] = array();
                 

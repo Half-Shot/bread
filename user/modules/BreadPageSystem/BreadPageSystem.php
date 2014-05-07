@@ -296,8 +296,9 @@ class BreadPageSystem extends Module
         
         function TokenizeArticle($article)
         {
-            if(is_null($article))
+            if(is_null($article) || empty($article)){
                 $article = $_POST["markdown"];
+            }
             $articleArray = \explode(self::TOKEN_SPLIT_STR,$article);
             $result = Site::$moduleManager->FireEvent("Bread.TokenizeText",$articleArray);
             if(!is_array($result))
