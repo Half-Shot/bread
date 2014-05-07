@@ -30,7 +30,7 @@ a functioning core site. For example, wordpress cannot let you seamlessly demo n
 accomplished by the way bread is written. Bread has a object orientated system which allows for bits of code to plug in and out seamlessly.
 
 Another cool thing is that I built this based on a linux distro philosophy; Cut out the crap and leave a basic system that applys to everyone
-but allow really easy ways to make it specialised. In particular, [Arch Linux](https://wiki.archlinux.org/index.php/The_Arch_Way) has a great
+but allow really easy ways to make it specialised. In particular, [Arch Linux](https://wiki.archlinux.org/index.php/The_Arch_Way) has a grerequestsat
 understanding of this and I try to mimic that.
 
 
@@ -56,3 +56,5 @@ and could get easily confusing to manage.
 
 The PHP Project for being awesome.
 Markdown for powering our pages.
+Unirest for the awesome library which powers bread's http requesting.
+
