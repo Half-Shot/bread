@@ -1,7 +1,9 @@
 dev-bread
 =====
-
 ![Bread Logo](./docs/breadlogo0_1.png)
+
+**[Bread Test Site](http://molrams.no-ip.org/bread/devbread/)
+
 ##Usage
 * Get permissions set up properly, in particular block access to /settings /temp in your
 webservers configuration because while PHP needs to access it, users can wreck havoc
