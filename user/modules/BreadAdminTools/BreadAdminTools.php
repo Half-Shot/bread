@@ -701,7 +701,7 @@ class BreadAdminTools extends Module
             $rootBread = $extractPath . "/" . scandir($extractPath,1)[0] . "/";
             Util::xcopy($rootBread . "modules", Site::GetRootPath() . "/modules");
             Util::xcopy($rootBread . "user/modules", Site::GetRootPath() . "/user/modules");
-            Util::xcopy($rootBread . "user/modules", Site::GetRootPath() . "/user/themes");
+            Util::xcopy($rootBread . "user/themes", Site::GetRootPath() . "/user/themes");
             //Set Version
             $Settings = new \stdClass();
             $Settings->core->version = $version;
