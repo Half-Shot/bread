@@ -269,7 +269,7 @@ class Site
 		}
 		else
 		{
-			error_reporting(E_NONE);
+			error_reporting(0);
 			ini_set('display_errors', 0);
 		}
 	}
@@ -529,6 +529,7 @@ class Site
             if(static::$isAjax)
             {
                 // Turn off all error reporting
+                static::ShowDebug(false);
                 site::$Logger->writeMessage("Request is AJAX!");
                 $module = "";
                 $event = "Bread.AjaxRequest";
