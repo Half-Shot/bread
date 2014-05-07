@@ -490,17 +490,20 @@ class BreadAdminTools extends Module
 
             
             
-            if(time() - ($this->settings->coreSettings->lastRequest + 15) > 0){
-                $ReleaseRequest = \Unirest::get("https://api.github.com/repos/Half-Shot/bread/commits");
-                $LatestGit = $ReleaseRequest->body[0];
+            if(time() - ($this->settings->coreSettings->lastRequest + $TimeBetweenChecks) > 0){
+                $ReleaseRequest = \Unirest::get("https://api.github.com/repos/Half-Shot/bread/commits/devbread");
+                $LatestGit = $ReleaseRequest->body;
                 $this->settings->coreSettings->GitData = $LatestGit;
             }
             else
             {
                 $LatestGit = $this->settings->coreSettings->GitData;
             }
-            if(substr($LatestGit->sha, 0,6) !== Site::Configuration()->core->version){
+            if(substr($LatestGit->sha, 0,6) == Site::Configuration()->core->version){
                 $ApplyButton->readonly = true;
+            }
+            else {
+                $ApplyButton->readonly = false;
             }
             $ApplyButton->onclick="requestUpdate(2)";
             $ApplyButton->class = "btn-warning BATapplyButton";
@@ -613,12 +616,12 @@ class BreadAdminTools extends Module
                $URL = $this->settings->coreSettings->releaseBuild->zipball_url;
                $version = $this->settings->coreSettings->releaseBuild->target_commitish;
             }
-            else if($channel === 0 && is_object($this->settings->coreSettings->stableBuild))
+            elseif($channel === 0 && is_object($this->settings->coreSettings->stableBuild))
             {
                $URL = $this->settings->coreSettings->stableBuild->zipball_url;
                $version = $this->settings->coreSettings->stableBuild->target_commitish;
             }
-            else if($channel === 2 && is_object($this->settings->coreSettings->gitData))
+            elseif($channel === 2 && is_object($this->settings->coreSettings->GitData))
             {
                $URL = "https://github.com/Half-Shot/bread/archive/devbread.zip"; //Current master git download.
                $version = substr($this->settings->coreSettings->gitData->sha, 0,6);
@@ -656,6 +659,7 @@ class BreadAdminTools extends Module
             $Settings = new \stdClass();
             $Settings->core->version = $version;
             Site::EditConfigurationValues($Settings);
+            $this->settings->coreSettings->updateChannel = $channel;
             //Remove stuff.
             Util::RecursiveRemove($extractPath);
             unlink($file);
