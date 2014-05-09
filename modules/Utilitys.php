@@ -227,7 +227,8 @@ class Utilitys {
             $path = static::ResolvePath("%user-modules/" . $filepath);
             if(file_exists($path))
                 return $path;
-            throw new \Exception;
+            Site::$Logger->writeError("Couldn't resolve path '" . $filepath . "'", Logger::SEVERITY_MEDIUM);
+            return "";
         }
         /**
          * Converts a array of arrays into one single array.

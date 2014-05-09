@@ -6,7 +6,9 @@
         "BreadUserSystem\/module.json",
         "BreadAdminTools\/module.json",
         "WebShim\/module.json",
-        "BreadFormBuilder\/module.json"
+        "BreadFormBuilder\/module.json",
+        "BreadAdminTools\/module.json",
+        "BreadCoreSettings\/module.json"
     ],
     "blacklisted": []
 }

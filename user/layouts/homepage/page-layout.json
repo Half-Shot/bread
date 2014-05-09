@@ -7,11 +7,8 @@
 	"id": "homepage-contents",
         "human": "Page Contents",
         "description": "Middle section where contents will be placed.",
+        "event":"Bread.DrawModule",
         "module":"BreadPageSystem",
-        "arguments":
-        {
-            "post":0
-        },
         "tag":"article"
     }
 ]

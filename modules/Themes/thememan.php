@@ -230,7 +230,7 @@ class ThemeManager
         {
             $returnedElement = array();
             //Defaults
-            $returnedElement["event"] = "Bread.DrawModule"; //Standard module draw function.
+            $returnedElement["event"] = ""; //Standard module draw function.
             $returnedElement["arguments"] = array();
             $returnedElement["attributes"] = array();
             $returnedElement["tag"] = "div";
@@ -241,13 +241,18 @@ class ThemeManager
                         $returnedElement[$key] = $element->$key;
                     }    
             }
-            
+            if(empty($returnedElement["event"]) && !isset($element->module))
+            {
+                $returnedElement["guts"] = false;
+                return $returnedElement;
+            }
             //Check tag for hacks
             if(!\ctype_alpha($returnedElement["tag"]))
             {
                 //Non alpha chars in tag name. KILL
                 Site::$Logger->writeError("Layout " . $this->Theme["layout"]["JSON"]->name . " has problems. Not drawing problematic tag " . $element->name,\Bread\Logger::SEVERITY_MEDIUM,"core");
-                return False;
+                $returnedElement["guts"] = false;
+                return $returnedElement;
             }
             if(!is_array($returnedElement["arguments"])){
              $returnedElement["arguments"] = array($returnedElement["arguments"]);

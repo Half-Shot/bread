@@ -54,8 +54,6 @@
 	"id": "contents",
         "human": "Page Contents",
         "description": "Middle section where contents will be placed.",
-        "module": "BreadPageSystem",
-        "event":"BreadPageSystem.DrawModule",
         "tag":"section"
     },
     {

@@ -333,12 +333,12 @@ class ModuleManager
             }
             
             if(!array_key_exists($eventName, $this->events)){
-                Site::$Logger->writeError ("Couldn't specifically hook module '" . $moduleName . "'. That event is not called by any module.", \Bread\Logger::SEVERITY_LOW);
+                Site::$Logger->writeError ("Couldn't specifically hook module '" . $moduleName . "'. " . $eventName . " is not called by any module.", \Bread\Logger::SEVERITY_LOW);
                 return False;
             }
             
             if(!array_key_exists($moduleName, $this->events[$eventName])){
-                Site::$Logger->writeError ("Couldn't specifically hook module '" . $moduleName . "'. Module does not have that event set.", \Bread\Logger::SEVERITY_MEDIUM);
+                Site::$Logger->writeError ("Couldn't specifically hook module '" . $moduleName . "'. Module does not have the " . $eventName . " event set.", \Bread\Logger::SEVERITY_MEDIUM);
                 return False;
             }
             $data = $this->events[$eventName][$moduleName];

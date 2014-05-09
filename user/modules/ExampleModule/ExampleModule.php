@@ -16,7 +16,7 @@ class ExampleModule extends Module
     
 	function ReturnFirstArgument($arguments)
 	{
-	    return "<p>" . $arguments->gabesize ."</p>";
+	    return "<p>" . $arguments[0] ."</p>";
         }
 
 }

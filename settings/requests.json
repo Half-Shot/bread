@@ -1,14 +1,13 @@
 {
     "master":
     {
-        "layout":"post",
         "theme":"theme-bootstrap",
         "modules":["BreadIndexSystem\/module.json","WebShim\/module.json","BreadUserSystem\/module.json","BreadAdminTools\/module.json"]
     },
     "homepage":{
         "layout":"homepage",
         "include":["master","post"],
-        "modules":[],
+        "modules":["BreadPageSystem\/module.json"],
         "args":[{"post":"ea820284"}]
     },
     "post":{
@@ -32,7 +31,8 @@
     },
     "controlpanel":{
         "layout":"controlpanel",
-        "include":["master"]
+        "include":["master"],
+        "modules":["BreadPageSystem\/module.json","BreadCoreSettings\/module.json"]
     },
     "search":{
         "include":["master"],

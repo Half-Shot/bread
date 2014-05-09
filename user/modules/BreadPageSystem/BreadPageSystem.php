@@ -34,6 +34,7 @@ class BreadPageSystem extends Module
             $this->manager->RegisterHook($this->name,"Bread.TokenizeText","BasicTokens",ModuleManager::EVENT_EXTERNAL);
             $this->manager->RegisterHook($this->name,"Bread.TokenizePost","TokenizeArticle",ModuleManager::EVENT_EXTERNAL);
             $this->manager->RegisterHook($this->name,"Bread.GetAllPages","ReturnBreadPages");
+            $this->manager->RegisterHook($this->name,"BreadAdminTools.AddModuleSettings", "ConstructAdminSettings");
         }
         
         function AddPages()
@@ -732,6 +733,28 @@ class BreadPageSystem extends Module
                 $Pages[] = $Page;
             }
             return $Pages;
+        }
+        
+        //
+        //Admin Panel Functions
+        //
+        function ConstructAdminSettings()
+        {
+            $MasterSettings = new \Bread\Structures\BreadModuleSettings();
+            $MasterSettings->HumanTitle = "Pages";
+            $MasterSettings->Name = "breadpagesystem";
+            
+            $PostConfigurator = new \Bread\Structures\BreadModuleSettingsTab;
+            $PostConfigurator->Name = "postconfig";
+            $PostConfigurator->HumanTitle = "Posts";
+            $MasterSettings->SettingsGroups[] = $PostConfigurator;
+            
+            $GlobalSettings = new \Bread\Structures\BreadModuleSettingsTab;
+            $GlobalSettings->Name = "jsonconfig";
+            $GlobalSettings->HumanTitle = "Settings";
+            $MasterSettings->SettingsGroups[] = $GlobalSettings;
+            
+            return $MasterSettings;
         }
 }
 

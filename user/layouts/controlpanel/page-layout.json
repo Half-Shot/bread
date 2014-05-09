@@ -1,6 +1,6 @@
 {
 "name": "controlpanel",
-"css":["default/page-layout.css","controlpanel/page-layout.css"],
+"css":["controlpanel/page-layout.css"],
 "master":["default"],
 "elements": [
     {
