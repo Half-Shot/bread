@@ -413,4 +413,43 @@
             </xsl:for-each>
         </div>
     </xsl:template>
+    <xsl:template match="telement[@id='Table']">
+        <table>
+            <xsl:attribute name="name"><xsl:value-of select="./variable/name"/></xsl:attribute>
+            <xsl:attribute name="id"><xsl:value-of select="./variable/id"/></xsl:attribute>
+            <xsl:attribute name="class">table <xsl:value-of select="./variable/class"/></xsl:attribute>
+            <thead>
+                <xsl:attribute name="name"><xsl:value-of select="./variable/headingRow/name"/></xsl:attribute>
+                <xsl:attribute name="id"><xsl:value-of select="./variable/headingRow/id"/></xsl:attribute>
+                <xsl:attribute name="class"><xsl:value-of select="./variable/headingRow/class"/></xsl:attribute>
+                <xsl:for-each select="./variable/headingRow/cells/variable">
+                    <th>
+                        <xsl:attribute name="name"><xsl:value-of select="./name"/></xsl:attribute>
+                        <xsl:attribute name="id"><xsl:value-of select="./id"/></xsl:attribute>
+                        <xsl:attribute name="class"><xsl:value-of select="./class"/></xsl:attribute>
+                            <xsl:attribute name="style">width: <xsl:value-of select="./width"/>;</xsl:attribute>
+                        <xsl:value-of select="./text"/>
+                    </th>
+                </xsl:for-each>
+            </thead>
+            <tbody>
+                <xsl:for-each select="./variable/rows/variable">
+                <tr>
+                    <xsl:attribute name="name"><xsl:value-of select="./name"/></xsl:attribute>
+                    <xsl:attribute name="id"><xsl:value-of select="./id"/></xsl:attribute>
+                    <xsl:attribute name="class"><xsl:value-of select="./class"/></xsl:attribute>
+                    <xsl:for-each select="./cells/variable">
+                        <td>
+                            <xsl:attribute name="name"><xsl:value-of select="./name"/></xsl:attribute>
+                            <xsl:attribute name="id"><xsl:value-of select="./id"/></xsl:attribute>
+                            <xsl:attribute name="class"><xsl:value-of select="./class"/></xsl:attribute>
+                            <xsl:attribute name="style">width: <xsl:value-of select="./width"/>;</xsl:attribute>
+                            <xsl:value-of select="./text"/>
+                        </td>
+                    </xsl:for-each>
+                </tr>
+                </xsl:for-each>
+            </tbody>
+        </table>
+    </xsl:template>
 </xsl:stylesheet>

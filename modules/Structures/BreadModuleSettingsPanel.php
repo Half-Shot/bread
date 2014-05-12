@@ -40,6 +40,7 @@ class BreadModuleSettingsPanel {
     public $Name = "unnamedPanel";
     public $HumanTitle = "Unnamed Panel";
     public $Body = "";
+    public $PercentageWidth = 0;
     /**
      *
      * @var Bread\Structures\BreadForm

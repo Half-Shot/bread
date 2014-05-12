@@ -144,6 +144,10 @@ class BreadAdminTools extends Module
             foreach($this->ModuleSettings[$this->CurrentModuleIndex]->SettingsGroups[$this->CurrentTabIndex]->Panels as $Setting){
                 $Footer = "";
                 $Panel = new \stdClass();
+                if($Setting->PercentageWidth != 0)
+                {
+                    $Panel->size = round((12 / 100) * $Setting->PercentageWidth);
+                }
                 if($Setting->ApplyButtons){
                     $Panel->body = $this->manager->FireEvent("Theme.Panel",array("title"=>$Setting->HumanTitle,"body"=>$Setting->Body,"footer"=>$this->manager->FireEvent("Theme.Form",$Setting->ApplyButtons)[0]))[0];
                 }

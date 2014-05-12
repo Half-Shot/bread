@@ -741,8 +741,7 @@ class BreadPageSystem extends Module
         function ConstructAdminSettings()
         {
             $MasterSettings = new \Bread\Structures\BreadModuleSettings();
-            $MasterSettings->HumanTitle = "Pages";
-            $MasterSettings->Name = "breadpagesystem";
+            $MasterSettings->Name = "Pages";
             
             $PostConfigurator = new \Bread\Structures\BreadModuleSettingsTab;
             $PostConfigurator->Name = "postconfig";

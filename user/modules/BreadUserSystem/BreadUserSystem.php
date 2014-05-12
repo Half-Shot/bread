@@ -28,6 +28,7 @@ class BreadUserSystem extends Module
             $this->manager->RegisterHook($this->name,"Bread.Security.RegisterNewUser","RegisterNewUser",ModuleManager::EVENT_EXTERNAL);
             $this->manager->RegisterHook($this->name,"Bread.Security.Logout","Logout",ModuleManager::EVENT_EXTERNAL);
             $this->manager->RegisterHook($this->name,"Bread.GetNavbarIndex","CreateLoginLink");
+            $this->manager->RegisterHook($this->name,"BreadAdminTools.AddModuleSettings", "ConstructAdminSettings");
 	}
         
         function DoLogin()
@@ -325,6 +326,97 @@ class BreadUserSystem extends Module
             }
             $this->currentUser->infomation = $info_array;
             Site::$moduleManager->FireEvent("Bread.Security.LoggedIn",NULL);
+        }
+        
+        //
+        //Admin Panel Functions
+        //
+        function ConstructAdminSettings()
+        {
+            $MasterSettings = new \Bread\Structures\BreadModuleSettings();
+            $MasterSettings->Name = "User Security";
+            
+            $PostConfigurator = new \Bread\Structures\BreadModuleSettingsTab();
+            $PostConfigurator->HumanTitle = "Users";
+            $MasterSettings->SettingsGroups[] = $PostConfigurator;
+            
+            //Current Users Table
+            $CurrentUsersPanel = new \Bread\Structures\BreadModuleSettingsPanel();
+            $CurrentUsersPanel->Name = "currentusers";
+            $CurrentUsersPanel->HumanTitle = "Users";
+            $CurrentUsersPanel->PercentageWidth = 75;
+            $PostConfigurator->Panels[] = $CurrentUsersPanel;
+            
+            //Table
+            $UserTable = new \Bread\Structures\BreadTableElement();
+            $UserTable->class = " table-hover";
+            $UserTable->headingRow = new \Bread\Structures\BreadTableRow();
+            $Headers = array("Username");
+            $LastIndex = 0;
+            foreach($this->userDB as $UIndex => $userFile){
+                /**
+                 * @var Bread\Structures\BreadUser
+                 */
+                $UserRow = new \Bread\Structures\BreadTableRow();
+                $DataFile = $userFile->breaduserdata;
+                
+                //Username
+                $UsernameCell = new \Bread\Structures\BreadTableCell();
+                $UsernameCell->text = $DataFile->username;
+                $UserRow->cells[] = $UsernameCell;
+                $UserRow->id = "user-" . $UIndex;
+                if(!empty($DataFile->infomation)){
+                    foreach($DataFile->infomation as $ValuePack){
+                        foreach($ValuePack as $Key => $Value){
+                            $Headers[] = $Key;
+                            $Index = count($Headers) - 1;
+                            $NewCell = new \Bread\Structures\BreadTableCell();
+                            $NewCell->text = $Value;
+                            $UserRow->cells[$Index] = $NewCell;
+                        }
+                    }
+                }
+                if($LastIndex < count($UserRow->cells) - 1)
+                    $LastIndex = count($UserRow->cells) - 1;
+                
+                for($i=0;$i<=$LastIndex;$i++){
+                    if(!array_key_exists($i, $UserRow->cells)){
+                        $NewCell = new \Bread\Structures\BreadTableCell();
+                        $NewCell->text = "-";
+                        $UserRow->cells[$i] = $NewCell;
+                    }
+                }      
+                
+                $UserTable->rows[] = $UserRow;
+                
+            }
+            foreach($Headers as $HeaderTitles){
+                $Header = new \Bread\Structures\BreadTableCell();
+                $Header->text = $HeaderTitles;
+                $UserTable->headingRow->cells[] = $Header;
+            }
+            
+            $Button = new \Bread\Structures\BreadFormElement();
+            $Button->id = "EditUser";
+            $Button->class = "btn-primary";
+            $Button->value = "Edit Users";
+            $ButtonHTML = Site::$moduleManager->FireEvent("Theme.Button",$Button)[0];
+            
+            $CurrentUsersPanel->Body = Site::$moduleManager->FireEvent("Theme.Table",$UserTable)[0] . $ButtonHTML;
+            
+            
+            //Add New User
+            $AddNewUserPanel = new \Bread\Structures\BreadModuleSettingsPanel();
+            $AddNewUserPanel->Name = "newuser";
+            $AddNewUserPanel->HumanTitle = "Add New User";
+            $AddNewUserPanel->PercentageWidth = 25;
+            $PostConfigurator->Panels[] = $AddNewUserPanel;
+            
+            $GlobalSettings = new \Bread\Structures\BreadModuleSettingsTab;
+            $GlobalSettings->HumanTitle = "Permissions";
+            $MasterSettings->SettingsGroups[] = $GlobalSettings;
+            
+            return $MasterSettings;
         }
 }
 

@@ -45,6 +45,7 @@ class BootstrapTheme extends Bread\Modules\Module
             $this->manager->RegisterHook($this->name,"Theme.Breadcrumbs","Breadcrumbs");
             $this->manager->RegisterHook($this->name,"Theme.Comment","Comment");
             $this->manager->RegisterHook($this->name,"Theme.Alert","Alert");
+            $this->manager->RegisterHook($this->name,"Theme.Table","Table");
 	}
     
 	function Load()
@@ -337,6 +338,11 @@ class BootstrapTheme extends Bread\Modules\Module
         function Collapse($args)
         {
             return $this->breadXML->GetHTMLOfElement("Collapse",$args);
+        }
+        
+        function Table(Bread\Structures\BreadTableElement $args)
+        {
+            return $this->breadXML->GetHTMLOfElement("Table",$args);
         }
 }
 ?>
