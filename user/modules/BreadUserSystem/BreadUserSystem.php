@@ -1,6 +1,7 @@
 <?php
 namespace Bread\Modules;
 use Bread\Site as Site;
+use Bread\Utilitys as Util;
 use Bread\Structures\BreadUser as BreadUser;
 /**
  * The standard system for bread.
@@ -333,6 +334,8 @@ class BreadUserSystem extends Module
         //
         function ConstructAdminSettings()
         {
+            
+            Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/adminpanel.js") , true);
             $MasterSettings = new \Bread\Structures\BreadModuleSettings();
             $MasterSettings->Name = "User Security";
             
@@ -411,6 +414,38 @@ class BreadUserSystem extends Module
             $AddNewUserPanel->HumanTitle = "Add New User";
             $AddNewUserPanel->PercentageWidth = 25;
             $PostConfigurator->Panels[] = $AddNewUserPanel;
+            
+            //Edit User Modal
+            $ModalData = new \Bread\Structures\BreadModal();
+            $ModalData->id = "editUserModal";
+            $ModalData->title = "Editing";
+            
+            //Modal Form
+            $ModalForm = new \Bread\Structures\BreadForm();
+            $ModalForm->id = "UserEditForm";
+            
+            //Username
+            $UsernameElement = new \Bread\Structures\BreadFormElement;
+            $UsernameElement->label = "Username";
+            $UsernameElement->id = "username";
+            $UsernameElement->value = "%username%";
+            $UsernameElement->required = true;
+            $UsernameElement->type = \Bread\Structures\BreadFormElement::TYPE_TEXTBOX;
+            $ModalForm->elements[] = $UsernameElement;
+            
+            //Password
+            $PasswordElement = new \Bread\Structures\BreadFormElement;
+            $PasswordElement->label = "Password";
+            $PasswordElement->id = "password";
+            $PasswordElement->value = "";
+            $PasswordElement->placeholder = "Type a new password";
+            $PasswordElement->required = true;
+            $PasswordElement->type = \Bread\Structures\BreadFormElement::TYPE_PASSWORD;
+            $ModalForm->elements[] = $PasswordElement;
+            
+            $ModalData->body = $this->manager->FireEvent("Theme.Form", $ModalForm)[0];
+            
+            Site::AddToBodyCode($this->manager->FireEvent("Theme.Modal", $ModalData)[0]);
             
             $GlobalSettings = new \Bread\Structures\BreadModuleSettingsTab;
             $GlobalSettings->HumanTitle = "Permissions";

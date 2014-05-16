@@ -456,7 +456,7 @@ class BreadCoreSettings extends Module
                 case 0:
                     if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadAdminTools.CorePanel.Settings.Read")[0]){
                         break;
-                    }
+                    }   
                     Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/corepanelSettings.js") , true);
                     $this->MainSettingsPanel($Tab_CoreSettings);
                     break;

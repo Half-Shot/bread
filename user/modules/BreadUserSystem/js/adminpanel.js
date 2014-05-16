@@ -1,4 +1,6 @@
 usercell_hovered = '';
+ModalElement = $("#editUserModal");
+UserEditForm = $("#UserEditForm");
 $('tr') .prop('selected', 0);
 $('td') .hover(function ()
 {
@@ -21,12 +23,49 @@ $('td') .click(function ()
 });
 
 $('#EditUser').click(function () {
-    selectedUsers = $("tr[selected]");
+    var selectedUsers = $("tr[selected]");
     if(selectedUsers.length == 0)
         return false;
-    selectedUNames = []
+    var selectedUNames = []
+    var selectedUIds = []
     selectedUsers.each(function(){
        selectedUNames.push($(this).children().first().text());
+       selectedUIds.push(parseInt(this.id.split("-")[1]));
     });
-    alert("Selected Users:" + selectedUNames);
-});
+    CreateModalData(selectedUNames,selectedUIds);
+}); 
+
+function CreateModalData(selectedUNames,selectedUIds)
+{
+    var HeaderText = "Editing ";
+    if(selectedUNames.length > 3)
+    {
+        HeaderText += selectedUNames.slice(0,3) + "...";
+    }
+    else
+    { 
+        HeaderText += selectedUNames;
+    }
+    ModalElement.find(".modal-dialog .modal-content .modal-header .modal-title").text(HeaderText);
+    
+    
+    //Setup Form
+    var FormUserName = UserEditForm.find("#username");
+    var FormPassword = UserEditForm.find("#password");
+    if(selectedUNames.length == 1)
+    {
+        FormUserName.prop('disabled', false);
+        FormUserName.val(selectedUNames[0]);
+        
+        FormPassword.prop('disabled', false);
+    }
+    else
+    {
+        FormUserName.prop('disabled', true);
+        FormUserName.val(selectedUNames);
+        
+        FormPassword.prop('disabled', true);
+    }
+    
+    ModalElement.modal();
+}
