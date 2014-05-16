@@ -321,9 +321,11 @@ class BreadUserSystem extends Module
             }
             $this->currentUser = clone $user->breaduserdata;
             $info_array = array();
-            foreach($this->currentUser->infomation as $info)
-            {
-                $info_array += get_object_vars($info);
+            if(isset($this->currentUser->infomation)){
+                foreach($this->currentUser->infomation as $info)
+                {
+                    $info_array += get_object_vars($info);
+                }
             }
             $this->currentUser->infomation = $info_array;
             Site::$moduleManager->FireEvent("Bread.Security.LoggedIn",NULL);
