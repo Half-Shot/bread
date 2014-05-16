@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-AdminPanelJsonObject = {ajaxEvent: "BreadAdminTools.SaveCoreSettings",ajaxModule:"BreadAdminTools"};
+AdminPanelJsonObject = {ajaxEvent: "BreadCoreSettings.SaveCoreSettings",ajaxModule:"BreadCoreSettings"};
 $("#admin-mainpanel input").change( function(){
     element = $(this)[0];
     name = element.id;
