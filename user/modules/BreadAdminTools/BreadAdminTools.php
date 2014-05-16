@@ -107,6 +107,9 @@ class BreadAdminTools extends Module
             $links = array();
             $Args = Site::getURLParams();
             unset($Args["BASEURL"]);
+            if(array_key_exists("cpanel_tabindex",$Args)){
+                unset($Args["cpanel_tabindex"]);
+            }
             foreach($this->ModuleSettings as $i => $Setting){
                 $link = new \Bread\Structures\BreadLinkStructure();
                 $Args["cpanel_cpindex"] = $i;

@@ -34,7 +34,7 @@ function requestUpdate(channel){
 function startUpdate()
 {
     $("#label-complete").fadeOut();
-    UpdateRequest = $.post("index.php",{ajaxEvent: "BreadAdminTools.DoUpdate",ajaxModule:"BreadAdminTools",channel:UpdChannel},function(data){
+    UpdateRequest = $.post("index.php",{ajaxEvent: "BreadCoreSettings.DoUpdate",ajaxModule:"BreadCoreSettings",channel:UpdChannel},function(data){
         element = $("#label-status span");
         if(data == "FAIL")
         {
