@@ -49,7 +49,7 @@ function startUpdate()
         else
         {
             element.text("Server Problem!");
-            element.addClass("label-success").removeClass("label-danger").removeClass("label-warning");
+            element.addClass("label-warbibg").removeClass("label-success").removeClass("label-danger");
         }
         $("#label-status").fadeIn();
         window.onbeforeunload = null;
