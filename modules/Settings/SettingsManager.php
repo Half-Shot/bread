@@ -148,6 +148,7 @@ class SettingsManager {
      */
     public function SaveChanges()
     {
+        Site::$Logger->writeError ("Preforming Dump of all saveable settings.", \Bread\Logger::SEVERITY_MESSAGE, "SettingsManager");
         foreach($this->settings as $path => $obj){
             $this->SaveSetting($obj,$path,False); //Don't throw on such a large operation.
         }
@@ -160,6 +161,7 @@ class SettingsManager {
      */
     public function SaveSetting($object,$path,$shouldThrow = True)
     {
+         Site::$Logger->writeError ("Saving " . $path, \Bread\Logger::SEVERITY_MESSAGE, "SettingsManager");
          $string = $this->CompileJson($object);
          $worked = \file_put_contents($path, $string);
          if($worked == False || $string == "{}" || is_null($string))    

@@ -86,11 +86,15 @@ class BreadPageSystem extends Module
             $index = array_slice($index, 0, $this->settings->maxRecentPosts, true);
             foreach($index as $page)
             {
-                if($page->time_released > time() && !$this->CheckEditorRights())
+                if($page->time_released > time() && !$this->CheckEditorRights()){
+                    Site::$Logger->writeError("Post is hidden (" . $page->time_released . ") because current time (" . time() . ") is older",  \Bread\Logger::SEVERITY_MESSAGE, $this->name,false);
                     continue;
-                if(isset($page->hidden))
-                    if($page->hidden)
+                }
+                if(isset($page->hidden)){
+                    if($page->hidden){
                         continue;
+                    }
+                }
                 $parts = array();
                 $parts["request"] = $this->settings->postRequest;
                 $parts["post"] = $page->id;
@@ -279,7 +283,7 @@ class BreadPageSystem extends Module
                 if(pathinfo($file->getFilename())['extension'] == "json")
                 {
                     $path = $file->getPathname();
-                    $pageData = Site::$settingsManager->RetriveSettings($path);
+                    $pageData = Site::$settingsManager->RetriveSettings($path,true);
                     $pageData = Site::CastStdObjectToStruct($pageData, "\Bread\Modules\BreadPageSystemPost");
                     $pageData->jsonurl = $path;
                     if(isset(pathinfo($pageData->url)['extension']))
@@ -643,6 +647,7 @@ class BreadPageSystem extends Module
              $pageData->subtitle = $subtitle; //Needs changing.
              $pageData->time_modified = time();
              $pageData->time_released = strtotime($_POST["timereleased"]);
+             
              $pageData->categorys = $_POST["categorys"];
              if(is_null($pageData->categorys))
                  $pageData->categorys = array();
@@ -700,8 +705,12 @@ class BreadPageSystem extends Module
              }
              //Delete the files
              $post = $this->settings->postindex->$id;
-             unlink($post->url);
-             unlink($post->jsonurl);
+             $pathToJSON = Site::GetRootPath() . "/" . $post->jsonurl;
+             $pathToMarkdown = dirname($pathToJSON) . "/" . $post->url;
+             Site::$Logger->writeError("Markdown:" . $pathToMarkdown,\Bread\Logger::SEVERITY_MESSAGE,"breadpagesystem");
+             Site::$Logger->writeError("JSON:" . $pathToJSON,\Bread\Logger::SEVERITY_MESSAGE,"breadpagesystem");
+             unlink($pathToMarkdown);
+             unlink($pathToJSON);
              if(!file_exists($post->url) && !file_exists($post->jsonurl))
              {
                  return "1";
