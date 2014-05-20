@@ -4,3 +4,7 @@
 /content
 #Regen Settings Files
 /settings
+
+# IDE Files
+*.sublime-workspace
+*.sublime-project
