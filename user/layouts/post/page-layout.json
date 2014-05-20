@@ -1,6 +1,5 @@
 {
 "name": "post",
-"css":["default/page-layout.css"],
 "master":["default"],
 "elements": [
     {
@@ -13,47 +12,59 @@
         "tag":"section"
     },
     {
-        "name": "contents",
-        "id": "contents",
-        "human": "Page Contents",
-        "description": "Middle section where contents will be placed.",
-        "event":"Theme.Layout.Block",
-        "tag":"section",
+        "name": "midsection",
+        "id":"midsection",
+        "human":"Mid Section",
+        "description":"Middle area of document for gridding.",
+        "event":"Theme.Layout.Grid.HorizonalStack",
         "elements":[
             {
-              "name":"mainpost",
-              "id": "mainpost",
-              "human": "Page Contents",
-              "description": "The post.",
-              "module": "BreadPageSystem",
-              "event":"Bread.DrawModule",
-              "tag":"article"
+                "name": "recent-posts",
+                "id": "recent-posts",
+                "human": "Recent Posts Sidebar",
+                "description": "Section for recent posts.",
+                "module": "BreadPageSystem",
+                "event":"BreadPageSystem.DrawRecentPosts",
+                "arguments":{
+                    "cell_size":2
+                }
             },
             {
-                "name":"breadcrumbs",
-                "id":"breadcrumbs",
-                "human":"Post Breadcrumbs",
-                "description":"Tags n stuff that goes with the post",
-                "module": "BreadPageSystem",
-                "event":"BreadPageSystem.BreadCrumbs"
-            },
-            {
-                "name": "infomation",
-                "id": "infomation",
-                "human": "Post Infomation",
-                "description": "Infomation about a post.",
-                "module": "BreadPageSystem",
-                "event":"BreadPageSystem.Infomation"
-            }
-        ]
-    },
-    {
-        "name": "recent-posts",
-        "id": "recent-posts",
-        "human": "Recent Posts Sidebar",
-        "description": "Section for recent posts.",
-        "module": "BreadPageSystem",
-        "event":"BreadPageSystem.DrawRecentPosts"
+            "name": "contents",
+            "id": "contents",
+            "human": "Page Contents",
+            "description": "Middle section where contents will be placed.",
+            "event":"Theme.Layout.Block",
+            "tag":"section",
+            "elements":[
+                {
+                  "name":"mainpost",
+                  "id": "mainpost",
+                  "human": "Page Contents",
+                  "description": "The post.",
+                  "module": "BreadPageSystem",
+                  "event":"Bread.DrawModule",
+                  "tag":"article"
+                },
+                {
+                    "name":"breadcrumbs",
+                    "id":"breadcrumbs",
+                    "human":"Post Breadcrumbs",
+                    "description":"Tags n stuff that goes with the post",
+                    "module": "BreadPageSystem",
+                    "event":"BreadPageSystem.BreadCrumbs"
+                },
+                {
+                    "name": "infomation",
+                    "id": "infomation",
+                    "human": "Post Infomation",
+                    "description": "Infomation about a post.",
+                    "module": "BreadPageSystem",
+                    "event":"BreadPageSystem.Infomation"
+                }
+            ]
+        }
+    ]
     },
     {
         "name": "editor-infomation",

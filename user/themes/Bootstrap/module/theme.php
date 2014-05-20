@@ -284,9 +284,35 @@ class BootstrapTheme extends Bread\Modules\Module
         function GridHorizontalStack($args){
             if(count($args) < 1)
                 return "";
-            $listOfCells = $args[0];
-            if(is_object($listOfCells))
-                $listOfCells = $args;
+
+            if(array_key_exists(0, $args))
+            {
+                $listOfCells = $args[0];
+                if(is_object($listOfCells)){
+                    $listOfCells = $args;
+                }
+                else
+                {
+                    Site::$Logger->writeError("Theme was passed a parameter, but it was not an object!", \Bread\Logger::SEVERITY_LOW, "theme");
+                    return;
+                }
+            }
+            else if(array_key_exists("_inner", $args)){
+                $listOfCells = array();
+                foreach($args["_inner"] as $body){
+                    $cell =  new stdClass();
+                    $cell->body = $body["guts"];
+                    if(array_key_exists("arguments", $body)){
+                        if(isset($body["arguments"][0]->cell_offset)){
+                            $cell->offset = $body["arguments"][0]->cell_offset;
+                        }
+                        if(isset($body["arguments"][0]->cell_size)){
+                            $cell->size = $body["arguments"][0]->cell_size;
+                        }
+                    }
+                    $listOfCells[] = $cell;
+                }
+            }
             $HTML = "<div class='row'>";
             $spaceLeft = 12;
             foreach($listOfCells as $i => $cell)

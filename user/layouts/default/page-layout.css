@@ -6,51 +6,31 @@
 	top:0%;
         
 }
-#contents
-{
-    	position:absolute;
-	width:60%;
-	height:90%;
-        top:20%;
-        padding-bottom:10%;
-	margin-left:16%;
-        margin-right:6%;
-}
-
 #homepage-contents
 {
-        position:absolute;
+    position:absolute;
 	width:70%;
 	height:90%;
-        padding-bottom:10%;
+    padding-bottom:10%;
 	margin-left:16%;
-        margin-right:6%;
+    margin-right:6%;
 }
 #footer
 {
     
-        position:fixed;
+    position:absolute;
 	width:100%;
 	height:5%;
 	left:74%;
 	top:95%;
 }
-
-#recent-posts
-{
-        position:absolute;
-        width:15%;
-        height:10%;
-        top:20%;
-        left:0%;
-}
 #editor-infomation
 {
-        position:absolute;
-        width:20%;
-        height:10%;
-        top:20%;
-        left:80%;
+    position:absolute;
+    width:20%;
+    height:10%;
+    top:20%;
+    left:80%;
 }
 body
 {
