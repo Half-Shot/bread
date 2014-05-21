@@ -1,6 +1,0 @@
-{
-        "name":"BreadAdminTools",
-        "permissions":["read:user/resource"],
-        "entryclass":"BreadAdminTools",
-        "entryfile":"BreadAdminTools/BreadAdminTools.php"
-}

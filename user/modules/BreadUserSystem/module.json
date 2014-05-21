@@ -2,5 +2,40 @@
         "name":"BreadUserSystem",
 		"permissions":["read:user/resource"],
 		"entryclass":"BreadUserSystem",
-		"entryfile":"BreadUserSystem/BreadUserSystem.php"
+		"entryfile":"BreadUserSystem/BreadUserSystem.php",
+		"events":{
+			"Bread.Security.GetCurrentUser":{
+				"function":"ReturnUser"
+			},			
+			"Bread.Security.GetPermission":{
+				"function":"HasPermission"
+			},			
+			"Bread.ProcessRequest":{
+				"function":"Setup"
+			},			
+			"BreadUserSystem.LoginName":{
+				"function":"LoginName"
+			},			
+			"BreadUserSystem.LoginButton":{
+				"function":"LoginButton"
+			},			
+			"Bread.Security.LoginUser":{
+				"function":"DoLogin",
+				"security":1
+			},			
+			"Bread.Security.RegisterNewUser":{
+				"function":"RegisterNewUser",
+				"security":1
+			},			
+			"Bread.Security.Logout":{
+				"function":"Logout",
+				"security":1
+			},			
+			"BreadUserSystem.GetNavbarIndex":{
+				"function":"CreateLoginLink"
+			},			
+			"BreadAdminTools.AddModuleSettings":{
+				"function":"ConstructAdminSettings"
+			}
+		}
 }

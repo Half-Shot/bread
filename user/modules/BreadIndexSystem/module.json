@@ -1,12 +1,28 @@
 {
-        "name":"BreadIndexSystem",
-        "permissions":["read:user/resource"],
-        "entryclass":"BreadIndexSystem",
-        "entryfile":"BreadIndexSystem/BreadIndexSystem.php",
-        "version":0.1,
-        "dependencies":{
-            "BreadUserSystem":"0.1"
+    "name":"BreadIndexSystem",
+    "entryclass":"BreadIndexSystem",
+    "entryfile":"BreadIndexSystem/BreadIndexSystem.php",
+    "version":0.1,
+    "events":{
+        "Bread.GetNavbarIndex":{
+            "function":"GetPages",
+            "security":0
         },
-        "eventsfired":[],
-        "eventshooked":[]
+        "Bread.RunSearch":{
+            "function":"Search",
+            "security":0
+        },
+        "Bread.DisplaySearchPage":{
+            "function":"SearchPage",
+            "security":0
+        },
+        "BreadIndexSystem.SearchForm":{
+            "function":"CreateSearchForm",
+            "security":0
+        },
+        "Bread.ProcessRequest":{
+            "function":"Setup",
+            "security":0
+        }
+    }
 }

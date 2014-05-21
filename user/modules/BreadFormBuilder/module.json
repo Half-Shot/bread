@@ -1,7 +1,16 @@
 {
-        "name":"BreadFormBuilder",
-        "permissions":["read:user/resource"],
-        "entryclass":"BreadFormBuilder",
-        "entryfile":"BreadFormBuilder/BreadFormBuilder.php",
-        "version":0.1
+    "name":"BreadFormBuilder",
+    "entryclass":"BreadFormBuilder",
+    "entryfile":"BreadFormBuilder/BreadFormBuilder.php",
+    "version":0.1,
+    "events":{
+	    "BreadFormBuilder.DrawForm":{
+	   		"function":"DrawForm",
+	   		"security":0
+	   	},
+	   	"Bread.ProcessRequest":{
+	   		"function":"Setup",
+	   		"security":0
+	   	}
+	}
 }

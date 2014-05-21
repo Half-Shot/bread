@@ -282,7 +282,7 @@ class BootstrapTheme extends Bread\Modules\Module
         }
         
         function GridHorizontalStack($args){
-            if(count($args) < 1)
+                 if(count($args) < 1)
                 return "";
 
             if(array_key_exists(0, $args))
@@ -291,9 +291,13 @@ class BootstrapTheme extends Bread\Modules\Module
                 if(is_object($listOfCells)){
                     $listOfCells = $args;
                 }
+                else if(is_array($listOfCells))
+                {
+                    $listOfCells = $args[0];
+                }
                 else
                 {
-                    Site::$Logger->writeError("Theme was passed a parameter, but it was not an object!", \Bread\Logger::SEVERITY_LOW, "theme");
+                    Site::$Logger->writeError("Theme was passed a parameter, but it was not an object!" . "<pre>" . var_export($listOfCells,true) . "</pre>" , \Bread\Logger::SEVERITY_LOW, "theme");
                     return;
                 }
             }

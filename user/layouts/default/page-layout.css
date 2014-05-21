@@ -37,6 +37,10 @@ body
    	font-family: 'Ledger', serif; 
 }
 
+#contents{
+	margin-top:2%;
+}
+
 .breadcrumb{
     margin-top:3%;
 }

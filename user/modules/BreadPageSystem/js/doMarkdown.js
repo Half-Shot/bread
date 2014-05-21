@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 
+var UsingEditor = (typeof epiceditor_basepath != "undefined");
+
 var mdParser = new Markdown.Converter();
 Markdown.Extra.init(mdParser);
 var editorState = 0;
@@ -13,42 +15,62 @@ var ReqPerSec = 0.2;
 var timeSinceLastRequest = 0;
 var tokenizedMarkdown = "";
 var lastTokens;
-var opts = {
-  container: 'bps-editor',
-  textarea: null,
-  basePath: epiceditor_basepath,
-  clientSideStorage: true,
-  localStorageName: 'epiceditor',
-  useNativeFullscreen: true,
-  parser: ParseMarkdown,
-  file: {
-    name: 'epiceditor',
-    defaultContent: '',
-    autoSave: 100
-  },
-  theme: {
-    base: 'epiceditor.css',
-    preview: 'preview-dark.css',
-    editor: 'epic-dark.css'
-  },
-  button: {
-    preview: true,
-    fullscreen: true,
-    bar: "auto"
-  },
-  focusOnLoad: false,
-  shortcut: {
-    modifier: 18,
-    fullscreen: 70,
-    preview: 80
-  },
-  string: {
-    togglePreview: 'Toggle Preview Mode',
-    toggleEdit: 'Toggle Edit Mode',
-    toggleFullscreen: 'Enter Fullscreen'
-  },
-  autogrow: true
-};
+var sidePanelHidden = false;
+if(UsingEditor)
+{
+    var opts = {
+      container: 'bps-editor',
+      textarea: null,
+      basePath: epiceditor_basepath,
+      clientSideStorage: true,
+      localStorageName: 'epiceditor',
+      useNativeFullscreen: true,
+      parser: ParseMarkdown,
+      file: {
+        name: 'epiceditor',
+        defaultContent: '',
+        autoSave: 100
+      },
+      theme: {
+        base: 'epiceditor.css',
+        preview: 'preview-dark.css',
+        editor: 'epic-dark.css'
+      },
+      button: {
+        preview: true,
+        fullscreen: true,
+        bar: "auto"
+      },
+      focusOnLoad: false,
+      shortcut: {
+        modifier: 18,
+        fullscreen: 70,
+        preview: 80
+      },
+      string: {
+        togglePreview: 'Toggle Preview Mode',
+        toggleEdit: 'Toggle Edit Mode',
+        toggleFullscreen: 'Enter Fullscreen'
+      },
+      autogrow: true
+    };
+}
+
+$("#editor-infomation .panel .panel-heading").click(function ()
+{
+    if(sidePanelHidden){
+        $("#editor-infomation").animate({
+            'marginLeft' : "-=" + (($(this).width() - 20)).toString() +'px'
+        });
+    }
+    else
+    {
+        $("#editor-infomation").animate({
+            'marginLeft' : "+=" + (($(this).width() - 20)).toString() +'px'
+        });     
+    }
+    sidePanelHidden = !sidePanelHidden;
+});
 
 function GetTokens(markdown)
 {

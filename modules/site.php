@@ -376,7 +376,7 @@ class Site
                 static::$themeManager->LoadSettings($path . "/theme/settings.json");
                 static::$themeManager->LoadLayouts();
             }
-            static::$moduleManager->LoadModulesFromConfig($path . "/modules/modlist.json");
+            static::$moduleManager->LoadModulesFromConfig();
 	}
 	/**
          * Creates metadata tags for the header. This function calls moduleman
@@ -520,11 +520,8 @@ class Site
 	public static function ProcessRequest()
 	{
             
-            $requestData = static::$Request;
+        $requestData = static::$Request;
 	    //Load required modules.
-	    static::$moduleManager->LoadRequiredModules($requestData);
-	    static::$moduleManager->FireEvent("Bread.ProcessRequest",NULL);
-            
             if(static::$isAjax)
             {
                 // Turn off all error reporting

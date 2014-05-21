@@ -178,16 +178,18 @@ class Utilitys {
          * @param string $propName
          * @return array
          */
-        public static function ArraySetKeyByProperty($array,$propName)
+        public static function ArraySetKeyByProperty($array,$propName,$removeProp = false)
         {
            $newArray = array();
            foreach($array as $item)
            {
                $newArray[$item->$propName] = $item;
+               if($removeProp)
+                unset($newArray[$item->$propName]->$propName);
            }
            return $newArray;
         }
-        
+
         /**
         * Return a string value from a string which has a mix of letters and
         * numbers.

@@ -27,7 +27,7 @@
 namespace Bread\Structures;
 include_once 'BreadThemeElement.php';
 /**
- * Description of BreadModal
+ * Structure for a modal in a theme.
  *
  * @author will
  */

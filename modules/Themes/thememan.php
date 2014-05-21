@@ -143,15 +143,14 @@ class ThemeManager
                     }
                     $LayoutStruct->css = array_merge ($masterLayout->css,$LayoutStruct->css);
                 }
-                
-                if(isset($masterLayout->Scripts)){
-                    if(!isset($LayoutStruct->Scripts)){
-                        $LayoutStruct->Scripts = array();
+                if(isset($masterLayout->scripts)){
+                    if(!isset($LayoutStruct->scripts)){
+                        $LayoutStruct->scripts = array();
                     }
-                    else if(!is_array($LayoutStruct->Scripts)){
-                        $LayoutStruct->Scripts = array($LayoutStruct->Scripts);
+                    else if(!is_array($LayoutStruct->scripts)){
+                        $LayoutStruct->scripts = array($LayoutStruct->scripts);
                     }
-                    $LayoutStruct->Scripts = array_merge ($masterLayout->Scripts,$LayoutStruct->Scripts);
+                    $LayoutStruct->scripts = array_merge ($masterLayout->scripts,$LayoutStruct->scripts);
                 }
                 
                 $LayoutElements = Site::ArraySetKeyByProperty($LayoutStruct->elements, 'name');

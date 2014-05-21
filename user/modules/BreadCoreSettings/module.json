@@ -1,5 +1,23 @@
 {
-        "name":"BreadCoreSettings",
+    "name":"BreadCoreSettings",
 	"entryclass":"BreadCoreSettings",
-	"entryfile":"BreadCoreSettings/BreadCoreSettings.php"
+	"entryfile":"BreadCoreSettings/BreadCoreSettings.php",
+	"events":{
+        "BreadCoreSettings.SaveCoreSettings":{
+       		"function":"SaveCore",
+       		"security":1
+       	},
+       	"BreadCoreSettings.DoUpdate":{
+       		"function":"UpdateBread",
+       		"security":1
+       	},
+       	"BreadCoreSettings.UpdatePing":{
+       		"function":"UpdatePing",
+       		"security":1
+       	},
+       	"BreadAdminTools.AddModuleSettings":{
+       		"function":"Setup",
+       		"security":0
+       	}
+	}
 }

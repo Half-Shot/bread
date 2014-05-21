@@ -2,7 +2,7 @@
     "master":
     {
         "theme":"theme-bootstrap",
-        "modules":["BreadIndexSystem\/module.json","WebShim\/module.json","BreadUserSystem\/module.json","BreadAdminTools\/module.json"]
+        "modules":["BreadIndexSystem\/module.json","WebShim\/module.json","BreadUserSystem\/module.json","BreadAdminTools\/module.json","BreadFormBuilder\/module.json"]
     },
     "homepage":{
         "layout":"homepage",

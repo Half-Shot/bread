@@ -13,29 +13,6 @@ class BreadPageSystem extends Module
         {
 	        parent::__construct($manager,$name,__DIR__);
         }
-
-        function RegisterEvents()
-        {
-            $this->manager->RegisterHook($this->name,"Bread.DrawModule","DrawPage");
-            $this->manager->RegisterHook($this->name,"Bread.ProcessRequest","Setup",0,array("Bread.ProcessRequest"=>"BreadUserSystem"));
-            $this->manager->RegisterHook($this->name,"Bread.LowPriorityScripts","GenerateHTML");
-            $this->manager->RegisterHook($this->name,"BreadPageSystem.DrawRecentPosts","DrawRecentPosts");
-            $this->manager->RegisterHook($this->name,"Bread.Title","DrawTitle");
-            $this->manager->RegisterHook($this->name,"BreadPageSystem.PlainMarkdown","DrawPlainMarkdown");
-            $this->manager->RegisterHook($this->name,"BreadPageSystem.BreadCrumbs","DrawBreadcrumbs");
-            $this->manager->RegisterHook($this->name,"BreadPageSystem.Infomation","DrawPostInfomation");
-            $this->manager->RegisterHook($this->name,"BreadPageSystem.EditorButton","DrawMarkdownToggleswitch");
-            $this->manager->RegisterHook($this->name,"BreadPageSystem.EditorToolbar","EditorToolbar");
-            $this->manager->RegisterHook($this->name,"BreadPageSystem.SavePost","SavePost",  ModuleManager::EVENT_EXTERNAL);
-            $this->manager->RegisterHook($this->name,"BreadPageSystem.DeletePost","DeletePost",ModuleManager::EVENT_EXTERNAL);
-            $this->manager->RegisterHook($this->name,"Bread.Security.LoggedIn","CheckEditorRights");
-            $this->manager->RegisterHook($this->name,"BreadPageSystem.EditorInfomation","PostEditorInfomationPanel");
-            $this->manager->RegisterHook($this->name,"Bread.PageTitle","SetSiteTitle");
-            $this->manager->RegisterHook($this->name,"Bread.TokenizeText","BasicTokens",ModuleManager::EVENT_EXTERNAL);
-            $this->manager->RegisterHook($this->name,"Bread.TokenizePost","TokenizeArticle",ModuleManager::EVENT_EXTERNAL);
-            $this->manager->RegisterHook($this->name,"Bread.GetAllPages","ReturnBreadPages");
-            $this->manager->RegisterHook($this->name,"BreadAdminTools.AddModuleSettings", "ConstructAdminSettings");
-        }
         
         function AddPages()
         {
