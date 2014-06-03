@@ -25,7 +25,6 @@
  */
 
 namespace Bread\Structures;
-include_once 'BreadThemeElement.php';
 /**
  * Structure for a modal in a theme.
  *

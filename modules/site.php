@@ -301,20 +301,19 @@ class Site
          */
 	public static function LoadCoreModules($directory)
 	{
-		$files = preg_grep('/^([^.])/',scandir($directory));
+		$files = json_decode(file_get_contents(static::ResolvePath("%system-settings") . "/coremodulecheck.json"),true)["phpfilelist"];
 		foreach($files as $file) //Ignore dot files.
 		{
-			$fullpath = $directory . "/" . $file;
+			$fullpath = $directory . "/" . $file . ".php";
 			if(realpath($fullpath) == realpath(__FILE__))
 				continue;
-
 			if(is_dir($fullpath))
 			{
 				static::LoadCoreModules($fullpath);
 			}
 			else if(file_exists($fullpath))
 			{
-				require_once($fullpath);
+				require($fullpath);
 				static::$Logger->writeMessage("Loaded core file " . $fullpath);
 			}
 		}
@@ -331,30 +330,6 @@ class Site
                         static::$configuration->logger->multifilelog,
                         static::$configuration->logger->maxlogfiles,
                         static::$configuration->logger->keepfor);
-	}
-        /**
-         * Checks each module in the core modules that were previously loaded from
-         * LoadCoreModules() and if any are missing then bread will throw an error.
-         * The file it checks will be inside the root settings directory called 'coremodulecheck.json'
-         * @throws Exception
-         * @see static::LoadCoreModules()
-         */
-	public static function CheckCoreModules()
-	{
-		$RequiredModules = json_decode(file_get_contents(static::ResolvePath("%system-settings") . "/coremodulecheck.json"),true)["checklist"];
-		$Failed = false;
-		foreach($RequiredModules as $ModuleName)
-		{
-			if(!class_exists($ModuleName)){
-				static::$Logger->writeError("Bread is missing module " . $ModuleName,\Bread\Logger::SEVERITY_CRITICAL,"core",True);
-				$Failed = true;
-			}
-		}
-		if($Failed)
-		{
-			static::$Logger->writeError("Some core modules could not be found, please redownload them from the repository.",\Bread\Logger::SEVERITY_CRITICAL,"core",true);
-			die();
-		}
 	}
         /**
          * Sets up all managers that bread uses.

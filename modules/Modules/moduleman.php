@@ -100,7 +100,7 @@ class ModuleManager
         $deps = $this->DependenciesRegistered($module);
         if(empty($deps)){
             //Stupid PHP cannot validate files without running command trickery.
-            include_once(Site::ResolvePath("%user-modules") . "/" . $module->entryfile);
+            include(Site::ResolvePath("%user-modules") . "/" . $module->entryfile);
             //Modules should be inside the namespace Bread\Modules but can differ if need be.
             $class = 'Bread\Modules\\'  . $module->entryclass;
             if(!is_null($module->namespace)){

@@ -1,3 +1,24 @@
 {
-	"checklist":["Bread\\Themes\\ThemeManager","Bread\\Modules\\ModuleManager","Bread\\Settings\\SettingsManager"]
+    "phpfilelist":[
+        "./Settings/SettingsManager",
+        "./Unirest/Unirest",
+        "./Unirest/HttpMethod",
+        "./Unirest/HttpResponse",
+        "./site",
+        "./Modules/moduleman",
+        "./Modules/module",
+        "./Utilitys",
+        "./Structures/BreadThemeElement",
+        "./Structures/BreadLinkStructure",
+        "./Structures/BreadModuleStructure",
+        "./Structures/BreadModuleSettingsPanel",
+        "./Structures/BreadForm",
+        "./Structures/BreadModal",
+        "./Structures/BreadUser",
+        "./Structures/BreadSearchItem",
+        "./Structures/BreadTableCell",
+        "./Structures/BreadRequest",
+        "./Themes/thememan",
+        "./Themes/breadxml"
+    ]
 }
