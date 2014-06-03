@@ -14,11 +14,11 @@ class ModuleManager
      * A list of modules
      * @var type 
      */
-	private $modules;
-	private $moduleList;
+    private $modules;
+    private $moduleList;
     private $moduleConfig;
-	private $configuration;
-	private $events;
+    private $configuration;
+    private $events;
     private $completed;
         
     const EVENT_INTERNAL = 0;
@@ -238,9 +238,11 @@ class ModuleManager
     {
         unset($this->events[$eventName][$moduleName]);
         Site::$Logger->writeMessage('Hook unregistered ' . $moduleName . '::' . $eventName);   
-        if(count($this->GetModuleEvents($moduleName)) == 0 && $removeModule){
-            Site::$Logger->writeMessage($moduleName . ' automatically removed from stack.');  
-            unset($this->modules[$moduleName]);
+        if($removeModule){
+            if(count($this->GetModuleEvents($moduleName)) == 0){
+                Site::$Logger->writeMessage($moduleName . ' automatically removed from stack.');  
+                unset($this->modules[$moduleName]);
+            }
         }
 
     }
@@ -295,28 +297,43 @@ class ModuleManager
      * It will call all registered hooks to run their function and return the data if any into a array.
      * @param string $eventName The event to fire.
      * @param any $arguments An array or any datatype to be passed to the function.
+     * @param is the event called from internals or from an external ajax. Usually should be true.
      * @param Should all modules be fired and returned or just the top one.
+     * @param If only one module is fired, what is the offset of the module.
      * @return array|bool An array of the returned data or false if no data was returned.
      */
-	function FireEvent($eventName,$arguments = null,$isInternal = true)
-	{
+    function FireEvent($eventName,$arguments = null,$isInternal = true,$singleOnly = false,$singleOffset = 0)
+    {
         if(!array_key_exists($eventName,$this->events))
             return False; //Event not known.
         if(count($this->events[$eventName]) == 0){
             return False; //Event is known but not called by any module.
         }
+        
+        
+        //How many modules should be called.
+        if(!$singleOnly){
+            $ModList = $this->events[$eventName];
+        }
+        else {
+            if($singleOffset > count($this->events[$eventName]) - 1)
+                return False; //Over Offset
+            $ModList = array_slice($this->events[$eventName], $singleOffset,1,true);
+        }
+        
         //Load the module if not loaded!
-        foreach ($this->events[$eventName] as $moduleName => $data) {
+        foreach ($ModList as $moduleName => $data) {
             if($moduleName == Site::$themeManager->Theme["data"]->name)
                 break;
             if($this->LoadModule($moduleName)){
                 $this->FireSpecifiedModuleEvent("Bread.ProcessRequest", $moduleName, null, true);
+                return $this->FireEvent($eventName, $arguments, $isInternal, $singleOnly, $singleOffset); //Reload the request as $this->events might have changed!
             }
         }
 
         $returnData = array();
         
-        foreach($this->events[$eventName] as $module => $data)
+        foreach($ModList as $module => $data)
         {
             if((!$isInternal && $data->security < 1)|| ($data->security == static::EVENT_EXTERNAL && !Site::GetisAjax())){
                 Site::$Logger->writeError("Security Failed on Event Call.\n EventName: " . $eventName, \Bread\Logger::SEVERITY_CRITICAL, "core", true);
@@ -340,8 +357,8 @@ class ModuleManager
             return False;
         }
         return $returnData;
-	}
-	/**
+    }
+    /**
      * Similar to ModuleManager::FireEvent() but requires a module argument so you can pick which module picks it up.
      * @param string $eventName The event to fire.
      * @param any $arguments An array or any datatype to be passed to the function.
