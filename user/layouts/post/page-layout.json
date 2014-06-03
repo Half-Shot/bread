@@ -36,6 +36,9 @@
             "description": "Middle section where contents will be placed.",
             "event":"Theme.Layout.Block",
             "tag":"section",
+            "arguments":{
+                "cell_size":8
+            },
             "elements":[
                 {
                   "name":"mainpost",

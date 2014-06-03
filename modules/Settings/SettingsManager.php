@@ -77,11 +77,45 @@ class SettingsManager {
         $this->SaveSetting($this->settings[$filename],$filename,True); //Save to be safe.
         return True;
     }
-    
+    /**
+     * Replace a setting file in the stack with a new object.
+     * @param string $path The path of the setting
+     * @param StdClass $newObj 
+     */
     function ChangeSetting($path,$newObj)
     {
         $this->settings[$path] = $newObj;
     }
+    
+    /**
+     * Removes a setting from the filesystem/database entirely. Use at your own risk!
+     * @param type $path
+     */
+    function DeleteSetting($path,$removeFromStack = true){
+        
+        if(file_exists($path)){
+            if($removeFromStack){
+                $this->RemoveSettingFromStack($path);
+            }
+            return unlink ($path);
+        }
+        return false;
+    }
+    
+    function RemoveSettingFromStack($path)
+    {
+        if(array_key_exists($path, $this->settings)){
+            unset($this->settings[$path]);
+            return True;
+        }
+        else
+        {
+            Site::$Logger->writeError ("Setting file " . $path . " not loaded!", \Bread\Logger::SEVERITY_MEDIUM, "core");  
+            return false;
+        }
+    }
+    
+    
     
     /**
      * Retrives the settings file.
@@ -96,7 +130,7 @@ class SettingsManager {
         {
             return $this->settings[$path];
         }
-            //Extract Settings File
+        //Extract Settings File
         if(!file_exists($path))
             Site::$Logger->writeError ("Couldn't load path '" . $path . "' for parsing settings.", \Bread\Logger::SEVERITY_MEDIUM, "core" , True, "Bread\Settings\FileNotFoundException");   
         
@@ -161,7 +195,7 @@ class SettingsManager {
      */
     public function SaveSetting($object,$path,$shouldThrow = True)
     {
-         Site::$Logger->writeError ("Saving " . $path, \Bread\Logger::SEVERITY_MESSAGE, "SettingsManager");
+         Site::$Logger->writeMessage ("Saving " . $path, "SettingsManager");
          $string = $this->CompileJson($object);
          $worked = \file_put_contents($path, $string);
          if($worked == False || $string == "{}" || is_null($string))    

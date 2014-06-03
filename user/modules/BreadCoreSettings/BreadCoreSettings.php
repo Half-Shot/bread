@@ -429,7 +429,7 @@ class BreadCoreSettings extends Module
             $CoreSettingsCP = new \Bread\Structures\BreadModuleSettings;
             $CoreSettingsCP->Name = "Core";
             $CoreSettingsCP->OverrideIndex = 0;
-            if(!$args[0])
+            if($args[2] != $CoreSettingsCP->OverrideIndex)
                 return $CoreSettingsCP;
             $Tab_CoreSettings = new \Bread\Structures\BreadModuleSettingsTab;
             $Tab_CoreSettings->Name = "coreSettings";

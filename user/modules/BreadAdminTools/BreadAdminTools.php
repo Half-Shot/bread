@@ -53,26 +53,37 @@ class BreadAdminTools extends Module
     {
         if($this->HasGenerated)
             return true;
-        $this->ModuleSettings += ($this->manager->FireEvent("BreadAdminTools.AddModuleSettings",array($this->CurrentModuleIndex == count($this->ModuleSettings),  $this->CurrentTabIndex)));
-        
-        foreach($this->ModuleSettings as $Index => $ModuleData)
-        {
-            if($ModuleData->OverrideIndex !== -1 && $ModuleData->OverrideIndex !== $Index) 
-            {
-                if(array_key_exists($ModuleData->OverrideIndex, $this->ModuleSettings)){
-                    $SwapSpace = clone $this->ModuleSettings[$ModuleData->OverrideIndex];
-                    $this->ModuleSettings[$ModuleData->OverrideIndex] = $ModuleData;
-                    $this->ModuleSettings[$Index] = $SwapSpace;
-                }
-                else
+        $ModulesGenerating = true;
+        $ModOffset = 0;
+        while($ModulesGenerating){
+            $NewSetting = $this->manager->FireEvent("BreadAdminTools.AddModuleSettings",array($this->CurrentModuleIndex == $ModOffset,  $this->CurrentTabIndex,$this->CurrentModuleIndex),true,true,$ModOffset);
+            if($NewSetting != False){
+                $this->ModuleSettings[] = $NewSetting[0];
+                //Swap if needed!
+                $ModuleData = $NewSetting[0];
+                if($ModuleData->OverrideIndex !== -1 && $ModuleData->OverrideIndex !== $ModOffset) 
                 {
-                    $this->ModuleSettings[$ModuleData->OverrideIndex] = clone $ModuleData;
-                    unset($this->ModuleSettings[$Index]);
+                    if(array_key_exists($ModuleData->OverrideIndex, $this->ModuleSettings)){
+                        $SwapSpace = clone $this->ModuleSettings[$ModuleData->OverrideIndex];
+                        $this->ModuleSettings[$ModuleData->OverrideIndex] = $ModuleData;
+                        $this->ModuleSettings[$ModOffset] = $SwapSpace;
+                    }
+                    else
+                    {
+                        $this->ModuleSettings[$ModuleData->OverrideIndex] = clone $ModuleData;
+                        unset($this->ModuleSettings[$ModOffset]);
+                    }
                 }
+                $ModOffset++;
+            }
+            else
+            {
+                $ModulesGenerating = False;
             }
         }
         
-        if($this->CurrentModuleIndex > count($this->ModuleSettings) -1 ){
+        
+        if($this->CurrentModuleIndex > count($this->ModuleSettings) - 1 ){
             Site::$Logger->writeError("The specifed module index is invalid for the Admin Panel", \Bread\Logger::SEVERITY_MEDIUM, $this->name, true);
         }
         if($this->CurrentTabIndex > count($this->ModuleSettings[$this->CurrentModuleIndex]->SettingsGroups) - 1){
