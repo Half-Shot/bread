@@ -361,7 +361,7 @@ class Site
 	public static function ProcessMetadata(BreadRequestData $requestData)
 	{
 		$Metadata  = "<meta>";
-                $returnData = static::$moduleManager->FireEvent("Bread.Metadata",$requestData);
+                $returnData = static::$moduleManager->FireEvent("Bread.Metadata",$requestData,false);
                 if($returnData == False)
                     return False;
                 //HookEvent returns an array of results.
@@ -521,15 +521,12 @@ class Site
                 if($module != "")
                 {
                     static::$Logger->writeMessage("Module: " . $module);
-                    $return = static::$moduleManager->FireSpecifiedModuleEvent($event,$module,array(),false);
-                    $realdata = $return;
+                    $realdata = static::$moduleManager->FireSpecifiedModuleEvent($event,$module,array(),false);
                 }
                 else {
-                    $return = static::$moduleManager->FireEvent($event,array(),false);
-                    if(is_array($return))
-                        $realdata = $return[0];
+                    $realdata = static::$moduleManager->FireEvent($event,array(),true,false);
                 }
-                if($return === False)
+                if($realdata === False)
                 {
                    static::$Logger->writeError("Couldn't hook Ajax Request to requested module.",\Bread\Logger::SEVERITY_CRITICAL,"core");
                    return False;
@@ -552,10 +549,10 @@ class Site
 	    }
 
 	    static::$themeManager->ReadElementsFromLayout(static::$themeManager->Theme["layout"]);#Build layout into HTML
-            static::$moduleManager->FireEvent("Bread.FinishedLayoutProcess",NULL);
+            static::$moduleManager->FireEvent("Bread.FinishedLayoutProcess",null,false);
 	    static::$htmlcode .= "<head>\n";
 	    static::$htmlcode .= static::ProcessMetadata($requestData);
-            $title = static::$moduleManager->FireEvent("Bread.PageTitle")[0];
+            $title = static::$moduleManager->FireEvent("Bread.PageTitle");
             if($title){
                 Site::AddToHeaderCode("<title>" . $title . " - " . self::$configuration->strings->sitename ."</title>");
             }
@@ -565,13 +562,13 @@ class Site
             static::$htmlcode .= static::$headercode;
 	    static::$htmlcode .= static::$themeManager->CSSLines;
             static::$htmlcode .= static::$ScriptLines;
-            static::$moduleManager->FireEvent("Bread.FinishedHead",NULL); //Must use add to head.
+            static::$moduleManager->FireEvent("Bread.FinishedHead",NULL,false); //Must use add to head.
 	    static::$htmlcode .= "</head>\n";
 	    static::$htmlcode .= "<body>\n";
 	    static::$htmlcode .= static::$bodycode;
-            static::$moduleManager->FireEvent("Bread.LowPriorityScripts",NULL);
+            static::$moduleManager->FireEvent("Bread.LowPriorityScripts",NULL,false);
             static::$htmlcode .= static::$LowPriorityScriptLines;
-            static::$moduleManager->FireEvent("Bread.FinishedBody",NULL); //Must use add to body.
+            static::$moduleManager->FireEvent("Bread.FinishedBody",NULL,false); //Must use add to body.
 	    static::$htmlcode .= "</body>\n";
 	    static::$htmlcode .= "</html>\n";
 	    echo static::$htmlcode;
@@ -960,9 +957,9 @@ class Logger
         $this->messageStack[$category][] = $message;
         
         if(isset(Site::$moduleManager)){
-            Site::$moduleManager->FireEvent("Bread.LogError",$severity);
+            Site::$moduleManager->FireEvent("Bread.LogError",$severity,false);
             if($severity > static::SEVERITY_MESSAGE){
-                echo Site::$moduleManager->FireEvent("Theme.DrawError",$message)[0];
+                echo Site::$moduleManager->FireEvent("Theme.DrawError",$message,true);
             }
         }
         

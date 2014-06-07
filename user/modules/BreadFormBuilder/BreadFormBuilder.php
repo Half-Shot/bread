@@ -1,11 +1,13 @@
 <?php
 namespace Bread\Modules;
 use Bread\Site as Site;
+use Bread\Utilitys as Util;
 use Bread\Structures\BreadForm as BreadForm;
 use Bread\Structures\BreadFormElement as BreadFormElement;
 
 class BreadFormBuilder extends Module
 {
+    public $includedScript = false;
 	function __construct($manager,$name)
 	{
 		parent::__construct($manager,$name);
@@ -53,12 +55,13 @@ class BreadFormBuilder extends Module
             $form = $this->FindByName($args);
         }
 
-        if($form == false)
+        if($form == false){
             return "";
+        }
 
         $form = Site::CastStdObjectToStruct($form, "Bread\Structures\BreadForm");
         //Throw any javascript into a function.
-        return Site::$moduleManager->FireEvent("Theme.Form",$form)[0];
+        return Site::$moduleManager->FireEvent("Theme.Form",$form);
     }
     
     function FindByName($string){
@@ -71,5 +74,19 @@ class BreadFormBuilder extends Module
             Site::$Logger->writeError("Request to draw form, but named form (" . $string . ") did not match!", \Bread\Logger::SEVERITY_MEDIUM,"breadforms");
             return false;
         }
+    }
+    
+    function CreateFormHTML($args){
+        $HTML = Site::$moduleManager->FireEvent("Theme.Form",$args);
+        if(empty($HTML)){
+            return "";
+        }
+        
+        if(!$this->includedScript){
+            Site::AddScript(Util::FindFile("BreadFormBuilder/js/BreadForm.js"), true);
+            $this->includedScript = true;
+        }
+        Site::AddRawScriptCode('$("#' . $args->id . '").submit(function() { BreadFormSend(this,"' . $args->breadReturnEvent . '", "' . $args->breadReturnModule . '","' . $args->method . '");});', true);
+        return $HTML;
     }
 }

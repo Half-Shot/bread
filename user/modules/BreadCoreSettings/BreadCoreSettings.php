@@ -23,7 +23,7 @@ class BreadCoreSettings extends Module
         
         function SaveCore()
         {
-            if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadAdminTools.CorePanel.Write")[0])
+            if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadCoreSettings.Write"))
                 return 0;
             $newObj = new \stdClass();
             foreach($_POST as $prop => $val)
@@ -152,22 +152,22 @@ class BreadCoreSettings extends Module
             
             $TCS_Panel_Main = new \Bread\Structures\BreadModuleSettingsPanel;
             $TCS_Panel_Main->Name = "main";
-            $TCS_Panel_Main->HumanTitle = $this->manager->FireEvent("Theme.Icon","cog")[0] . " Core Settings";
+            $TCS_Panel_Main->HumanTitle = $this->manager->FireEvent("Theme.Icon","cog") . " Core Settings";
             $TCS_Panel_Main->ApplyButtons = $ApplyButtonsForm;
             
             $TCS_Panel_Logger = new \Bread\Structures\BreadModuleSettingsPanel;
             $TCS_Panel_Logger->Name = "logging";
-            $TCS_Panel_Logger->HumanTitle = $this->manager->FireEvent("Theme.Icon","book")[0] . "Debug Logging";
+            $TCS_Panel_Logger->HumanTitle = $this->manager->FireEvent("Theme.Icon","book") . "Debug Logging";
             $TCS_Panel_Logger->ApplyButtons = $ApplyButtonsForm;
             
             $TCS_Panel_Strings = new \Bread\Structures\BreadModuleSettingsPanel;
             $TCS_Panel_Strings->Name = "strings";
-            $TCS_Panel_Strings->HumanTitle = $this->manager->FireEvent("Theme.Icon","pencil")[0] . "Strings";
+            $TCS_Panel_Strings->HumanTitle = $this->manager->FireEvent("Theme.Icon","pencil") . "Strings";
             $TCS_Panel_Strings->ApplyButtons = $ApplyButtonsForm;
             
             $TCS_Panel_Directorys = new \Bread\Structures\BreadModuleSettingsPanel;
             $TCS_Panel_Directorys->Name = "directorys";
-            $TCS_Panel_Directorys->HumanTitle = $this->manager->FireEvent("Theme.Icon","file")[0] . "Locations";
+            $TCS_Panel_Directorys->HumanTitle = $this->manager->FireEvent("Theme.Icon","file") . "Locations";
             $TCS_Panel_Directorys->ApplyButtons = $ApplyButtonsForm;
             
             //Form Time!
@@ -271,13 +271,13 @@ class BreadCoreSettings extends Module
                 
             $Panel_About = new \Bread\Structures\BreadModuleSettingsPanel;
             $Panel_About->Name = "aboutUpdater";
-            $Panel_About->HumanTitle = $this->manager->FireEvent("Theme.Icon","megaphone")[0] . " About Updates";
+            $Panel_About->HumanTitle = $this->manager->FireEvent("Theme.Icon","megaphone") . " About Updates";
             $Panel_About->Body = file_get_contents(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "aboutUpdater.html"));
             $Tab_UpdateBread->Panels[] = $Panel_About;
             
             $Panel_Updater = new \Bread\Structures\BreadModuleSettingsPanel;
             $Panel_Updater->Name = "updaterPanel";
-            $Panel_Updater->HumanTitle = $this->manager->FireEvent("Theme.Icon","cog")[0] . "Deploy THAR Update!";
+            $Panel_Updater->HumanTitle = $this->manager->FireEvent("Theme.Icon","cog") . "Deploy THAR Update!";
             if(time() - ($this->settings->lastRequest + $TimeBetweenChecks) > 0){
                 $ReleaseRequest = \Unirest::get("https://api.github.com/repos/Half-Shot/bread/releases");
                 if($ReleaseRequest->code != 200)
@@ -340,7 +340,7 @@ class BreadCoreSettings extends Module
                 }
                 $StablePanel->body = "<p>The latest LTS release is " . $StableBuild->target_commitish . ", " . $StableBuild->name . "</p>"
                                     ."<p><u>Release Notes:</u></p><p>" . $StableBuild->body . "</p>" . "<small>". $Message."</small>"
-                                    . $this->manager->FireEvent("Theme.Form",$ApplyButtonsForm)[0];
+                                    . $this->manager->FireEvent("Theme.Form",$ApplyButtonsForm);
             }
             else
             {
@@ -366,7 +366,7 @@ class BreadCoreSettings extends Module
             $ReleasePanel->header = "Release Channel";
             $ReleasePanel->body = "<p>The latest release is " . $ReleaseBuild->target_commitish . ", " . $ReleaseBuild->name . "</p>"
                                  ."<p><u>Release Notes:</u></p><p>" . $ReleaseBuild->body . "</p>" . "<small>". $Message."</small>"
-                                 . $this->manager->FireEvent("Theme.Form",$ApplyButtonsForm)[0];
+                                 . $this->manager->FireEvent("Theme.Form",$ApplyButtonsForm);
 
             
             
@@ -395,13 +395,13 @@ class BreadCoreSettings extends Module
             $GitPanel->body = "The latest commit was by " . $LatestGit->commit->author->name . "&lt" . $LatestGit->commit->author->email . "&gt </br>"
                             . "The SHA is:" . $LatestGit->sha . "</br>"
                             . "The Message was: <pre>" . $LatestGit->commit->message . "</pre></br>"
-                            . $this->manager->FireEvent("Theme.Form",$ApplyButtonsForm)[0];
+                            . $this->manager->FireEvent("Theme.Form",$ApplyButtonsForm);
             $releasePanels = array($StablePanel,$ReleasePanel,$GitPanel);
             $currentChannel = $this->settings->updateChannel;
             $temp = $releasePanels[0];
             $releasePanels[0] = $releasePanels[$currentChannel];
             $releasePanels[$currentChannel] = $temp;
-            $listOfReleases = $this->manager->FireEvent("Theme.Collapse",array("id"=>"ReleaseList","panels"=>$releasePanels))[0];
+            $listOfReleases = $this->manager->FireEvent("Theme.Collapse",array("id"=>"ReleaseList","panels"=>$releasePanels));
             
             $Panel_Updater->Body = "<h3 style='text-align:center;'>You are running Bread <strong>". Site::Configuration()->core->version ."</strong></h3><h4 style='text-align:center;'>" . $releasePanels[0]->header . "</h4>" . $listOfReleases;
             $Tab_UpdateBread->Panels[] = $Panel_Updater;
@@ -411,20 +411,20 @@ class BreadCoreSettings extends Module
             //Footer
             $StartButton = array("onclick"=>"startUpdate();","class"=>"btn-info","value"=>"Start Update");
             $CancelButton = array("onclick"=>"cancelUpdate();","class"=>"btn-danger","value"=>"Cancel Update");
-            $StartButtonHTML = $this->manager->FireEvent("Theme.Button",$StartButton)[0];
-            $CancelButtonHTML = $this->manager->FireEvent("Theme.Button",$CancelButton)[0];
-            $footerButtons = $this->manager->FireEvent("Theme.Layout.ButtonGroup",array($StartButtonHTML,$CancelButtonHTML))[0];
+            $StartButtonHTML = $this->manager->FireEvent("Theme.Button",$StartButton);
+            $CancelButtonHTML = $this->manager->FireEvent("Theme.Button",$CancelButton);
+            $footerButtons = $this->manager->FireEvent("Theme.Layout.ButtonGroup",array($StartButtonHTML,$CancelButtonHTML));
             
             $modalBody = "<h4>Update Progress</h4><hr>";
-            $modalBody .= "<h2  id='label-status' style='display:none;'>" . $this->manager->FireEvent("Theme.Label","In Progress!")[0] . "</h2>";
-            $modal = $this->manager->FireEvent("Theme.Modal", array("id"=>"update-modal","label"=>"update-modal","title"=>"Updating Bread","body"=>$modalBody,"footer"=>$footerButtons))[0];
+            $modalBody .= "<h2  id='label-status' style='display:none;'>" . $this->manager->FireEvent("Theme.Label","In Progress!") . "</h2>";
+            $modal = $this->manager->FireEvent("Theme.Modal", array("id"=>"update-modal","label"=>"update-modal","title"=>"Updating Bread","body"=>$modalBody,"footer"=>$footerButtons));
             Site::AddToBodyCode($modal);
         }
         
         function Setup($args)
         {
             $this->OpenSettings();
-            if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadAdminTools.CorePanel.Read")[0])
+            if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadCoreSettings.Read"))
                 return false;
             $CoreSettingsCP = new \Bread\Structures\BreadModuleSettings;
             $CoreSettingsCP->Name = "Core";
@@ -433,42 +433,42 @@ class BreadCoreSettings extends Module
                 return $CoreSettingsCP;
             $Tab_CoreSettings = new \Bread\Structures\BreadModuleSettingsTab;
             $Tab_CoreSettings->Name = "coreSettings";
-            $Tab_CoreSettings->HumanTitle = $this->manager->FireEvent("Theme.Icon","cog")[0] . " General";
+            $Tab_CoreSettings->HumanTitle = $this->manager->FireEvent("Theme.Icon","cog") . " General";
             
             $Tab_Logging = new \Bread\Structures\BreadModuleSettingsTab;
             $Tab_Logging->Name = "loggingSettings";
-            $Tab_Logging->HumanTitle = $this->manager->FireEvent("Theme.Icon","book")[0] . " Logs";
+            $Tab_Logging->HumanTitle = $this->manager->FireEvent("Theme.Icon","book") . " Logs";
             
             $Tab_UpdateBread = new \Bread\Structures\BreadModuleSettingsTab;
             $Tab_UpdateBread->Name = "BreadUpdate";
-            $Tab_UpdateBread->HumanTitle = $this->manager->FireEvent("Theme.Icon","download-alt")[0] . " Update Bread";
+            $Tab_UpdateBread->HumanTitle = $this->manager->FireEvent("Theme.Icon","download-alt") . " Update Bread";
             
             $Tab_LayoutEditor = new \Bread\Structures\BreadModuleSettingsTab;
             $Tab_LayoutEditor->Name = "LayoutEditor";
-            $Tab_LayoutEditor->HumanTitle = $this->manager->FireEvent("Theme.Icon","pencil")[0] . " Edit Layouts";           
+            $Tab_LayoutEditor->HumanTitle = $this->manager->FireEvent("Theme.Icon","pencil") . " Edit Layouts";           
             
             $Tab_RequestSettings = new \Bread\Structures\BreadModuleSettingsTab;
             $Tab_RequestSettings->Name = "RequestSettings";
-            $Tab_RequestSettings->HumanTitle = $this->manager->FireEvent("Theme.Icon","tasks")[0] . " Request Settings";   
+            $Tab_RequestSettings->HumanTitle = $this->manager->FireEvent("Theme.Icon","tasks") . " Request Settings";   
             
             //Tab Index;
             switch($args[1]){
                 case 0:
-                    if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadAdminTools.CorePanel.Settings.Read")[0]){
+                    if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadCoreSettings.Settings.Read")){
                         break;
                     }   
                     Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/corepanelSettings.js") , true);
                     $this->MainSettingsPanel($Tab_CoreSettings);
                     break;
                 case 1:
-                    if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadAdminTools.CorePanel.Logger.Read")[0]){
+                    if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadCoreSettings.Logger.Read")){
                         break;
                     }
                     Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/corepanelLogger.js") , true);
                     $this->LoggerPanel($Tab_Logging);
                     break;
                 case 2:
-                    if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadAdminTools.CorePanel.Updater.Read")[0]){
+                    if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadCoreSettings.Updater.Read")){
                         break;
                     }
                     Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/corepanelUpdater.js") , true);
@@ -488,7 +488,7 @@ class BreadCoreSettings extends Module
         function UpdateBread()
         {            
             $this->OpenSettings();
-            if(!$this->manager->FireEvent("Bread.Security.GetPermission","Bread.SystemUpdate")[0])
+            if(!$this->manager->FireEvent("Bread.Security.GetPermission","Bread.SystemUpdate"))
                 return "FAIL";
             Site::$Logger->writeMessage("Bread Update Requested!", "backuplog");
             //Get all needed data

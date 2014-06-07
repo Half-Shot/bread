@@ -35,7 +35,15 @@
 				"function":"CreateLoginLink"
 			},			
 			"BreadAdminTools.AddModuleSettings":{
-				"function":"ConstructAdminSettings"
-			}
+                            "function":"ConstructAdminSettings",
+                            "dependencies":[{
+                            "event":"Bread.ProcessRequest",
+                            "module":"BreadFormBuilder"
+                            }]
+			},
+                        "BreadUserSystem.GetUserInfo":{
+                            "function":"UserInfoToken",
+                            "security":1
+                        }
 		}
 }

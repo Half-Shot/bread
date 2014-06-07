@@ -57,7 +57,7 @@ class BootstrapTheme extends Bread\Modules\Module
 	{
                 //Hooks should be filled with arrays of BreadLinkStructure.
                 $Vars = array();
-                $Hooks = $this->manager->FireEvent("Bread.GetNavbarIndex",$args);
+                $Hooks = $this->manager->FireEvent("Bread.GetNavbarIndex",$args,false);
                 if(!$Hooks)
                 {
                    $Hooks = array();
@@ -358,7 +358,7 @@ class BootstrapTheme extends Bread\Modules\Module
             $closeButton = false;
             if(isset($args["canClose"])){
                 if($args["canClose"]){
-                    $closeButton = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">' . $this->manager->FireEvent("Theme.Icon","close")[0] . '</button>';
+                    $closeButton = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">' . $this->manager->FireEvent("Theme.Icon","close") . '</button>';
                     $class .= " alert-dismissable";
                 }
             }

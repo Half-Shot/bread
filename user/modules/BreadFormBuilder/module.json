@@ -5,12 +5,16 @@
     "version":0.1,
     "events":{
 	    "BreadFormBuilder.DrawForm":{
-	   		"function":"DrawForm",
-	   		"security":0
-	   	},
-	   	"Bread.ProcessRequest":{
-	   		"function":"Setup",
-	   		"security":0
-	   	}
+                "function":"DrawForm",
+                "security":0
+            },
+            "Bread.ProcessRequest":{
+                "function":"Setup",
+                "security":0
+            },
+            "BreadFormBuilder.FormFromObject":{
+                "function":"CreateFormHTML",
+                "security":0
+            }
 	}
 }

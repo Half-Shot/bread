@@ -18,6 +18,8 @@ class BreadForm
     public $isinline = false;
     public $elements = array();
     public $attributes = array();
+    public $breadReturnEvent = "";
+    public $breadReturnModule = "";
 }
 /**
  * A Form Element.

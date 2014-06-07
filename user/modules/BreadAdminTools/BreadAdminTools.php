@@ -22,19 +22,19 @@ class BreadAdminTools extends Module
     function SetupMessageTray()
     {
         $messageStruct = array("class"=>"alert-success alert-template","canClose"=>true,"body"=>"");
-        $successAlert = $this->manager->FireEvent("Theme.Alert",$messageStruct)[0];
+        $successAlert = $this->manager->FireEvent("Theme.Alert",$messageStruct);
         $messageStruct = array("class"=>"alert-info alert-template","canClose"=>true,"body"=>"");
-        $infoAlert = $this->manager->FireEvent("Theme.Alert",$messageStruct)[0];
+        $infoAlert = $this->manager->FireEvent("Theme.Alert",$messageStruct);
         $messageStruct = array("class"=>"alert-warning alert-template","canClose"=>true,"body"=>"");
-        $warningAlert = $this->manager->FireEvent("Theme.Alert",$messageStruct)[0];
+        $warningAlert = $this->manager->FireEvent("Theme.Alert",$messageStruct);
         $messageStruct = array("class"=>"alert-danger alert-template","canClose"=>true,"body"=>"");
-        $dangerAlert = $this->manager->FireEvent("Theme.Alert",$messageStruct)[0];
+        $dangerAlert = $this->manager->FireEvent("Theme.Alert",$messageStruct);
         $extraMessagesHTML = "";
-        $extraMessages = $this->manager->FireEvent("Bread.ShowAdminMessage", $messageStruct);
+        $extraMessages = $this->manager->FireEvent("Bread.ShowAdminMessage", $messageStruct,false);
         if(is_array($extraMessages)){
             $extraMessages = Util::MashArraysToSingleArray($extraMessages);
             foreach($extraMessages as $messageStruct){
-                $extraMessagesHTML += $this->manager->FireEvent("Theme.Alert",$messageStruct)[0];
+                $extraMessagesHTML += $this->manager->FireEvent("Theme.Alert",$messageStruct);
             }
         }
         return $successAlert . $infoAlert . $warningAlert . $dangerAlert . $extraMessagesHTML;
@@ -58,9 +58,9 @@ class BreadAdminTools extends Module
         while($ModulesGenerating){
             $NewSetting = $this->manager->FireEvent("BreadAdminTools.AddModuleSettings",array($this->CurrentModuleIndex == $ModOffset,  $this->CurrentTabIndex,$this->CurrentModuleIndex),true,true,$ModOffset);
             if($NewSetting != False){
-                $this->ModuleSettings[] = $NewSetting[0];
+                $this->ModuleSettings[] = $NewSetting;
                 //Swap if needed!
-                $ModuleData = $NewSetting[0];
+                $ModuleData = $NewSetting;
                 if($ModuleData->OverrideIndex !== -1 && $ModuleData->OverrideIndex !== $ModOffset) 
                 {
                     if(array_key_exists($ModuleData->OverrideIndex, $this->ModuleSettings)){
@@ -97,7 +97,7 @@ class BreadAdminTools extends Module
     function Banner()
     {
         $this->GenerateModules();
-        return $this->manager->FireEvent("Theme.Title",array("Control Panel",$this->ModuleSettings[$this->CurrentModuleIndex]->Name))[0];
+        return $this->manager->FireEvent("Theme.Title",array("Control Panel",$this->ModuleSettings[$this->CurrentModuleIndex]->Name));
     }
     
     function Sidebar()
@@ -117,7 +117,7 @@ class BreadAdminTools extends Module
             $link->active = ($i == $this->CurrentModuleIndex);
             $links[] = $link;
         }
-        return Site::$moduleManager->FireEvent("Theme.VerticalNavbar",$links)[0];       
+        return Site::$moduleManager->FireEvent("Theme.VerticalNavbar",$links);       
     }
     
     function Mainpanel()
@@ -136,7 +136,7 @@ class BreadAdminTools extends Module
                 $Tab->active = ($i == $this->CurrentTabIndex);
                 $Tabs[] = $Tab;
             }
-            $TabsHTML = $this->manager->FireEvent("Theme.Tabs",$Tabs)[0];    
+            $TabsHTML = $this->manager->FireEvent("Theme.Tabs",$Tabs);    
         }
         else
         {
@@ -151,16 +151,16 @@ class BreadAdminTools extends Module
                 $Panel->size = round((12 / 100) * $Setting->PercentageWidth);
             }
             if($Setting->ApplyButtons){
-                $Panel->body = $this->manager->FireEvent("Theme.Panel",array("title"=>$Setting->HumanTitle,"body"=>$Setting->Body,"footer"=>$this->manager->FireEvent("Theme.Form",$Setting->ApplyButtons)[0]))[0];
+                $Panel->body = $this->manager->FireEvent("Theme.Panel",array("title"=>$Setting->HumanTitle,"body"=>$Setting->Body,"footer"=>$this->manager->FireEvent("Theme.Form",$Setting->ApplyButtons)));
             }
             else
             {  
-                $Panel->body = $this->manager->FireEvent("Theme.Panel",array("title"=>$Setting->HumanTitle,"body"=>$Setting->Body))[0];
+                $Panel->body = $this->manager->FireEvent("Theme.Panel",array("title"=>$Setting->HumanTitle,"body"=>$Setting->Body));
             }
             $SettingsPanels[] = $Panel;
         }  
-        $SettingsPanelsHTML = $this->manager->FireEvent("Theme.Layout.Grid.HorizonalStack",$SettingsPanels)[0];
-        return $TabsHTML . $this->manager->FireEvent("Theme.Layout.Well",array("value"=>$SettingsPanelsHTML))[0];
+        $SettingsPanelsHTML = $this->manager->FireEvent("Theme.Layout.Grid.HorizonalStack",$SettingsPanels);
+        return $TabsHTML . $this->manager->FireEvent("Theme.Layout.Well",array("value"=>$SettingsPanelsHTML));
     }
     
     function CPButton($args)
@@ -171,12 +171,12 @@ class BreadAdminTools extends Module
         $Button["onclick"] = "window.location = '" . $link->createURL() .  "'";
         $Button["class"] = "btn-info " . $args[0];
         $Button["value"] = "Control Panel";
-        return $this->manager->FireEvent("Theme.Button",$Button)[0];
+        return $this->manager->FireEvent("Theme.Button",$Button);
     }
     
     function Setup()
     {
-        if(!$this->manager->FireEvent("Bread.Security.GetCurrentUser")[0]){
+        if(!$this->manager->FireEvent("Bread.Security.GetCurrentUser")){
             $this->manager->UnregisterModule($this->name);
             return false;
         }

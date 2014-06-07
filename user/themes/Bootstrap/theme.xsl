@@ -149,7 +149,6 @@
             <xsl:when test="./type = 'button'">
                 <button>
                     <xsl:attribute name="action"><xsl:value-of select="./action"/></xsl:attribute>
-                    <xsl:attribute name="name"><xsl:value-of select="./name"/></xsl:attribute>
                     <xsl:attribute name="onclick"><xsl:value-of select="./onclick"/></xsl:attribute>
                     <xsl:attribute name="id"><xsl:value-of select="./id"/></xsl:attribute>
                     <xsl:if test="./readonly = 1">
@@ -164,6 +163,14 @@
             </xsl:when>
             <xsl:when test="./type = 'dropdown'">
                 <select>
+                    <xsl:choose>
+                        <xsl:when test="./name = ''">
+                            <xsl:attribute name="name"><xsl:value-of select="./id"/></xsl:attribute>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="name"><xsl:value-of select="./name"/></xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
                     <xsl:attribute name="name"><xsl:value-of select="./name"/></xsl:attribute>
                     <xsl:attribute name="onclick"><xsl:value-of select="./onclick"/></xsl:attribute>
                     <xsl:attribute name="value"><xsl:value-of select="./value"/></xsl:attribute>
@@ -181,7 +188,14 @@
             </xsl:when>
             <xsl:otherwise>
             <input>
-                <xsl:attribute name="name"><xsl:value-of select="./name"/></xsl:attribute>
+                <xsl:choose>
+                    <xsl:when test="./name = ''">
+                        <xsl:attribute name="name"><xsl:value-of select="./id"/></xsl:attribute>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:attribute name="name"><xsl:value-of select="./name"/></xsl:attribute>
+                    </xsl:otherwise>
+                </xsl:choose>
                 <xsl:attribute name="type"><xsl:value-of select="./type"/></xsl:attribute>
                 <xsl:attribute name="value"><xsl:value-of select="./value"/></xsl:attribute>
                 <xsl:attribute name="onclick"><xsl:value-of select="./onclick"/></xsl:attribute>

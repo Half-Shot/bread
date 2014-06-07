@@ -175,20 +175,20 @@ class ModuleManager
      */
 	function RegisterSelectedTheme()
 	{
-		if(!isset(Site::$themeManager->Theme["data"]))
-		{
-			Site::$Logger->writeMessage("Warning: RegisterSelectedTheme called to early, no theme selected.");
-		}
-		$theme = Site::$themeManager->Theme["data"];
-		if(isset($theme->namespace)){
-		    $namespace = $theme->namespace;
-		    $class = $namespace . "\\" . $theme->entryclass;
-		}
-		$this->moduleConfig[$theme->name] = $theme;
-		$this->modules[$theme->name] = Site::$themeManager->Theme["class"];
-		$this->modules[$theme->name]->RegisterEvents();
-        $this->FireEvent("Theme.Load");
-        Site::$Logger->writeMessage('Registered theme ' . $theme->name);
+            if(!isset(Site::$themeManager->Theme["data"]))
+            {
+                    Site::$Logger->writeMessage("Warning: RegisterSelectedTheme called to early, no theme selected.");
+            }
+            $theme = Site::$themeManager->Theme["data"];
+            if(isset($theme->namespace)){
+                $namespace = $theme->namespace;
+                $class = $namespace . "\\" . $theme->entryclass;
+            }
+            $this->moduleConfig[$theme->name] = $theme;
+            $this->modules[$theme->name] = Site::$themeManager->Theme["class"];
+            $this->modules[$theme->name]->RegisterEvents();
+            $this->FireEvent("Theme.Load");
+            Site::$Logger->writeMessage('Registered theme ' . $theme->name);
 	}
 	/**
          * Registers an event:
@@ -302,7 +302,7 @@ class ModuleManager
      * @param If only one module is fired, what is the offset of the module.
      * @return array|bool An array of the returned data or false if no data was returned.
      */
-    function FireEvent($eventName,$arguments = null,$isInternal = true,$singleOnly = false,$singleOffset = 0)
+    function FireEvent($eventName,$arguments = null,$singleOnly = true, $isInternal = true,$singleOffset = 0)
     {
         if(!array_key_exists($eventName,$this->events))
             return False; //Event not known.
@@ -310,38 +310,26 @@ class ModuleManager
             return False; //Event is known but not called by any module.
         }
         
-        
-        //How many modules should be called.
-        if(!$singleOnly){
-            $ModList = $this->events[$eventName];
-        }
-        else {
+        if($singleOnly){
             if($singleOffset > count($this->events[$eventName]) - 1)
                 return False; //Over Offset
             $ModList = array_slice($this->events[$eventName], $singleOffset,1,true);
-        }
-        
-        //Load the module if not loaded!
-        foreach ($ModList as $moduleName => $data) {
-            if($moduleName == Site::$themeManager->Theme["data"]->name)
-                break;
+            $moduleName = array_keys($ModList)[0];
+            $data = $ModList[$moduleName];
             if($this->LoadModule($moduleName)){
                 $this->FireSpecifiedModuleEvent("Bread.ProcessRequest", $moduleName, null, true);
-                return $this->FireEvent($eventName, $arguments, $isInternal, $singleOnly, $singleOffset); //Reload the request as $this->events might have changed!
+                return $this->FireEvent($eventName, $arguments,$singleOnly,$isInternal, $singleOffset); //Reload the request as $this->events might have changed!
             }
-        }
-
-        $returnData = array();
-        
-        foreach($ModList as $module => $data)
-        {
+            
             if((!$isInternal && $data->security < 1)|| ($data->security == static::EVENT_EXTERNAL && !Site::GetisAjax())){
                 Site::$Logger->writeError("Security Failed on Event Call.\n EventName: " . $eventName, \Bread\Logger::SEVERITY_CRITICAL, "core", true);
             }
-            if(!method_exists($this->modules[$module],$data->function)){
-                Site::$Logger->writeError("Event failed to fire because the listed function does not exist. Event Name: " . $eventName . ", Module Name: " . $module, \Bread\Logger::SEVERITY_HIGH, "core");
+            
+            if(!method_exists($this->modules[$moduleName],$data->function)){
+                Site::$Logger->writeError("Event failed to fire because the listed function does not exist. Event Name: " . $eventName . ", Module Name: " . $moduleName, \Bread\Logger::SEVERITY_HIGH, "core");
                 return False;
             }
+            
             if(isset($data->dependencies)){
                 $toRun = $this->CanRunEvent($data->dependencies);
                 foreach($toRun as $depEvt => $depMod)
@@ -349,13 +337,50 @@ class ModuleManager
                     $this->FireSpecifiedModuleEvent($depEvt,$depMod);
                 }
             }
+            
             $function = $data->function;
-            $returnData[] = $this->modules[$module]->$function($arguments);
-            $this->completed[$eventName] = $module;
+            $returnData = $this->modules[$moduleName]->$function($arguments);
+            $this->completed[$eventName] = $moduleName;
         }
-        if(!array_filter($returnData)){
-            return False;
+        else
+        {
+        $ModList = $this->events[$eventName];
+        
+            //Load the module if not loaded!
+            foreach ($ModList as $moduleName => $data) {
+                if($moduleName == Site::$themeManager->Theme["data"]->name)
+                    break;
+                if($this->LoadModule($moduleName)){
+                    $this->FireSpecifiedModuleEvent("Bread.ProcessRequest", $moduleName, null, true);
+                    return $this->FireEvent($eventName, $arguments, $singleOnly,$isInternal, $singleOffset); //Reload the request as $this->events might have changed!
+                }
+            }
+            $returnData = array();
+            foreach($ModList as $moduleName => $data)
+            {
+                if((!$isInternal && $data->security < 1)|| ($data->security == static::EVENT_EXTERNAL && !Site::GetisAjax())){
+                    Site::$Logger->writeError("Security Failed on Event Call.\n EventName: " . $eventName, \Bread\Logger::SEVERITY_CRITICAL, "core", true);
+                }
+                if(!method_exists($this->modules[$moduleName],$data->function)){
+                    Site::$Logger->writeError("Event failed to fire because the listed function does not exist. Event Name: " . $eventName . ", Module Name: " . $moduleName, \Bread\Logger::SEVERITY_HIGH, "core");
+                    return False;
+                }
+                if(isset($data->dependencies)){
+                    $toRun = $this->CanRunEvent($data->dependencies);
+                    foreach($toRun as $depEvt => $depMod)
+                    {
+                        $this->FireSpecifiedModuleEvent($depEvt,$depMod);
+                    }
+                }
+                $function = $data->function;
+                $returnData[] = $this->modules[$moduleName]->$function($arguments);
+                $this->completed[$eventName] = $moduleName;
+            }
+            if(!array_filter($returnData)){
+                return False;
+            }
         }
+        
         return $returnData;
     }
     /**

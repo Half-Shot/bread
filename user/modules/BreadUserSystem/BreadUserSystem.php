@@ -242,8 +242,8 @@ class BreadUserSystem extends Module
             $ModalObject = new \Bread\Structures\BreadModal();
             $ModalObject->title = "Login";
             $ModalObject->id = "login-modal";
-            $ModalObject->body = $this->manager->FireEvent("BreadFormBuilder.DrawForm","login")[0];
-            Site::AddToBodyCode($this->manager->FireEvent("Theme.Modal",$ModalObject)[0]);
+            $ModalObject->body = $this->manager->FireEvent("BreadFormBuilder.DrawForm","login");
+            Site::AddToBodyCode($this->manager->FireEvent("Theme.Modal",$ModalObject));
         }
         $ButtonClass = "";
         if(isset($args[0]))
@@ -272,7 +272,7 @@ class BreadUserSystem extends Module
             $Button["value"] = $NotLoggedInButton;
         }
         
-        return $this->manager->FireEvent("Theme.Button",$Button)[0];
+        return $this->manager->FireEvent("Theme.Button",$Button);
     }
     
     function ReturnUser()
@@ -282,6 +282,7 @@ class BreadUserSystem extends Module
     
     function HasPermission($requestedpermission)
     {
+        Site::$Logger->writeMessage("Permission Requested:" . $requestedpermission,$this->name);
         if(!isset($this->currentUser))
             return False;
         if(in_array($requestedpermission,$this->currentUser->rights)){
@@ -348,6 +349,9 @@ class BreadUserSystem extends Module
     //
     function ConstructAdminSettings($args)
     {
+        if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadUserSystem.AdminPanel.Read")){
+            return false;
+        }
         Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/adminpanel.js") , true);
         $MasterSettings = new \Bread\Structures\BreadModuleSettings();
         $MasterSettings->Name = "User Security";
@@ -366,7 +370,6 @@ class BreadUserSystem extends Module
         $CurrentUsersPanel = new \Bread\Structures\BreadModuleSettingsPanel();
         $CurrentUsersPanel->Name = "currentusers";
         $CurrentUsersPanel->HumanTitle = "Users";
-        $CurrentUsersPanel->PercentageWidth = 75;
         $PostConfigurator->Panels[] = $CurrentUsersPanel;
         
         //Table
@@ -375,9 +378,13 @@ class BreadUserSystem extends Module
         $UserTable->headingRow = new \Bread\Structures\BreadTableRow();
         $Headers = $this->settings->adminPanelSettings->informationKeysToShow;
         
-        $Header = new \Bread\Structures\BreadTableCell();
-        $Header->text = "Username";
-        $UserTable->headingRow->cells[] = $Header;
+        $UsernameHeader = new \Bread\Structures\BreadTableCell();
+        $UsernameHeader->text = "Username";      
+        $UserTable->headingRow->cells[] = $UsernameHeader;
+        
+        $GroupsHeader = new \Bread\Structures\BreadTableCell();
+        $GroupsHeader->text = "Groups";
+        $UserTable->headingRow->cells[] = $GroupsHeader;
         
         foreach($Headers as $HeaderTitle){
             $Header = new \Bread\Structures\BreadTableCell();
@@ -399,6 +406,17 @@ class BreadUserSystem extends Module
             $UsernameCell->text = $DataFile->username;
             $UserRow->cells[] = $UsernameCell;
             
+            //Group(s)
+            $GroupsCell = new \Bread\Structures\BreadTableCell();
+            if(isset($DataFile->groups)){
+                $GroupsCell->text = $DataFile->groups;
+            }
+            else
+            {
+                $GroupsCell->text = "";
+            }
+            
+            $UserRow->cells[] = $GroupsCell;    
             foreach($Headers as $Item){
                 $NewCell = new \Bread\Structures\BreadTableCell();
                 if(isset($DataFile->information->$Item)){
@@ -418,9 +436,12 @@ class BreadUserSystem extends Module
         $Button->id = "EditUser";
         $Button->class = "btn-primary";
         $Button->value = "Edit Users";
-        $ButtonHTML = Site::$moduleManager->FireEvent("Theme.Button",$Button)[0];
+        if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadUserSystem.AdminPanel.Read")){
+            $Button->readonly = false;
+        }
+        $ButtonHTML = Site::$moduleManager->FireEvent("Theme.Button",$Button);
         
-        $CurrentUsersPanel->Body = Site::$moduleManager->FireEvent("Theme.Table",$UserTable)[0] . $ButtonHTML;
+        $CurrentUsersPanel->Body = Site::$moduleManager->FireEvent("Theme.Table",$UserTable) . $ButtonHTML;
         
         
         //Edit User Modal
@@ -431,6 +452,7 @@ class BreadUserSystem extends Module
         //Modal Form
         $ModalForm = new \Bread\Structures\BreadForm;
         $ModalForm->id = "UserEditForm";
+        $Javascript = "";
         foreach($this->settings->adminPanelSettings->usereditForm as $element)
         {
             if(isset($element->informationKey))
@@ -438,8 +460,9 @@ class BreadUserSystem extends Module
                 if($element->informationKey !== false){
                     $element->id = $element->informationKey;
                 }
+                $Javascript .= 'BUMulituserElements.set("' . $element->informationKey . '",' . empty($element->multiuser) .');';
+                $ModalForm->elements[] = Util::CastStdObjectToStruct($element,"\Bread\Modules\BUSUserInformationField");
             }
-            $ModalForm->elements[] = Util::CastStdObjectToStruct($element,"\Bread\Modules\BUSUserInformationField");
         }
         
         $SubmitButton = new \Bread\Structures\BreadFormElement;
@@ -450,9 +473,9 @@ class BreadUserSystem extends Module
         $SubmitButton->id = "submitButton";
         $SubmitButton->value = "Change User";
         
-        $ModalData->body = $this->manager->FireEvent("Theme.Form", $ModalForm)[0];
-        
-        Site::AddToBodyCode($this->manager->FireEvent("Theme.Modal", $ModalData)[0]);
+        $ModalData->body = $this->manager->FireEvent("Theme.Form", $ModalForm);
+        Site::AddRawScriptCode($Javascript, true);
+        Site::AddToBodyCode($this->manager->FireEvent("Theme.Modal", $ModalData));
         return $MasterSettings;
     }
 }

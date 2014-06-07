@@ -192,7 +192,7 @@ class BreadIndexSystem extends Module
             $SearchRequest->SearchTerm = str_replace("%20", " ", $args->terms);
         }
         
-        $results = $this->manager->FireEvent("Bread.RunSearch",$SearchRequest)[0];
+        $results = $this->manager->FireEvent("Bread.RunSearch",$SearchRequest);
         if($results === -1)
         {
             //No results
@@ -202,25 +202,25 @@ class BreadIndexSystem extends Module
         //Stats
         $listOfGrids = array();
         $cell_results = new \stdClass();
-        $cell_results->body = "Your search had " . $this->manager->FireEvent("Theme.Badge",(string)count($results))[0] . " number of results.";
+        $cell_results->body = "Your search had " . $this->manager->FireEvent("Theme.Badge",(string)count($results)) . " number of results.";
         $cell_results->size = 4;
         $listOfGrids[] = $cell_results;
         
         $cell_time = new \stdClass();
         $cell_time->offset = 4;
-        $cell_time->body = "This request took ". $this->manager->FireEvent("Theme.Badge",(string)(Site::GetTimeSinceStart()))[0] . " seconds to complete";
+        $cell_time->body = "This request took ". $this->manager->FireEvent("Theme.Badge",(string)(Site::GetTimeSinceStart())) . " seconds to complete";
         $listOfGrids[] = $cell_time;
         
         $object = new \stdClass;
         $object->small = true;
-        $object->value = $this->manager->FireEvent("Theme.Layout.Grid.HorizonalStack",array($listOfGrids))[0];
-        $HTML .= $this->manager->FireEvent("Theme.Layout.Well",$object)[0];
+        $object->value = $this->manager->FireEvent("Theme.Layout.Grid.HorizonalStack",array($listOfGrids));
+        $HTML .= $this->manager->FireEvent("Theme.Layout.Well",$object);
         if(!empty($SearchRequest->SearchTerm)){
-            $HTML .= $this->manager->FireEvent("Theme.Title",array("Search Results for",  $SearchRequest->SearchTerm))[0];
+            $HTML .= $this->manager->FireEvent("Theme.Title",array("Search Results for",  $SearchRequest->SearchTerm));
         }
         else
         {
-            $HTML .= $this->manager->FireEvent("Theme.Title",array("Post Index"))[0];
+            $HTML .= $this->manager->FireEvent("Theme.Title",array("Post Index"));
         }
         //Results.
         foreach($results as $result)
@@ -236,7 +236,7 @@ class BreadIndexSystem extends Module
             {
                 $ResultObj->body = $result->Content;
             }
-            $HTML .= $this->manager->FireEvent("Theme.Comment",$ResultObj)[0];
+            $HTML .= $this->manager->FireEvent("Theme.Comment",$ResultObj);
         }
         
         return $HTML;
@@ -269,7 +269,7 @@ class BreadIndexSystem extends Module
         $SubmitElement->value = "Go";
         $SubmitElement->action = "submit";
         $Form->elements[] = $SubmitElement;  
-        $HTML = $this->manager->FireEvent("Theme.Form",$Form)[0];
+        $HTML = $this->manager->FireEvent("Theme.Form",$Form);
         return $HTML;
     }
 }

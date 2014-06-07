@@ -71,10 +71,10 @@ class ThemeManager
 	function SelectTheme($Request)
 	{
                 //If a module wants to force override a theme, it can from this call.
-                $moduleResults = Site::$moduleManager->FireEvent("Bread.SelectTheme",NULL);
+                $moduleResults = Site::$moduleManager->FireEvent("Bread.SelectTheme");
                 if($moduleResults)
                 {
-                    $this->SetTheme($moduleResults[0]["theme"]);
+                    $this->SetTheme($moduleResults["theme"]);
                     return True;
                 }
                 //Request Theme
@@ -107,10 +107,10 @@ class ThemeManager
 	function SelectLayout($Request)
 	{
             //If a module wants to force override a theme, it can from this call.
-            $moduleResults = Site::$moduleManager->FireEvent("Bread.SelectLayout",NULL);
+            $moduleResults = Site::$moduleManager->FireEvent("Bread.SelectLayout");
             if($moduleResults)
             {
-                $layout = ($moduleResults[0]["layout"]);
+                $layout = ($moduleResults["layout"]);
                 $this->Theme["layout"] = $layout;
                 return True;
             }
@@ -265,7 +265,7 @@ class ThemeManager
             }
             else
             {
-                    $returnedElement["guts"] = Site::$moduleManager->FireEvent($returnedElement["event"],$returnedElement["arguments"])[0];
+                    $returnedElement["guts"] = Site::$moduleManager->FireEvent($returnedElement["event"],$returnedElement["arguments"]);
             }
             
             if(!is_string($returnedElement["guts"]))
