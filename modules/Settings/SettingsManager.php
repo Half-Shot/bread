@@ -9,12 +9,10 @@ class SettingsException extends \Exception { }
  * Thrown if a file could not be found
  */
 class FileNotFoundException extends SettingsException { }
-
 /**
  * Thrown if a file could not be written.
  */
 class FileNotWrittenException extends SettingsException { }
-
 /**
  * The JSON File could not be parsed
  */
@@ -24,14 +22,12 @@ class FailedToParseException extends SettingsException { }
  * @ignore
  */
 class UnauthorizedException extends SettingsException { }
-
 /**
  * The manager responsible for serving all settings files from json storage
  * to stdObject. It deals with loading and converting, saving and rasing errors and
  * logging them where appropriate.
  */
 class SettingsManager {
-    //put your code here
     /**
      * An array of settings files to their classes.
      * "path" => stdClass.
@@ -43,12 +39,15 @@ class SettingsManager {
     function __construct() {
         $this->settings = array();
     }
+    
     /**
      * Creates a settings folder for your module or just returns the path.
      * You will also want to create settings files.
      * PLEASE use module names and not anything else.
+     * Depreacted due to https://github.com/Half-Shot/bread/issues/51 . Please use the new method GetSettings();
+     * @deprecated since version 0.2
      * @param string $dirname The module name.
-     * @see $this::CreateSettingsFile()
+     * @see $this::GetSettings()
      * @todo Add a secure way to lock settings files.
      */
     function FindModuleDir($dirname)

@@ -179,6 +179,9 @@ class BootstrapTheme extends Bread\Modules\Module
                 {
                     foreach($args as $button)
                     {
+                        if(!is_string($button)){
+                            $button = $this->manager->FireEvent("Theme.Button",$button);
+                        }
                         $HTML .= $button;
                     }
                 }

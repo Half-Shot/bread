@@ -51,58 +51,57 @@ class BreadAdminTools extends Module
             
     function GenerateModules()
     {
-        if($this->HasGenerated)
-            return true;
-        $ModulesGenerating = true;
-        $ModOffset = 0;
-        while($ModulesGenerating){
-            $NewSetting = $this->manager->FireEvent("BreadAdminTools.AddModuleSettings",array($this->CurrentModuleIndex == $ModOffset,  $this->CurrentTabIndex,$this->CurrentModuleIndex),true,true,$ModOffset);
-            if($NewSetting != False){
-                $this->ModuleSettings[] = $NewSetting;
-                //Swap if needed!
-                $ModuleData = $NewSetting;
-                if($ModuleData->OverrideIndex !== -1 && $ModuleData->OverrideIndex !== $ModOffset) 
-                {
-                    if(array_key_exists($ModuleData->OverrideIndex, $this->ModuleSettings)){
-                        $SwapSpace = clone $this->ModuleSettings[$ModuleData->OverrideIndex];
-                        $this->ModuleSettings[$ModuleData->OverrideIndex] = $ModuleData;
-                        $this->ModuleSettings[$ModOffset] = $SwapSpace;
-                    }
-                    else
+        if(!$this->HasGenerated){
+            $ModulesGenerating = true;
+            $ModOffset = 0;
+            while($ModulesGenerating){
+                $NewSetting = $this->manager->FireEvent("BreadAdminTools.AddModuleSettings",array($this->CurrentModuleIndex == $ModOffset,  $this->CurrentTabIndex,$this->CurrentModuleIndex),true,true,$ModOffset);
+                if($NewSetting != False){
+                    $this->ModuleSettings[] = $NewSetting;
+                    //Swap if needed!
+                    $ModuleData = $NewSetting;
+                    if($ModuleData->OverrideIndex !== -1 && $ModuleData->OverrideIndex !== $ModOffset) 
                     {
-                        $this->ModuleSettings[$ModuleData->OverrideIndex] = clone $ModuleData;
-                        unset($this->ModuleSettings[$ModOffset]);
+                        if(array_key_exists($ModuleData->OverrideIndex, $this->ModuleSettings)){
+                            $SwapSpace = clone $this->ModuleSettings[$ModuleData->OverrideIndex];
+                            $this->ModuleSettings[$ModuleData->OverrideIndex] = $ModuleData;
+                            $this->ModuleSettings[$ModOffset] = $SwapSpace;
+                        }
+                        else
+                        {
+                            $this->ModuleSettings[$ModuleData->OverrideIndex] = clone $ModuleData;
+                            unset($this->ModuleSettings[$ModOffset]);
+                        }
                     }
+                    $ModOffset++;
                 }
-                $ModOffset++;
+                else
+                {
+                    $ModulesGenerating = False;
+                }
             }
-            else
-            {
-                $ModulesGenerating = False;
-            }
         }
-        
-        
-        if($this->CurrentModuleIndex > count($this->ModuleSettings) - 1 ){
-            Site::$Logger->writeError("The specifed module index is invalid for the Admin Panel", \Bread\Logger::SEVERITY_MEDIUM, $this->name, true);
+        if(!count($this->ModuleSettings) || !count($this->ModuleSettings[$this->CurrentModuleIndex]->SettingsGroups) || $this->CurrentModuleIndex > count($this->ModuleSettings) - 1  || $this->CurrentTabIndex > count($this->ModuleSettings[$this->CurrentModuleIndex]->SettingsGroups) - 1)
+        {
+            return false;
         }
-        if($this->CurrentTabIndex > count($this->ModuleSettings[$this->CurrentModuleIndex]->SettingsGroups) - 1){
-            Site::$Logger->writeError("The specifed tab index is invalid for the Admin Panel", \Bread\Logger::SEVERITY_MEDIUM, $this->name, true);
-        }
-        
         $this->HasGenerated = true;
         return true;
     }
     
     function Banner()
     {
-        $this->GenerateModules();
-        return $this->manager->FireEvent("Theme.Title",array("Control Panel",$this->ModuleSettings[$this->CurrentModuleIndex]->Name));
+        if($this->GenerateModules()){
+            return $this->manager->FireEvent("Theme.Title",array("Control Panel",$this->ModuleSettings[$this->CurrentModuleIndex]->Name));
+        }
+        return "";
     }
     
     function Sidebar()
      {
-        $this->GenerateModules();
+        if(!$this->GenerateModules()){
+            return "";
+        }
         $links = array();
         $Args = Site::getURLParams();
         unset($Args["BASEURL"]);
@@ -121,8 +120,14 @@ class BreadAdminTools extends Module
     }
     
     function Mainpanel()
-    {
-        $this->GenerateModules();
+    {   
+        if(!$this->GenerateModules()){
+            $msg = new \Bread\LoggerMessage;
+            $msg->message = "You do not have permission to access this page.";
+            $msg->severity = 2;
+            $this->manager->UnregisterModule($this->name);
+            return $this->manager->FireEvent("Theme.DrawError", $msg);
+        }
         $Args = Site::getURLParams();
         $Args["cpanel_cpindex"] = $this->CurrentModuleIndex;
         unset($Args["BASEURL"]);
@@ -165,20 +170,25 @@ class BreadAdminTools extends Module
     
     function CPButton($args)
     {
-        $link = new \Bread\Structures\BreadLinkStructure();
-        $link->request = "controlpanel";
-        $Button = array();
-        $Button["onclick"] = "window.location = '" . $link->createURL() .  "'";
-        $Button["class"] = "btn-info " . $args[0];
-        $Button["value"] = "Control Panel";
-        return $this->manager->FireEvent("Theme.Button",$Button);
+        if($this->GenerateModules()){
+            $link = new \Bread\Structures\BreadLinkStructure();
+            $link->request = "controlpanel";
+            $Button = array();
+            $Button["onclick"] = "window.location = '" . $link->createURL() .  "'";
+            $Button["class"] = "btn-info " . $args[0];
+            $Button["value"] = "Control Panel";
+            return $this->manager->FireEvent("Theme.Button",$Button);
+        }
+        else{
+            return "";
+        }
+        
     }
     
     function Setup()
     {
         if(!$this->manager->FireEvent("Bread.Security.GetCurrentUser")){
             $this->manager->UnregisterModule($this->name);
-            return false;
         }
         
         //Get a settings file.

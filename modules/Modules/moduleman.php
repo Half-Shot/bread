@@ -411,7 +411,7 @@ class ModuleManager
             }
             
             if(!array_key_exists($moduleName,$this->events[$eventName])){
-                Site::$Logger->writeError ("Couldn't specifically hook module '" . $moduleName . "'. Module does not have the " . $eventName . " event set.", \Bread\Logger::SEVERITY_MEDIUM);
+                Site::$Logger->writeError ("Couldn't specifically hook module '" . $moduleName . "'. Module does not have the " . $eventName . " event set.", \Bread\Logger::SEVERITY_LOW);
                 return False;
             }
 

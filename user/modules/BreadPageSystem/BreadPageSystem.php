@@ -7,6 +7,7 @@ class BreadPageSystem extends Module
         private $settingspath;
         private $isnewpost = false;
         private $activePost = false;
+        private $loadedScripts = false;
         public $EnableEditor = false;
         const TOKEN_SPLIT_STR = "[%]";
         function __construct($manager,$name)
@@ -91,8 +92,6 @@ class BreadPageSystem extends Module
             if( ( time() - $this->settings->BuildTime) > $this->settings->CheckIndexEvery){
                 $this->BuildIndex();
             }
-            Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/Markdown.Converter.js"));
-            Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/Markdown.Extra.js"));
             $this->EnableEditor = $this->CheckEditorRights();
             if(array_key_exists("newpost", Site::getRequest()->arguments))
             {   
@@ -416,11 +415,18 @@ class BreadPageSystem extends Module
         }
         
         function GenerateHTML()
-        {
-            Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/doMarkdown.js"), true);
+        {   
+            if(!$this->loadedScripts)
+            {
+                Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/Markdown.Converter.js"),true);
+                Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/Markdown.Extra.js"),true);
+                Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/doMarkdown.js"), true);
+                $this->loadedScripts = true;
+            }
             Site::AddRawScriptCode("DoMarkdown();",true);
-            if($this->isnewpost)
+            if($this->isnewpost){
                 Site::AddRawScriptCode ("toggleMarkdown();", true);
+            }
         }
         
         function DrawRecentPosts()
@@ -726,6 +732,9 @@ class BreadPageSystem extends Module
         //
         function ConstructAdminSettings()
         {
+            if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadPageSystem.AdminPanel.Read")){
+                return false;
+            }
             $MasterSettings = new \Bread\Structures\BreadModuleSettings();
             $MasterSettings->Name = "Pages";
             

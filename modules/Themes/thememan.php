@@ -270,7 +270,7 @@ class ThemeManager
             
             if(!is_string($returnedElement["guts"]))
             {
-                Site::$Logger->writeError("Element failed to draw due to event returning non HTML.", \Bread\Logger::SEVERITY_MEDIUM);
+                Site::$Logger->writeError("Element failed to draw due to event returning non HTML.", \Bread\Logger::SEVERITY_MESSAGE);
                 $returnedElement["guts"] = false;
             }
             return $returnedElement;

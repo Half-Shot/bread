@@ -803,7 +803,9 @@ class Logger
     /**
      * A critial error which affects bread and will stop it from running properly at any capacity.
      */
-    const SEVERITY_CRITICAL = 2;
+    const SEVERITY_CRITICAL = 3;
+    
+    static $SeverityStringArray = array( -1 => "MESSAGE",0 => "LOW",1 => "WARN",2 => "ERROR",3 => "CRITICAL");
     
     const DATEFORMAT = "DM_H_i_s";
     private $logpath = "NOLOG";
@@ -958,8 +960,9 @@ class Logger
         
         if(isset(Site::$moduleManager)){
             Site::$moduleManager->FireEvent("Bread.LogError",$severity,false);
-            if($severity > static::SEVERITY_MESSAGE){
-                echo Site::$moduleManager->FireEvent("Theme.DrawError",$message,true);
+            if($severity > static::SEVERITY_LOW){
+                $html = Site::$moduleManager->FireEvent("Theme.DrawError",$message,true);
+                echo $html;
             }
         }
         
@@ -984,28 +987,6 @@ class Logger
             fclose($stream);
     }
     
-    /**
-     * Convert a Severity Level to its String representation.
-     * @param int $level Severity Level
-     * @return string
-     */
-    static function getSeverityText($level)
-    {
-        switch($level)
-        {
-            case self::SEVERITY_MESSAGE:
-                return "MESSAGE";
-            case self::SEVERITY_LOW:
-                return "LOW";
-            case self::SEVERITY_MEDIUM:
-                return "WARN";
-            case self::SEVERITY_HIGH:
-                return "ERROR";
-            case self::SEVERITY_CRITICAL:
-                return "CRITICAL";
-        }
-    }
-    
 }
 
 class LoggerMessage
@@ -1020,7 +1001,7 @@ class LoggerMessage
      */
     public function ToString()
     {
-        return "[". Logger::getSeverityText($this->severity) ."][" . ($this->time) . "]" . $this->message;
+        return "[". Logger::$SeverityStringArray[$this->severity] ."][" . ($this->time) . "]" . $this->message;
     }
 }
 ?>

@@ -5,7 +5,7 @@
 		"entryfile":"BreadUserSystem/BreadUserSystem.php",
 		"events":{
 			"Bread.Security.GetCurrentUser":{
-				"function":"ReturnUser"
+				"function":"GetCurrentUser"
 			},			
 			"Bread.Security.GetPermission":{
 				"function":"HasPermission"
@@ -14,7 +14,7 @@
 				"function":"Setup"
 			},			
 			"BreadUserSystem.LoginName":{
-				"function":"LoginName"
+				"function":"DrawLoginName"
 			},			
 			"BreadUserSystem.LoginButton":{
 				"function":"LoginButton"
@@ -36,14 +36,26 @@
 			},			
 			"BreadAdminTools.AddModuleSettings":{
                             "function":"ConstructAdminSettings",
-                            "dependencies":[{
-                            "event":"Bread.ProcessRequest",
-                            "module":"BreadFormBuilder"
+	                            "dependencies":[{
+	                            "event":"Bread.ProcessRequest",
+	                            "module":"BreadFormBuilder"
                             }]
 			},
                         "BreadUserSystem.GetUserInfo":{
-                            "function":"UserInfoToken",
+                            "function":"AjaxUserInfo",
                             "security":1
+                        },
+                        "BreadUserSystem.EditUserInfo":{
+                            "function":"AjaxWriteUserInfo",
+                            "security":1
+                        },
+                        "BreadUserSystem.ValidateUsername":{
+                            "function":"ValidateUsername",
+                            "security":0
+                        },
+                        "BreadUserSystem.ValidatePassword":{
+                            "function":"ValidatePassword",
+                            "security":0
                         }
 		}
 }

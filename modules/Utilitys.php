@@ -178,14 +178,31 @@ class Utilitys {
          * @param string $propName
          * @return array
          */
-        public static function ArraySetKeyByProperty($array,$propName,$removeProp = false)
+        public static function ArraySetKeyByProperty($array,$propName,$removeProp = false,$leaveSingleValue = false)
         {
            $newArray = array();
            foreach($array as $item)
            {
-               $newArray[$item->$propName] = $item;
-               if($removeProp)
-                unset($newArray[$item->$propName]->$propName);
+               if(is_array($item))
+               {
+                   $newArray[$item[$propName]] = $item;
+                   
+                   if($removeProp)
+                       unset($newArray[$item[$propName]][$propName]);
+                   
+                   if($leaveSingleValue)
+                       $newArray[$item[$propName]] = array_values($newArray[$item[$propName]])[0];
+               }
+               else{
+                    $newArray[$item->$propName] = $item;
+                    
+                    if($leaveSingleValue)
+                        $newArray[$item->$propName] = array_values((array)$newArray[$item->$propName])[0];
+                    
+                    if($removeProp)
+                        unset($newArray[$item->$propName]->$propName);
+               }
+
            }
            return $newArray;
         }
