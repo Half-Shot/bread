@@ -409,8 +409,8 @@ class BreadCoreSettings extends Module
             //Also add a modal for the update dialog!
             //
             //Footer
-            $StartButton = array("onclick"=>"startUpdate();","class"=>"btn-info","value"=>"Start Update");
-            $CancelButton = array("onclick"=>"cancelUpdate();","class"=>"btn-danger","value"=>"Cancel Update");
+            $StartButton = array("id"=>"startButton","onclick"=>"startUpdate();","class"=>"btn-info","value"=>"Start Update");
+            $CancelButton = array("id"=>"cancelButton","onclick"=>"cancelUpdate();","class"=>"btn-danger","value"=>"Cancel Update");
             $StartButtonHTML = $this->manager->FireEvent("Theme.Button",$StartButton);
             $CancelButtonHTML = $this->manager->FireEvent("Theme.Button",$CancelButton);
             $footerButtons = $this->manager->FireEvent("Theme.Layout.ButtonGroup",array($StartButtonHTML,$CancelButtonHTML));

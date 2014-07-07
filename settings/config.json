@@ -1,6 +1,6 @@
 {
     "core": {
-        "version": 0.15,
+        "version": "4f7e846",
         "debug": true,
         "cache": true,
         "banhammer": true,

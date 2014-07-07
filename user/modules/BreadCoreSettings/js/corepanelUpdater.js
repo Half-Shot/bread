@@ -25,6 +25,8 @@ UpdChannel = -1;
 UpdateRequest = null;
 function requestUpdate(channel){
     $("#update-modal").modal();
+    $("#update-modal #startButton").prop('disabled', false);
+     $("#update-modal #startButton").html("Start Update");
     window.onbeforeunload = function() {
         return 'Bread requires this window to be open during the duration of the update!';
     };
@@ -34,12 +36,15 @@ function requestUpdate(channel){
 function startUpdate()
 {
     $("#label-complete").fadeOut();
+    $("#update-modal #startButton").prop('disabled', true);
     UpdateRequest = $.post("index.php",{ajaxEvent: "BreadCoreSettings.DoUpdate",ajaxModule:"BreadCoreSettings",channel:UpdChannel},function(data){
         element = $("#label-status span");
         if(data == "FAIL")
         {
             element.text("Update Failed!");
             element.removeClass("label-warning").removeClass("label-success").addClass("label-danger");
+            $("#update-modal #startButton").prop('disabled', false);
+            $("#update-modal #startButton").html("Retry");
         }
         else if(data == "OK")
         {
