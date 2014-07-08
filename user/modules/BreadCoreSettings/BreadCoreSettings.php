@@ -96,11 +96,13 @@ class BreadCoreSettings extends Module
             $Form = new \Bread\Structures\BreadForm();
             $Form->id = "log-form";
             $SelectionBox = new \Bread\Structures\BreadFormElement();
+            $Form->elements[] = $SelectionBox;
             $SelectionBox->id = "log-fileselectorbox";
             $SelectionBox->type = "dropdown";
             $SelectionBox->dataset = array();
             $SelectionBox->label = "Select a Log File";
-            $InitialLog = "";
+            $Logs = new \SimpleXMLElement('<logs></logs>');
+            $Logs->addAttribute("hidden","true");
             foreach(array_reverse($LogFiles) as $file){
                 if(is_link($file) || $file == "." || $file == ".."){
                     continue;
@@ -108,30 +110,40 @@ class BreadCoreSettings extends Module
                 $fileName = $file;
                 $file = $LogLocations . "/" . $file;
                 $SelectionBox->dataset[] = $fileName;
-                $SelectionBox->value = $fileName;
+                $CurrentLog = $Logs->addChild("logfile");
+                $CurrentLog->addAttribute("name", $fileName);
                 if(is_dir($file)){
-                    $logdata = "";
                     foreach(scandir($file) as $logfile){
                         if(is_link($logfile) || $logfile == "." || $logfile == ".."){
                             continue;
                         }
-                        $logdata .= file_get_contents($file . "/" . $logfile) . "</br>";
-                    }
+                        //Replace quotes
+                        $Text = file_get_contents($file . "/" . $logfile);
+                        $LogCategory = $CurrentLog->addChild("category",$Text);
+                        $LogCategory->addAttribute("name",str_replace(".log", "", $logfile));
+                    } 
                 }
                 else
                 {
-                    $logdata .= file_get_contents($file);
+                        //Replace quotes
+                        $Text = file_get_contents($file);
+                        $LogCategory = $CurrentLog->addChild("category",$Text);
                 }
-                if(empty($InitialLog))
-                {
-                    $InitialLog = $logdata;
-                }
-               Site::AddToBodyCode("<logfile hidden filename='" . $fileName . "'>" . nl2br($logdata) . "</logfile>");
             }
-            $Form->elements[] = $SelectionBox;
+            Site::AddToBodyCode($Logs->asXML());
+            
+            $LogTypeBox = new \Bread\Structures\BreadFormElement();
+            $LogTypeBox->id = "log-categorybox";
+            $LogTypeBox->type = "dropdown";
+            $LogTypeBox->dataset = array();
+            $LogTypeBox->label = "Category";
+            
+            
+            
+            $Form->elements[] = $LogTypeBox;
             $LogText = new \Bread\Structures\BreadFormElement();
             $LogText->type = \Bread\Structures\BreadFormElement::TYPE_RAWHTML;
-            $LogText->value = "<code><pre id='log-output' style='width:100%;height:500px;overflow:scroll;'>" . $InitialLog . "</pre></code>";
+            $LogText->value = "<code><pre id='log-output' style='width:100%;height:500px;overflow:scroll;'></pre></code>";
             $Form->elements[] = $LogText;
             $FormHTML = $this->manager->FireEvent("Theme.Form",$Form);        
             $Panel_Prev->Body = $FormHTML;

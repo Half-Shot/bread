@@ -563,7 +563,6 @@ class BreadUserSystem extends Module
                 if(!$formElement->multiuser && count($users) > 1)
                     continue;
 
-
                 //Check data differs
                 if($key == "username"){
                     if($user->username == $value){
@@ -641,6 +640,7 @@ class BreadUserSystem extends Module
                 //All Good
                 Site::$Logger->writeMessage("User " . $user->uid . "(" . $user->username . ") has new " . $key . " " . $newname,$this->name);
                 Site::$Logger->writeMessage("This change was made by " . $this->currentUser->uid . " ( " . $this->currentUser->username  . " ) ",$this->name);
+                $this->manager->FireEvent("Bread.Security.ChangeInfomation",array("key"=>$key,"uid"=>$uid));
             }
         }
         Site::$settingsManager->SaveSetting($this->userDB,$this->userDBPath);

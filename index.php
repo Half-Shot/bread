@@ -24,4 +24,3 @@ Site::DigestRequest();
 Site::ProcessRequest();//Draw the site. We are done here.
 Site::$Logger->writeMessage("Memory Used: " . (memory_get_usage(False) / 1024) . "kb");
 Site::Cleanup();
-?>

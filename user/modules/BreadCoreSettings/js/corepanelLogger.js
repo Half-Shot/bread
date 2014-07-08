@@ -21,7 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
+function PopulateCategoryBox(){
+   $("#log-categorybox").find('option').remove();
+   var currentLog = $("#log-fileselectorbox").val();
+   var categories = $("logs logfile[name='" + currentLog + "'] category");
+   categories.each(function(){
+       $("#log-categorybox").append($("<option></option>").text($(this).attr("name"))); 
+   })
+}
+
+function SetupCurrentLogBox(){
+    var currentLog = $("#log-fileselectorbox").val();
+    var currentCategory = $("#log-categorybox").val();
+    var LogData = $("logs logfile[name='" + currentLog + "'] category[name='" + currentCategory + "']");
+    $("#log-output").html(LogData.html());
+}
+
 $("#log-fileselectorbox").change(function() {
-  var text = $("logfile[filename=" + $(this).val() + "]").text();
-  $("#log-output").html(text);
+    PopulateCategoryBox();
+    SetupCurrentLogBox();
 });
+
+$("#log-categorybox").change(function() {
+    SetupCurrentLogBox();
+});
+
+PopulateCategoryBox();
+SetupCurrentLogBox();
