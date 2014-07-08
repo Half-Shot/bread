@@ -1,6 +1,6 @@
 dev-bread
 =====
-![Bread Logo](./docs/breadlogo0_1.png)
+![Bread Logo](./docs/BreadLogoVersion2.png)
 
 **[Bread Test Site](http://molrams.no-ip.org/bread/devbread/)**
 

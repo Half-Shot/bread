@@ -62,7 +62,8 @@ class BreadIndexSystem extends Module
     
     function Search(\Bread\Structures\BreadSearchRequest $searchRequest)
     {
-        $results = Site::MashArraysToSingleArray($this->manager->FireEvent("Bread.GetAllPages"));
+        $ModResults = $this->manager->FireEvent("Bread.GetAllPages",null,false);
+        $results = Site::MashArraysToSingleArray($ModResults);
         if(empty($searchRequest->SearchTerm))
             return $results;
         if(empty($results))

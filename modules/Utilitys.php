@@ -257,8 +257,11 @@ class Utilitys {
         public static function MashArraysToSingleArray($arrays)
         {
             $newArray = array();
-            foreach($arrays as $array)
-                $newArray += $array;
+            foreach($arrays as $array){
+                if(is_array($array)){
+                    $newArray += $array;
+                }
+            }
             return $newArray;
         }
         
