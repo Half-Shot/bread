@@ -46,12 +46,16 @@ $("#admin-mainpanel input").change( function(){
 $(".BATapplyButton").click( function(){
     $.post( "index.php", AdminPanelJsonObject, function(returndata)
     {
-        if(returndata != "0"){
-            ShowAlert(3,"Internal Server Problem!");
+        if(returndata == "0"){
+            ShowAlert(0,"Saved Ok!");
+        }
+        else if(returndata == "1")
+        {
+            ShowAlert(3,"Not authorised!");
         }
         else
         {
-            ShowAlert(0,"Saved Ok!");
+            ShowAlert(3,"Internal Server Problem!");
         }
     });
 });

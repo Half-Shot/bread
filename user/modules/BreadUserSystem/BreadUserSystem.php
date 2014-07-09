@@ -292,6 +292,7 @@ class BreadUserSystem extends Module
             return True;
         }
         foreach($this->currentUser->groups as $groupName){
+            
             if(in_array($requestedpermission,$this->groups[$groupName]->rights) || in_array("root",$this->groups[$groupName]->rights))
                 return true;
         }

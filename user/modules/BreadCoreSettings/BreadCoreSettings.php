@@ -24,7 +24,7 @@ class BreadCoreSettings extends Module
         function SaveCore()
         {
             if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadCoreSettings.Write"))
-                return 0;
+                return 1;
             $newObj = new \stdClass();
             foreach($_POST as $prop => $val)
             {
@@ -159,6 +159,9 @@ class BreadCoreSettings extends Module
             $ApplyButton->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
             $ApplyButton->value = "Apply";
             $ApplyButton->class = "btn-success BATapplyButton";
+            
+            if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadCoreSettings.Write"))
+                $ApplyButton->readonly = true;
             
             $ApplyButtonsForm->elements[] = $ApplyButton;
             
