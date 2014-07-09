@@ -1,0 +1,40 @@
+{
+    "modules": [
+        {
+            "name": "ExampleModule",
+            "file": "ExampleModule\/module.json"
+        },
+        {
+            "name": "BreadPageSystem",
+            "file": "BreadPageSystem\/module.json"
+        },
+        {
+            "name": "BreadIndexSystem",
+            "file": "BreadIndexSystem\/module.json"
+        },
+        {
+            "name": "BreadUserSystem",
+            "file": "BreadUserSystem\/module.json"
+        },
+        {
+            "name": "BreadAdminTools",
+            "file": "BreadAdminTools\/module.json"
+        },
+        {
+            "name": "WebShim",
+            "file": "WebShim\/module.json"
+        },
+        {
+            "name": "BreadFormBuilder",
+            "file": "BreadFormBuilder\/module.json"
+        },
+        {
+            "name": "BreadAdminTools",
+            "file": "BreadAdminTools\/module.json"
+        },
+        {
+            "name": "BreadCoreSettings",
+            "file": "BreadCoreSettings\/module.json"
+        }
+    ]
+}
