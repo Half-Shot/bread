@@ -328,7 +328,6 @@ class Site
                         static::$configuration->logger->minseveritytolog,
                         static::$configuration->logger->maxlogfiles,
                         static::$configuration->logger->multifilelog,
-                        static::$configuration->logger->maxlogfiles,
                         static::$configuration->logger->keepfor);
 	}
         /**

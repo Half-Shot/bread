@@ -12,7 +12,7 @@
         "maxlogfiles": 100,
         "minseveritytolog": -1,
         "multifilelog": true,
-        "keepfor": 120
+        "keepfor": 0
     },
     "strings": {
         "sitename": "The Bakery"
