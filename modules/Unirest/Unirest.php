@@ -200,7 +200,7 @@ class Unirest
         
         curl_setopt($ch, CURLOPT_URL, Unirest::encodeUrl($url));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        //curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); Causes problems!
+        //curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);// Causes problems!
         curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $lowercaseHeaders);
         curl_setopt($ch, CURLOPT_HEADER, true);

@@ -487,7 +487,7 @@ class BreadCoreSettings extends Module
                     $this->UpdateBreadPanel($Tab_UpdateBread);
                 default:
                     break;
-            }
+                }
             
             $CoreSettingsCP->SettingsGroups[] = $Tab_CoreSettings;
             $CoreSettingsCP->SettingsGroups[] = $Tab_Logging;
@@ -534,7 +534,10 @@ class BreadCoreSettings extends Module
                 unlink($file);
             } 
             //Stage 1 -- Download
-            $this->DownloadNewFile($URL,$file);
+            $worked = $this->DownloadNewFile($URL,$file);
+            if(!$worked){
+                Site::$Logger->writeMessage("Could not download file :(", "backuplog");
+            }
             //Stage 2 -- Unzip
             $updateZip = new \ZipArchive();
             $extractPath = Site::GetRootPath() .  Util::ResolvePath("/%system-temp/newUpdate");
@@ -544,7 +547,7 @@ class BreadCoreSettings extends Module
             }
             else
             {
-                Site::$Logger->writeError("Couldn't extract new update. Either the download or the extraction method failed!", \Bread\Logger::SEVERITY_HIGH, "backuplog");
+                Site::$Logger->writeError("Couldn't extract new update!", \Bread\Logger::SEVERITY_HIGH, "backuplog");
                 return "FAIL";
             }
             //Install New Update.
@@ -567,17 +570,23 @@ class BreadCoreSettings extends Module
         {
             
             Site::$Logger->writeMessage("Initial URL:" . $url, "backuplog");
-            //Initial Request - Using Unirest beacause curl has issues.
             $response = \Unirest::get($url);
             while($response->code == 300 | 302)
             {
-                if($response->code == 200)
-                    break;
                 $url = $response->headers["Location"];  
-                Site::$Logger->writeMessage("URL Redirect to" . $url, "backuplog");
+                Site::$Logger->writeMessage("URL Redirect to " . $url, "backuplog");
                 $response = \Unirest::get($url);
+                if($response->code == 200){
+                    break;
+                }
             }
+            if($response->code != 200){
+                Site::$Logger->writeMessage("The trail went cold at " . $url, "backuplog");
+                return false;
+            }
+            Site::$Logger->writeMessage("Downloading " . $url, "backuplog");
             file_put_contents($file, $response->raw_body);
+            return true;
         }
 
         function OpenSettings()
