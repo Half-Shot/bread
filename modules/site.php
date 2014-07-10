@@ -373,7 +373,7 @@ class Site
         
         public static function EditConfigurationValues($newObj)
         {
-           self::$Logger->writeMessage("Editing the core config!", $category);
+           self::$Logger->writeMessage("Editing the core config!", $this->name);
            if(!Site::$settingsManager)
                return false;
            $setting = self::$settingsManager->RetriveSettings(self::$configurl);
@@ -560,6 +560,7 @@ class Site
             }
             static::$htmlcode .= static::$headercode;
 	    static::$htmlcode .= static::$themeManager->CSSLines;
+            static::$moduleManager->FireEvent("Bread.InsertScript",NULL,false); //Must use add to head.
             static::$htmlcode .= static::$ScriptLines;
             static::$moduleManager->FireEvent("Bread.FinishedHead",NULL,false); //Must use add to head.
 	    static::$htmlcode .= "</head>\n";

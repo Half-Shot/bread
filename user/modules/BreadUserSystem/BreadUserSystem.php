@@ -307,7 +307,7 @@ class BreadUserSystem extends Module
     
     function AjaxCheckString($string,$charmin){
         //Obey all the usual limits.
-        if(empty($string) || !is_string($string) || strlen($string) <= $charmin || ctype_space($string))
+        if(empty($string) || !is_string($string) || strlen($string) < $charmin || ctype_space($string))
             return false;
         
         if(htmlentities($string) != $string){
@@ -539,11 +539,28 @@ class BreadUserSystem extends Module
     }
     
     function ValidateUsername($args){
+        if($args["user"]->username == $args["data"]){
+            return false; //Nothing to do here.
+        }
         return $this->AjaxCheckString($args["data"], $this->settings->minusernamelength);
     }
     
     function ValidatePassword($args){
+        $RootUser = false;
+        foreach($this->userDB as $u)
+        {
+            if($args["uid"] == $u->breaduserdata->uid){
+                $RootUser = $u;
+                break;
+            }
+        }
+
+        $hasher = new \PasswordHash(BreadUserSystem::STRETCH_FACTOR, false);
+        if($hasher->CheckPassword($args["data"],$RootUser->hash)){
+            return false;
+        }
         return $this->AjaxCheckString($args["data"], $this->settings->minpasswordlength);
+        
     }
     
     function AjaxWriteUserInfo(){
@@ -554,6 +571,8 @@ class BreadUserSystem extends Module
         $data = Util::ArraySetKeyByProperty($_POST["data"],"name",true,true);
         foreach ($users as $uid){
             $user = $this->GetUserByUID($uid);
+            if($user == false)
+                continue; //User does not exist!
             foreach($this->settings->adminPanelSettings->usereditForm as $formElement){
                 $key = $formElement->informationKey;
                 if(!array_key_exists($key, $data))
@@ -563,22 +582,6 @@ class BreadUserSystem extends Module
 
                 if(!$formElement->multiuser && count($users) > 1)
                     continue;
-
-                //Check data differs
-                if($key == "username"){
-                    if($user->username == $value){
-                        continue; //Nothing to do here.
-                    }
-                }
-                else if($key == "password"){
-                    //Insert hash check here!
-                    continue;
-                }
-                else{
-                    if($user->information->$key == $value){
-                        continue; //Nothing to do here.
-                    }
-                }
 
                 //Security
                 $ownUser = ($uid == $this->GetCurrentUser()->uid);
@@ -603,6 +606,9 @@ class BreadUserSystem extends Module
                 else
                 {
                     Site::$Logger->writeError("Form infomation key " . $key ." has no validation event, which is very risky!",  \Bread\Logger::SEVERITY_MEDIUM,$this->name);
+                    if($user->information->$key == $value){
+                        continue; //Nothing to do here.
+                    }
                 }
                 if(!$validatedOk){
                     continue;
@@ -624,22 +630,24 @@ class BreadUserSystem extends Module
                 }
                 else if($key == "password")
                 {
-                    $user = false;
-                    foreach($this->userDB as $u)
+                    $RootUser = false;
+                    foreach($this->userDB as $u) 
                     {
-                        if($uid == $u->breaduserdata->uid)
-                            $user = $u;
+                        if($uid == $u->breaduserdata->uid){
+                            $RootUser = $u;
+                            break;
+                        }
                     }
-
+                    
                     $hasher = new \PasswordHash(BreadUserSystem::STRETCH_FACTOR, false);
-                    $user->hash = $hasher->HashPassword($newpassword);
+                    $RootUser->hash = $hasher->HashPassword($value);
                 }
                 else{
                     $user->information->$key = $value;
                 }
 
                 //All Good
-                Site::$Logger->writeMessage("User " . $user->uid . "(" . $user->username . ") has new " . $key . " " . $newname,$this->name);
+                Site::$Logger->writeMessage("User " . $user->uid . "(" . $user->username . ") has new " . $key ,$this->name);
                 Site::$Logger->writeMessage("This change was made by " . $this->currentUser->uid . " ( " . $this->currentUser->username  . " ) ",$this->name);
                 $this->manager->FireEvent("Bread.Security.ChangeInfomation",array("key"=>$key,"uid"=>$uid));
             }

@@ -1,6 +1,7 @@
 <?php
 namespace Bread\Modules;
 use Bread\Site as Site;
+use Bread\Utilitys as Util;
 class BreadPageSystem extends Module
 {
         private $settings;
@@ -61,7 +62,6 @@ class BreadPageSystem extends Module
             $pages = array();
             $index = get_object_vars($this->settings->postindex);
             usort($index,"\Bread\Modules\BreadPageSystem::USortDate");
-            $index = array_slice($index, 0, $this->settings->maxRecentPosts, true);
             foreach($index as $page)
             {
                 if($page->time_released > time() && !$this->CheckEditorRights()){
@@ -78,7 +78,7 @@ class BreadPageSystem extends Module
                 $parts["post"] = $page->id;
                 $pages[$page->name] = Site::CondenseURLParams(false,$parts);
             }
-            
+            $pages = array_slice($pages, 0, $this->settings->maxRecentPosts, true);
             return $pages;
         }
         
@@ -111,13 +111,33 @@ class BreadPageSystem extends Module
         function SetSiteTitle()
         {
             $Post = $this->GetActivePost();
+            if($this->isnewpost)
+            {
+                return "New Post";
+            }
             return $Post->title;
         }
         
         function CheckEditorRights()
         {
-           //See if the user is an editor
-           return ($this->manager->FireEvent("Bread.Security.GetPermission","Editor"));
+            if($this->manager->FireEvent("Bread.Security.GetPermission","Editor")){
+                return true;
+            }
+            $id = $this->GetActivePostPageId();
+            if($this->manager->FireEvent("Bread.Security.GetPermission","NewPost") && (!isset($this->settings->postindex->$id) || array_key_exists("newpost", Site::getRequest()->arguments))){
+                return true;
+            }
+            
+            if($this->manager->FireEvent("Bread.Security.GetPermission","EditOwnPosts"))
+            {
+                $PostUID = $this->GetActivePost()->author;
+                $UserUID = $this->manager->FireEvent("Bread.Security.GetCurrentUser")->uid;
+                if($PostUID == $UserUID)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
         
         function PostEditorInfomationPanel()
@@ -164,16 +184,26 @@ class BreadPageSystem extends Module
             $E_Author->readonly = true;
             $E_Author->class = "";
             $E_Author->required = true;
-            if(!$this->isnewpost)
-                $E_Author->value = $this->GetActivePost ()->author;
+            if(!$this->isnewpost){
+                $author = $this->GetActivePost ()->author;
+                if(is_int($author)){
+                    $E_Author->value = $this->manager->FireEvent("Bread.Security.GetUser",$author)->username;
+                }
+                else{
+                    $E_Author->value = $this->GetActivePost ()->author;
+                }
+            }
             else
+            {
                 $E_Author->value = $this->GetActivePost ()->name = $this->manager->FireEvent("Bread.Security.GetCurrentUser")->username;
+            }
             $form->elements[] = $E_Author;
             
             $E_Submit = new \Bread\Structures\BreadFormElement;
             $E_Submit->class = "bps-editorinfo-input btn-success";
             $E_Submit->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
             $E_Submit->value = "Save Post";
+            $E_Submit->id = "savePost";
             if($this->isnewpost)
                 $E_Submit->value = "Save New Post";
             $E_Submit->readonly = true;
@@ -479,8 +509,17 @@ class BreadPageSystem extends Module
         function GetActivePostPageId()
         {
            $request = Site::getRequest();
+           if(array_key_exists("url",$_POST)){
+               $digest = Util::DigestURL($_POST["url"]);
+               if(!empty($digest["newpost"])){
+                   return -1;
+               }
+           }
            if(isset($request->arguments["post"]))
                return $request->arguments["post"];
+           
+           if(isset($request->arguments["newpost"]))
+               return -1;
            
            foreach($request->arguments as $key => $value)
            {
@@ -502,9 +541,13 @@ class BreadPageSystem extends Module
         {
            if(!$this->activePost){
                 $postid = $this->GetActivePostPageId();
-                if($postid !== false || isset($this->settings->postindex->$postid))
+                if($postid !== false && isset($this->settings->postindex->$postid))
                 {
                      $this->activePost = $this->settings->postindex->$postid;
+                }
+                else
+                {
+                    return false;
                 }
            }
            return Site::CastStdObjectToStruct( $this->activePost, "Bread\Modules\BreadPageSystemPost");
@@ -576,7 +619,7 @@ class BreadPageSystem extends Module
             if($page === False)
                 return False;
             $info = array();
-            $info["Author"] = $page->author;
+            $info["Author"] = $this->manager->FireEvent("Bread.Security.GetUser",$page->author)->username;
             $info["Last Modified"] = \date("F d Y H:i:s", $page->time_modified);
             $info["Created On"] = \date("F d Y H:i:s", $page->time_created);
             return Site::$moduleManager->FireEvent("Theme.Post.Infomation",$info);
@@ -584,7 +627,7 @@ class BreadPageSystem extends Module
         
         function SavePost()
         {
-             $canSave = $this->manager->FireEvent("Bread.Security.GetPermission","Editor");
+             $canSave = $this->CheckEditorRights();
              if(!$canSave){
                  Site::$Logger->writeError("User tried to save markdown without permission somehow, blocked!",\Bread\Logger::SEVERITY_HIGH,"breadpagesystem");
                  return "0";
@@ -609,7 +652,7 @@ class BreadPageSystem extends Module
                  $post = new BreadPageSystemPost;
                  $post->name = $_POST["name"];
                  //$this->settings->postindex->$id->categorys = $_POST["categorys"];
-                 $post->author = $_POST["author"];
+                 $post->author = $this->manager->FireEvent("Bread.Security.GetCurrentUser")->uid;
                  $post->url = $post->name . ".md";
                  $post->jsonurl =  $this->settings->postdir . "/" . $post->name . ".json";
                  $post->id = $id;
@@ -782,7 +825,7 @@ class BreadPageSystemPost
    public $subtitle= "";
    public $categorys= array();
    public $liveedit= true;
-   public $author = "Unknown";
+   public $author = 0;
    public $hidden = false;
    public $thumb= "";
    public $jsonurl= "";

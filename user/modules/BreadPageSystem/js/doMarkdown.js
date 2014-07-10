@@ -187,11 +187,11 @@ function saveMarkdown()
     $.post( "index.php", { ajaxEvent: "BreadPageSystem.SavePost",ajaxModule:"BreadPageSystem", url: document.URL, markdown: md, title: $("#bps-title").text(), subtitle: $("#bps-subtitle").text(), name: $("#e_postname")[0].value ,author: $("#e_author")[0].value, timereleased: $("#e_timereleased")[0].value, categorys: CategoryArray()}, function(returndata)
     {
         if(returndata != "0"){
-            alert("Saved :D");
             window.location = returndata;
         }
-        else
+        else{
             alert("Something went wrong :|");
+        }
     });
 }
 
@@ -284,3 +284,5 @@ function CategoryArray()
     });
     return categorys;
 }
+
+$('#savePost').click(saveMarkdown);

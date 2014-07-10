@@ -7,12 +7,6 @@ class WebShimLoader extends Module
 	{
 		parent::__construct($manager,$name);
 	}
-
-	function RegisterEvents()
-	{
-            $this->manager->RegisterHook($this->name,"Bread.ProcessRequest","LoadJS");
-
-	}
     
 	function LoadJS()
 	{
