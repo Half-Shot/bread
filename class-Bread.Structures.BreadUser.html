@@ -7,7 +7,7 @@
 	<title>Class Bread\Structures\BreadUser | Bread</title>
 
 	<script type="text/javascript" src="resources/combined.js?174271566"></script>
-	<script type="text/javascript" src="elementlist.js?2841844939"></script>
+	<script type="text/javascript" src="elementlist.js?337533732"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -47,16 +47,22 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
-				<li><a href="class-Bread.Structures.BreadConfigurationPanel.html">BreadConfigurationPanel</a></li>
-				<li><a href="class-Bread.Structures.BreadCPPanel.html">BreadCPPanel</a></li>
-				<li><a href="class-Bread.Structures.BreadCPSetting.html">BreadCPSetting</a></li>
 				<li><a href="class-Bread.Structures.BreadForm.html">BreadForm</a></li>
 				<li><a href="class-Bread.Structures.BreadFormElement.html">BreadFormElement</a></li>
+				<li><a href="class-Bread.Structures.BreadGroup.html">BreadGroup</a></li>
 				<li><a href="class-Bread.Structures.BreadLinkStructure.html">BreadLinkStructure</a></li>
+				<li><a href="class-Bread.Structures.BreadModal.html">BreadModal</a></li>
+				<li><a href="class-Bread.Structures.BreadModuleSettings.html">BreadModuleSettings</a></li>
+				<li><a href="class-Bread.Structures.BreadModuleSettingsPanel.html">BreadModuleSettingsPanel</a></li>
+				<li><a href="class-Bread.Structures.BreadModuleSettingsTab.html">BreadModuleSettingsTab</a></li>
 				<li><a href="class-Bread.Structures.BreadModuleStructure.html">BreadModuleStructure</a></li>
 				<li><a href="class-Bread.Structures.BreadRequestData.html">BreadRequestData</a></li>
 				<li><a href="class-Bread.Structures.BreadSearchItem.html">BreadSearchItem</a></li>
 				<li><a href="class-Bread.Structures.BreadSearchRequest.html">BreadSearchRequest</a></li>
+				<li><a href="class-Bread.Structures.BreadTableCell.html">BreadTableCell</a></li>
+				<li><a href="class-Bread.Structures.BreadTableElement.html">BreadTableElement</a></li>
+				<li><a href="class-Bread.Structures.BreadTableRow.html">BreadTableRow</a></li>
+				<li><a href="class-Bread.Structures.BreadThemeElement.html">BreadThemeElement</a></li>
 				<li class="active"><a href="class-Bread.Structures.BreadUser.html">BreadUser</a></li>
 			</ul>
 
@@ -123,7 +129,7 @@
 		<b>Namespace:</b> <a href="namespace-Bread.html">Bread</a>\<a href="namespace-Bread.Structures.html">Structures</a><br />
 		
 
-		<b>Located at</b> <a href="source-class-Bread.Structures.BreadUser.html#8-39" title="Go to source code">modules/Structures/BreadUser.php</a><br />
+		<b>Located at</b> <a href="source-class-Bread.Structures.BreadUser.html#8-44" title="Go to source code">modules/Structures/BreadUser.php</a><br />
 	</div>
 
 
@@ -151,7 +157,7 @@
 		<td class="name">
 				<a href="source-class-Bread.Structures.BreadUser.html#13-17" title="Go to source code"><var>$username</var></a>
 		</td>
-		<td class="value"><code><span class="php-quote">&quot;Unknown&quot;</span></code></td>
+		<td class="value"><code><span class="php-quote">&quot;%BREADNOTSET%&quot;</span></code></td>
 		<td class="description"><div>
 			<a href="#$username" class="anchor">#</a>
 
@@ -169,6 +175,33 @@
 			</div>
 		</div></td>
 	</tr>
+	<tr data-order="groups" id="$groups">
+		<td class="attributes"><code>
+			public  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Bread.Structures.BreadUser.html#18-22" title="Go to source code"><var>$groups</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$groups" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Any groups the user may be a memeber of.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Any groups the user may be a memeber of.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
 	<tr data-order="uid" id="$uid">
 		<td class="attributes"><code>
 			public  
@@ -176,7 +209,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Bread.Structures.BreadUser.html#18-23" title="Go to source code"><var>$uid</var></a>
+				<a href="source-class-Bread.Structures.BreadUser.html#23-28" title="Go to source code"><var>$uid</var></a>
 		</td>
 		<td class="value"><code>-<span class="php-num">1</span></code></td>
 		<td class="description"><div>
@@ -198,18 +231,18 @@ user in a dataset.</p>
 			</div>
 		</div></td>
 	</tr>
-	<tr data-order="infomation" id="$infomation">
+	<tr data-order="information" id="$information">
 		<td class="attributes"><code>
 			public  
 			array
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Bread.Structures.BreadUser.html#24-28" title="Go to source code"><var>$infomation</var></a>
+				<a href="source-class-Bread.Structures.BreadUser.html#29-33" title="Go to source code"><var>$information</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
 		<td class="description"><div>
-			<a href="#$infomation" class="anchor">#</a>
+			<a href="#$information" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -232,7 +265,7 @@ user in a dataset.</p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Bread.Structures.BreadUser.html#29-32" title="Go to source code"><var>$sessionVars</var></a>
+				<a href="source-class-Bread.Structures.BreadUser.html#34-37" title="Go to source code"><var>$sessionVars</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
 		<td class="description"><div>
@@ -255,7 +288,7 @@ user in a dataset.</p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Bread.Structures.BreadUser.html#33-38" title="Go to source code"><var>$rights</var></a>
+				<a href="source-class-Bread.Structures.BreadUser.html#38-43" title="Go to source code"><var>$rights</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
 		<td class="description"><div>

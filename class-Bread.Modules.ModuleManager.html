@@ -7,7 +7,7 @@
 	<title>Class Bread\Modules\ModuleManager | Bread</title>
 
 	<script type="text/javascript" src="resources/combined.js?174271566"></script>
-	<script type="text/javascript" src="elementlist.js?2841844939"></script>
+	<script type="text/javascript" src="elementlist.js?337533732"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -47,6 +47,7 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
+				<li><a href="class-Bread.Modules.BreadModuleManagerSettings.html">BreadModuleManagerSettings</a></li>
 				<li><a href="class-Bread.Modules.Module.html">Module</a></li>
 				<li class="active"><a href="class-Bread.Modules.ModuleManager.html">ModuleManager</a></li>
 			</ul>
@@ -116,7 +117,7 @@ unloading of external code, and hooking it at appropriate times.</p>
 		<b>Namespace:</b> <a href="namespace-Bread.html">Bread</a>\<a href="namespace-Bread.Modules.html">Modules</a><br />
 		
 
-		<b>Located at</b> <a href="source-class-Bread.Modules.ModuleManager.html#4-361" title="Go to source code">modules/Modules/moduleman.php</a><br />
+		<b>Located at</b> <a href="source-class-Bread.Modules.ModuleManager.html#5-435" title="Go to source code">modules/Modules/moduleman.php</a><br />
 	</div>
 
 
@@ -134,7 +135,7 @@ unloading of external code, and hooking it at appropriate times.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-Bread.Modules.ModuleManager.html#28-35" title="Go to source code">__construct</a>( )</code>
+		<code><a href="source-class-Bread.Modules.ModuleManager.html#29-36" title="Go to source code">__construct</a>( )</code>
 
 		<div class="description short">
 			
@@ -163,7 +164,7 @@ unloading of external code, and hooking it at appropriate times.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_LoadModulesFromConfig">#</a>
-		<code><a href="source-class-Bread.Modules.ModuleManager.html#36-51" title="Go to source code">LoadModulesFromConfig</a>( <span>string <var>$filepath</var></span> )</code>
+		<code><a href="source-class-Bread.Modules.ModuleManager.html#37-54" title="Go to source code">LoadModulesFromConfig</a>( )</code>
 
 		<div class="description short">
 			
@@ -177,51 +178,6 @@ unloading of external code, and hooking it at appropriate times.</p>
 
 
 
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$filepath</var></dt>
-					<dd><code>string</code><br>$filepath Filepath of the modulelist.</dd>
-				</dl></div>
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="LoadRequiredModules" id="_LoadRequiredModules">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_LoadRequiredModules">#</a>
-		<code><a href="source-class-Bread.Modules.ModuleManager.html#53-67" title="Go to source code">LoadRequiredModules</a>( <span>/Bread/Structures/BreadRequest <var>$request</var></span> )</code>
-
-		<div class="description short">
-			
-<p>Reads the processed request and only loads required modules, saving
-memory.</p>
-
-		</div>
-
-		<div class="description detailed hidden">
-			
-<p>Reads the processed request and only loads required modules, saving
-memory.</p>
-
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$request</var></dt>
-					<dd><code>/Bread/Structures/BreadRequest</code><br>$request The request object.</dd>
-				</dl></div>
 
 
 
@@ -241,7 +197,7 @@ memory.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_DependenciesRegistered">#</a>
-		<code><a href="source-class-Bread.Modules.ModuleManager.html#116-161" title="Go to source code">DependenciesRegistered</a>( <span>mixed <var>$module</var></span> )</code>
+		<code><a href="source-class-Bread.Modules.ModuleManager.html#122-169" title="Go to source code">DependenciesRegistered</a>( <span>mixed <var>$module</var></span> )</code>
 
 		<div class="description short">
 			
@@ -270,19 +226,19 @@ memory.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_RegisterSelectedTheme">#</a>
-		<code><a href="source-class-Bread.Modules.ModuleManager.html#163-186" title="Go to source code">RegisterSelectedTheme</a>( )</code>
+		<code><a href="source-class-Bread.Modules.ModuleManager.html#171-192" title="Go to source code">RegisterSelectedTheme</a>( )</code>
 
 		<div class="description short">
 			
 <p>The selected theme from /Bread/Themes/ThemeManager is loaded as a module in
-here. The method is simular to ModuleManager::RegisterModule()</p>
+here. The method is similar to ModuleManager::RegisterModule()</p>
 
 		</div>
 
 		<div class="description detailed hidden">
 			
 <p>The selected theme from /Bread/Themes/ThemeManager is loaded as a module in
-here. The method is simular to ModuleManager::RegisterModule()</p>
+here. The method is similar to ModuleManager::RegisterModule()</p>
 
 
 
@@ -292,106 +248,6 @@ here. The method is simular to ModuleManager::RegisterModule()</p>
 				<h4>See</h4>
 				<div class="list">
 						/Bread/Themes/ThemeManager<br />
-				</div>
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="RegisterHook" id="_RegisterHook">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_RegisterHook">#</a>
-		<code><a href="source-class-Bread.Modules.ModuleManager.html#187-204" title="Go to source code">RegisterHook</a>( <span>string <var>$moduleName</var></span>, <span>type <var>$eventName</var></span>, <span>string <var>$function</var></span>, <span>array <var>$securitylevel</var> = <span class="php-num">0</span></span>, <span>mixed <var>$dependencies</var> = <span class="php-keyword1">array</span>()</span> )</code>
-
-		<div class="description short">
-			
-<p>Registers an event:<br />
-A module can register itself to a event which means any arguments of a hook is
-passed to<br />
-this modules function. A hook can be called at any time with a string of the
-event it wants to call.</p>
-
-		</div>
-
-		<div class="description detailed hidden">
-			
-<p>Registers an event: A module can register itself to a event which means any
-arguments of a hook is passed to this modules function. A hook can be called at
-any time with a string of the event it wants to call.</p>
-
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$moduleName</var></dt>
-					<dd><code>string</code><br>$moduleName The module name as set when the module was registered.</dd>
-					<dt><var>$eventName</var></dt>
-					<dd><code>type</code><br>$eventName The event wished to be hooked onto.</dd>
-					<dt><var>$function</var></dt>
-					<dd><code>string</code><br>$function Function identifer of the object/module, just put the identifier, not
-the full location.</dd>
-					<dt><var>$securitylevel</var></dt>
-					<dd><code>array</code><br>$dependencies Any depedencies of another event that must be run first, format of
-EventName =&gt; ModuleName</dd>
-					<dt><var>$dependencies</var></dt>
-					<dd></dd>
-				</dl></div>
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="RegisterHooks" id="_RegisterHooks">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_RegisterHooks">#</a>
-		<code><a href="source-class-Bread.Modules.ModuleManager.html#205-222" title="Go to source code">RegisterHooks</a>( <span>type <var>$moduleName</var></span>, <span>type <var>$hookArray</var></span> )</code>
-
-		<div class="description short">
-			
-<p>Same as RegisterHook but uses an array of hooks instead. Format of
-["event"],["function"],["dependencies"],["security"]</p>
-
-		</div>
-
-		<div class="description detailed hidden">
-			
-<p>Same as RegisterHook but uses an array of hooks instead. Format of
-["event"],["function"],["dependencies"],["security"]</p>
-
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$moduleName</var></dt>
-					<dd><code>type</code><br>$moduleName The module name as set when the module was registered.</dd>
-					<dt><var>$hookArray</var></dt>
-					<dd><code>type</code><br>$hookArray The array of hooks.</dd>
-				</dl></div>
-
-
-
-				<h4>See</h4>
-				<div class="list">
-						<code><code><a href="class-Bread.Modules.ModuleManager.html#_RegisterHook">Bread\Modules\ModuleManager::RegisterHook()</a></code></code><br />
 				</div>
 
 
@@ -409,7 +265,7 @@ EventName =&gt; ModuleName</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_UnregisterHook">#</a>
-		<code><a href="source-class-Bread.Modules.ModuleManager.html#226-235" title="Go to source code">UnregisterHook</a>( <span>mixed <var>$moduleName</var></span>, <span>mixed <var>$eventName</var></span>, <span>mixed <var>$removeModule</var> = <span class="php-keyword1">true</span></span> )</code>
+		<code><a href="source-class-Bread.Modules.ModuleManager.html#237-248" title="Go to source code">UnregisterHook</a>( <span>mixed <var>$moduleName</var></span>, <span>mixed <var>$eventName</var></span>, <span>mixed <var>$removeModule</var> = <span class="php-keyword1">true</span></span> )</code>
 
 		<div class="description short">
 			
@@ -438,7 +294,7 @@ EventName =&gt; ModuleName</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_GetModuleEvents">#</a>
-		<code><a href="source-class-Bread.Modules.ModuleManager.html#237-246" title="Go to source code">GetModuleEvents</a>( <span>mixed <var>$moduleName</var></span> )</code>
+		<code><a href="source-class-Bread.Modules.ModuleManager.html#250-259" title="Go to source code">GetModuleEvents</a>( <span>mixed <var>$moduleName</var></span> )</code>
 
 		<div class="description short">
 			
@@ -467,7 +323,7 @@ EventName =&gt; ModuleName</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_UnregisterModule">#</a>
-		<code><a href="source-class-Bread.Modules.ModuleManager.html#248-257" title="Go to source code">UnregisterModule</a>( <span>mixed <var>$moduleName</var></span> )</code>
+		<code><a href="source-class-Bread.Modules.ModuleManager.html#261-270" title="Go to source code">UnregisterModule</a>( <span>mixed <var>$moduleName</var></span> )</code>
 
 		<div class="description short">
 			
@@ -496,7 +352,7 @@ EventName =&gt; ModuleName</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_CanRunEvent">#</a>
-		<code><a href="source-class-Bread.Modules.ModuleManager.html#259-280" title="Go to source code">CanRunEvent</a>( <span>type <var>$dependencies</var></span> )</code>
+		<code><a href="source-class-Bread.Modules.ModuleManager.html#272-293" title="Go to source code">CanRunEvent</a>( <span>type <var>$dependencies</var></span> )</code>
 
 		<div class="description short">
 			
@@ -538,7 +394,7 @@ EventName =&gt; ModuleName</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_FireEvent">#</a>
-		<code><a href="source-class-Bread.Modules.ModuleManager.html#282-320" title="Go to source code">FireEvent</a>( <span>string <var>$eventName</var></span>, <span>any <var>$arguments</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$isInternal</var> = <span class="php-keyword1">true</span></span> )</code>
+		<code><a href="source-class-Bread.Modules.ModuleManager.html#295-385" title="Go to source code">FireEvent</a>( <span>string <var>$eventName</var></span>, <span>any <var>$arguments</var> = <span class="php-keyword1">null</span></span>, <span>is <var>$singleOnly</var> = <span class="php-keyword1">true</span></span>, <span>Should <var>$isInternal</var> = <span class="php-keyword1">true</span></span>, <span>If <var>$singleOffset</var> = <span class="php-num">0</span></span> )</code>
 
 		<div class="description short">
 			
@@ -562,8 +418,13 @@ the data if any into a array.</p>
 					<dd><code>string</code><br>$eventName The event to fire.</dd>
 					<dt><var>$arguments</var></dt>
 					<dd><code>any</code><br>$arguments An array or any datatype to be passed to the function.</dd>
+					<dt><var>$singleOnly</var></dt>
+					<dd><code>is</code><br>the event called from internals or from an external ajax. Usually should be
+true.</dd>
 					<dt><var>$isInternal</var></dt>
-					<dd></dd>
+					<dd><code>Should</code><br>all modules be fired and returned or just the top one.</dd>
+					<dt><var>$singleOffset</var></dt>
+					<dd><code>If</code><br>only one module is fired, what is the offset of the module.</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -588,7 +449,7 @@ the data if any into a array.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_FireSpecifiedModuleEvent">#</a>
-		<code><a href="source-class-Bread.Modules.ModuleManager.html#321-360" title="Go to source code">FireSpecifiedModuleEvent</a>( <span>string <var>$eventName</var></span>, <span>any <var>$moduleName</var></span>, <span>string <var>$arguments</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$isInternal</var> = <span class="php-keyword1">true</span></span> )</code>
+		<code><a href="source-class-Bread.Modules.ModuleManager.html#386-434" title="Go to source code">FireSpecifiedModuleEvent</a>( <span>string <var>$eventName</var></span>, <span>any <var>$moduleName</var></span>, <span>string <var>$arguments</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$isInternal</var> = <span class="php-keyword1">true</span></span> )</code>
 
 		<div class="description short">
 			
@@ -642,7 +503,7 @@ can pick which module picks it up.</p>
 
 		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
-				<a href="source-class-Bread.Modules.ModuleManager.html#23" title="Go to source code"><b>EVENT_INTERNAL</b></a>
+				<a href="source-class-Bread.Modules.ModuleManager.html#24" title="Go to source code"><b>EVENT_INTERNAL</b></a>
 		</code></td>
 		<td class="value"><code><span class="php-num">0</span></code></td>
 		<td class="description"><div>
@@ -662,7 +523,7 @@ can pick which module picks it up.</p>
 
 		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
-				<a href="source-class-Bread.Modules.ModuleManager.html#24" title="Go to source code"><b>EVENT_EXTERNAL</b></a>
+				<a href="source-class-Bread.Modules.ModuleManager.html#25" title="Go to source code"><b>EVENT_EXTERNAL</b></a>
 		</code></td>
 		<td class="value"><code><span class="php-num">1</span></code></td>
 		<td class="description"><div>
@@ -682,7 +543,7 @@ can pick which module picks it up.</p>
 
 		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
-				<a href="source-class-Bread.Modules.ModuleManager.html#25" title="Go to source code"><b>EVENT_EXTERNAL_NONAJAX</b></a>
+				<a href="source-class-Bread.Modules.ModuleManager.html#26" title="Go to source code"><b>EVENT_EXTERNAL_NONAJAX</b></a>
 		</code></td>
 		<td class="value"><code><span class="php-num">2</span></code></td>
 		<td class="description"><div>

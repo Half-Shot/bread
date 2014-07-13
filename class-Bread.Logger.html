@@ -7,7 +7,7 @@
 	<title>Class Bread\Logger | Bread</title>
 
 	<script type="text/javascript" src="resources/combined.js?174271566"></script>
-	<script type="text/javascript" src="elementlist.js?2841844939"></script>
+	<script type="text/javascript" src="elementlist.js?337533732"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -120,7 +120,7 @@ main logger is to be found in static::$Logger.</p>
 
 				<b>See:</b>
 				static::$Logger<br />
-		<b>Located at</b> <a href="source-class-Bread.Logger.html#807-1040" title="Go to source code">modules/site.php</a><br />
+		<b>Located at</b> <a href="source-class-Bread.Logger.html#776-991" title="Go to source code">modules/site.php</a><br />
 	</div>
 
 
@@ -138,7 +138,7 @@ main logger is to be found in static::$Logger.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getMessageStack">#</a>
-		<code><a href="source-class-Bread.Logger.html#845-853" title="Go to source code">getMessageStack</a>( )</code>
+		<code><a href="source-class-Bread.Logger.html#818-826" title="Go to source code">getMessageStack</a>( )</code>
 
 		<div class="description short">
 			
@@ -177,7 +177,7 @@ main logger is to be found in static::$Logger.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-Bread.Logger.html#855-874" title="Go to source code">__construct</a>( <span>string <var>$filepath</var></span>, <span>mixed <var>$minlog</var> = <span class="php-num">1</span></span>, <span>mixed <var>$maxlogs</var> = <span class="php-num">50</span></span>, <span>mixed <var>$logpermodule</var> = <span class="php-keyword1">false</span></span>, <span>mixed <var>$keepfor</var> = -<span class="php-num">1</span></span> )</code>
+		<code><a href="source-class-Bread.Logger.html#828-847" title="Go to source code">__construct</a>( <span>string <var>$filepath</var></span>, <span>mixed <var>$minlog</var> = <span class="php-num">1</span></span>, <span>mixed <var>$maxlogs</var> = <span class="php-num">50</span></span>, <span>mixed <var>$logpermodule</var> = <span class="php-keyword1">false</span></span>, <span>mixed <var>$keepfor</var> = -<span class="php-num">1</span></span> )</code>
 
 		<div class="description short">
 			
@@ -229,7 +229,7 @@ file. Leave a blank string if you do not want to log to a file.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_writeMessage">#</a>
-		<code><a href="source-class-Bread.Logger.html#953-964" title="Go to source code">writeMessage</a>( <span>string <var>$string</var></span>, <span>string <var>$category</var> = <span class="php-quote">&quot;core&quot;</span></span> )</code>
+		<code><a href="source-class-Bread.Logger.html#925-936" title="Go to source code">writeMessage</a>( <span>string <var>$string</var></span>, <span>string <var>$category</var> = <span class="php-quote">&quot;core&quot;</span></span> )</code>
 
 		<div class="description short">
 			
@@ -275,7 +275,7 @@ the message is a potential problem, use Logger-&gt;writeError.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_writeError">#</a>
-		<code><a href="source-class-Bread.Logger.html#966-1005" title="Go to source code">writeError</a>( <span>string <var>$string</var></span>, <span>integer <var>$severity</var> = -<span class="php-num">1</span></span>, <span>string <var>$category</var> = <span class="php-quote">&quot;core&quot;</span></span>, <span>boolean <var>$throw</var> = <span class="php-keyword1">False</span></span>, <span>string <var>$exception</var> = <span class="php-quote">&quot;\Exception&quot;</span></span> )</code>
+		<code><a href="source-class-Bread.Logger.html#938-978" title="Go to source code">writeError</a>( <span>string <var>$string</var></span>, <span>integer <var>$severity</var> = -<span class="php-num">1</span></span>, <span>string <var>$category</var> = <span class="php-quote">&quot;core&quot;</span></span>, <span>boolean <var>$throw</var> = <span class="php-keyword1">False</span></span>, <span>string <var>$exception</var> = <span class="php-quote">&quot;\Exception&quot;</span></span> )</code>
 
 		<div class="description short">
 			
@@ -331,7 +331,7 @@ Logger-&gt;writeMessage.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_closeStream">#</a>
-		<code><a href="source-class-Bread.Logger.html#1006-1016" title="Go to source code">closeStream</a>( )</code>
+		<code><a href="source-class-Bread.Logger.html#979-989" title="Go to source code">closeStream</a>( )</code>
 
 		<div class="description short">
 			
@@ -346,48 +346,6 @@ Logger-&gt;writeMessage.</p>
 
 
 
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="getSeverityText" id="_getSeverityText">
-
-		<td class="attributes"><code>
-			 public static
-			string
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_getSeverityText">#</a>
-		<code><a href="source-class-Bread.Logger.html#1018-1038" title="Go to source code">getSeverityText</a>( <span>integer <var>$level</var></span> )</code>
-
-		<div class="description short">
-			
-<p>Convert a Severity Level to its String representation.</p>
-
-		</div>
-
-		<div class="description detailed hidden">
-			
-<p>Convert a Severity Level to its String representation.</p>
-
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$level</var></dt>
-					<dd><code>integer</code><br>$level Severity Level</dd>
-				</dl></div>
-
-				<h4>Returns</h4>
-				<div class="list">
-					<code>string</code><br />
-				</div>
 
 
 
@@ -410,7 +368,7 @@ Logger-&gt;writeMessage.</p>
 
 		<td class="attributes"><code>string</code></td>
 		<td class="name"><code>
-				<a href="source-class-Bread.Logger.html#815-818" title="Go to source code"><b>FILEMODE</b></a>
+				<a href="source-class-Bread.Logger.html#784-787" title="Go to source code"><b>FILEMODE</b></a>
 		</code></td>
 		<td class="value"><code><span class="php-quote">&quot;a&quot;</span></code></td>
 		<td class="description"><div>
@@ -434,7 +392,7 @@ Logger-&gt;writeMessage.</p>
 
 		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
-				<a href="source-class-Bread.Logger.html#819-822" title="Go to source code"><b>SEVERITY_MESSAGE</b></a>
+				<a href="source-class-Bread.Logger.html#788-791" title="Go to source code"><b>SEVERITY_MESSAGE</b></a>
 		</code></td>
 		<td class="value"><code>-<span class="php-num">1</span></code></td>
 		<td class="description"><div>
@@ -458,7 +416,7 @@ Logger-&gt;writeMessage.</p>
 
 		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
-				<a href="source-class-Bread.Logger.html#823-826" title="Go to source code"><b>SEVERITY_LOW</b></a>
+				<a href="source-class-Bread.Logger.html#792-795" title="Go to source code"><b>SEVERITY_LOW</b></a>
 		</code></td>
 		<td class="value"><code><span class="php-num">0</span></code></td>
 		<td class="description"><div>
@@ -484,7 +442,7 @@ problems.</p>
 
 		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
-				<a href="source-class-Bread.Logger.html#827-830" title="Go to source code"><b>SEVERITY_MEDIUM</b></a>
+				<a href="source-class-Bread.Logger.html#796-799" title="Go to source code"><b>SEVERITY_MEDIUM</b></a>
 		</code></td>
 		<td class="value"><code><span class="php-num">1</span></code></td>
 		<td class="description"><div>
@@ -510,7 +468,7 @@ of a module.</p>
 
 		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
-				<a href="source-class-Bread.Logger.html#831-834" title="Go to source code"><b>SEVERITY_HIGH</b></a>
+				<a href="source-class-Bread.Logger.html#800-803" title="Go to source code"><b>SEVERITY_HIGH</b></a>
 		</code></td>
 		<td class="value"><code><span class="php-num">2</span></code></td>
 		<td class="description"><div>
@@ -536,9 +494,9 @@ large adverse effects on portions of the site.</p>
 
 		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
-				<a href="source-class-Bread.Logger.html#835-838" title="Go to source code"><b>SEVERITY_CRITICAL</b></a>
+				<a href="source-class-Bread.Logger.html#804-807" title="Go to source code"><b>SEVERITY_CRITICAL</b></a>
 		</code></td>
-		<td class="value"><code><span class="php-num">2</span></code></td>
+		<td class="value"><code><span class="php-num">3</span></code></td>
 		<td class="description"><div>
 			<a href="#SEVERITY_CRITICAL" class="anchor">#</a>
 
@@ -558,11 +516,57 @@ any capacity.</p>
 			</div>
 		</div></td>
 	</tr>
+	<tr data-order="DATEFORMAT" id="DATEFORMAT">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name"><code>
+				<a href="source-class-Bread.Logger.html#811" title="Go to source code"><b>DATEFORMAT</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-quote">&quot;DM_H_i_s&quot;</span></code></td>
+		<td class="description"><div>
+			<a href="#DATEFORMAT" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
 	</table>
 
 
 
 
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="SeverityStringArray" id="$SeverityStringArray">
+		<td class="attributes"><code>
+			public static 
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Bread.Logger.html#809" title="Go to source code"><var>$SeverityStringArray</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>( -<span class="php-num">1</span> =&gt; <span class="php-quote">&quot;MESSAGE&quot;</span>,<span class="php-num">0</span> =&gt; <span class="php-quote">&quot;LOW&quot;</span>,<span class="php-num">1</span> =&gt; <span class="php-quote">&quot;WARN&quot;</span>,<span class="php-num">2</span> =&gt; <span class="php-quote">&quot;ERROR&quot;</span>,<span class="php-num">3</span> =&gt; <span class="php-quote">&quot;CRITICAL&quot;</span>)</code></td>
+		<td class="description"><div>
+			<a href="#$SeverityStringArray" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
 
 
 

@@ -7,7 +7,7 @@
 	<title>Class Bread\Settings\SettingsManager | Bread</title>
 
 	<script type="text/javascript" src="resources/combined.js?174271566"></script>
-	<script type="text/javascript" src="elementlist.js?2841844939"></script>
+	<script type="text/javascript" src="elementlist.js?337533732"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -122,7 +122,7 @@ logging them where appropriate.</p>
 		<b>Namespace:</b> <a href="namespace-Bread.html">Bread</a>\<a href="namespace-Bread.Settings.html">Settings</a><br />
 		
 
-		<b>Located at</b> <a href="source-class-Bread.Settings.SettingsManager.html#28-168" title="Go to source code">modules/Settings/SettingsManager.php</a><br />
+		<b>Located at</b> <a href="source-class-Bread.Settings.SettingsManager.html#25-203" title="Go to source code">modules/Settings/SettingsManager.php</a><br />
 	</div>
 
 
@@ -140,7 +140,7 @@ logging them where appropriate.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-Bread.Settings.SettingsManager.html#43-45" title="Go to source code">__construct</a>( )</code>
+		<code><a href="source-class-Bread.Settings.SettingsManager.html#39-41" title="Go to source code">__construct</a>( )</code>
 
 		<div class="description short">
 			
@@ -153,52 +153,6 @@ logging them where appropriate.</p>
 
 
 
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="FindModuleDir" id="_FindModuleDir">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_FindModuleDir">#</a>
-		<code><a href="source-class-Bread.Settings.SettingsManager.html#46-62" title="Go to source code">FindModuleDir</a>( <span>string <var>$dirname</var></span> )</code>
-
-		<div class="description short">
-			
-<p>Creates a settings folder for your module or just returns the path. You will
-also want to create settings files. PLEASE use module names and not anything
-else.</p>
-
-		</div>
-
-		<div class="description detailed hidden">
-			
-<p>Creates a settings folder for your module or just returns the path. You will
-also want to create settings files. PLEASE use module names and not anything
-else.</p>
-
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$dirname</var></dt>
-					<dd><code>string</code><br>$dirname The module name.</dd>
-				</dl></div>
-
-
-
-				<h4>See</h4>
-				<div class="list">
-						$this::CreateSettingsFile()<br />
-				</div>
 
 
 		</div>
@@ -215,7 +169,7 @@ else.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_CreateSettingsFiles">#</a>
-		<code><a href="source-class-Bread.Settings.SettingsManager.html#64-79" title="Go to source code">CreateSettingsFiles</a>( <span>string <var>$filename</var></span>, <span><code><a href="class-stdClass.html">stdClass</a></code> <var>$template</var></span> )</code>
+		<code><a href="source-class-Bread.Settings.SettingsManager.html#63-78" title="Go to source code">CreateSettingsFiles</a>( <span>string <var>$filename</var></span>, <span><code><a href="class-stdClass.html">stdClass</a></code> <var>$template</var></span> )</code>
 
 		<div class="description short">
 			
@@ -262,7 +216,89 @@ json file with your module (must be decoded as a class).</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_ChangeSetting">#</a>
-		<code><a href="source-class-Bread.Settings.SettingsManager.html#81-84" title="Go to source code">ChangeSetting</a>( <span>mixed <var>$path</var></span>, <span>mixed <var>$newObj</var></span> )</code>
+		<code><a href="source-class-Bread.Settings.SettingsManager.html#79-87" title="Go to source code">ChangeSetting</a>( <span>string <var>$path</var></span>, <span>StdClass <var>$newObj</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Replace a setting file in the stack with a new object.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Replace a setting file in the stack with a new object.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$path</var></dt>
+					<dd><code>string</code><br>$path The path of the setting</dd>
+					<dt><var>$newObj</var></dt>
+					<dd><code>StdClass</code><br>$newObj</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="DeleteSetting" id="_DeleteSetting">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_DeleteSetting">#</a>
+		<code><a href="source-class-Bread.Settings.SettingsManager.html#89-102" title="Go to source code">DeleteSetting</a>( <span>type <var>$path</var></span>, <span>mixed <var>$removeFromStack</var> = <span class="php-keyword1">true</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Removes a setting from the filesystem/database entirely. Use at your own
+risk!</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Removes a setting from the filesystem/database entirely. Use at your own
+risk!</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$path</var></dt>
+					<dd><code>type</code><br>$path</dd>
+					<dt><var>$removeFromStack</var></dt>
+					<dd></dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="RemoveSettingFromStack" id="_RemoveSettingFromStack">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_RemoveSettingFromStack">#</a>
+		<code><a href="source-class-Bread.Settings.SettingsManager.html#104-115" title="Go to source code">RemoveSettingFromStack</a>( <span>mixed <var>$path</var></span> )</code>
 
 		<div class="description short">
 			
@@ -291,7 +327,7 @@ json file with your module (must be decoded as a class).</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_RetriveSettings">#</a>
-		<code><a href="source-class-Bread.Settings.SettingsManager.html#86-108" title="Go to source code">RetriveSettings</a>( <span>string <var>$path</var></span>, <span>boolean <var>$dontsave</var> = <span class="php-keyword1">False</span></span> )</code>
+		<code><a href="source-class-Bread.Settings.SettingsManager.html#119-141" title="Go to source code">RetriveSettings</a>( <span>string <var>$path</var></span>, <span>boolean <var>$dontsave</var> = <span class="php-keyword1">False</span></span> )</code>
 
 		<div class="description short">
 			
@@ -336,7 +372,7 @@ json file with your module (must be decoded as a class).</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_GetJsonObject">#</a>
-		<code><a href="source-class-Bread.Settings.SettingsManager.html#110-132" title="Go to source code">GetJsonObject</a>( <span>type <var>$path</var></span> )</code>
+		<code><a href="source-class-Bread.Settings.SettingsManager.html#143-165" title="Go to source code">GetJsonObject</a>( <span>type <var>$path</var></span> )</code>
 
 		<div class="description short">
 			
@@ -384,7 +420,7 @@ use.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_CompileJson">#</a>
-		<code><a href="source-class-Bread.Settings.SettingsManager.html#133-144" title="Go to source code">CompileJson</a>( <span>stdObject <var>$object</var></span> )</code>
+		<code><a href="source-class-Bread.Settings.SettingsManager.html#166-177" title="Go to source code">CompileJson</a>( <span>stdObject <var>$object</var></span> )</code>
 
 		<div class="description short">
 			
@@ -426,7 +462,7 @@ use.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_SaveChanges">#</a>
-		<code><a href="source-class-Bread.Settings.SettingsManager.html#146-154" title="Go to source code">SaveChanges</a>( )</code>
+		<code><a href="source-class-Bread.Settings.SettingsManager.html#179-188" title="Go to source code">SaveChanges</a>( )</code>
 
 		<div class="description short">
 			
@@ -459,7 +495,7 @@ use.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_SaveSetting">#</a>
-		<code><a href="source-class-Bread.Settings.SettingsManager.html#155-167" title="Go to source code">SaveSetting</a>( <span>any <var>$object</var></span>, <span>string <var>$path</var></span>, <span>boolean <var>$shouldThrow</var> = <span class="php-keyword1">True</span></span> )</code>
+		<code><a href="source-class-Bread.Settings.SettingsManager.html#189-202" title="Go to source code">SaveSetting</a>( <span>any <var>$object</var></span>, <span>string <var>$path</var></span>, <span>boolean <var>$shouldThrow</var> = <span class="php-keyword1">True</span></span> )</code>
 
 		<div class="description short">
 			
@@ -505,7 +541,7 @@ use.</p>
 
 		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
-				<a href="source-class-Bread.Settings.SettingsManager.html#42" title="Go to source code"><b>SAVEMODE</b></a>
+				<a href="source-class-Bread.Settings.SettingsManager.html#38" title="Go to source code"><b>SAVEMODE</b></a>
 		</code></td>
 		<td class="value"><code><span class="php-num">0755</span></code></td>
 		<td class="description"><div>
