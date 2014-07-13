@@ -16,10 +16,10 @@ class BreadUserSystem extends Module
     private $userDBPath;
     private $groups;
     const STRETCH_FACTOR = 2;
-	function __construct($manager,$name)
-	{
-		parent::__construct($manager,$name);
-	}
+    function __construct($manager,$name)
+    {
+            parent::__construct($manager,$name);
+    }
     
     function DoLogin()
     {
@@ -28,7 +28,7 @@ class BreadUserSystem extends Module
         if(!array_key_exists("uname",$_POST) || !array_key_exists("uname",$_POST))
             return json_encode($return);
         Site::$Logger->writeMessage("Login information is all here.",$this->name);
-        $username = $_POST["uname"];
+        $username = strtolower($_POST["uname"]);
         $user = NULL;
         foreach($this->userDB as $u)
         {
@@ -101,13 +101,15 @@ class BreadUserSystem extends Module
         $newUser->username = $username;
         $hasher = new \PasswordHash(8, false);
         $hash = $hasher->HashPassword($password);
-        $newUser->information = $extrainformation;
+        $newUser->information = new \stdClass();
+        $newUser->information = Util::ArrayToStdObject($extrainformation);
         $newUser->rights = $rights;
         $packet = new BreadUserPacket;
         $packet->breaduserdata = $newUser;
         $packet->hash = $hash;
         $this->userDB[] = $packet;
         Site::$settingsManager->SaveSetting($this->userDB,$this->userDBPath);
+        return $newUser;
     }
     
     function RegisterNewUser()
@@ -121,7 +123,7 @@ class BreadUserSystem extends Module
         
         foreach($this->userDB as $user)
         {
-            if($user->breaduserdata->username == $_POST["uname"])
+            if($user->breaduserdata->username == strtolower($_POST["uname"]))
             {
                 Site::$Logger->writeError("Dupe username.",\Bread\Logger::SEVERITY_LOW,$this->name);
                 $return["status"] = 12;
@@ -131,7 +133,7 @@ class BreadUserSystem extends Module
         Site::$Logger->writeMessage("Username looks good.",$this->name);
         $extrainformation = json_decode($_POST["extrainfo"]);
         $extrainformation = get_object_vars($extrainformation);
-        $this->StoreNewUser($_POST["uname"],$_POST["pw"],-1,array(),$extrainformation);
+        $this->StoreNewUser(strtolower($_POST["uname"]),$_POST["pw"],-1,array(),$extrainformation);
         Site::$Logger->writeMessage("Stored User OK",$this->name);
         $return["goto"] = $this->settings->successredirect->createURL();
         $return["status"] = 11;
@@ -311,7 +313,7 @@ class BreadUserSystem extends Module
             return false;
         
         if(htmlentities($string) != $string){
-            Site::$Logger->writeError("User " . $user->uid . "(" . $user->username . ") had a infomation change attempt but a html injection was detected!",  \Bread\Logger::SEVERITY_LOW);
+            Site::$Logger->writeError("User " . $user->uid . "(" . $user->username . ") had a information change attempt but a html injection was detected!",  \Bread\Logger::SEVERITY_LOW);
             return false;
         }
         return true;
@@ -381,9 +383,29 @@ class BreadUserSystem extends Module
 
         Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/adminpanel.js"),true);
         //Current Users Table
+        $PostConfigurator->Panels[] = $this->ConstructUserPanel();
+        
+        $ToolsPanel = new \Bread\Structures\BreadModuleSettingsPanel();
+        $ToolsPanel->Name = "currentusers";
+        $ToolsPanel->HumanTitle = "Users";
+        $ToolsPanel->PercentageWidth = 25;
+        $PostConfigurator->Panels[] = $ToolsPanel;
+        
+        $AddNewUserButton = new \Bread\Structures\BreadFormElement();
+        $AddNewUserButton->id = "NewUserButton";
+        $AddNewUserButton->class = "btn-primary";
+        $AddNewUserButton->value = "New User";
+        $AddNewUserButton->readonly = !$this->manager->FireEvent("Bread.Security.GetPermission","BreadUserSystem.AddnNewUser");
+        $ToolsPanel->Body .= Site::$moduleManager->FireEvent("Theme.Button",$AddNewUserButton);
+        
+        return $MasterSettings;
+    }
+    
+    function ConstructUserPanel(){
         $CurrentUsersPanel = new \Bread\Structures\BreadModuleSettingsPanel();
         $CurrentUsersPanel->Name = "currentusers";
         $CurrentUsersPanel->HumanTitle = "Users";
+        $CurrentUsersPanel->PercentageWidth = 75;
         $PostConfigurator->Panels[] = $CurrentUsersPanel;
         
         //Table
@@ -423,7 +445,7 @@ class BreadUserSystem extends Module
             //Group(s)
             $GroupsCell = new \Bread\Structures\BreadTableCell();
             if(isset($DataFile->groups)){
-                $GroupsCell->text = $DataFile->groups;
+                $GroupsCell->text = implode(",", $DataFile->groups);
             }
             else
             {
@@ -499,13 +521,33 @@ class BreadUserSystem extends Module
         $RemoveButton->id = "removeButton";
         $RemoveButton->value = "Delete User";
         $RemoveButton->form = $ModalForm->id;
+        $RemoveButton->readonly = !$this->manager->FireEvent("Bread.Security.GetPermission","Bread.Security.RemoveUser");
         $FooterButtonGroup[] = $RemoveButton;
+        
+            $E_Modal_Confirm = new \Bread\Structures\BreadFormElement;
+            $E_Modal_Confirm->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+            $E_Modal_Confirm->value = "Disintergrate";
+            $E_Modal_Confirm->onclick = "deleteUser();";
+            $E_Modal_Confirm->class = "btn-danger";
+            
+            $E_Modal_Cancel = new \Bread\Structures\BreadFormElement;
+            $E_Modal_Cancel->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+            $E_Modal_Cancel->value = "Actually...";
+            $E_Modal_Cancel->onclick = "$('#warnDeleteUser').modal('hide');";
+            $E_Modal_Cancel->class = "btn-info";
+            $Buttons = $this->manager->FireEvent("Theme.Button",$E_Modal_Confirm) . $this->manager->FireEvent("Theme.Button",$E_Modal_Cancel);
+            $Buttons = $this->manager->FireEvent("Theme.Layout.ButtonGroup",$Buttons);
+            
+            //Modal for deleting posts.
+            $ModalHTML = $this->manager->FireEvent("Theme.Modal",array("id"=>"warnDeleteUser","label"=>"modalDeleteUser","title"=>"Are You Sure?","body"=>"Are you sure you want to delete <strong id='DeleteUserName'>%Username%</strong>?","footer"=>$Buttons));
+        
         
         $ModalData->footer = $this->manager->FireEvent("Theme.Layout.ButtonGroup",$FooterButtonGroup);
         $ModalData->body = $this->manager->FireEvent("Theme.Form", $ModalForm);
         Site::AddRawScriptCode($Javascript, true);
-        Site::AddToBodyCode($this->manager->FireEvent("Theme.Modal", $ModalData));
-        return $MasterSettings;
+        Site::AddToBodyCode($this->manager->FireEvent("Theme.Modal", $ModalData) . $ModalHTML);
+        
+        return $CurrentUsersPanel;
     }
 
     function AjaxUserInfo(){  
@@ -539,10 +581,10 @@ class BreadUserSystem extends Module
     }
     
     function ValidateUsername($args){
-        if($args["user"]->username == $args["data"]){
+        if($args["user"]->username == strtolower($args["data"])){
             return false; //Nothing to do here.
         }
-        return $this->AjaxCheckString($args["data"], $this->settings->minusernamelength);
+        return $this->AjaxCheckString(strtolower($args["data"]), $this->settings->minusernamelength);
     }
     
     function ValidatePassword($args){
@@ -563,16 +605,145 @@ class BreadUserSystem extends Module
         
     }
     
+    function AjaxRemoveUser(){
+        if(!$this->manager->FireEvent("Bread.Security.GetPermission","Bread.Security.RemoveUser")){
+            return false;
+        }
+        $users = $_POST["users"];
+        foreach ($users as $uid){
+            $uid = intval($uid);
+            if(in_array($uid, $this->settings->adminPanelSettings->hiddenUsers))
+                continue; //User should not be edited!
+            $this->RemoveUser($uid);
+        }
+        return true;
+    }
+    
+    
+    function RemoveUser($uid){
+        if(!$this->manager->FireEvent("Bread.Security.GetPermission","Bread.Security.RemoveUser")){
+            return false;
+        }
+        $user = false;
+        $uindex = -1;
+        foreach($this->userDB as $index => $u) 
+        {
+            if($uid == $u->breaduserdata->uid){
+                $user = $u;
+                $uindex = $index;
+                break;
+            }
+        }
+        
+        if($user !== false){
+            Site::$Logger->writeMessage("User " . $uid . "(" . $user->username . ") has been deleted",$this->name);
+            unset($this->userDB[$uindex]);
+        }
+        Site::$settingsManager->SaveSetting($this->userDB,$this->userDBPath);
+        return true;
+    }
+    
+    function ChangeUsername($args){
+        
+        if(!array_key_exists("user", $args)){
+            $user = $this->GetUserByUID($args["uid"]);
+        }
+        else{
+            $user = $args["user"];
+        }
+        
+        if(!$this->CheckUserEditPerms($user,"username"))
+            return false;
+        
+        $user->username = strtolower($args["value"]);
+        Site::$Logger->writeMessage("User " . $user->uid . "(" . $user->username . ") has new username" ,$this->name);
+        Site::$settingsManager->SaveSetting($this->userDB,$this->userDBPath);
+        return true;
+    }
+    
+    function ChangePassword($args){
+        $uid = $args["uid"];
+        $value = $args["value"];
+        
+        if(!array_key_exists("user", $args)){
+            $user = $this->GetUserByUID($uid);
+        }
+        else{
+            $user = $args["user"];
+        }
+        
+        
+        if(!$this->CheckUserEditPerms($user,"password"))
+            return false;
+        
+        $RootUser = false;
+        foreach($this->userDB as $u) 
+        {
+            if($uid == $u->breaduserdata->uid){
+                $RootUser = $u;
+                break;
+            }
+        }
+
+        $hasher = new \PasswordHash(BreadUserSystem::STRETCH_FACTOR, false);
+        $RootUser->hash = $hasher->HashPassword($value);
+        Site::$settingsManager->SaveSetting($this->userDB,$this->userDBPath);
+        return true;
+    }
+    
+    function ChangeInformation($args){
+        $uid = $args["uid"];
+        $value = $args["value"];
+        $key = $args["key"];
+        if(!array_key_exists("user", $args)){
+            $user = $this->GetUserByUID($uid);
+        }
+        else{
+            $user = $args["user"];
+        }
+        
+        if(!$this->CheckUserEditPerms($args["user"],$args["key"]))
+            return false;
+        
+        $user->information->$key = $args["value"];
+        Site::$settingsManager->SaveSetting($this->userDB,$this->userDBPath);
+        return true;
+    }
+ 
+    function CheckUserEditPerms($user,$key){
+        $ownUser = ($user->uid == $this->GetCurrentUser()->uid);
+        if($ownUser){
+            if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadUserSystem.ChangeOwn." . $key)){
+                Site::$Logger->writeError("No permission to change own password!",  \Bread\Logger::SEVERITY_MEDIUM,$this->name);
+                return false;
+            }
+        }
+        else{
+            if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadUserSystem.Change." . $key)){
+                Site::$Logger->writeError("No permission to change password!",  \Bread\Logger::SEVERITY_MEDIUM,$this->name);
+                return false;
+            }
+        }
+        return true;
+    }
+    
     function AjaxWriteUserInfo(){
         if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadUserSystem.AdminPanel.Write")){
             return false;
         }
         $users = $_POST["users"];
+        
+        if($users == 'false' && $this->manager->FireEvent("Bread.Security.GetPermission","BreadUserSystem.AddNewUser"))
+        {
+            $users = array($this->StoreNewUser("", "")->uid);
+        }
         $data = Util::ArraySetKeyByProperty($_POST["data"],"name",true,true);
         foreach ($users as $uid){
             $user = $this->GetUserByUID($uid);
             if($user == false)
                 continue; //User does not exist!
+            if(in_array($uid, $this->settings->adminPanelSettings->hiddenUsers))
+                continue;
             foreach($this->settings->adminPanelSettings->usereditForm as $formElement){
                 $key = $formElement->informationKey;
                 if(!array_key_exists($key, $data))
@@ -583,14 +754,8 @@ class BreadUserSystem extends Module
                 if(!$formElement->multiuser && count($users) > 1)
                     continue;
 
-                //Security
-                $ownUser = ($uid == $this->GetCurrentUser()->uid);
-                if($ownUser){
-                    $this->manager->FireEvent("Bread.Security","BreadUserSystem.ChangeOwn." . $key);
-                }
-                else{
-                    $this->manager->FireEvent("Bread.Security","BreadUserSystem.Change." . $key);
-                }
+                if(!$this->CheckUserEditPerms($user,$key))
+                    continue;
 
                 //Validate
                 $validatedOk = true;
@@ -605,51 +770,44 @@ class BreadUserSystem extends Module
                 }
                 else
                 {
-                    Site::$Logger->writeError("Form infomation key " . $key ." has no validation event, which is very risky!",  \Bread\Logger::SEVERITY_MEDIUM,$this->name);
-                    if($user->information->$key == $value){
+                    Site::$Logger->writeError("Form information key " . $key ." has no validation event, which is very risky!",  \Bread\Logger::SEVERITY_MEDIUM,$this->name);
+                    if($user->information->$key === $value){
                         continue; //Nothing to do here.
                     }
                 }
                 if(!$validatedOk){
                     continue;
                 }
-
+                
+                $couldChange = false;
                 //Make the edit.
                 if(!empty($formElement->entryEvent))
                 {
                     if(!empty($formElement->entryModule)){
-                       $this->manager->FireSpecifiedModuleEvent($formElement->entryEvent, $formElement->entryModule,array("user"=>$user,"data"=>$value,"uid"=>$uid));
+                        $couldChange = $this->manager->FireSpecifiedModuleEvent($formElement->entryEvent, $formElement->entryModule,array("user"=>$user,"data"=>$value,"uid"=>$uid));
                     }
                     else{
-                       $this->manager->FireSpecifiedModuleEvent($formElement->entryEvent,array("user"=>$user,"data"=>$value,"uid"=>$uid));
+                        $couldChange = $this->manager->FireSpecifiedModuleEvent($formElement->entryEvent,array("user"=>$user,"data"=>$value,"uid"=>$uid));
                     }
                 }
                 else if($key == "username")
                 {
-                    $user->username = $value;
+                    $couldChange = $this->manager->FireEvent("Bread.Security.ChangeUsername",array("user"=>$user,"uid"=>$uid,"value"=>$value));
                 }
                 else if($key == "password")
                 {
-                    $RootUser = false;
-                    foreach($this->userDB as $u) 
-                    {
-                        if($uid == $u->breaduserdata->uid){
-                            $RootUser = $u;
-                            break;
-                        }
-                    }
-                    
-                    $hasher = new \PasswordHash(BreadUserSystem::STRETCH_FACTOR, false);
-                    $RootUser->hash = $hasher->HashPassword($value);
+                    $couldChange = $this->manager->FireEvent("Bread.Security.ChangePassword",array("user"=>$user,"uid"=>$uid,"value"=>$value));
                 }
                 else{
-                    $user->information->$key = $value;
+                    $couldChange = $this->manager->FireEvent("Bread.Security.ChangeInformation",array("user"=>$user,"uid"=>$uid,"key"=>$key,"value"=>$value));
                 }
 
                 //All Good
-                Site::$Logger->writeMessage("User " . $user->uid . "(" . $user->username . ") has new " . $key ,$this->name);
-                Site::$Logger->writeMessage("This change was made by " . $this->currentUser->uid . " ( " . $this->currentUser->username  . " ) ",$this->name);
-                $this->manager->FireEvent("Bread.Security.ChangeInfomation",array("key"=>$key,"uid"=>$uid));
+                if($couldChange){
+                    $this->manager->FireEvent("Bread.Security.UserInformationChanged",array("user"=>$user,"uid"=>$uid,"key"=>$key));
+                    Site::$Logger->writeMessage("User " . $user->uid . "(" . $user->username . ") has new " . $key ,$this->name);
+                    Site::$Logger->writeMessage("This change was made by " . $this->currentUser->uid . " ( " . $this->currentUser->username  . " ) ",$this->name);
+                }
             }
         }
         Site::$settingsManager->SaveSetting($this->userDB,$this->userDBPath);

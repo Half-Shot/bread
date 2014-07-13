@@ -41,9 +41,9 @@ class BreadFormElement
     public $required = false;
     public $hidden = false;
     public $label = "";
-    public $form = "";
-    public $pattern = "";
-    public $patten_help = "";
+    public $form = false;
+    public $pattern = false;
+    public $patten_help = false;
     const TYPE_TEXTBOX = "text";
     const TYPE_PASSWORD = "password";
     const TYPE_HTMLFIVEBUTTON = "button";

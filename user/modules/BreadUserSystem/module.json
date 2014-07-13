@@ -58,6 +58,25 @@
         "BreadUserSystem.ValidatePassword":{
             "function":"ValidatePassword",
             "security":0
+        },
+        "BreadUserSystem.RemoveUser":{
+            "function":"AjaxRemoveUser",
+            "security":1
+        },
+        "Bread.Security.ChangeUsername":{
+            "function":"ChangeUsername"
+        },
+        "Bread.Security.ChangePassword":{
+            "function":"ChangePassword"
+        },
+        "Bread.Security.ChangeInformation":{
+            "function":"ChangeInformation"
+        },
+        "Bread.Security.AddUser":{
+            "function":"AddNewUser"
+        },
+        "Bread.Security.RemoveUser":{
+            "function":"RemoveUser"
         }
     }
 }

@@ -268,8 +268,10 @@ class Site
 		}
 		else
 		{
-			error_reporting(0);
+			error_reporting(false);
 			ini_set('display_errors', 0);
+                        error_reporting(0);
+
 		}
 	}
         /**
@@ -373,7 +375,7 @@ class Site
         
         public static function EditConfigurationValues($newObj)
         {
-           self::$Logger->writeMessage("Editing the core config!", $this->name);
+           self::$Logger->writeMessage("Editing the core config!", "core");
            if(!Site::$settingsManager)
                return false;
            $setting = self::$settingsManager->RetriveSettings(self::$configurl);
@@ -530,7 +532,6 @@ class Site
                    static::$Logger->writeError("Couldn't hook Ajax Request to requested module.",\Bread\Logger::SEVERITY_CRITICAL,"core");
                    return False;
                 }
-                static::$Logger->writeMessage($realdata);
                 echo $realdata;
                 return True;
             }
@@ -1001,7 +1002,7 @@ class LoggerMessage
      */
     public function ToString()
     {
-        return "[". Logger::$SeverityStringArray[$this->severity] ."][" . ($this->time) . "]" . $this->message;
+        return "[". Logger::$SeverityStringArray[$this->severity] ."][" . number_format($this->time,3) . "]" . $this->message;
     }
 }
 ?>

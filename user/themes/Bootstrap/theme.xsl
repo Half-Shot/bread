@@ -151,7 +151,15 @@
                     <xsl:attribute name="action"><xsl:value-of select="./action"/></xsl:attribute>
                     <xsl:attribute name="onclick"><xsl:value-of select="./onclick"/></xsl:attribute>
                     <xsl:attribute name="id"><xsl:value-of select="./id"/></xsl:attribute>
-                    <xsl:attribute name="form"><xsl:value-of select="./form"/></xsl:attribute>
+                    <xsl:if test="./form != 0">
+                        <xsl:attribute name="form"><xsl:value-of select="./form"/></xsl:attribute>
+                    </xsl:if>
+                    <xsl:if test="./pattern != 0">
+                        <xsl:attribute name="pattern"><xsl:value-of select="./pattern"/></xsl:attribute>
+                        <xsl:if test="./pattern_help != 0">
+                            <xsl:attribute name="title"><xsl:value-of select="./pattern_help"/></xsl:attribute>
+                        </xsl:if>
+                    </xsl:if>
                     <xsl:if test="./readonly = 1">
                         <xsl:attribute name="disabled"/>
                     </xsl:if>
@@ -164,8 +172,14 @@
             </xsl:when>
             <xsl:when test="./type = 'dropdown'">
                 <select>
-                    <xsl:if test="./form != ''">
+                    <xsl:if test="./form != 0">
                         <xsl:attribute name="form"><xsl:value-of select="./form"/></xsl:attribute>
+                    </xsl:if>
+                    <xsl:if test="./pattern != 0">
+                        <xsl:attribute name="pattern"><xsl:value-of select="./pattern"/></xsl:attribute>
+                        <xsl:if test="./pattern_help != 0">
+                            <xsl:attribute name="title"><xsl:value-of select="./pattern_help"/></xsl:attribute>
+                        </xsl:if>
                     </xsl:if>
                     <xsl:choose>
                         <xsl:when test="./name = ''">
@@ -203,7 +217,7 @@
                 <xsl:attribute name="value"><xsl:value-of select="./value"/></xsl:attribute>
                 <xsl:attribute name="onclick"><xsl:value-of select="./onclick"/></xsl:attribute>
                 <xsl:attribute name="id"><xsl:value-of select="./id"/></xsl:attribute>
-                <xsl:if test="./form != ''">
+                <xsl:if test="./form != 0">
                     <xsl:attribute name="form"><xsl:value-of select="./form"/></xsl:attribute>
                 </xsl:if>
                 <xsl:if test="./type = 'checkbox'">
@@ -216,9 +230,9 @@
                 </xsl:if>
                 <xsl:if test="./required = 1">
                     <xsl:attribute name="required"/>
-                    <xsl:if test="./pattern != ''">
+                    <xsl:if test="./pattern != 0">
                         <xsl:attribute name="pattern"><xsl:value-of select="./pattern"/></xsl:attribute>
-                        <xsl:if test="./pattern_help != ''">
+                        <xsl:if test="./pattern_help != 0">
                             <xsl:attribute name="title"><xsl:value-of select="./pattern_help"/></xsl:attribute>
                         </xsl:if>
                     </xsl:if>

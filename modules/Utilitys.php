@@ -454,4 +454,18 @@ class Utilitys {
             }
             \rmdir($directory);
         }
+        /**
+         * Converts an array to a stdObject
+         * @param array $array
+         * @return StdClass The standard object to be returned.
+         */
+        static function ArrayToStdObject($array){
+            $object = new \stdClass();
+            foreach ($array as $key => $value)
+            {
+                $object->$key = $value;
+            }
+            return $object;
+        }
+        
 }
