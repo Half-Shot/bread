@@ -314,10 +314,10 @@ class BreadPageSystem extends Module
             $result = Site::$moduleManager->FireEvent("Bread.TokenizeText",$articleArray);
             if(!is_array($result))
                 return $article;
-            foreach($result as $res){
-                    $articleArray = $res + $articleArray;
-            }
-            $article = implode("", $articleArray);
+            //foreach($result as $res){
+            //        $articleArray = $res + $articleArray;
+            //}
+            $article = implode("", $result);
             return $article;
         }
         
@@ -761,13 +761,19 @@ class BreadPageSystem extends Module
                 $Page = new \Bread\Structures\BreadSearchItem;
                 $Page->Name = $post->title;
                 $Page->Categorys = $post->categorys;
-                $Page->Content = file_get_contents($this->GetPostPath($post->url));
+                $Page->Content = $this->TransformMDtoHTML(file_get_contents($this->GetPostPath($post->url)));
                 //URL
                 $parts["post"] = $post->id;
                 $Page->Url = Site::CondenseURLParams(false,$parts);
                 $Pages[] = $Page;
             }
             return $Pages;
+        }
+        
+        function TransformMDtoHTML($markdown){
+            require_once  __DIR__ . '/Michelf/MarkdownExtra.inc.php';
+            $parser = new \Michelf\MarkdownExtra;
+            return $parser->transform($markdown);
         }
         
         //

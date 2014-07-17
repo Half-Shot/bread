@@ -339,13 +339,22 @@ class ModuleManager
             }
             
             $function = $data->function;
+            if(Site::isDebug()){
+                $eventTime = microtime();
+                $memUsage = (memory_get_usage(False) / 1024);
+            }
             $returnData = $this->modules[$moduleName]->$function($arguments);
+            if(Site::isDebug()){
+                $eventTime = microtime() - $eventTime;
+                $memUsage = (memory_get_usage(False) / 1024) - $memUsage;
+                Site::$Logger->writeMessage("Event: " . $eventName . " (". $function .") from " . $moduleName . " took " . $eventTime . " ms to complete with " . $memUsage . "kb used.", "eventProfile");
+            }
             $this->completed[$eventName] = $moduleName;
         }
         else
         {
-        $ModList = $this->events[$eventName];
-        
+            $ModList = $this->events[$eventName];
+
             //Load the module if not loaded!
             foreach ($ModList as $moduleName => $data) {
                 if($moduleName == Site::$themeManager->Theme["data"]->name)
@@ -373,7 +382,16 @@ class ModuleManager
                     }
                 }
                 $function = $data->function;
+                if(Site::isDebug()){
+                    $eventTime = microtime();
+                    $memUsage = (memory_get_usage(False) / 1024);
+                }
                 $returnData[] = $this->modules[$moduleName]->$function($arguments);
+                if(Site::isDebug()){
+                    $eventTime = microtime() - $eventTime;
+                    $memUsage = (memory_get_usage(False) / 1024) - $memUsage;
+                    Site::$Logger->writeMessage("Event: " . $eventName . " (". $function .") from " . $moduleName . " took " . $eventTime . " ms to complete with " . $memUsage . "kb used.", "eventProfile");
+                }
                 $this->completed[$eventName] = $moduleName;
             }
             if(!array_filter($returnData)){
@@ -430,7 +448,17 @@ class ModuleManager
                 }
             }
             $this->completed[$eventName] = $moduleName;
-	    return $this->modules[$moduleName]->$function($arguments);
+	    if(Site::isDebug()){
+                $eventTime = microtime();
+                $memUsage = (memory_get_usage(False) / 1024);
+            }
+            $returnData = $this->modules[$moduleName]->$function($arguments);
+            if(Site::isDebug()){
+                $eventTime = microtime() - $eventTime;
+                $memUsage = (memory_get_usage(False) / 1024) - $memUsage;
+                Site::$Logger->writeMessage("Event: " . $eventName . " (". $function .") from " . $moduleName . " took " . $eventTime . " ms to complete with " . $memUsage . "kb used.", "eventProfile");
+            }
+            return $returnData;
 	}
 }
 

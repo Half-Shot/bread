@@ -6,6 +6,7 @@
  * @todo Move some or all of this document directly to site and make it autoload.
  */
 use Bread\Site as Site;
+//apd_set_pprof_trace();
 $BREAD_CONFIGURL = "settings/config.json";
 $BREAD_SITEMODFILE = "modules/site.php";
 include($BREAD_SITEMODFILE);

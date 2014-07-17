@@ -15,6 +15,7 @@ var ReqPerSec = 0.2;
 var timeSinceLastRequest = 0;
 var tokenizedMarkdown = "";
 var lastTokens;
+var lastMarkdown;
 var sidePanelHidden = false;
 if(UsingEditor)
 {
@@ -87,25 +88,27 @@ function GetTokens(markdown)
     return tokens;
 }
 
-function ParseMarkdown(markdown,overrideTimer)
+function ParseMarkdown(markdown,htmlElement,overrideTimer)
 {
     var tokens = GetTokens(markdown);
     var time = new Date().getTime();//Milliseconds.
     if(((time > timeSinceLastRequest + 1000 * (1 / ReqPerSec) || overrideTimer)) && (markdown.indexOf("[%]") != -1) && lastTokens !== tokens)
     {
         timeSinceLastRequest = time;
-        $.ajax("index.php",{type:"POST",async:false,data:{ ajaxEvent: "Bread.TokenizePost",ajaxModule:"BreadPageSystem", markdown: markdown},success:function(newMarkdown)
+        $.ajax("index.php",{type:"POST",data:{ ajaxEvent: "Bread.TokenizePost",ajaxModule:"BreadPageSystem", markdown: markdown},success:function(newMarkdown)
         {
             tokenizedMarkdown = newMarkdown;
             tokenizedMarkdown = mdParser.makeHtml(tokenizedMarkdown);
             lastTokens = tokens;
+            $(htmlElement).html(tokenizedMarkdown,true);
         }});
+        $(htmlElement).html("<h3>Loading Page</h3>");
     }
     else
     {
         tokenizedMarkdown = mdParser.makeHtml(markdown);
+        $(htmlElement).html(tokenizedMarkdown);
     }
-    return tokenizedMarkdown;
 }
 
 function DoMarkdown()
@@ -129,7 +132,7 @@ function DoMarkdown()
             $("#bps-editor-toolbar").prependTo("#bps-editor");
             $("#bps-editor").hide();
         }
-        $(html).html(ParseMarkdown(markdown),true); 
+        ParseMarkdown(markdown,html);
     });
     $(".bps-markdown").hide();
 }
@@ -139,7 +142,7 @@ function toggleMarkdown()
     switch(editorState){
         case 0:
             editor.on('autosave', function () {
-                $(editorHTML).html(ParseMarkdown(editor.exportFile(),false)); 
+                ParseMarkdown(editor.exportFile(),editorHTML,false); 
             });
             //Content
             $.each($(".bps-editorinfo-input"),function(){
@@ -161,7 +164,7 @@ function toggleMarkdown()
             break;
         case 1:
             editor.removeListener('save');
-            $(editorHTML).html(ParseMarkdown(editor.exportFile()),true); 
+            ParseMarkdown(editor.exportFile(),editorHTML,true); 
             $.each($(".bps-editorinfo-input"),function(){
                 $(this).attr("readonly",true);
             });
