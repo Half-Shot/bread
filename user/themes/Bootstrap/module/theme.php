@@ -21,8 +21,8 @@ class BootstrapTheme extends Bread\Modules\Module
             //Posts
             $this->manager->RegisterHook($this->name,"Theme.Post.Title","Title");
             $this->manager->RegisterHook($this->name,"Theme.Title","Title");
-            $this->manager->RegisterHook($this->name,"Theme.Post.Infomation","Infomation");
-            $this->manager->RegisterHook($this->name,"Theme.Infomation","ShowInfomation");
+            $this->manager->RegisterHook($this->name,"Theme.Post.Information","Information");
+            $this->manager->RegisterHook($this->name,"Theme.Information","ShowInformation");
             $this->manager->RegisterHook($this->name,"Theme.Panel","Panel");            //Forms
             $this->manager->RegisterHook($this->name,"Theme.Form","BuildForm");
             $this->manager->RegisterHook($this->name,"Theme.InputElement","BuildInput");
@@ -124,7 +124,7 @@ class BootstrapTheme extends Bread\Modules\Module
                 return false;
         }
         
-        function Infomation($args)
+        function Information($args)
         {
             $Vars = array();
             foreach ($args as $label => $data)
@@ -285,7 +285,7 @@ class BootstrapTheme extends Bread\Modules\Module
         }
         
         function GridHorizontalStack($args){
-                 if(count($args) < 1)
+            if(count($args) < 1)
                 return "";
 
             if(array_key_exists(0, $args))

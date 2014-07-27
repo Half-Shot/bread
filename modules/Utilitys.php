@@ -296,6 +296,19 @@ class Utilitys {
         {
             return trim( preg_replace( "/[^0-9a-z]+/i", " ", $string ) );
         }
+        /**
+         * If a object value is false, replace with $ValueToUse
+         * @param any $CheckMe Value to check
+         * @param any $ValueToUse Value to use.
+         */
+        static function EmptySub($CheckMe,$ValueToUse){
+            if(empty($CheckMe)){
+                return $ValueToUse;
+            }
+            else{
+                return $CheckMe;
+            }
+        }
         
         /**
          * Gets a path, splits it up and works it way backwards

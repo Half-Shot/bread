@@ -12,14 +12,6 @@ class BreadCoreSettings extends Module
 	{
 		parent::__construct($manager,$name);
 	}
-
-	function RegisterEvents()
-	{
-            $this->manager->RegisterHook($this->name,"BreadCoreSettings.SaveCoreSettings", "SaveCore", \Bread\Modules\ModuleManager::EVENT_EXTERNAL);
-            $this->manager->RegisterHook($this->name,"BreadCoreSettings.DoUpdate","UpdateBread",\Bread\Modules\ModuleManager::EVENT_EXTERNAL);
-            $this->manager->RegisterHook($this->name,"BreadCoreSettings.UpdatePing","UpdatePing", \Bread\Modules\ModuleManager::EVENT_EXTERNAL);
-            $this->manager->RegisterHook($this->name,"BreadAdminTools.AddModuleSettings","Setup");
-	}
         
         function SaveCore()
         {
@@ -65,6 +57,49 @@ class BreadCoreSettings extends Module
             }
             Site::EditConfigurationValues($newObj);
             return 0;
+        }
+        
+        function ModulesPanel($Tab_Modules){
+            
+            $Panel_CurrentModules = new \Bread\Structures\BreadModuleSettingsPanel;
+            $Panel_CurrentModules->Name = "CurrentModules";
+            $Panel_CurrentModules->HumanTitle = $this->manager->FireEvent("Theme.Icon","download") . " Installed Modules";
+            $Tab_Modules->Panels[] = $Panel_CurrentModules;
+            
+            /* Build the module table */
+            
+            $ModuleTable = new \Bread\Structures\BreadTableElement();
+            $ModuleTable->class = " table-hover";
+            $ModuleTable->headingRow = new \Bread\Structures\BreadTableRow();
+            
+            $ModuleTable->headingRow->FillOutRow(array("Name","Author","Version","",""));
+            $ModuleTable->headingRow->cells[3]->width = 10;
+            $ModuleTable->headingRow->cells[4]->width = 10;
+            $ModuleList = $this->manager->GetModuleList();
+            
+            $ButtonDisable = new \Bread\Structures\BreadFormElement;
+            $ButtonDisable->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+            $ButtonDisable->value = "Disable";
+            $ButtonDisable->readonly = true;
+            $ButtonDisable->onclick = "$('#warnDeleteUser').modal('hide');isDisable = true;";
+            $ButtonDisable->class = "btn-warning";
+            
+            $ButtonDelete = new \Bread\Structures\BreadFormElement;
+            $ButtonDelete->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+            $ButtonDelete->value = "Delete";
+            $ButtonDelete->onclick = "$('#warnDeleteUser').modal('hide');isDisable = false;";
+            $ButtonDelete->class = "btn-danger";
+            
+            foreach($ModuleList as $Name => $Module){
+                $ModuleRow = new \Bread\Structures\BreadTableRow();
+                $ModuleConfig = $this->manager->GetModuleConfig($Name);
+                $Author = Util::EmptySub($ModuleConfig->author, "Unknown");
+                $ModuleRow->FillOutRow(array($Name,$Author,$ModuleConfig->version,$this->manager->FireEvent("Theme.Button",$ButtonDisable),$this->manager->FireEvent("Theme.Button",$ButtonDelete)));
+                $ModuleTable->rows[] = $ModuleRow;
+            }
+            
+            $Panel_CurrentModules->Body = $this->manager->FireEvent("Theme.Table", $ModuleTable);
+            
         }
         
         function LoggerPanel($Tab_Logging)
@@ -137,8 +172,6 @@ class BreadCoreSettings extends Module
             $LogTypeBox->type = "dropdown";
             $LogTypeBox->dataset = array();
             $LogTypeBox->label = "Category";
-            
-            
             
             $Form->elements[] = $LogTypeBox;
             $LogText = new \Bread\Structures\BreadFormElement();
@@ -346,7 +379,7 @@ class BreadCoreSettings extends Module
                 {
                     $ApplyButton->readonly = false;
                     $ApplyButton->onclick="requestUpdate(0)";
-                    $Message = "See About Updates for infomation on this channel.";
+                    $Message = "See About Updates for information on this channel.";
                 }
                 else
                 {
@@ -367,7 +400,7 @@ class BreadCoreSettings extends Module
             {
                 $ApplyButton->readonly = false;
                 $ApplyButton->onclick="requestUpdate(1)";
-                $Message = "See About Updates for infomation on this channel.";
+                $Message = "See About Updates for information on this channel.";
             }
             else
             {
@@ -462,9 +495,14 @@ class BreadCoreSettings extends Module
             $Tab_LayoutEditor->Name = "LayoutEditor";
             $Tab_LayoutEditor->HumanTitle = $this->manager->FireEvent("Theme.Icon","pencil") . " Edit Layouts";           
             
-            $Tab_RequestSettings = new \Bread\Structures\BreadModuleSettingsTab;
-            $Tab_RequestSettings->Name = "RequestSettings";
-            $Tab_RequestSettings->HumanTitle = $this->manager->FireEvent("Theme.Icon","tasks") . " Request Settings";   
+            /* 0.3 Release */
+            //$Tab_RequestSettings = new \Bread\Structures\BreadModuleSettingsTab;
+            //$Tab_RequestSettings->Name = "RequestSettings";
+            //$Tab_RequestSettings->HumanTitle = $this->manager->FireEvent("Theme.Icon","tasks") . " Request Settings";   
+            
+            $Tab_ModuleSettings = new \Bread\Structures\BreadModuleSettingsTab;
+            $Tab_ModuleSettings->Name = "ModuleSettings";
+            $Tab_ModuleSettings->HumanTitle = $this->manager->FireEvent("Theme.Icon","tasks") . " Module Manager";
             
             //Tab Index;
             switch($args[1]){
@@ -488,6 +526,12 @@ class BreadCoreSettings extends Module
                     }
                     Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/corepanelUpdater.js") , true);
                     $this->UpdateBreadPanel($Tab_UpdateBread);
+                case 3:
+                    if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadCoreSettings.Modules.Read")){
+                        break;
+                    }
+                    //Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/corepanelModules.js") , true);
+                    $this->ModulesPanel($Tab_ModuleSettings);
                 default:
                     break;
                 }
@@ -495,7 +539,7 @@ class BreadCoreSettings extends Module
             $CoreSettingsCP->SettingsGroups[] = $Tab_CoreSettings;
             $CoreSettingsCP->SettingsGroups[] = $Tab_Logging;
             $CoreSettingsCP->SettingsGroups[] = $Tab_UpdateBread;
-            $CoreSettingsCP->SettingsGroups[] = $Tab_RequestSettings;
+            $CoreSettingsCP->SettingsGroups[] = $Tab_ModuleSettings;
             return $CoreSettingsCP;
             
         }
@@ -526,7 +570,7 @@ class BreadCoreSettings extends Module
                $version = substr($this->settings->GitData->sha, 0,7);
             }
             else {
-                Site::$Logger->writeMessage("Channel does not exist or no infomation is present for selected channel.", "backuplog");
+                Site::$Logger->writeMessage("Channel does not exist or no information is present for selected channel.", "backuplog");
                 return "FAIL";
             }
             Site::$Logger->writeMessage("Bread Update Channel " . $channel . " Selected", "backuplog");

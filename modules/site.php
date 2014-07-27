@@ -219,7 +219,7 @@ class Site
         
         
         /**
-         * Add some code to the document body. For scripts and header infomation
+         * Add some code to the document body. For scripts and header information
          * checkout Site::AddToHeaderCode().
          * @param string $code
          * @see Site::AddToHeaderCode()
@@ -774,7 +774,7 @@ class Site
         }
 }
 /**
- * A class that logs important infomation and also throws errors for bread.
+ * A class that logs important information and also throws errors for bread.
  * The log file can be found in /temp/breadlog. This can be changed in settings.
  * The main logger is to be found in static::$Logger.
  * @see static::$Logger
@@ -923,7 +923,7 @@ class Logger
     }
     
     /**
-     * Write some infomation to the log stack. Purely for debugging or user info
+     * Write some information to the log stack. Purely for debugging or user info
      * if the message is a potential problem, use Logger->writeError.
      * @see Logger::writeError()
      * @param string $string Message to be written
@@ -936,7 +936,7 @@ class Logger
     }
     
     /**
-     * Write an error to the log stack. If the message is just infomation,
+     * Write an error to the log stack. If the message is just information,
      * use Logger->writeMessage. 
      * @see Logger::writeMessage()
      * @param string $string Message to be written

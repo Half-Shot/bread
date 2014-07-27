@@ -47,6 +47,22 @@ class BreadTableRow extends BreadThemeElement {
      * @var array of Bread\Structures\BreadCell
      */
     public $cells = array();
+    /**
+     * Fill out the row quickly with an array of each cell's body.
+     * @param array $Rows Strings for each cell.
+     */
+    function FillOutRow($CellData,$CellTemplate = false){
+        foreach($CellData as $Body){
+            if($CellTemplate == false){
+                $Cell = new BreadTableCell();
+            }
+            else{
+                $Cell = clone $CellTemplate;
+            }
+            $Cell->text = $Body;
+            $this->cells[] = $Cell;
+        }
+    }
 }
 
 class BreadTableCell extends BreadThemeElement {

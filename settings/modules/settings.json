@@ -35,6 +35,10 @@
         {
             "name": "BreadCoreSettings",
             "file": "BreadCoreSettings\/module.json"
+        },
+        {
+            "name": "Gravatar",
+            "file": "Gravatar\/module.json"
         }
     ]
 }

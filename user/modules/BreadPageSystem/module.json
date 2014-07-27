@@ -35,8 +35,8 @@
                 "function":"DrawBreadcrumbs",
                 "security":0
             },
-            "BreadPageSystem.Infomation":{
-                "function":"DrawPostInfomation",
+            "BreadPageSystem.Information":{
+                "function":"DrawPostInformation",
                 "security":0
             },
             "BreadPageSystem.EditorButton":{
@@ -55,8 +55,8 @@
                 "function":"DeletePost",
                 "security":1
             },
-            "BreadPageSystem.EditorInfomation":{
-                "function":"PostEditorInfomationPanel",
+            "BreadPageSystem.EditorInformation":{
+                "function":"PostEditorInformationPanel",
                 "security":0
             },
             "Bread.PageTitle":{

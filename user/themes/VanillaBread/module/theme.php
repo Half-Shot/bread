@@ -12,7 +12,7 @@ class VanillaBreadTheme extends Bread\Modules\Module
 	function RegisterEvents()
 	{
             $this->manager->RegisterHook($this->name,"Theme.Load","Load"); //For each event you want to allow, specify: Name of theme, EventName and function name
-            $this->manager->RegisterHook($this->name,"Theme.HeaderInfo","HeaderInfomation");
+            $this->manager->RegisterHook($this->name,"Theme.HeaderInfo","HeaderInformation");
             $this->manager->RegisterHook($this->name,"Theme.DrawSystemMenu","SystemMenu");
             $this->manager->RegisterHook($this->name,"Theme.DrawNavbar","Navbar");
             $this->manager->RegisterHook($this->name,"Theme.DrawFooter","Footer");
@@ -21,8 +21,8 @@ class VanillaBreadTheme extends Bread\Modules\Module
             $this->manager->RegisterHook($this->name,"Theme.Post.Title","Title");
             $this->manager->RegisterHook($this->name,"Theme.Post.Subtitle","SubTitle");
             $this->manager->RegisterHook($this->name,"Theme.Post.Breadcrumbs","Breadcrumbs");
-            $this->manager->RegisterHook($this->name,"Theme.Post.Infomation","Infomation");
-            $this->manager->RegisterHook($this->name,"Theme.Infomation","ShowInfomation");
+            $this->manager->RegisterHook($this->name,"Theme.Post.Information","Information");
+            $this->manager->RegisterHook($this->name,"Theme.Information","ShowInformation");
             $this->manager->RegisterHook($this->name,"Theme.Form","BuildForm");
             $this->manager->RegisterHook($this->name,"Theme.Layout.Block","LayoutBlock");
 	}
@@ -33,7 +33,7 @@ class VanillaBreadTheme extends Bread\Modules\Module
 		return $HTMLCode;
 	}
 
-	function HeaderInfomation()
+	function HeaderInformation()
 	{
 		$HTMLCode = "<!-- Header Stuff from Vanilla -->\n";
 		return $HTMLCode;
@@ -45,7 +45,7 @@ class VanillaBreadTheme extends Bread\Modules\Module
 		return $HTMLCode;
 	}
         
-        function ShowInfomation($args)
+        function ShowInformation($args)
         {
             return "<div id='infobox' style='background:red;'>" . $args . "</div>";
         }
@@ -137,7 +137,7 @@ class VanillaBreadTheme extends Bread\Modules\Module
 		return $HTMLCode;
         }
         
-        function Infomation($args)
+        function Information($args)
         {
                 $HTMLCode = "<div>";
                 foreach($args as $key => $arg)

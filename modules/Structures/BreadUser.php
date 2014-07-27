@@ -27,7 +27,7 @@ class BreadUser
      */
     public $uid = -1;
     /**
-     * An array of extra infomation e.g. e-mail address.
+     * An array of extra information e.g. e-mail address.
      * @var array
      */
     public $information = array();
@@ -54,7 +54,7 @@ class BreadGroup
      */
     public $name = "Unknown";
     /**
-     * An array of extra infomation e.g. e-mail address.
+     * An array of extra information e.g. e-mail address.
      * @var array
      */
     public $information = array();

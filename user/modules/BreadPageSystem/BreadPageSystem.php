@@ -140,7 +140,7 @@ class BreadPageSystem extends Module
             return false;
         }
         
-        function PostEditorInfomationPanel()
+        function PostEditorInformationPanel()
         {
             if(!$this->CheckEditorRights())
                 return "";
@@ -613,16 +613,35 @@ class BreadPageSystem extends Module
            return false;
         }
         
-        function DrawPostInfomation()
+        function DrawPostInformation()
         {
             $page = $this->GetActivePost();
             if($page === False)
                 return False;
             $info = array();
-            $info["Author"] = $this->manager->FireEvent("Bread.Security.GetUser",$page->author)->username;
+            $CommentStruct = array();
+            $CommentStruct["thumbnailurl"] = "#"; //Needs a author profile link
+            $AvatarPath = $this->manager->FireEvent("Bread.GetAvatar",$page->author);
+            if($AvatarPath){
+                $CommentStruct["thumbnail"] = $AvatarPath;
+            }
+            $author = $this->manager->FireEvent("Bread.Security.GetUser",$page->author);
+            $CommentStruct["header"] = $author->information->Name;
             $info["Last Modified"] = \date("F d Y H:i:s", $page->time_modified);
             $info["Created On"] = \date("F d Y H:i:s", $page->time_created);
-            return Site::$moduleManager->FireEvent("Theme.Post.Infomation",$info);
+            if(isset($author->information->Biography)){
+                $biography = Site::$moduleManager->FireEvent("Theme.Panel", array("body"=>$author->information->Biography) );
+            }
+            else{
+                $biography = "";
+            }
+            $CommentStruct["body"] = $biography . Site::$moduleManager->FireEvent("Theme.Post.Information",$info);
+            $CommentHTML = Site::$moduleManager->FireEvent("Theme.Comment",$CommentStruct);
+            $GridCell = new \stdClass();
+            $GridCell->size = 3;
+            $GridCell->body = $CommentHTML;
+            $Grid = Site::$moduleManager->FireEvent("Theme.Layout.Grid.HorizonalStack",array($GridCell));
+            return $Grid;
         }
         
         function SavePost()
@@ -651,10 +670,18 @@ class BreadPageSystem extends Module
                  $id = $this->GenerateID();
                  $post = new BreadPageSystemPost;
                  $post->name = $_POST["name"];
-                 //$this->settings->postindex->$id->categorys = $_POST["categorys"];
                  $post->author = $this->manager->FireEvent("Bread.Security.GetCurrentUser")->uid;
-                 $post->url = $post->name . ".md";
-                 $post->jsonurl =  $this->settings->postdir . "/" . $post->name . ".json";
+                 
+                 $filename = preg_replace("/[^a-zA-Z0-9 ]/", "_", $post->name);
+                 $filename = preg_replace('/\s+/', '', $filename);
+                 if(empty($filename) || $filename !== $post->name)
+                 {
+                    Site::$Logger->writeError("Post had a bad name and coudln't save as a file path.",\Bread\Logger::SEVERITY_HIGH,"breadpagesystem");
+                    return "0";
+                 }
+                 $post->url = $filename . ".md";
+                 
+                 $post->jsonurl =  $this->settings->postdir . "/" . $filename . ".json";
                  $post->id = $id;
                  $post->time_created = time();
                  $this->settings->postindex->$id = $post;

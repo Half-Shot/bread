@@ -57,16 +57,16 @@ if(UsingEditor)
     };
 }
 
-$("#editor-infomation .panel .panel-heading").click(function ()
+$("#editor-information .panel .panel-heading").click(function ()
 {
     if(sidePanelHidden){
-        $("#editor-infomation").animate({
+        $("#editor-information").animate({
             'marginLeft' : "-=" + (($(this).width() - 20)).toString() +'px'
         });
     }
     else
     {
-        $("#editor-infomation").animate({
+        $("#editor-information").animate({
             'marginLeft' : "+=" + (($(this).width() - 20)).toString() +'px'
         });     
     }

@@ -36,5 +36,7 @@ class BreadModuleStructure {
         public $namespace = NULL;
         public $entryfile = "";
         public $version = 0.0;
+        public $author = "";
         public $dependencies = array();
+        public $events = array();
 }

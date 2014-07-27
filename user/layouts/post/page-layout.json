@@ -58,24 +58,24 @@
                     "event":"BreadPageSystem.BreadCrumbs"
                 },
                 {
-                    "name": "infomation",
-                    "id": "infomation",
-                    "human": "Post Infomation",
-                    "description": "Infomation about a post.",
+                    "name": "information",
+                    "id": "information",
+                    "human": "Post Information",
+                    "description": "Information about a post.",
                     "module": "BreadPageSystem",
-                    "event":"BreadPageSystem.Infomation"
+                    "event":"BreadPageSystem.Information"
                 }
             ]
         }
     ]
     },
     {
-        "name": "editor-infomation",
-        "id": "editor-infomation",
-        "human": "Editor Infomation Panel",
-        "description": "A sidebar for displaying infomation about an edit.",
+        "name": "editor-information",
+        "id": "editor-information",
+        "human": "Editor Information Panel",
+        "description": "A sidebar for displaying information about an edit.",
         "module": "BreadPageSystem",
-        "event":"BreadPageSystem.EditorInfomation"
+        "event":"BreadPageSystem.EditorInformation"
     }
 ]
 }

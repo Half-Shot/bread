@@ -881,13 +881,13 @@ class BreadUserSystemAdminPanelSettings{
         $Email->label = "E-Mail";
         $Email->required = false;
         $Email->type = "email";
-        $Email->informationKey = "E-Mail";
+        $Email->informationKey = "EMail";
         $Email->multiuser = false;
         
     }
     public $hiddenUsers = array(0);
     public $usereditForm;
-    public $informationKeysToShowInTable = array("Name","E-Mail");
+    public $informationKeysToShowInTable = array("Name","EMail");
 }
 
 class BUSUserInformationField extends \Bread\Structures\BreadFormElement{

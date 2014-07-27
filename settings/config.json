@@ -12,7 +12,7 @@
         "maxlogfiles": 100,
         "minseveritytolog": -1,
         "multifilelog": true,
-        "keepfor": 0
+        "keepfor": 60
     },
     "strings": {
         "sitename": "The Bakery"
@@ -22,14 +22,13 @@
         "system-modules": "modules",
         "system-settings": "settings",
         "system-requests": "settings\/requests.json",
-        "settings-moduleloadlist": "settings\/modules\/modlist.json",
         "user-modules": "user\/modules",
         "user-themes": "user\/themes",
         "user-layouts": "user\/layouts",
         "user-resource": "user\/resource",
         "user-media": "content\/media",
-        "user-pages": "content\/pages",
         "user-posts": "content\/posts",
+        "user-content": "content",
         "system-temp": "temp"
     }
 }

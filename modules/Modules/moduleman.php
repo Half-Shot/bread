@@ -17,7 +17,6 @@ class ModuleManager
     private $modules;
     private $moduleList;
     private $moduleConfig;
-    private $configuration;
     private $events;
     private $completed;
         
@@ -28,63 +27,86 @@ class ModuleManager
         
 	function __construct()
 	{
-		$this->modules = array();
-		$this->moduleList = array();
-		$this->events = array();
-        $this->completed = array();
-        $this->heldevents = array();
+            $this->modules = array();
+            $this->moduleList = array();
+            $this->events = array();
+            $this->completed = array();
+            $this->heldevents = array();
 	}
-    /**
-     * Loads the modulelist from its json file.
-     * @param string $filepath Filepath of the modulelist.
-     */
+        /**
+         * Loads the modulelist from its json file.
+         * @param string $filepath Filepath of the modulelist.
+         */
 	function LoadModulesFromConfig()
 	{
-
-        $rootSettings = Site::$settingsManager->FindModuleDir("modules");
-        Site::$settingsManager->CreateSettingsFiles($rootSettings . "settings.json", new BreadModuleManagerSettings());
-        $this->settings = Site::$settingsManager->RetriveSettings($rootSettings . "settings.json",true);
-        $this->moduleList = $this->settings->modules;
-        $this->moduleList = Util::ArraySetKeyByProperty($this->moduleList, "name");
-        //Resolve path
-        foreach ($this->moduleList as $module) {
-            $module->file = Site::ResolvePath("%user-modules") . "/" . $module->file;
-            $this->RegisterModule($module);
-        }
+            $rootSettings = Site::$settingsManager->FindModuleDir("modules");
+            Site::$settingsManager->CreateSettingsFiles($rootSettings . "settings.json", new BreadModuleManagerSettings());
+            $this->settings = Site::$settingsManager->RetriveSettings($rootSettings . "settings.json",true);
+            $this->moduleList = $this->settings->modules;
+            $this->moduleList = Util::ArraySetKeyByProperty($this->moduleList, "name");
+            //Resolve path
+            foreach ($this->moduleList as $module) {
+                $module->file = Site::ResolvePath("%user-modules") . "/" . $module->file;
+                $this->RegisterModule($module);
+            }
 	}
 
-    /**
-     * Loads and register the module,/O/ constructing it and placing it in the ModuleManager::$modules array.
-     * Also runs the RegisterEvents function. This is only run from LoadRequiredModules.
-     * *Warning*: Code errors with modules cannot be checked against so any whitepage crashes will be down to module problems.
-     * You can debug this by checking the log for the last registered module which is the culprit.
-     * @param string $path
-     */
-	private function RegisterModule($module)
-	{
-        $modName = $module->name;
-        $json = Site::$settingsManager->RetriveSettings($module->file,true);
-        if(isset($json->dependencies))
-            $json->dependencies = get_object_vars ($json->dependencies);
-        $object = Site::CastStdObjectToStruct($json, "Bread\Structures\BreadModuleStructure");
-		if(array_key_exists($modName,$this->modules)){
-			Site::$Logger->writeError('Cannot register' . $modName. '.Module already exists',  \Bread\Logger::SEVERITY_MEDIUM);
-            return False;
+        function GetModuleConfig($Name){
+            return clone $this->moduleConfig[$Name];
         }
-		Site::$Logger->writeMessage('Registered module ' . $modName);
-		$this->moduleConfig[$modName] = $object;
-        if(isset($json->events)){
-            $events = get_object_vars($json->events);
-            foreach ($events as $event => $data) {
-                if(!isset($data->security)){
-                    $data->security = 0;
+        
+        function GetModuleList(){
+            return $this->moduleList;
+        }
+        /**
+         * Blacklist or Unblacklist a module.
+         * @param string $Name Name of module to blacklist
+         * @param boolean $shouldBlacklist Blacklist or unblacklist?
+         */
+        function BlacklistModule($Name,$shouldBlacklist = true){
+            if($this->manager->FireEvent("Bread.Security.GetPermission","Bread.BlacklistModule")){
+                foreach($module as $this->settings->modules){
+                    if($module->Name == $Name){
+                        $module->blacklist = $shouldBlacklist;
+                        break;
+                    }
                 }
-                if(!isset($this->events[$event])){
-                    $this->events[$event] = array();
-                }
-                $this->events[$event][$modName] =$data;
             }
         }
+        
+        /**
+         * Loads and register the module,/O/ constructing it and placing it in the ModuleManager::$modules array.
+         * Also runs the RegisterEvents function. This is only run from LoadRequiredModules.
+         * *Warning*: Code errors with modules cannot be checked against so any whitepage crashes will be down to module problems.
+         * You can debug this by checking the log for the last registered module which is the culprit.
+         * @param string $path
+         */
+	private function RegisterModule($module)
+	{
+            $modName = $module->name;
+            $json = Site::$settingsManager->RetriveSettings($module->file,true);
+            if(isset($json->dependencies)){
+                $json->dependencies = get_object_vars ($json->dependencies);
+            }
+            $object = Site::CastStdObjectToStruct($json, "Bread\Structures\BreadModuleStructure");
+            if(array_key_exists($modName,$this->modules)){
+                Site::$Logger->writeError('Cannot register' . $modName. '.Module already exists',  \Bread\Logger::SEVERITY_MEDIUM);
+                return False;
+            }
+            Site::$Logger->writeMessage('Registered module ' . $modName);
+            $this->moduleConfig[$modName] = $object;
+            if(isset($json->events)){
+                $events = get_object_vars($json->events);
+                foreach ($events as $event => $data) {
+                    if(!isset($data->security)){
+                        $data->security = 0;
+                    }
+                    if(!isset($this->events[$event])){
+                        $this->events[$event] = array();
+                    }
+                    $this->events[$event][$modName] =$data;
+                }
+            }
 	}
 
     /**

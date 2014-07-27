@@ -1,0 +1,10 @@
+{
+        "name":"Gravatar",
+        "entryclass":"GravatarModule",
+        "entryfile":"Gravatar/Gravatar.php",
+        "events":{
+            "Bread.GetAvatar":{
+                "function":"GetAvatar"
+            }
+        }
+}

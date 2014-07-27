@@ -4,10 +4,10 @@
     "entryfile":"BreadUserSystem/BreadUserSystem.php",
     "events":{
         "Bread.Security.GetCurrentUser":{
-                "function":"GetCurrentUser"
+            "function":"GetCurrentUser"
         },			
         "Bread.Security.GetPermission":{
-                "function":"HasPermission"
+            "function":"HasPermission"
         },
         "Bread.Security.GetUser":{
                 "function":"GetUserByUID"
