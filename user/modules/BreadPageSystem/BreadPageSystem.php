@@ -47,11 +47,11 @@ class BreadPageSystem extends Module
         {
             if($a->time_released > $b->time_released)
             {
-                return -1;
+                return 1;
             }
             else if ($a->time_released < $b->time_released)
             {
-                return 1;
+                return -1;
             }
             else {
                 return 0;
@@ -108,6 +108,7 @@ class BreadPageSystem extends Module
             if(count($this->settings->postindex) == 0){
                 $noPosts = true;
             }
+            
             $this->EnableEditor = $this->CheckEditorRights();
             if(array_key_exists("newpost", Site::getRequest()->arguments))
             {   
@@ -551,18 +552,17 @@ class BreadPageSystem extends Module
                    return $pageid;
                }
            }
-           //Hacky way to get first post.
-           //$posts = get_object_vars($this->settings->postindex);
-           //$posts = \Bread\Utilitys::ArraySetKeyByProperty ($posts, "time_released");
-           //krsort($posts);
-           //foreach($posts as $id => $post)
-           //    if(!$post->hidden)
-           //         return $post->id;
+            //Hacky way to get first post.
+            if(isset($request->arguments["latest"])){
+                $index = get_object_vars($this->settings->postindex);
+                $postsDated = usort($index,"\Bread\Modules\BreadPageSystem::USortDate");
+                return $index[0]->id;
+            }
            
         }
         
         function GetActivePost()
-        {
+        {       
            if(!$this->activePost){
                 $postid = $this->GetActivePostPageId();
                 if($postid !== false && isset($this->settings->postindex->$postid))
@@ -595,6 +595,7 @@ class BreadPageSystem extends Module
                     return $index;
                 }
             }
+            
             return False;
         }
         
