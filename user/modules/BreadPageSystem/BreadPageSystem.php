@@ -665,7 +665,7 @@ class BreadPageSystem extends Module
             $CommentStruct["body"] = $biography . Site::$moduleManager->FireEvent("Theme.Post.Information",$info);
             $CommentHTML = Site::$moduleManager->FireEvent("Theme.Comment",$CommentStruct);
             $GridCell = new \stdClass();
-            $GridCell->size = 3;
+            $GridCell->size = 4;
             $GridCell->body = $CommentHTML;
             $Grid = Site::$moduleManager->FireEvent("Theme.Layout.Grid.HorizonalStack",array($GridCell));
             return $Grid;
