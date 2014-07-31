@@ -29,14 +29,3 @@ THE SOFTWARE.
 body{
     padding:40px;
 }
-
-#title
-{
-    position: relative;
-    top:25%;
-}
-
-#contents
-{
-    width:70%;
-}

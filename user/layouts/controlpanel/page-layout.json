@@ -18,21 +18,38 @@
       "description":"Where messages to users will go.",
       "event":"BreadAdminTools.MessageTray"
     },
-    {
-        "name": "sidetabs",
-	"id": "admin-sidetabs",
-        "human": "Sidebar",
-        "description": "Tabs for modules to provide option pages.",
-        "tag":"side",
-        "event":"BreadAdminTools.Sidebar"
-    },
+
     {
         "name": "mainpanel",
 	"id": "admin-mainpanel",
         "human": "Main Panel",
-        "description": "Shows detail about the selected module page.",
-        "tag":"article",
-        "event":"BreadAdminTools.Mainpanel"
+        "description": "Grid for both tabs and the settings panel.",
+        "tag":"div",
+        "event":"Theme.Layout.Grid.HorizonalStack",
+        "elements":[
+                {
+                    "name": "sidetabs",
+                    "id": "admin-sidetabs",
+                    "human": "Sidebar",
+                    "description": "Tabs for modules to provide option pages.",
+                    "tag":"side",
+                    "arguments":{
+                        "cell_size":2
+                    },
+                    "event":"BreadAdminTools.Sidebar"
+                },
+                {
+                    "name": "settingspanel",
+                    "id": "admin-settingspanel",
+                    "human": "Settings Panel",
+                    "description": "Options for the selected settings page.",
+                    "tag":"article",
+                    "arguments":{
+                        "cell_size":10
+                    },
+                    "event":"BreadAdminTools.Mainpanel"
+                }
+        ]
     }
 ]
 }

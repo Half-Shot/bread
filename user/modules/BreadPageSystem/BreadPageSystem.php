@@ -840,7 +840,7 @@ class BreadPageSystemSettings
     public $templatePath = "template.json";
     public $navbar;
     function __construct() {
-       $this->postdir = Site::ResolvePath("%user-pages");
+       $this->postdir = Site::ResolvePath("%user-posts");
        $this->navbar = new BreadPageSystemNavBarSettings();
     }
 }
