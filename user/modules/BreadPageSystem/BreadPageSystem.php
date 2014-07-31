@@ -670,6 +670,27 @@ class BreadPageSystem extends Module
             return $Grid;
         }
         
+        function GenerateFileName($filename){
+            $filename = preg_replace("/[^a-zA-Z0-9 ]/", "_",$filename);
+            $filename = preg_replace('/\s+/', '', $filename);
+            return $filename;
+        }
+        
+        function FixDuplicatePostName($postname){
+            $duplicate = true;
+            $dupn = 0;
+            while($duplicate){
+                $duplicate = false;
+                foreach($this->settings->postindex as $posts){
+                    if($posts->name == $postname){
+                        $duplicate = true;
+                        $postname = $postname . "_" . $dupn;
+                    }
+                }
+            }
+            return $postname;
+        }
+        
         function SavePost()
         {
              $canSave = $this->CheckEditorRights();
@@ -695,11 +716,9 @@ class BreadPageSystem extends Module
              {
                  $id = $this->GenerateID();
                  $post = new BreadPageSystemPost;
-                 $post->name = $_POST["name"];
+                 $post->name = $this->FixDuplicatePostName($_POST["name"]);
                  $post->author = $this->manager->FireEvent("Bread.Security.GetCurrentUser")->uid;
-                 
-                 $filename = preg_replace("/[^a-zA-Z0-9 ]/", "_", $post->name);
-                 $filename = preg_replace('/\s+/', '', $filename);
+                 $filename = $this->GenerateFileName($post->name);
                  if(empty($filename))
                  {
                     Site::$Logger->writeError("Post had a bad name and coudln't save as a file path.",\Bread\Logger::SEVERITY_HIGH,"breadpagesystem");
@@ -725,10 +744,9 @@ class BreadPageSystem extends Module
              if($pageData->name != $_POST["name"])
              {
                  Site::$Logger->writeError("Page got renamed (" . $pageData->name . "=>" . $_POST["name"] . ")",\Bread\Logger::SEVERITY_MESSAGE,$this->name);
-                 $pageData->name = $_POST["name"];
+                 $pageData->name = $this->FixDuplicatePostName($_POST["name"]);
                  
-                 $filename = preg_replace("/[^a-zA-Z0-9 ]/", "_", $pageData->name);
-                 $filename = preg_replace('/\s+/', '', $filename);
+                 $filename = $this->GenerateFileName($pageData->name);
                  if(empty($filename))
                  {
                     Site::$Logger->writeError("Post had a bad name and coudln't save as a file path.",\Bread\Logger::SEVERITY_HIGH,"breadpagesystem");
