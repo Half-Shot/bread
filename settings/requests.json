@@ -8,7 +8,7 @@
         "layout":"homepage",
         "include":["master","post"],
         "modules":["BreadPageSystem\/module.json"],
-        "args":[{"post":"ea820284"}]
+        "args":[{"post":"bkgkgk50"}]
     },
     "post":{
         "layout":"post",

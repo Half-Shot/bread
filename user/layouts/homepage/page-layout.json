@@ -1,10 +1,11 @@
 {
 "name": "homepage",
 "master":["default"],
+"css":["homepage/page-layout.css"],
 "elements": [
     {
         "name": "contents",
-	"id": "homepage-contents",
+	    "id": "homepage-contents",
         "human": "Page Contents",
         "description": "Middle section where contents will be placed.",
         "event":"Bread.DrawModule",

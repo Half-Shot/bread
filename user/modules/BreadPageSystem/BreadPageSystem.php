@@ -8,6 +8,7 @@ class BreadPageSystem extends Module
         private $settingspath;
         private $isnewpost = false;
         private $activePost = false;
+        private $noPosts = false;
         private $loadedScripts = false;
         public $EnableEditor = false;
         const TOKEN_SPLIT_STR = "[%]";
@@ -103,6 +104,9 @@ class BreadPageSystem extends Module
             $this->settings = Site::$settingsManager->RetriveSettings($this->settingspath);
             if( ( time() - $this->settings->BuildTime) > $this->settings->CheckIndexEvery){
                 $this->BuildIndex();
+            }
+            if(count($this->settings->postindex) == 0){
+                $noPosts = true;
             }
             $this->EnableEditor = $this->CheckEditorRights();
             if(array_key_exists("newpost", Site::getRequest()->arguments))
@@ -317,6 +321,9 @@ class BreadPageSystem extends Module
                         }
                 }
             }
+            
+                
+            
             $this->settings->BuildTime = time();
             Site::$Logger->writeMessage("Built Page Index!",$this->name);
         }
@@ -693,7 +700,7 @@ class BreadPageSystem extends Module
                  
                  $filename = preg_replace("/[^a-zA-Z0-9 ]/", "_", $post->name);
                  $filename = preg_replace('/\s+/', '', $filename);
-                 if(empty($filename) || $filename !== $post->name)
+                 if(empty($filename))
                  {
                     Site::$Logger->writeError("Post had a bad name and coudln't save as a file path.",\Bread\Logger::SEVERITY_HIGH,"breadpagesystem");
                     return "0";
@@ -711,9 +718,31 @@ class BreadPageSystem extends Module
                  Site::$Logger->writeError("Couldn't find the post for saving markdown file. Nonstandard URL!'",\Bread\Logger::SEVERITY_HIGH,"breadpagesystem");
                  return "0";
              }
+             
              $url = $this->settings->postdir . "/" . $this->settings->postindex->$id->url;
-             file_put_contents($url, $md);
              $pageData = Site::$settingsManager->RetriveSettings($this->settings->postindex->$id->jsonurl,True); //Get actual file
+             
+             if($pageData->name != $_POST["name"])
+             {
+                 Site::$Logger->writeError("Page got renamed (" . $pageData->name . "=>" . $_POST["name"] . ")",\Bread\Logger::SEVERITY_MESSAGE,$this->name);
+                 $pageData->name = $_POST["name"];
+                 
+                 $filename = preg_replace("/[^a-zA-Z0-9 ]/", "_", $pageData->name);
+                 $filename = preg_replace('/\s+/', '', $filename);
+                 if(empty($filename))
+                 {
+                    Site::$Logger->writeError("Post had a bad name and coudln't save as a file path.",\Bread\Logger::SEVERITY_HIGH,"breadpagesystem");
+                    return "0";
+                 }
+                 
+                 \rename($pageData->jsonurl,$this->settings->postdir . "/" . $filename . ".json");
+                 \rename($url,$this->settings->postdir . "/" . $filename . ".md");
+                 $pageData->jsonurl =  $this->settings->postdir . "/" . $pageData->name . ".json";
+                 $pageData->url = $pageData->name . ".md";
+             }
+             
+             file_put_contents($url, $md);
+             
              $this->settings->BuildTime = 0; //Reset Index.
              $pageData->title = $title;
              $pageData->subtitle = $subtitle; //Needs changing.
@@ -723,15 +752,7 @@ class BreadPageSystem extends Module
              $pageData->categorys = $_POST["categorys"];
              if(is_null($pageData->categorys))
                  $pageData->categorys = array();
-             if($pageData->name != $_POST["name"])
-             {
-                 Site::$Logger->writeError("Page got renamed (" . $pageData->name . "=>" . $_POST["name"] . ")",\Bread\Logger::SEVERITY_MESSAGE,$this->name);
-                 $pageData->name = $_POST["name"];
-                 \rename($pageData->jsonurl,$this->settings->postdir . "/" . $pageData->name . ".json");
-                 \rename($this->settings->postdir . "/" . $pageData->url,$this->settings->postdir . "/" . $pageData->name . ".md");
-                 $pageData->jsonurl =  $this->settings->postdir . "/" . $pageData->name . ".json";
-                 $pageData->url = $pageData->name . ".md";
-             }
+
              
              try
              {

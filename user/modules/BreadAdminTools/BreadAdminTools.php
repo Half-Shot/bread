@@ -42,6 +42,9 @@ class BreadAdminTools extends Module
 
     function SetTitle()
     {
+        if(empty($this->ModuleSettings)){
+            return false;
+        }
         return "Control Panel - " . $this->ModuleSettings[$this->CurrentModuleIndex]->Name;
     }
             
@@ -166,19 +169,13 @@ class BreadAdminTools extends Module
     
     function CPButton($args)
     {
-        if($this->GenerateModules()){
-            $link = new \Bread\Structures\BreadLinkStructure();
-            $link->request = "controlpanel";
-            $Button = array();
-            $Button["onclick"] = "window.location = '" . $link->createURL() .  "'";
-            $Button["class"] = "btn-info " . $args[0];
-            $Button["value"] = "Control Panel";
-            return $this->manager->FireEvent("Theme.Button",$Button);
-        }
-        else{
-            return "";
-        }
-        
+        $link = new \Bread\Structures\BreadLinkStructure();
+        $link->request = "controlpanel";
+        $Button = array();
+        $Button["onclick"] = "window.location = '" . $link->createURL() .  "'";
+        $Button["class"] = "btn-info " . $args[0];
+        $Button["value"] = "Control Panel";
+        return $this->manager->FireEvent("Theme.Button",$Button);
     }
     
     function Setup()

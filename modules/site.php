@@ -554,11 +554,16 @@ class Site
 	    static::$htmlcode .= static::ProcessMetadata($requestData);
             $titleArray = static::$moduleManager->FireEvent("Bread.PageTitle",null,false);
             if($titleArray == false){
-                    Site::AddToHeaderCode("<title>" . self::$configuration->strings->sitename ."</title>");
+                Site::AddToHeaderCode("<title>" . self::$configuration->strings->sitename ."</title>");
             }
-            foreach($titleArray as $title){
-                if($title){
-                    Site::AddToHeaderCode("<title>" . $title . " - " . self::$configuration->strings->sitename ."</title>");
+            elseif(is_string($titleArray)){
+                Site::AddToHeaderCode("<title>" . $titleArray. " - "  . self::$configuration->strings->sitename ."</title>");
+            }
+            else{
+                foreach($titleArray as $title){
+                    if($title){
+                        Site::AddToHeaderCode("<title>" . $title . " - " . self::$configuration->strings->sitename ."</title>");
+                    }
                 }
             }
             static::$htmlcode .= static::$headercode;
