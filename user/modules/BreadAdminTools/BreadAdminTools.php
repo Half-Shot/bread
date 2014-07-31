@@ -42,10 +42,6 @@ class BreadAdminTools extends Module
 
     function SetTitle()
     {
-        $Params = Site::getURLParams();
-        if(!array_key_exists("cpanel_cpindex", $Params)){
-            return false;
-        }
         return "Control Panel - " . $this->ModuleSettings[$this->CurrentModuleIndex]->Name;
     }
             

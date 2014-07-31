@@ -60,6 +60,7 @@ class BreadPageSystem extends Module
         function GenerateNavbar()
         {
             $pages = array();
+            $titleRecurances = array();
             $index = get_object_vars($this->settings->postindex);
             usort($index,"\Bread\Modules\BreadPageSystem::USortDate");
             foreach($index as $page)
@@ -76,7 +77,18 @@ class BreadPageSystem extends Module
                 $parts = array();
                 $parts["request"] = $this->settings->postRequest;
                 $parts["post"] = $page->id;
-                $pages[$page->name] = Site::CondenseURLParams(false,$parts);
+                if(!array_key_exists($page->title, $pages)){
+                    $pages[$page->title] = Site::CondenseURLParams(false,$parts);
+                }
+                else{
+                    if(array_key_exists($page->title, $titleRecurances)){
+                        $titleRecurances[$page->title] += 1;
+                    }
+                    else{
+                        $titleRecurances[$page->title] = 0;
+                    }
+                    $pages[$page->title . "_" . $titleRecurances[$page->title]] = Site::CondenseURLParams(false,$parts);
+                }
             }
             $pages = array_slice($pages, 0, $this->settings->maxRecentPosts, true);
             return $pages;
@@ -114,6 +126,10 @@ class BreadPageSystem extends Module
             if($this->isnewpost)
             {
                 return "New Post";
+            }
+            
+            if(empty($Post->title)){
+                return False;
             }
             return $Post->title;
         }
@@ -529,12 +545,13 @@ class BreadPageSystem extends Module
                }
            }
            //Hacky way to get first post.
-           $posts = get_object_vars($this->settings->postindex);
-           $posts = \Bread\Utilitys::ArraySetKeyByProperty ($posts, "time_released");
-           krsort($posts);
-           foreach($posts as $id => $post)
-               if(!$post->hidden)
-                    return $post->id;
+           //$posts = get_object_vars($this->settings->postindex);
+           //$posts = \Bread\Utilitys::ArraySetKeyByProperty ($posts, "time_released");
+           //krsort($posts);
+           //foreach($posts as $id => $post)
+           //    if(!$post->hidden)
+           //         return $post->id;
+           
         }
         
         function GetActivePost()
@@ -547,7 +564,9 @@ class BreadPageSystem extends Module
                 }
                 else
                 {
-                    return false;
+                    if(Site::getRequest()->requestType == $this->settings->postRequest){
+                        Site::$Logger->writeError("That page does not exist. Sorry :(",\Bread\Logger::SEVERITY_HIGH,"breadpagesystem");
+                    }
                 }
            }
            return Site::CastStdObjectToStruct( $this->activePost, "Bread\Modules\BreadPageSystemPost");

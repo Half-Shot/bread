@@ -552,12 +552,14 @@ class Site
             static::$moduleManager->FireEvent("Bread.FinishedLayoutProcess",null,false);
 	    static::$htmlcode .= "<head>\n";
 	    static::$htmlcode .= static::ProcessMetadata($requestData);
-            $title = static::$moduleManager->FireEvent("Bread.PageTitle");
-            if($title){
-                Site::AddToHeaderCode("<title>" . $title . " - " . self::$configuration->strings->sitename ."</title>");
+            $titleArray = static::$moduleManager->FireEvent("Bread.PageTitle",null,false);
+            if($titleArray == false){
+                    Site::AddToHeaderCode("<title>" . self::$configuration->strings->sitename ."</title>");
             }
-            else {
-                Site::AddToHeaderCode("<title>" . self::$configuration->strings->sitename ."</title>");
+            foreach($titleArray as $title){
+                if($title){
+                    Site::AddToHeaderCode("<title>" . $title . " - " . self::$configuration->strings->sitename ."</title>");
+                }
             }
             static::$htmlcode .= static::$headercode;
 	    static::$htmlcode .= static::$themeManager->CSSLines;
@@ -813,6 +815,7 @@ class Logger
     private $minlog = -1;
     private $logpermodule = true;
     private $messageStack = array();
+    private $reportedErrors = array();
     private $fileStreams = array();
     
     /**
@@ -962,8 +965,11 @@ class Logger
         if(isset(Site::$moduleManager)){
             Site::$moduleManager->FireEvent("Bread.LogError",$severity,false);
             if($severity > static::SEVERITY_LOW){
-                $html = Site::$moduleManager->FireEvent("Theme.DrawError",$message,true);
-                echo $html;
+                if(!in_array($string,$this->reportedErrors)){
+                    $html = Site::$moduleManager->FireEvent("Theme.DrawError",$message,true);
+                    echo $html;
+                    $this->reportedErrors[] = $string;
+                }
             }
         }
         
