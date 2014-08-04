@@ -1,8 +1,10 @@
 dev-bread
 =====
-![Bread Logo](./docs/BreadLogoVersion2.png)
 
 **[Bread Test Site](http://molrams.no-ip.org/bread/devbread/)**
+
+**Currently Requires PHP 5.4 or greater**
+(Working on getting it fixed)
 
 ##Usage
 * Get permissions set up properly, in particular block access to /settings /temp in your
