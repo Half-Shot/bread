@@ -44,10 +44,9 @@ class SettingsManager {
      * Creates a settings folder for your module or just returns the path.
      * You will also want to create settings files.
      * PLEASE use module names and not anything else.
-     * Depreacted due to https://github.com/Half-Shot/bread/issues/51 . Please use the new method GetSettings();
-     * @deprecated since version 0.2
+     * We are changing this soon.
+     * @see https://github.com/Half-Shot/bread/issues/51
      * @param string $dirname The module name.
-     * @see $this::GetSettings()
      * @todo Add a secure way to lock settings files.
      */
     function FindModuleDir($dirname)
@@ -70,6 +69,10 @@ class SettingsManager {
     {
         if(file_exists($filename))
             return False;
+        $dir = dirname($filename);
+        if(!file_exists($dir)){
+            mkdir(dirname($filename), $this::SAVEMODE,true);
+        }
         file_put_contents($filename, '');
         $this->settings[$filename] = $template;
         chmod($filename, $this::SAVEMODE);
@@ -197,7 +200,7 @@ class SettingsManager {
          Site::$Logger->writeMessage ("Saving " . $path, "SettingsManager");
          $string = $this->CompileJson($object);
          $worked = \file_put_contents($path, $string);
-         if($worked == False || $string == "{}" || is_null($string))    
+         if($worked == False || is_null($string))    
              Site::$Logger->writeError ("Couldn't write json to file. path: '" . $path . "'", \Bread\Logger::SEVERITY_MEDIUM,"core" , $shouldThrow, "Bread\Settings\FileNotWrittenException");                  
     }
 }

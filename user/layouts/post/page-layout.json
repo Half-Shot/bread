@@ -64,6 +64,14 @@
                     "description": "Information about a post.",
                     "module": "BreadPageSystem",
                     "event":"BreadPageSystem.Information"
+                },
+                {
+                    "name": "comments",
+                    "id": "comments",
+                    "human": "Comments",
+                    "description": "Where comments on a post are shown.",
+                    "module": "BreadCommentSystem",
+                    "event":"Bread.ShowPageComments"
                 }
             ]
         }

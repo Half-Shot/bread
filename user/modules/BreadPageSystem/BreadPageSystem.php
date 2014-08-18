@@ -169,7 +169,7 @@ class BreadPageSystem extends Module
             $panel->title = "Post Details";
             $form = new \Bread\Structures\BreadForm;
             $form->id = "bps-editorinfo";
-            $form->onsubmit = "saveMarkdown();return false;";
+            //$form->onsubmit = "saveMarkdown();return false;";
             
             $E_Header_Basic = new \Bread\Structures\BreadFormElement;
             $E_Header_Basic->type = \Bread\Structures\BreadFormElement::TYPE_RAWHTML;
@@ -528,6 +528,17 @@ class BreadPageSystem extends Module
            if($page == False)
             return False;
            return Site::$moduleManager->FireEvent("Theme.Post.Title",array("<div id='bps-title'>" . $page->title . "</div>","<div id='bps-subtitle'>" . $page->subtitle . "</div>"));
+        }
+        
+        function GetUniqueID(){
+            $id = $this->GetActivePostPageId();
+            if($id === -1){
+                return false;
+            }
+            else{
+                return "breadpagesystem_" . $id;
+            }
+
         }
         
         function GetActivePostPageId()

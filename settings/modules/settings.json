@@ -39,6 +39,10 @@
         {
             "name": "Gravatar",
             "file": "Gravatar\/module.json"
+        },
+        {
+            "name": "BreadCommentSystem",
+            "file": "BreadCommentSystem\/module.json"
         }
     ]
 }

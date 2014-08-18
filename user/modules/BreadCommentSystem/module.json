@@ -1,0 +1,15 @@
+{
+    "name":"BreadCommentSystem",
+	"entryclass":"BreadCommentSystem",
+	"entryfile":"BreadCommentSystem/Module.php",
+	"events":{
+            "Bread.ProcessRequest":{
+                "function":"Setup",
+                "security":0
+            },
+            "Bread.ShowPageComments":{
+                "function":"ShowComments",
+                "security":0
+            }
+	}
+}

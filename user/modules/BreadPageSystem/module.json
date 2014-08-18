@@ -82,6 +82,10 @@
             "BreadPageSystem.GetHTMLFromMarkdown":{
                 "function":"TransformMDtoHTML",
                 "security":0
+            },
+            "Bread.PageUniqueID":{
+                "function":"GetUniqueID",
+                "security":0
             }
         }
 }

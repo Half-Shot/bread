@@ -130,7 +130,9 @@ class ModuleManager
                 $class = $module->namespace . "\\" . $module->entryclass;
             }
             $this->modules[$ModuleName] = new $class($this,$ModuleName);
-            $this->modules[$ModuleName]->RegisterEvents(); //Legacy!
+            if(method_exists($this->modules[$ModuleName],"RegisterEvents")){ //Only used in old bread modules.
+                $this->modules[$ModuleName]->RegisterEvents(); //Legacy!
+            }
             Site::$Logger->writeMessage('Loaded module ' . $ModuleName);
         }
         else
@@ -441,7 +443,7 @@ class ModuleManager
             }
 
             if(!array_key_exists($moduleName,$this->modules)){
-	        Site::$Logger->writeError ("Couldn't specifically hook module '" . $moduleName . "'. Module not loaded.", \Bread\Logger::SEVERITY_MEDIUM); //Module not found.
+	        Site::$Logger->writeError ("Couldn't specifically hook module '" . $moduleName . "'. Module not loaded.", \Bread\Logger::SEVERITY_LOW); //Module not found.
                 return False;
             }
             

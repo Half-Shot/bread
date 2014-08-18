@@ -49,3 +49,19 @@ body
 {
     width:70%;
 }
+
+
+.navbar-collapse.collapsing{
+    margin-right: 5%;
+    margin-left: 5%;
+    width: 90%;
+    overflow:hidden;
+}
+
+.navbar-collapse.collapse{
+    margin-right: 5%;   
+    margin-left: 5%;
+    width: 90%;
+    overflow:hidden;
+
+}

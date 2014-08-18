@@ -10,7 +10,7 @@
     "logger": {
         "path": ".\/temp\/breadlog",
         "maxlogfiles": 100,
-        "minseveritytolog": -1,
+        "minseveritytolog": 1,
         "multifilelog": true,
         "keepfor": 60
     },

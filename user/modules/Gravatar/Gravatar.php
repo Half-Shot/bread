@@ -26,6 +26,9 @@ class GravatarModule extends Module
                     $size = $args["size"];
                 }
             }
+            else if(is_object($args)){
+                $user = $args;
+            }
             if(isset($user->information->EMail)){
                 $Email = $user->information->EMail;
             }
