@@ -65,3 +65,17 @@ body
     overflow:hidden;
 
 }
+
+.commentbody{
+    font-size:12px;
+    width:80%;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.editable{
+    border: 1px dashed;
+    min-height: 20px;
+    min-width: 20px;
+    max-height: 80px;
+}

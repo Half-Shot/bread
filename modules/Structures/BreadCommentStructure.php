@@ -76,7 +76,22 @@ class BreadComment{
     public $canedit = true;
     
     /**
-     * @Var int UTC time of comment.
+     * @var int UTC time of comment.
      */
     public $time = 0;
+    /**
+     * @var bool Is the contents hidden from view
+     */
+    public $ishidden = false;
+    /**
+     * @var int Karma of the comment.
+     */
+    public $karma = 1;
+    
+    /**
+     * @var integer array UIDs of users who have voted.
+     */
+    public $karmavotees = array();
+    
+    
 }

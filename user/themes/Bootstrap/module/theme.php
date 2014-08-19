@@ -46,8 +46,31 @@ class BootstrapTheme extends Bread\Modules\Module
             $this->manager->RegisterHook($this->name,"Theme.Comment","Comment");
             $this->manager->RegisterHook($this->name,"Theme.Alert","Alert");
             $this->manager->RegisterHook($this->name,"Theme.Table","Table");
+            
+            $this->manager->RegisterHook($this->name,"Theme.GetClass","GetClass");
 	}
     
+        function GetClass($name){
+            switch($name){
+                case "Button.Success":
+                    return "btn-success";
+                case "Button.Warning":
+                    return "btn-warning";
+                case "Button.Info":
+                    return "btn-info";
+                case "Button.Danger":
+                    return "btn-danger";
+                case "Button.Primary":
+                    return "btn-primary";
+                case "Button.Large":
+                    return "btn-lg";
+                case "Button.Small":
+                    return "btn-sm";
+                case "Button.ExtraSmall":
+                    return "btn-xs";
+            }
+        }
+        
 	function Load()
 	{
             $this->breadXML = new BreadXML(Site::FindFile("Bootstrap/theme.xsl"));
@@ -124,16 +147,6 @@ class BootstrapTheme extends Bread\Modules\Module
                 return false;
         }
         
-        function Information($args)
-        {
-            $Vars = array();
-            foreach ($args as $label => $data)
-            {
-                $Vars[] = array("label" => $label,"data" => $data);
-            }
-            return $this->breadXML->GetHTMLOfElement("LabelValuePairs",$Vars);
-        }
-        
         function BuildForm(Bread\Structures\BreadForm $form)
         {
             return $this->breadXML->GetHTMLOfElement("Form",$form);
@@ -203,38 +216,16 @@ class BootstrapTheme extends Bread\Modules\Module
         {
             switch($args)
             {
-                case "bold":
-                    return '<span class="glyphicon glyphicon-bold"></span>';
-                case "italic":
-                    return '<span class="glyphicon glyphicon-italic"></span>';
-                case "list":
-                    return '<span class="glyphicon glyphicon-list"></span>';
                 case "audio":
                     return '<span class="glyphicon glyphicon-volume-up"></span>';
                 case "video":
                     return '<span class="glyphicon glyphicon-film"></span>';
-                case "cog":
-                    return '<span class="glyphicon glyphicon-cog"></span>';
-                case "file":
-                    return '<span class="glyphicon glyphicon-file"></span>';
-                case "pencil":
-                    return '<span class="glyphicon glyphicon-pencil"></span>';
-                case "book":
-                    return '<span class="glyphicon glyphicon-book"></span>';
                 case "close":
                     return '<span class="glyphicon glyphicon-remove-circle"></span>';
-                case "download-alt":
-                    return '<span class="glyphicon glyphicon-download-alt"></span>';
-                case "download":
-                    return '<span class="glyphicon glyphicon-download"></span>';
-                case "upload":
-                    return '<span class="glyphicon glyphicon-upload"></span>';
-                case "tasks":
-                    return '<span class="glyphicon glyphicon-tasks"></span>';
                 case "megaphone":
                     return '<span class="glyphicon glyphicon-bullhorn"></span>';
-                default :
-                    return '<small>' . $args . '</small>';
+                default:
+                    return '<span class="glyphicon glyphicon-' . $args . '"></span>';
             }
         }
         

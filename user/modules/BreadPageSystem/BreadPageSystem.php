@@ -673,12 +673,22 @@ class BreadPageSystem extends Module
             else{
                 $biography = "";
             }
-            $CommentStruct["body"] = $biography . Site::$moduleManager->FireEvent("Theme.Post.Information",$info);
+            $CommentStruct["body"] = $biography;
+            $PostInfo = "";
+            foreach($info as $label => $value){
+                $PostInfo .= "<div><b>" . $label . "</b> - " . $value . "</div>";
+            }
             $CommentHTML = Site::$moduleManager->FireEvent("Theme.Comment",$CommentStruct);
-            $GridCell = new \stdClass();
-            $GridCell->size = 4;
-            $GridCell->body = $CommentHTML;
-            $Grid = Site::$moduleManager->FireEvent("Theme.Layout.Grid.HorizonalStack",array($GridCell));
+            
+            $GridCellBio = new \stdClass();
+            $GridCellBio->size = 6;
+            $GridCellBio->body = $CommentHTML;
+            
+            $GridCellPostInfo = new \stdClass();
+            $GridCellPostInfo->size = 6;
+            $GridCellPostInfo->body = $PostInfo;
+            
+            $Grid = Site::$moduleManager->FireEvent("Theme.Layout.Grid.HorizonalStack",array($GridCellBio,$GridCellPostInfo));
             return $Grid;
         }
         

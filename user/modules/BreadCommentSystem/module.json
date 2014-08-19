@@ -10,6 +10,14 @@
             "Bread.ShowPageComments":{
                 "function":"ShowComments",
                 "security":0
+            },
+            "BreadCommentSystem.UpvoteComment":{
+                "function":"Upvote",
+                "security":1
+            },
+            "BreadCommentSystem.DownvoteComment":{
+                "function":"Downvote",
+                "security":1
             }
 	}
 }

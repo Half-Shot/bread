@@ -33,14 +33,17 @@ class GravatarModule extends Module
                 $Email = $user->information->EMail;
             }
             else{
-                return false;
+                $Email = "fake";
             }
             $url = 'http://www.gravatar.com/avatar/';
             $url .= md5( strtolower( trim( $Email ) ) );
             if(isset($size)){
-                $url .= "?s=".$size . "";
+                $url .= "?s=".$size . "&d=mm";
             }
-            return $url;
+            else{
+                 $url .= "?d=mm";
+            }
+            return $url ;
         }
 
 }
