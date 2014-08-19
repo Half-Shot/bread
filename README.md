@@ -1,8 +1,10 @@
 dev-bread
 =====
-![Bread Logo](./docs/BreadLogoVersion2.png)
 
 **[Bread Test Site](http://molrams.no-ip.org/bread/devbread/)**
+
+**Currently Requires PHP 5.4 or greater**
+(Working on getting it fixed)
 
 ##Usage
 * Get permissions set up properly, in particular block access to /settings /temp in your
@@ -37,9 +39,9 @@ understanding of this and I try to mimic that.
 
 
 ###Is it right for me?
-It is a bit late in the day for that sort of question but its a good one. Bread is still in early development and requires some knowledge of PHP
+It is a bit early in the day for that sort of question but its a good one. Bread is still in early development and requires some knowledge of PHP
 to make real use of it due to missing features but already it can function as a simple page manager but we are at the tip of the iceberg. Bread has
-a near complete core system and  I have personally built 5 modules for it so far and its going to get a lot easier to use with my time being dedicated
+a near complete core system and  I have personally built >5 modules for it so far and its going to get a lot easier to use with my time being dedicated
 to features and usability rather than core code (except when I find bugs)
 
 
