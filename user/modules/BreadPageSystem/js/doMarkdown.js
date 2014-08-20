@@ -5,7 +5,6 @@
  */
 
 var UsingEditor = (typeof epiceditor_basepath != "undefined");
-
 var mdParser = new Markdown.Converter();
 Markdown.Extra.init(mdParser);
 var editorState = 0;

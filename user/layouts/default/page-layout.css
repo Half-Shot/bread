@@ -79,3 +79,34 @@ body
     min-width: 20px;
     max-height: 80px;
 }
+#bcs-editor{
+    margin:10px;
+}
+.standardbuttons{
+    position:relative;
+    width:20%;
+    
+}
+.editorbuttons{
+    position:relative;
+    left:40%;
+    width:100%;
+}
+.standardbuttons{
+    position:relative;
+    left:0%;
+    width:20%;
+    
+}
+.standardbuttons .btn-group{
+    width:100%;
+    display:inline;
+}
+
+.editorbuttons .btn-group{
+    width:100%;
+    display:inline;
+}
+.editorbuttons .btn{
+    width:15%;
+}

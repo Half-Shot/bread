@@ -83,15 +83,11 @@ class BreadComment{
      * @var bool Is the contents hidden from view
      */
     public $ishidden = false;
-    /**
-     * @var int Karma of the comment.
-     */
-    public $karma = 1;
     
     /**
      * @var integer array UIDs of users who have voted.
      */
-    public $karmavotees = array();
-    
+    public $karmaupvotees = array();
+    public $karmadownvotees = array();
     
 }

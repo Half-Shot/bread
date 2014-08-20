@@ -18,6 +18,10 @@
             "BreadCommentSystem.DownvoteComment":{
                 "function":"Downvote",
                 "security":1
+            },
+            "BreadCommentSystem.writeComment":{
+                "function":"AddComment",
+                "security":1
             }
 	}
 }

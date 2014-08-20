@@ -419,7 +419,7 @@ class BreadPageSystem extends Module
                $ToolbarHTML = $this->GenerateEditorToolbar();
                $editor = "editor";
                Site::AddRawScriptCode("var epiceditor_basepath ='" . Site::ResolvePath("%user-modules/BreadPageSystem/css/") . "';");//Dirty Hack
-               Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/epiceditor.min.js"), true);
+               Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/epiceditor.min.js"),"EpicEditor", true);
            }
            return "<div class='bps-content' " . $editor . "><textarea class='bps-markdown'>" . $markdown ."</textarea></div>" . $ToolbarHTML;
         }
@@ -472,9 +472,9 @@ class BreadPageSystem extends Module
         {   
             if(!$this->loadedScripts)
             {
-                Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/Markdown.Converter.js"),true);
-                Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/Markdown.Extra.js"),true);
-                Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/doMarkdown.js"), true);
+                Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/Markdown.Converter.js"),"MarkdownConverter",true);
+                Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/Markdown.Extra.js"),"MarkdownExtra",true);
+                Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/doMarkdown.js"),"BreadPageSystemMarkdownScript", true);
                 $this->loadedScripts = true;
             }
             Site::AddRawScriptCode("DoMarkdown();",true);

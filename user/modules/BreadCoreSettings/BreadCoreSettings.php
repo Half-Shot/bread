@@ -510,27 +510,27 @@ class BreadCoreSettings extends Module
                     if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadCoreSettings.Settings.Read")){
                         break;
                     }   
-                    Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/corepanelSettings.js") , true);
+                    Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/corepanelSettings.js"),"BreadCoreSettingsSettings" , true);
                     $this->MainSettingsPanel($Tab_CoreSettings);
                     break;
                 case 1:
                     if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadCoreSettings.Logger.Read")){
                         break;
                     }
-                    Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/corepanelLogger.js") , true);
+                    Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/corepanelLogger.js"),"BreadCoreSettingsLogger" , true);
                     $this->LoggerPanel($Tab_Logging);
                     break;
                 case 2:
                     if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadCoreSettings.Updater.Read")){
                         break;
                     }
-                    Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/corepanelUpdater.js") , true);
+                    Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/corepanelUpdater.js"), "BreadCoreSettingsUpdater" , true);
                     $this->UpdateBreadPanel($Tab_UpdateBread);
                 case 3:
                     if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadCoreSettings.Modules.Read")){
                         break;
                     }
-                    //Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/corepanelModules.js") , true);
+                    //Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/corepanelModules.js"),"BreadCoreSettingsModules" , true);
                     $this->ModulesPanel($Tab_ModuleSettings);
                 default:
                     break;

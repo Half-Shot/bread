@@ -83,7 +83,7 @@ class BreadFormBuilder extends Module
         }
         
         if(!$this->includedScript){
-            Site::AddScript(Util::FindFile("BreadFormBuilder/js/BreadForm.js"), true);
+            Site::AddScript(Util::FindFile("BreadFormBuilder/js/BreadForm.js"),"BreadFormScript" ,true);
             $this->includedScript = true;
         }
         Site::AddRawScriptCode('$("#' . $args->id . '").submit(function() { BreadFormSend(this,"' . $args->breadReturnEvent . '", "' . $args->breadReturnModule . '","' . $args->method . '");});', true);

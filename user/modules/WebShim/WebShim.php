@@ -10,8 +10,8 @@ class WebShimLoader extends Module
     
 	function LoadJS()
 	{
-            Site::AddScript(Site::FindFile("WebShim/modernizr.js"));
-            Site::AddScript(Site::FindFile("WebShim/js-webshim/polyfiller.js"));
+            Site::AddScript(Site::FindFile("WebShim/modernizr.js"),"Modernizr");
+            Site::AddScript(Site::FindFile("WebShim/js-webshim/polyfiller.js"),"WebShim");
             Site::AddRawScriptCode("webshims.setOptions('forms-ext', {replaceUI: 'auto'});webshims.polyfill('forms forms-ext');");
         }
 

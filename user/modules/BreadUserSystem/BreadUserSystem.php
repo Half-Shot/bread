@@ -381,7 +381,7 @@ class BreadUserSystem extends Module
         if(!$args[0])
             return $MasterSettings;
 
-        Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/adminpanel.js"),true);
+        Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/adminpanel.js"),"AdminPanelScript",true);
         //Current Users Table
         $PostConfigurator->Panels[] = $this->ConstructUserPanel();
         

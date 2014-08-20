@@ -92,7 +92,7 @@ class ThemeManager
             }
             if(isset($this->Theme["data"]->js)){
                 foreach($this->Theme["data"]->js as $script){
-                    Site::AddScript(Site::FindFile($script));
+                    Site::AddScript(Site::FindFile($script),basename($script));
                 }
             }
             Site::$moduleManager->RegisterSelectedTheme();
@@ -287,7 +287,7 @@ class ThemeManager
                foreach($Layout->scripts as $path)
                {
                    try {
-                       Site::AddScript(Site::FindFile($path));
+                       Site::AddScript(Site::FindFile($path),basename($path));
                    } catch (\Exception $exc) {
                        Site::$Logger->writeError("Failed to find Scriptfile File '" . $path .", ignoring.'",\Bread\Logger::SEVERITY_MEDIUM,"core", false);
                        continue;

@@ -22,20 +22,6 @@
  * THE SOFTWARE.
  */
 window.CommentMaxChars = false;
-$(".editable").keyup(function(){
-    var CharLeftElement = $(this).parent().find(".commentcharsleft");
-    if(window.CommentMaxChars == false){
-        window.CommentMaxChars = parseInt(CharLeftElement.text())
-    }
-    
-    var CharsExceeding = this.textContent.length - window.CommentMaxChars;
-    if(CharsExceeding > 0)
-    {
-       $(this).text(this.textContent.slice(0,-CharsExceeding));
-    }
-    
-    CharLeftElement.text(window.CommentMaxChars - this.textContent.length);
-});
 
 $("#editcomment-button").click(function(){
     alert("Edited!");
@@ -47,34 +33,107 @@ $("#deletecomment-button").click(function(){
 
 
 $("#savecomment-button").click(function(){
-    alert("Saved!");
+    if(NewCommentEditor.editor.textContent !== ""){
+        $.post( "index.php", {ajaxModule:"BreadCommentSystem",ajaxEvent:"BreadCommentSystem.writeComment",text:NewCommentEditor.editor.textContent,uniqueid:window.pageuniqueid}, function(returndata)
+        {
+            if(returndata === "0")
+            {
+                //Failed to comment.
+                alert("Failed to write comment!");
+            }
+            else
+            {
+                //Comment arrived.
+                $(NewCommentEditor.element).parent().parent().parent().append(returndata);
+            }
+        });
+    }
 });
 
-$(".upvotecomment-button").click(function(){
-    var parent = $(this).parent().parent().parent();
+function scoreComment(upvote,button){
+    var parent = $(button).parent().parent().parent().parent();
     var index = parseInt(parent.find("index").text());
-    $.post( "index.php", {ajaxModule:"BreadCommentSystem",ajaxEvent:"BreadCommentSystem.UpvoteComment",commentid:index,uniqueid:window.pageuniqueid}, function(returndata)
+    if(upvote){
+        ajaxEvent = "BreadCommentSystem.UpvoteComment";
+        modifier = 1 //Don't get excited, this only changes your javascript view. The vote still only counts for 1.
+    }
+    else{
+        ajaxEvent = "BreadCommentSystem.DownvoteComment";
+        modifier = -1
+    }
+    $.post( "index.php", {ajaxModule:"BreadCommentSystem",ajaxEvent:ajaxEvent,commentid:index,uniqueid:window.pageuniqueid}, function(returndata)
     {
-        if(returndata === "1")
-        {
+        if(returndata !== "Fail"){
             var score = parent.find(".stats .score .badge");
-            var value = parseInt(score.text());
-            value += 1
-            score.text(value);
-            
-        }
-        else if(returndata === "2"){
-            var score = parent.find(".stats .score .badge");
-            var value = parseInt(score.text());
-            value -= 1
-            score.text(value);
+            score.text(returndata);
         }
         else{
-            alert("There was a problem upvoting this comment.")
+            alert("There was a problem scoring this comment.")
         }
     });
+}
+
+$(".upvotecomment-button").click(function(){
+    scoreComment(true,this);
 });
 
-$("#downvotecomment-button").click(function(){
-    alert("Downvoted!")
+$(".downvotecomment-button").click(function(){
+    scoreComment(false,this);
+});
+
+/*
+ * Markdown Stuff
+ */
+window.mdParser = new Markdown.Converter();
+Markdown.Extra.init(window.mdParser);
+var opts = {
+      container: 'bcs-editor',
+      basePath: epiceditor_basepath,
+      clientSideStorage: false,
+      parser: window.mdParser.makeHtml,
+      file: {
+        name: 'epiceditor',
+        defaultContent: ''
+      },
+      theme: {
+        base: 'epiceditor.css',
+        preview: 'preview-dark.css',
+        editor: 'epic-dark.css'
+      },
+      button: {
+        preview: true,
+        bar: "auto"
+      },
+      focusOnLoad: false,
+      shortcut: {
+        modifier: 18,
+        fullscreen: 70,
+        preview: 80
+      },
+      string: {
+        togglePreview: 'Toggle Preview Mode',
+        toggleEdit: 'Toggle Edit Mode'
+      },
+      autogrow: true
+    };
+NewCommentEditor = new EpicEditor(opts).load();
+
+$(document).bind("editorChange",function(obj,text){
+    commentBox = NewCommentEditor.element;
+    var CharLeftElement = $(commentBox).parent().find(".commentcharsleft");
+    if(window.CommentMaxChars == false){
+        window.CommentMaxChars = parseInt(CharLeftElement.text())
+    }
+    
+    var CharsExceeding = text.length - window.CommentMaxChars;
+    if(CharsExceeding > 0)
+    {
+       $(NewCommentEditor.editor).focus().text('').text(text.slice(0,-CharsExceeding));
+    }
+    
+    CharLeftElement.text(window.CommentMaxChars - text.length);
+});
+
+$(NewCommentEditor.editor).keyup(function(){
+    $(parent.document).trigger("editorChange",this.textContent);
 });

@@ -19,6 +19,12 @@ use Bread\Structures\BreadRequestCommand as BreadRequestCommand;
  */
 class Site
 {       
+        /**
+         *
+         * @var string array Names of loaded Scripts
+         */
+        private static $loadedScripts = array();
+    
         private static $configurl;
         /**
         * Bread's Master configuration file, the only hardcoded path in bread.
@@ -186,17 +192,21 @@ class Site
         /**
          * Adds a script to the head of the document.
          * @param string $location The location of the file.
+         * @param string $name Name of the script. Used to stop multiple scripts of the same thing being loaded.
          * @param string $mimetype The type of script, directed by mimetype. Default is javascript.
          * @param bool $isLow Is the script low priority, and can be added to the end of the document instead of the head.
          */
-        public static function AddScript($location,$isLow = False,$mimetype = 'text/javascript')
+        public static function AddScript($location,$name,$isLow = False,$mimetype = 'text/javascript')
         {
-            if($isLow){
-                static::$LowPriorityScriptLines .= "<script type='" . $mimetype . "' src='" . $location . "'></script>\n";
-            }
-            else
-            {
-                static::$ScriptLines .= "<script type='" . $mimetype . "' src='" . $location . "'></script>\n";
+            if(!in_array($name,static::$loadedScripts)){
+                static::$loadedScripts[] = $name;
+                if($isLow){
+                    static::$LowPriorityScriptLines .= "<script type='" . $mimetype . "' src='" . $location . "'></script>\n";
+                }
+                else
+                {
+                    static::$ScriptLines .= "<script type='" . $mimetype . "' src='" . $location . "'></script>\n";
+                }
             }
         }
         
