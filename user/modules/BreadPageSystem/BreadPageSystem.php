@@ -100,8 +100,7 @@ class BreadPageSystem extends Module
             //Get a settings file.
             $rootSettings = Site::$settingsManager->FindModuleDir("breadpages");
             $this->settingspath = $rootSettings . "settings.json";
-            Site::$settingsManager->CreateSettingsFiles($this->settingspath, new BreadPageSystemSettings());
-            $this->settings = Site::$settingsManager->RetriveSettings($this->settingspath);
+            $this->settings = Site::$settingsManager->RetriveSettings("breadpages#settings",true,new BreadPageSystemSettings());
             if( ( time() - $this->settings->BuildTime) > $this->settings->CheckIndexEvery){
                 $this->BuildIndex();
             }

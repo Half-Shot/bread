@@ -638,10 +638,7 @@ class BreadCoreSettings extends Module
 
         function OpenSettings()
         {
-            //Get a settings file.
-            $rootSettings = Site::$settingsManager->FindModuleDir("breadcoresettings");
-            $path = Site::$settingsManager->CreateSettingsFiles($rootSettings . "settings.json", new CoreSettingsStructure());
-            $this->settings = Site::$settingsManager->RetriveSettings($rootSettings . "settings.json");
+            $this->settings = Site::$settingsManager->RetriveSettings("breadcoresettings#settings", new CoreSettingsStructure());
         }
 }
 

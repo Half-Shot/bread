@@ -187,8 +187,7 @@ class BreadAdminTools extends Module
         //Get a settings file.
         $rootSettings = Site::$settingsManager->FindModuleDir("breadadmintools");
         $this->settingspath = $rootSettings . "settings.json";
-        Site::$settingsManager->CreateSettingsFiles($this->settingspath, new BreadAdminToolsSettings());
-        $this->settings = Site::$settingsManager->RetriveSettings($this->settingspath);
+        $this->settings = Site::$settingsManager->RetriveSettings("breadadmintools#settings",true, new BreadAdminToolsSettings());
         
         $Params = Site::getURLParams();
         if(array_key_exists("cpanel_cpindex", $Params)){

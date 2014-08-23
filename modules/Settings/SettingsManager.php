@@ -117,29 +117,40 @@ class SettingsManager {
         }
     }
     
-    
-    
     /**
      * Retrives the settings file.
      * @param string $path The path of the file.
      * @param boolean $dontsave Don't save the file to the array.
+     * @param stdObject $template Template to use if the file does not exist. Leave as null if not required.
      * @throws FileNotFoundException
      * @throws FailedToParseException
      */
-    function RetriveSettings($path,$dontsave = False)
+    function RetriveSettings($path,$dontsave = False,$template = null)
     {
         if(array_key_exists($path, $this->settings))
         {
             return $this->settings[$path];
         }
-        //Extract Settings File
-        if(!file_exists($path))
+        $parts = explode("#",$path,2);
+        if(count($parts) > 1){
+            $modulePath = $this->FindModuleDir($parts[0]);
+            $parts[1] = str_replace(".json", "", $parts[1]);
+            //JSON for now.
+            $path = $modulePath . "/" . $parts[1] . ".json";
+        }
+        if(file_exists($path)){
+            //Extract Settings File
+            $jsonObj = $this->GetJsonObject($path);
+            if(!$dontsave){
+                $this->settings[$path] = $jsonObj;
+            }
+            if($template !== null && !empty($template)){
+                $this->CreateSettingsFiles($path,$template);
+            }
+        }
+        else{
             Site::$Logger->writeError ("Couldn't load path '" . $path . "' for parsing settings.", \Bread\Logger::SEVERITY_MEDIUM, "core" , True, "Bread\Settings\FileNotFoundException");   
-        
-        $jsonObj = $this->GetJsonObject($path);
-        if(!$dontsave)
-            $this->settings[$path] = $jsonObj;
-        
+        }
         return $jsonObj;
     }
     

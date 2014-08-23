@@ -355,12 +355,11 @@ class Site
 	public static function SetupManagers()
 	{
             $path = static::ResolvePath("%system-settings");
-            if(!static::$isAjax)
-                static::$themeManager = new Themes\ThemeManager();
+            static::$themeManager = new Themes\ThemeManager();
             static::$moduleManager = new Modules\ModuleManager();
             static::$settingsManager = new Settings\SettingsManager();
+            static::$themeManager->LoadSettings($path . "/theme/settings.json");
             if(!static::$isAjax){
-                static::$themeManager->LoadSettings($path . "/theme/settings.json");
                 static::$themeManager->LoadLayouts();
             }
             static::$moduleManager->LoadModulesFromConfig();
@@ -417,18 +416,6 @@ class Site
             $Params = static::DigestURL($URL);
             static::$baseurl = $Params["BASEURL"];
             static::$URLParameters = $Params;
-            //Override for ajax.
-            //TODO: Allow use to turn this off, could be used as a backdoor.
-            if(static::$configuration->core->debug && array_key_exists("ajax", $Params)){
-                    static::$isAjax = true;
-                    $requestObject->theme = false;
-                    $requestObject->layout = false;
-                    $requestObject->modules = $requestDB->master->modules;
-                    $requestObject->requestType = "ajax";
-                    $requestObject->arguments = $Params;
-                    static::$Request = $requestObject;
-                    return true;
-            }
             if(isset($requestDB->master->layout))
                 $requestObject->layout = $requestDB->master->layout;
             
@@ -489,6 +476,18 @@ class Site
             if(array_key_exists("layout", $Params))
                 $requestObject->layout = $Params["layout"];
             
+            //Override for ajax.
+            //TODO: Allow use to turn this off, could be used as a backdoor.
+            if(static::$configuration->core->debug && array_key_exists("ajax", $Params)){
+                    static::$isAjax = true;
+                    //$requestObject->theme = false;
+                    $requestObject->layout = false;
+                    $requestObject->modules = $requestDB->master->modules;
+                    $requestObject->requestType = "ajax";
+                    $requestObject->arguments = $Params;
+                    static::$Request = $requestObject;
+                    return true;
+            }
             
             $requestObject->arguments = $Params;
             static::$Request = $requestObject;
@@ -511,6 +510,9 @@ class Site
 	    //Load required modules.
             if(static::$isAjax)
             {
+                if(!static::$themeManager->SelectTheme($requestData)){
+                    static::$Logger->writeError("[AJAX] Couldn't select theme from request.",\Bread\Logger::SEVERITY_LOW,"core",false);
+                }
                 // Turn off all error reporting
                 static::ShowDebug(false);
                 site::$Logger->writeMessage("Request is AJAX!");
