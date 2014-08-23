@@ -1,82 +1,97 @@
 {
-    "name":"BreadUserSystem",
-    "entryclass":"BreadUserSystem",
-    "entryfile":"BreadUserSystem/BreadUserSystem.php",
-    "events":{
-        "Bread.Security.GetCurrentUser":{
-            "function":"GetCurrentUser"
-        },			
-        "Bread.Security.GetPermission":{
-            "function":"HasPermission"
+    "name": "BreadUserSystem",
+    "entryclass": "BreadUserSystem",
+    "entryfile": "BreadUserSystem\/BreadUserSystem.php",
+    "events": {
+        "Bread.Security.GetCurrentUser": {
+            "function": "GetCurrentUser",
+            "security": 0
         },
-        "Bread.Security.GetUser":{
-                "function":"GetUserByUID"
+        "Bread.Security.GetPermission": {
+            "function": "HasPermission",
+            "security": 0
         },
-        "Bread.ProcessRequest":{
-                "function":"Setup"
-        },			
-        "BreadUserSystem.LoginName":{
-                "function":"DrawLoginName"
-        },			
-        "BreadUserSystem.LoginButton":{
-                "function":"LoginButton"
-        },			
-        "Bread.Security.LoginUser":{
-                "function":"DoLogin",
-                "security":1
-        },			
-        "Bread.Security.RegisterNewUser":{
-                "function":"RegisterNewUser",
-                "security":1
-        },			
-        "Bread.Security.Logout":{
-                "function":"Logout",
-                "security":1
-        },			
-        "BreadUserSystem.GetNavbarIndex":{
-                "function":"CreateLoginLink"
-        },			
-        "BreadAdminTools.AddModuleSettings":{
-            "function":"ConstructAdminSettings",
-                    "dependencies":[{
-                    "event":"Bread.ProcessRequest",
-                    "module":"BreadFormBuilder"
-            }]
+        "Bread.Security.GetUser": {
+            "function": "GetUserByUID",
+            "security": 0
         },
-        "BreadUserSystem.GetUserInfo":{
-            "function":"AjaxUserInfo",
-            "security":1
+        "Bread.ProcessRequest": {
+            "function": "Setup",
+            "security": 0
         },
-        "BreadUserSystem.EditUserInfo":{
-            "function":"AjaxWriteUserInfo",
-            "security":1
+        "BreadUserSystem.LoginName": {
+            "function": "DrawLoginName",
+            "security": 0
         },
-        "BreadUserSystem.ValidateUsername":{
-            "function":"ValidateUsername",
-            "security":0
+        "BreadUserSystem.LoginButton": {
+            "function": "LoginButton",
+            "security": 0
         },
-        "BreadUserSystem.ValidatePassword":{
-            "function":"ValidatePassword",
-            "security":0
+        "Bread.Security.LoginUser": {
+            "function": "DoLogin",
+            "security": 1
         },
-        "BreadUserSystem.RemoveUser":{
-            "function":"AjaxRemoveUser",
-            "security":1
+        "Bread.Security.RegisterNewUser": {
+            "function": "RegisterNewUser",
+            "security": 1
         },
-        "Bread.Security.ChangeUsername":{
-            "function":"ChangeUsername"
+        "Bread.Security.Logout": {
+            "function": "Logout",
+            "security": 1
         },
-        "Bread.Security.ChangePassword":{
-            "function":"ChangePassword"
+        "BreadUserSystem.GetNavbarIndex": {
+            "function": "CreateLoginLink",
+            "security": 0
         },
-        "Bread.Security.ChangeInformation":{
-            "function":"ChangeInformation"
+        "BreadAdminTools.AddModuleSettings": {
+            "function": "ConstructAdminSettings",
+            "dependencies": [
+                {
+                    "event": "Bread.ProcessRequest",
+                    "module": "BreadFormBuilder"
+                }
+            ],
+            "security": 0
         },
-        "Bread.Security.AddUser":{
-            "function":"AddNewUser"
+        "BreadUserSystem.GetUserInfo": {
+            "function": "AjaxUserInfo",
+            "security": 1
         },
-        "Bread.Security.RemoveUser":{
-            "function":"RemoveUser"
+        "BreadUserSystem.EditUserInfo": {
+            "function": "AjaxWriteUserInfo",
+            "security": 1
+        },
+        "BreadUserSystem.ValidateUsername": {
+            "function": "ValidateUsername",
+            "security": 0
+        },
+        "BreadUserSystem.ValidatePassword": {
+            "function": "ValidatePassword",
+            "security": 0
+        },
+        "BreadUserSystem.RemoveUser": {
+            "function": "AjaxRemoveUser",
+            "security": 1
+        },
+        "Bread.Security.ChangeUsername": {
+            "function": "ChangeUsername",
+            "security": 0
+        },
+        "Bread.Security.ChangePassword": {
+            "function": "ChangePassword",
+            "security": 0
+        },
+        "Bread.Security.ChangeInformation": {
+            "function": "ChangeInformation",
+            "security": 0
+        },
+        "Bread.Security.AddUser": {
+            "function": "AddNewUser",
+            "security": 0
+        },
+        "Bread.Security.RemoveUser": {
+            "function": "RemoveUser",
+            "security": 0
         }
     }
 }

@@ -13,12 +13,9 @@ class BreadIndexSystem extends Module
     
     function Setup()
     {
-        $rootSettings = Site::$settingsManager->FindModuleDir("breadindexsystem");
-        Site::$settingsManager->CreateSettingsFiles($rootSettings . "index.json", array());
-        $this->navbar = Site::$settingsManager->RetriveSettings($rootSettings . "index.json");
-        
-        Site::$settingsManager->CreateSettingsFiles($rootSettings . "settings.json", new BreadIndexSystemSettings);
-        $this->settings = Site::CastStdObjectToStruct(Site::$settingsManager->RetriveSettings($rootSettings . "settings.json"), "\Bread\Modules\BreadIndexSystemSettings");
+        $this->navbar   = Site::$settingsManager->RetriveSettings("breadindexsystem#index",true, array());
+        $this->settings = Site::$settingsManager->RetriveSettings("breadindexsystem#settings",true,new BreadIndexSystemSettings());
+        $this->settings = Site::CastStdObjectToStruct($this->settings, "\Bread\Modules\BreadIndexSystemSettings");
     }
     
     function GetPages()

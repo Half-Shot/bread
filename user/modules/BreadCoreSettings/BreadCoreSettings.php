@@ -471,7 +471,7 @@ class BreadCoreSettings extends Module
         
         function Setup($args)
         {
-            $this->OpenSettings();
+            $this->settings = Site::$settingsManager->RetriveSettings("breadcoresettings#settings",false, new CoreSettingsStructure());
             if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadCoreSettings.Read"))
                 return false;
             $CoreSettingsCP = new \Bread\Structures\BreadModuleSettings;
@@ -546,7 +546,7 @@ class BreadCoreSettings extends Module
         
         function UpdateBread()
         {            
-            $this->OpenSettings();
+            $this->settings = Site::$settingsManager->RetriveSettings("breadcoresettings#settings",false, new CoreSettingsStructure());
             if(!$this->manager->FireEvent("Bread.Security.GetPermission","Bread.SystemUpdate"))
                 return "FAIL";
             Site::$Logger->writeMessage("Bread Update Requested!", "backuplog");
@@ -634,14 +634,6 @@ class BreadCoreSettings extends Module
             Site::$Logger->writeMessage("Downloading " . $url, "backuplog");
             file_put_contents($file, $response->raw_body);
             return true;
-        }
-
-        function OpenSettings()
-        {
-            //Get a settings file.
-            $rootSettings = Site::$settingsManager->FindModuleDir("breadcoresettings");
-            $path = Site::$settingsManager->CreateSettingsFiles($rootSettings . "settings.json", new CoreSettingsStructure());
-            $this->settings = Site::$settingsManager->RetriveSettings($rootSettings . "settings.json");
         }
 }
 

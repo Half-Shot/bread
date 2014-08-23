@@ -2,23 +2,18 @@
 namespace Bread\Modules;
 use Bread\Site as Site;
 use Bread\Utilitys as Util;
-use Bread\Structures\BreadForm as BreadForm;
-use Bread\Structures\BreadFormElement as BreadFormElement;
 
 class BreadFormBuilder extends Module
 {
     public $includedScript = false;
-	function __construct($manager,$name)
-	{
-		parent::__construct($manager,$name);
-	}
+    function __construct($manager,$name)
+    {
+            parent::__construct($manager,$name);
+    }
         
     function Setup()
     {
-        //Get a settings file.
-        $rootSettings = Site::$settingsManager->FindModuleDir("breadforms");
-        Site::$settingsManager->CreateSettingsFiles($rootSettings . "forms.json", array());
-        $this->forms = Site::$settingsManager->RetriveSettings($rootSettings . "forms.json");
+        $this->forms = Site::$settingsManager->RetriveSettings("breadforms#forms",true,array());
     }
     
     function DrawForm($args)

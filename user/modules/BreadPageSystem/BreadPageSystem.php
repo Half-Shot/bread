@@ -100,8 +100,7 @@ class BreadPageSystem extends Module
             //Get a settings file.
             $rootSettings = Site::$settingsManager->FindModuleDir("breadpages");
             $this->settingspath = $rootSettings . "settings.json";
-            Site::$settingsManager->CreateSettingsFiles($this->settingspath, new BreadPageSystemSettings());
-            $this->settings = Site::$settingsManager->RetriveSettings($this->settingspath);
+            $this->settings = Site::$settingsManager->RetriveSettings($this->settingspath,false, new BreadPageSystemSettings());
             if( ( time() - $this->settings->BuildTime) > $this->settings->CheckIndexEvery){
                 $this->BuildIndex();
             }
@@ -761,7 +760,7 @@ class BreadPageSystem extends Module
              }
              
              $url = $this->settings->postdir . "/" . $this->settings->postindex->$id->url;
-             $pageData = Site::$settingsManager->RetriveSettings($this->settings->postindex->$id->jsonurl,True); //Get actual file
+             $pageData = Site::$settingsManager->RetriveSettings($this->settings->postindex->$id->jsonurl); //Get actual file
              
              if($pageData->name != $_POST["name"])
              {

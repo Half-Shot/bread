@@ -91,9 +91,7 @@ class BreadCommentSystem extends Module{
     function Setup()
     {
         //Get hash.
-        $rootSettings = Site::$settingsManager->FindModuleDir("breadcommentsystem");
-        Site::$settingsManager->CreateSettingsFiles($rootSettings . "settings.json",new BreadCommentSystemSettings());
-        $this->settings = Site::$settingsManager->RetriveSettings($rootSettings . "settings.json");
+        $this->settings = Site::$settingsManager->RetriveSettings("breadcommentsystem#settings.json",false,new BreadCommentSystemSettings());
         $this->settings = Util::CastStdObjectToStruct($this->settings,"Bread\Modules\BreadCommentSystemSettings");
     }
     
@@ -105,8 +103,7 @@ class BreadCommentSystem extends Module{
             }
             else{
                 $path = Util::ResolvePath("%user-content/comments/" . $this->uniqueID . ".json");
-                Site::$settingsManager->CreateSettingsFiles($path,new BreadCommentsStack());
-                $this->comments = Site::$settingsManager->RetriveSettings($path);
+                $this->comments = Site::$settingsManager->RetriveSettings($path,false,new BreadCommentsStack());
             }
             $this->completedPageSetup = true;
             

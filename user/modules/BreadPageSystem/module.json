@@ -1,91 +1,93 @@
 {
-    "name":"BreadPageSystem",
-	"entryclass":"BreadPageSystem",
-	"entryfile":"BreadPageSystem/BreadPageSystem.php",
-	"events":{
-            "Bread.DrawModule":{
-                "function":"DrawPage",
-                "security":0
-            },
-            "Bread.ProcessRequest":{
-                    "function":"Setup",
-                    "security":0,
-                    "dependencies":[{
-                    "event":"Bread.ProcessRequest",
-                    "module":"BreadUserSystem"
-                    }]
-            },
-            "Bread.LowPriorityScripts":{
-                "function":"GenerateHTML",
-                "security":0
-            },
-            "BreadPageSystem.DrawRecentPosts":{
-                "function":"DrawRecentPosts",
-                "security":0
-            },
-            "Bread.Title":{
-                "function":"DrawTitle",
-                "security":0
-            },
-            "BreadPageSystem.PlainMarkdown":{
-                "function":"DrawPlainMarkdown",
-                "security":0
-            },
-            "BreadPageSystem.BreadCrumbs":{
-                "function":"DrawBreadcrumbs",
-                "security":0
-            },
-            "BreadPageSystem.Information":{
-                "function":"DrawPostInformation",
-                "security":0
-            },
-            "BreadPageSystem.EditorButton":{
-                "function":"DrawMarkdownToggleswitch",
-                "security":0
-            },
-            "BreadPageSystem.EditorToolbar":{
-                "function":"EditorToolbar",
-                "security":0
-            },
-            "BreadPageSystem.SavePost":{
-                "function":"SavePost",
-                "security":1
-            },
-            "BreadPageSystem.DeletePost":{
-                "function":"DeletePost",
-                "security":1
-            },
-            "BreadPageSystem.EditorInformation":{
-                "function":"PostEditorInformationPanel",
-                "security":0
-            },
-            "Bread.PageTitle":{
-                "function":"SetSiteTitle",
-                "security":0
-            },
-            "Bread.TokenizeText":{
-                "function":"BasicTokens",
-                "security":1
-            },
-            "Bread.TokenizePost":{
-                "function":"TokenizeArticle",
-                "security":1
-            },
-            "Bread.GetAllPages":{
-                "function":"ReturnBreadPages",
-                "security":0
-            },
-            "BreadAdminTools.AddModuleSettings":{
-                "function":"ConstructAdminSettings",
-                "security":0
-            },
-            "BreadPageSystem.GetHTMLFromMarkdown":{
-                "function":"TransformMDtoHTML",
-                "security":0
-            },
-            "Bread.PageUniqueID":{
-                "function":"GetUniqueID",
-                "security":0
-            }
+    "name": "BreadPageSystem",
+    "entryclass": "BreadPageSystem",
+    "entryfile": "BreadPageSystem\/BreadPageSystem.php",
+    "events": {
+        "Bread.DrawModule": {
+            "function": "DrawPage",
+            "security": 0
+        },
+        "Bread.ProcessRequest": {
+            "function": "Setup",
+            "security": 0,
+            "dependencies": [
+                {
+                    "event": "Bread.ProcessRequest",
+                    "module": "BreadUserSystem"
+                }
+            ]
+        },
+        "Bread.LowPriorityScripts": {
+            "function": "GenerateHTML",
+            "security": 0
+        },
+        "BreadPageSystem.DrawRecentPosts": {
+            "function": "DrawRecentPosts",
+            "security": 0
+        },
+        "Bread.Title": {
+            "function": "DrawTitle",
+            "security": 0
+        },
+        "BreadPageSystem.PlainMarkdown": {
+            "function": "DrawPlainMarkdown",
+            "security": 0
+        },
+        "BreadPageSystem.BreadCrumbs": {
+            "function": "DrawBreadcrumbs",
+            "security": 0
+        },
+        "BreadPageSystem.Information": {
+            "function": "DrawPostInformation",
+            "security": 0
+        },
+        "BreadPageSystem.EditorButton": {
+            "function": "DrawMarkdownToggleswitch",
+            "security": 0
+        },
+        "BreadPageSystem.EditorToolbar": {
+            "function": "EditorToolbar",
+            "security": 0
+        },
+        "BreadPageSystem.SavePost": {
+            "function": "SavePost",
+            "security": 1
+        },
+        "BreadPageSystem.DeletePost": {
+            "function": "DeletePost",
+            "security": 1
+        },
+        "BreadPageSystem.EditorInformation": {
+            "function": "PostEditorInformationPanel",
+            "security": 0
+        },
+        "Bread.PageTitle": {
+            "function": "SetSiteTitle",
+            "security": 0
+        },
+        "Bread.TokenizeText": {
+            "function": "BasicTokens",
+            "security": 1
+        },
+        "Bread.TokenizePost": {
+            "function": "TokenizeArticle",
+            "security": 1
+        },
+        "Bread.GetAllPages": {
+            "function": "ReturnBreadPages",
+            "security": 0
+        },
+        "BreadAdminTools.AddModuleSettings": {
+            "function": "ConstructAdminSettings",
+            "security": 0
+        },
+        "BreadPageSystem.GetHTMLFromMarkdown": {
+            "function": "TransformMDtoHTML",
+            "security": 0
+        },
+        "Bread.PageUniqueID": {
+            "function": "GetUniqueID",
+            "security": 0
         }
+    }
 }

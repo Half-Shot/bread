@@ -1,10 +1,11 @@
 {
-    "name":"WebShim",
-    "entryclass":"WebShimLoader",
-    "entryfile":"WebShim/WebShim.php",
-    "events":{
-        "Bread.InsertScript":{
-                "function":"LoadJS"
+    "name": "WebShim",
+    "entryclass": "WebShimLoader",
+    "entryfile": "WebShim\/WebShim.php",
+    "events": {
+        "Bread.InsertScript": {
+            "function": "LoadJS",
+            "security": 0
         }
     }
 }

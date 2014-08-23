@@ -63,9 +63,10 @@ class SettingsManager {
      * Creates a new settings file, sets the permissions and uses the specified template. If the file exists then returns False, else True.
      * @param string $filename Filename. Not relative (use CreateModInfo to get the directory).
      * @param stdClass $template Specify a template to use for the settings file. Could be a included json file with your module (must be decoded as a class).
+     * @depreciated Please use RetriveSettings with the template argument.
      * @see $this::CreateModDir()
      */
-    function CreateSettingsFiles($filename,$template)
+    private function CreateSettingsFiles($filename,$template)
     {
         if(file_exists($filename))
             return False;
@@ -104,7 +105,7 @@ class SettingsManager {
         return false;
     }
     
-    function RemoveSettingFromStack($path)
+    function RemoveSettingFromStack($path,$template = null)
     {
         if(array_key_exists($path, $this->settings)){
             unset($this->settings[$path]);
@@ -121,21 +122,32 @@ class SettingsManager {
     
     /**
      * Retrives the settings file.
-     * @param string $path The path of the file.
-     * @param boolean $dontsave Don't save the file to the array.
+     * @param string $path The path of the file. Should be in the format of 'ModuleName#FileName'.
+     * @param boolean $dontsave Don't save the files on exit.
+     * @param any $template New files should have this as default. Leave as null to disable.
      * @throws FileNotFoundException
      * @throws FailedToParseException
      */
-    function RetriveSettings($path,$dontsave = False)
+    function RetriveSettings($path,$dontsave = False,$template = null)
     {
         if(array_key_exists($path, $this->settings))
         {
             return $this->settings[$path];
         }
         //Extract Settings File
-        if(!file_exists($path))
-            Site::$Logger->writeError ("Couldn't load path '" . $path . "' for parsing settings.", \Bread\Logger::SEVERITY_MEDIUM, "core" , True, "Bread\Settings\FileNotFoundException");   
+        $Parts = explode('#',$path);
         
+        if(count($Parts) === 2){
+            $Parts[1] = str_replace('.json','',$Parts[1]);
+            $path = $this->FindModuleDir($Parts[0]) . $Parts[1] . '.json';
+        }
+        
+        if(!file_exists($path)){
+            Site::$Logger->writeError ("Couldn't load path '" . $path . "' for parsing settings.", \Bread\Logger::SEVERITY_MEDIUM, "core" , True, "Bread\Settings\FileNotFoundException");   
+        }
+        if($template !== null){
+            $this->CreateSettingsFiles($path,$template);
+        }
         $jsonObj = $this->GetJsonObject($path);
         if(!$dontsave)
             $this->settings[$path] = $jsonObj;

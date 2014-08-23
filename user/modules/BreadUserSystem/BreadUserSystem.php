@@ -146,17 +146,14 @@ class BreadUserSystem extends Module
         require_once("PasswordHash.php");
         $rootSettings = Site::$settingsManager->FindModuleDir("breadusersystem");
         $this->settingsPath = $rootSettings . "settings.json";
-        Site::$settingsManager->CreateSettingsFiles($this->settingsPath, new BreadUserSystemSettings());
-        $this->settings = Util::CastStdObjectToStruct(Site::$settingsManager->RetriveSettings($rootSettings . "settings.json"), "\Bread\Modules\BreadUserSystemSettings");
+        $this->settings = Util::CastStdObjectToStruct(Site::$settingsManager->RetriveSettings($rootSettings . "settings.json",true,new BreadUserSystemSettings()), "\Bread\Modules\BreadUserSystemSettings");
         $this->settings->successredirect = Site::CastStdObjectToStruct($this->settings->successredirect, "\Bread\Structures\BreadLinkStructure");
         
         $this->userDBPath = $rootSettings . $this->settings->userfile;
-        Site::$settingsManager->CreateSettingsFiles($this->userDBPath, array());
-        $this->userDB = Site::$settingsManager->RetriveSettings($this->userDBPath,true);
+        $this->userDB = Site::$settingsManager->RetriveSettings($this->userDBPath,true,array());
         
         $groupPath = $rootSettings . $this->settings->groupfile;
-        Site::$settingsManager->CreateSettingsFiles($groupPath, array());
-        $this->groups = Site::$settingsManager->RetriveSettings($groupPath,true);
+        $this->groups = Site::$settingsManager->RetriveSettings($groupPath,true,array());
         if(empty($this->groups))
         {
             $rootGroup = new \Bread\Structures\BreadGroup();
