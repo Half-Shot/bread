@@ -16,7 +16,9 @@ class BreadFormBuilder extends Module
     function Setup()
     {
         //Get a settings file.
-        $this->forms = Site::$settingsManager->RetriveSettings("breadforms#forms",true, array());
+        $rootSettings = Site::$settingsManager->FindModuleDir("breadforms");
+        Site::$settingsManager->CreateSettingsFiles($rootSettings . "forms.json", array());
+        $this->forms = Site::$settingsManager->RetriveSettings($rootSettings . "forms.json");
     }
     
     function DrawForm($args)

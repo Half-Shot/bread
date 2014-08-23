@@ -39,7 +39,9 @@ class ModuleManager
          */
 	function LoadModulesFromConfig()
 	{
-            $this->settings = Site::$settingsManager->RetriveSettings("modules#settings.json",true, new BreadModuleManagerSettings());
+            $rootSettings = Site::$settingsManager->FindModuleDir("modules");
+            Site::$settingsManager->CreateSettingsFiles($rootSettings . "settings.json", new BreadModuleManagerSettings());
+            $this->settings = Site::$settingsManager->RetriveSettings($rootSettings . "settings.json",true);
             $this->moduleList = $this->settings->modules;
             $this->moduleList = Util::ArraySetKeyByProperty($this->moduleList, "name");
             //Resolve path

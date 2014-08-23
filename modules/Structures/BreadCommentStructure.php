@@ -32,6 +32,7 @@ namespace Bread\Structures;
  * @author will
  */
 class BreadThemeCommentStructure {
+ 
     /**
      * @var string Thumbnail URL 
      */
@@ -59,11 +60,6 @@ class BreadThemeCommentStructure {
 }
 
 class BreadComment{
-    /**
-     * Index of the comment in a stack.
-     * @var integer 
-     */
-    public $index = 0;
     /**
      * @var integer UID of user. Negative for anonymous 
      */
