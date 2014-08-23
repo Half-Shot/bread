@@ -22,33 +22,62 @@
  * THE SOFTWARE.
  */
 window.CommentMaxChars = false;
-
-$("#editcomment-button").click(function(){
+var date = new Date();
+window.lastpostTime = date.getTime();
+function EditCommentHandler(){
     alert("Edited!");
-});
+}
+function DeleteCommentHandler(){
+    var parent = $(this).parent().parent().parent().parent();
+    var index = parseInt(parent.find("index").text());
+    $.post( "index.php", {ajaxModule:"BreadCommentSystem",ajaxEvent:"BreadCommentSystem.deleteComment",index:index,uniqueid:window.pageuniqueid}, function(returndata){
+        if(returndata === "1"){
+            parent.fadeOut(500);
+        }
+        else if(returndata === "0"){
+            alert("Failed to delete for some reason.");
+        }
+    });
+}
 
-$("#deletecomment-button").click(function(){
-    alert("Deleted!");
-});
-
-
-$("#savecomment-button").click(function(){
-    if(NewCommentEditor.editor.textContent !== ""){
-        $.post( "index.php", {ajaxModule:"BreadCommentSystem",ajaxEvent:"BreadCommentSystem.writeComment",text:NewCommentEditor.editor.textContent,uniqueid:window.pageuniqueid}, function(returndata)
-        {
-            if(returndata === "0")
-            {
-                //Failed to comment.
-                alert("Failed to write comment!");
-            }
-            else
-            {
-                //Comment arrived.
-                $(NewCommentEditor.element).parent().parent().parent().append(returndata);
-            }
-        });
+function SaveResponseHandler(returndata){
+    if(returndata === "0")
+    {
+        //Failed to comment.
+        alert("Failed to write comment!");
     }
-});
+    else if(returndata === "1")
+    {
+        var date = new Date();
+        var timeleft = date.getTime() - window.lastpostTime;
+        timeleft = window.commenttimeout - timeleft;
+        alert("You're posting too fast, please allow another " + timeleft / 1000 + " seconds.");
+    }
+    else
+    {
+        var date = new Date();
+        window.lastpostTime = date.getTime();
+        var element = $(NewCommentEditor.element).parent().parent().parent().parent().append(returndata);
+        element.hide();
+        element.fadeIn(500);
+        RegenerateAllCommentHTML(newcomment);
+    }
+}
+
+function SaveCommentHandler(index,text){
+    var date = new Date();
+    var postArgs = {ajaxModule:"BreadCommentSystem",
+                    ajaxEvent:"BreadCommentSystem.writeComment",
+                    text:text,
+                    uniqueid:window.pageuniqueid
+                    }
+    if(index !== false){
+        postArgs.index = index;
+    }
+    if(text !== ""){
+        $.post( "index.php", postArgs,SaveResponseHandler);
+    }
+}
 
 function scoreComment(upvote,button){
     var parent = $(button).parent().parent().parent().parent();
@@ -72,14 +101,25 @@ function scoreComment(upvote,button){
         }
     });
 }
+function CommentsApplyClickEvents(element){
+    $(element).find(".editcomment-button").click(EditCommentHandler);
+    $(element).find(".deletecomment-button").click(DeleteCommentHandler);
+    $(element).find(".savecomment-button").click(function(){
+        var parent = $(this).parent().parent().parent().parent();
+        var index = parseInt(parent.find("index").text());
+        SaveCommentHandler(index);
+    });
+    (element).find(".savecomment-button").hide();
 
-$(".upvotecomment-button").click(function(){
-    scoreComment(true,this);
-});
+    $(element).find(".upvotecomment-button").click(function(){
+        scoreComment(true,this);
+    });
 
-$(".downvotecomment-button").click(function(){
-    scoreComment(false,this);
-});
+    $(element).find(".downvotecomment-button").click(function(){
+        scoreComment(false,this);
+    });
+}
+
 
 /*
  * Markdown Stuff
@@ -121,7 +161,7 @@ NewCommentEditor = new EpicEditor(opts).load();
 $(document).bind("editorChange",function(obj,text){
     commentBox = NewCommentEditor.element;
     var CharLeftElement = $(commentBox).parent().find(".commentcharsleft");
-    if(window.CommentMaxChars == false){
+    if(window.CommentMaxChars === false){
         window.CommentMaxChars = parseInt(CharLeftElement.text())
     }
     
@@ -137,3 +177,18 @@ $(document).bind("editorChange",function(obj,text){
 $(NewCommentEditor.editor).keyup(function(){
     $(parent.document).trigger("editorChange",this.textContent);
 });
+
+function RegenerateCommentHTML(comment){
+        var markdown = $(comment).text();
+        var HTMLElement = $(comment).parent().find(".bcs-html");
+        var html = window.mdParser.makeHtml(markdown);
+        CommentsApplyClickEvents($(comment).parent());
+        HTMLElement.html(html);
+}
+
+function RegenerateAllCommentHTML(){
+    $(".bcs-markdown").each(function(){
+        RegenerateCommentHTML(this);
+    })
+}
+$("#newcomment .savecomment-button").click(function(){SaveCommentHandler(false,NewCommentEditor.editor.textContent)});

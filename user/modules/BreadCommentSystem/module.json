@@ -22,6 +22,10 @@
             "BreadCommentSystem.writeComment":{
                 "function":"AddComment",
                 "security":1
+            },
+            "BreadCommentSystem.deleteComment":{
+                "function":"DeleteComment",
+                "security":1
             }
 	}
 }
