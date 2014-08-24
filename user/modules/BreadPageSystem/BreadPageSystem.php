@@ -454,11 +454,17 @@ class BreadPageSystem extends Module
             $E_Video->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
             $E_Video->value = $this->manager->FireEvent("Theme.Icon","video");
             $E_Video->onclick = "wrap('[%]video(',')[%]');";
-            $GroupMedia = $this->manager->FireEvent("Theme.Layout.ButtonGroup",$this->manager->FireEvent("Theme.Button",$E_Audio) . $this->manager->FireEvent("Theme.Button",$E_Video));
+            
+            $E_Youtube = new \Bread\Structures\BreadFormElement;
+            $E_Youtube->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+            $E_Youtube->value = "Youtube";
+            $E_Youtube->onclick = "wrap('!y(',')');";
+            
+            $GroupMedia = $this->manager->FireEvent("Theme.Layout.ButtonGroup",$this->manager->FireEvent("Theme.Button",$E_Audio) . $this->manager->FireEvent("Theme.Button",$E_Video). $this->manager->FireEvent("Theme.Button",$E_Youtube));
             
             $E_Github = new \Bread\Structures\BreadFormElement;
             $E_Github->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
-            $E_Github->value = $this->manager->FireEvent("Theme.Icon","github");
+            $E_Github->value = "Github";
             $E_Github->onclick = "wrap('[%]github(',')[%]');";
             $GithubHTML = $this->manager->FireEvent("Theme.Button",$E_Github);
             

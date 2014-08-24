@@ -106,8 +106,29 @@ function ParseMarkdown(markdown,htmlElement,overrideTimer)
     else
     {
         tokenizedMarkdown = mdParser.makeHtml(markdown);
+        //JS Custom Tags
+        tokenizedMarkdown = CustomMarkdownHook(tokenizedMarkdown);
         $(htmlElement).html(tokenizedMarkdown);
     }
+}
+
+function CustomMarkdownHook(markdown){
+    //Youtube
+    var ytNameRegex = /!y\((.*?)\)/i;
+    var matches;
+    matches = ytNameRegex.exec(markdown);
+    var i = 0;
+    while (matches != null && i < 10) {
+        i++;
+        matches = ytNameRegex.exec(markdown);
+        index = markdown.search(ytNameRegex);
+        if(matches != null){
+            var youtubeElement = '<iframe id="ytplayer" type="text/html"src="http://www.youtube.com/embed/'+matches[1]+'?autoplay=0" frameborder="0"/>';
+            markdown = markdown.replace(matches[0],youtubeElement);
+
+        }
+    }
+    return markdown;
 }
 
 function DoMarkdown()
