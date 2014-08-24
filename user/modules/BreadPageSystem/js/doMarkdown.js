@@ -96,20 +96,17 @@ function ParseMarkdown(markdown,htmlElement,overrideTimer)
         timeSinceLastRequest = time;
         $.ajax("index.php",{type:"POST",data:{ ajaxEvent: "Bread.TokenizePost",ajaxModule:"BreadPageSystem", markdown: markdown},success:function(newMarkdown)
         {
+            lastTokens = tokens;
             tokenizedMarkdown = newMarkdown;
             tokenizedMarkdown = mdParser.makeHtml(tokenizedMarkdown);
-            lastTokens = tokens;
-            $(htmlElement).html(tokenizedMarkdown,true);
+            tokenizedMarkdown = CustomMarkdownHook(tokenizedMarkdown);
+            $(htmlElement).html(tokenizedMarkdown);
         }});
         $(htmlElement).html("<h3>Loading Page</h3>");
     }
-    else
-    {
-        tokenizedMarkdown = mdParser.makeHtml(markdown);
-        //JS Custom Tags
-        tokenizedMarkdown = CustomMarkdownHook(tokenizedMarkdown);
-        $(htmlElement).html(tokenizedMarkdown);
-    }
+    tokenizedMarkdown = mdParser.makeHtml(markdown);
+    tokenizedMarkdown = CustomMarkdownHook(tokenizedMarkdown);
+    $(htmlElement).html(tokenizedMarkdown);
 }
 
 function CustomMarkdownHook(markdown){
@@ -125,7 +122,6 @@ function CustomMarkdownHook(markdown){
         if(matches != null){
             var youtubeElement = '<iframe id="ytplayer" type="text/html"src="http://www.youtube.com/embed/'+matches[1]+'?autoplay=0" frameborder="0"/>';
             markdown = markdown.replace(matches[0],youtubeElement);
-
         }
     }
     return markdown;

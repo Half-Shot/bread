@@ -349,7 +349,7 @@ class BreadPageSystem extends Module
             foreach($article as $i => $string)
             {
                 if($string == "breadver"){
-                    $article[$i] = Site::Configuration ()["core"]["version"];
+                    $article[$i] = Site::Configuration()->core->version;
                     continue;
                 }
                 if(
