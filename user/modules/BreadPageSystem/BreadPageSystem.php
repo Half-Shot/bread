@@ -47,11 +47,11 @@ class BreadPageSystem extends Module
         {
             if($a->time_released > $b->time_released)
             {
-                return 1;
+                return -1;
             }
             else if ($a->time_released < $b->time_released)
             {
-                return -1;
+                return 1;
             }
             else {
                 return 0;
