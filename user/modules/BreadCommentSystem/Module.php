@@ -90,7 +90,6 @@ class BreadCommentSystem extends Module{
     
     function Setup()
     {
-        //Get hash.
         $this->settings = Site::$settingsManager->RetriveSettings("breadcommentsystem#settings.json",false,new BreadCommentSystemSettings());
         $this->settings = Util::CastStdObjectToStruct($this->settings,"Bread\Modules\BreadCommentSystemSettings");
     }

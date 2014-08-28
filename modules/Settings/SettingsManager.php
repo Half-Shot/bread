@@ -118,7 +118,16 @@ class SettingsManager {
         }
     }
     
-    
+    function GetHashPath($path){
+        //Extract Settings File
+        $Parts = explode('#',$path);
+        
+        if(count($Parts) === 2){
+            $Parts[1] = str_replace('.json','',$Parts[1]);
+            $path = $this->FindModuleDir($Parts[0]) . $Parts[1] . '.json';
+        }
+        return $path;
+    }
     
     /**
      * Retrives the settings file.
@@ -134,19 +143,12 @@ class SettingsManager {
         {
             return $this->settings[$path];
         }
-        //Extract Settings File
-        $Parts = explode('#',$path);
-        
-        if(count($Parts) === 2){
-            $Parts[1] = str_replace('.json','',$Parts[1]);
-            $path = $this->FindModuleDir($Parts[0]) . $Parts[1] . '.json';
-        }
-        
-        if(!file_exists($path)){
-            Site::$Logger->writeError ("Couldn't load path '" . $path . "' for parsing settings.", \Bread\Logger::SEVERITY_MEDIUM, "core" , True, "Bread\Settings\FileNotFoundException");   
-        }
+        $path = $this->GetHashPath($path);
         if($template !== null){
             $this->CreateSettingsFiles($path,$template);
+        }
+        if(!file_exists($path)){
+            Site::$Logger->writeError ("Couldn't load path '" . $path . "' for parsing settings.", \Bread\Logger::SEVERITY_MEDIUM, "core" , True, "Bread\Settings\FileNotFoundException");   
         }
         $jsonObj = $this->GetJsonObject($path);
         if(!$dontsave)
@@ -208,7 +210,8 @@ class SettingsManager {
      * @param bool $shouldThrow Should this function throw an error if it fails
      */
     public function SaveSetting($object,$path,$shouldThrow = True)
-    {
+    {        
+        $path = $this->GetHashPath($path);
          Site::$Logger->writeMessage ("Saving " . $path, "SettingsManager");
          $string = $this->CompileJson($object);
          $worked = \file_put_contents($path, $string);

@@ -24,29 +24,13 @@
     right:0;
     margin-bottom:0;
 }
-#editor-information
-{
-    position:absolute;
-    width:20%;
-    height:10%;
-    top:20%;
-    left:80%;
-}
 body
 {
    	font-family: 'Ledger', serif; 
 }
 
 #contents{
-	margin-top:2%;
-}
-
-.breadcrumb{
-    margin-top:3%;
-}
-
-#contents
-{
+    margin-top:2%;
     width:70%;
 }
 
@@ -71,42 +55,4 @@ body
     width:80%;
     margin-top: 5px;
     margin-bottom: 5px;
-}
-
-.editable{
-    border: 1px dashed;
-    min-height: 20px;
-    min-width: 20px;
-    max-height: 80px;
-}
-#bcs-editor{
-    margin:10px;
-}
-.standardbuttons{
-    position:relative;
-    width:20%;
-    
-}
-.editorbuttons{
-    position:relative;
-    left:40%;
-    width:100%;
-}
-.standardbuttons{
-    position:relative;
-    left:0%;
-    width:20%;
-    
-}
-.standardbuttons .btn-group{
-    width:100%;
-    display:inline;
-}
-
-.editorbuttons .btn-group{
-    width:100%;
-    display:inline;
-}
-.editorbuttons .btn{
-    width:15%;
 }

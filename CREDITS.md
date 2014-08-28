@@ -11,7 +11,7 @@ Libraries and Frameworks
 [JQuery](http://jquery.com/) - *The* Javascript Framework
 [Markdown](http://daringfireball.net/projects/markdown/) - Markdown
 
-[html5Uploader](https://github.com/filad/html5Uploader) - File Uploader
+[Dropzone]https://github.com/enyo/dropzone) - Drag and Drop Uploads
 [Unirest](http://unirest.io/) - Better HTTP Requests
 [Markdown-JS](https://github.com/evilstreak/markdown-js) - Markdown Javascript
 [PHPMarkdown](https://michelf.ca/projects/php-markdown/) - Markdown PHP

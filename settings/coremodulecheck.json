@@ -18,6 +18,7 @@
         "./Structures/BreadSearchItem",
         "./Structures/BreadTableCell",
         "./Structures/BreadRequest",
+        "./Structures/BreadPanel",
         "./Structures/BreadCommentStructure",
         "./Themes/thememan",
         "./Themes/breadxml"

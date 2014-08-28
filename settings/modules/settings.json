@@ -43,6 +43,10 @@
         {
             "name": "BreadCommentSystem",
             "file": "BreadCommentSystem\/module.json"
+        },
+        {
+            "name": "BreadContentSystem",
+            "file": "BreadContentSystem\/module.json"
         }
     ]
 }

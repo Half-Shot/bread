@@ -1,0 +1,131 @@
+#navbar
+{
+	width:100%;
+	position:absolute;
+	left:0%;
+	top:0%;
+        
+}
+#homepage-contents
+{
+    position:absolute;
+	width:70%;
+	height:90%;
+    padding-bottom:10%;
+	margin-left:16%;
+    margin-right:6%;
+}
+#footer
+{
+    position:fixed;
+    height:50px;
+    bottom:0;
+    left:0;
+    right:0;
+    margin-bottom:0;
+}
+#right-sidebar
+{
+    position:absolute;
+    width:20%;
+    height:10%;
+    top:20%;
+    left:80%;
+}
+body
+{
+   	font-family: 'Ledger', serif; 
+}
+
+#contents{
+	margin-top:2%;
+}
+
+.breadcrumb{
+    margin-top:3%;
+}
+
+#contents
+{
+    width:70%;
+}
+
+
+.navbar-collapse.collapsing{
+    margin-right: 5%;
+    margin-left: 5%;
+    width: 90%;
+    overflow:hidden;
+}
+
+.navbar-collapse.collapse{
+    margin-right: 5%;   
+    margin-left: 5%;
+    width: 90%;
+    overflow:hidden;
+
+}
+
+.commentbody{
+    font-size:12px;
+    width:80%;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.editable{
+    border: 1px dashed;
+    min-height: 20px;
+    min-width: 20px;
+    max-height: 80px;
+}
+#bcs-editor{
+    margin:10px;
+}
+.standardbuttons{
+    position:relative;
+    width:20%;
+    
+}
+.editorbuttons{
+    position:relative;
+    left:40%;
+    width:100%;
+}
+.standardbuttons{
+    position:relative;
+    left:0%;
+    width:20%;
+    
+}
+.standardbuttons .btn-group{
+    width:100%;
+    display:inline;
+}
+
+.editorbuttons .btn-group{
+    width:100%;
+    display:inline;
+}
+.editorbuttons .btn{
+    width:15%;
+}
+
+#content-dropzone{
+  background: repeating-linear-gradient(
+  45deg,
+  whitesmoke,
+  whitesmoke 10px,
+  lightgray 10px,
+  lightgray 20px
+);
+  height:100px;
+}
+
+.uploadZoneButtons{
+    width:50%;
+}
+
+.uploadZoneTemplateButtons{
+    width:50%;
+}

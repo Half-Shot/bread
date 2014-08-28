@@ -15,8 +15,9 @@ class BreadCoreSettings extends Module
         
         function SaveCore()
         {
-            if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadCoreSettings.Write"))
+            if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadCoreSettings.Write")){
                 return 1;
+            }
             $newObj = new \stdClass();
             foreach($_POST as $prop => $val)
             {

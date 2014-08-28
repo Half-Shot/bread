@@ -24,72 +24,16 @@
  * THE SOFTWARE.
  */
 
-namespace Bread\Structures;
-
 /**
- * Description of BreadThemeCommentStructure
+ * Description of BreadPanel
  *
  * @author will
  */
-class BreadThemeCommentStructure {
- 
-    public $id = "";
-    public $class = "";
-    /**
-     * @var string Thumbnail URL 
-     */
-    public $thumbnail = "";
-    
-    /**
-     * @var string Link ULL of thumbnail
-     */
-    public $thumbnailurl = "#";
-    
-    /**
-     * @var string Header link URL 
-     */
-    public $headerurl = "#";
-    
-    /**
-     * @var string Text of header
-     */
-    public $header = "";
-    
-    /**
-     * @var string Body of comment 
-     */
-    public $body = "";
-}
 
-class BreadComment{
-    /**
-     * @var integer UID of user. Negative for anonymous 
-     */
-    public $user = -1;
-    
-    /**
-     * @var string Body of comment
-     */
+namespace Bread\Structures;
+class BreadPanel {
+    //put your code here
+    public $title = false;
     public $body = "";
-    
-    /**
-     * @var boolean Can edit comment.
-     */
-    public $canedit = true;
-    
-    /**
-     * @var int UTC time of comment.
-     */
-    public $time = 0;
-    /**
-     * @var bool Is the contents hidden from view
-     */
-    public $ishidden = false;
-    
-    /**
-     * @var integer array UIDs of users who have voted.
-     */
-    public $karmaupvotees = array();
-    public $karmadownvotees = array();
-    
+    public $footer = false;
 }

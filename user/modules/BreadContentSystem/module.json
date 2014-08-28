@@ -1,0 +1,27 @@
+{
+    "name": "BreadContentSystem",
+    "entryclass": "BreadContentSystem",
+    "entryfile": "BreadContentSystem\/Module.php",
+    "events":{
+        "Bread.ProcessRequest":{
+            "function":"Setup",
+            "security":0
+        },
+        "Bread.GetContent":{
+            "function":"GetContent",
+            "security":0
+        },
+        "Bread.ShowUploader":{
+            "function":"DrawUploader",
+            "security":0
+        },
+        "BreadContentSystem.BeginUpload":{
+            "function":"BeginUpload",
+            "security":1
+        },
+        "BreadContentSystem.UploadChunk":{
+            "function":"UploadChunk",
+            "security":1
+        }
+    }
+}

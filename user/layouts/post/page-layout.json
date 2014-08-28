@@ -1,6 +1,7 @@
 {
 "name": "post",
 "master":["default"],
+"css":["post/page-layout.css"],
 "elements": [
     {
         "name": "title",
@@ -78,12 +79,25 @@
     ]
     },
     {
-        "name": "editor-information",
-        "id": "editor-information",
-        "human": "Editor Information Panel",
+        "name": "right-sidebar",
+        "id": "right-sidebar",
+        "human": "Right Sidebar",
         "description": "A sidebar for displaying information about an edit.",
-        "module": "BreadPageSystem",
-        "event":"BreadPageSystem.EditorInformation"
+        "event":"Theme.Layout.Block",
+        "elements":[
+            {
+                "name": "editor-information",
+                "id":"editor-infomation",
+                "human": "Editor Information Panel",
+                "event":"BreadPageSystem.EditorInformation"
+            },
+            {
+                "name": "uploader",
+                "human": "Content Uploader",
+                "id": "contentUploader",
+                "event":"Bread.ShowUploader"
+            }
+        ]
     }
 ]
 }

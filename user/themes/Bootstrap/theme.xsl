@@ -11,18 +11,20 @@
     <xsl:template match="telement[@id='Panel']">
         <div class="panel panel-default">
         <xsl:if test="./variable/title">
-            <div class="panel-heading">
-              <h3 class="panel-title"><xsl:value-of select="./variable/title"/></h3>
-            </div>
+            <xsl:if test="./variable/title != 0">
+                <div class="panel-heading">
+                  <h3 class="panel-title"><xsl:value-of select="./variable/title"/></h3>
+                </div>
+            </xsl:if>
         </xsl:if>
         <div class="panel-body">
             <xsl:value-of select="./variable/body"/>
         </div>
-        <xsl:if test="./variable/footer">
-            <div class="panel-footer">
-                <xsl:value-of select="./variable/footer"/>
-            </div>
-        </xsl:if>
+            <xsl:if test="./variable/footer != 0">
+                <div class="panel-footer">
+                  <xsl:value-of select="./variable/footer"/>
+                </div>
+            </xsl:if>
       </div>
     </xsl:template>
     <xsl:template match="telement[@id='VerticalNavbar']">
@@ -392,7 +394,13 @@
     </xsl:template>
     <xsl:template match="telement[@id='Comment']">
         <div class="media">
-            <xsl:if test="./variable/thumbnail">
+            <xsl:if test="./variable/id != ''">
+                <xsl:attribute name="id"><xsl:value-of select="./variable/id"/></xsl:attribute>
+            </xsl:if>
+            <xsl:if test="./variable/class != ''">
+                <xsl:attribute name="class"><xsl:value-of select="./variable/class"/></xsl:attribute>
+            </xsl:if>
+            <xsl:if test="./variable/thumbnail != ''">
                 <a class="pull-left" href = "#">
                     <xsl:if test="./variable/thumbnailurl">
                         <xsl:attribute name="href"><xsl:value-of select="./variable/thumbnailurl"/></xsl:attribute>
