@@ -1,7 +1,7 @@
 {
 "name": "default",
 "css":["default/page-layout.css"],
-"scripts":["login/login.js"],
+"scripts":["default/login.js"],
 "elements": [
     {
         "name": "navbar",

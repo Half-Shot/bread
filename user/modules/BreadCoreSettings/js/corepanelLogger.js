@@ -22,30 +22,63 @@
  * THE SOFTWARE.
  */
 
-function PopulateCategoryBox(){
+function PopulateCategoryBox(categories){
    $("#log-categorybox").find('option').remove();
-   var currentLog = $("#log-fileselectorbox").val();
-   var categories = $("logs logfile[name='" + currentLog + "'] category");
-   categories.each(function(){
-       $("#log-categorybox").append($("<option></option>").text($(this).attr("name"))); 
-   })
-}
-
-function SetupCurrentLogBox(){
+   if(categories == false){
+       $("#log-categorybox").prop('disabled', true);
+   }
+   else{
+       $("#log-categorybox").prop('disabled', false);
+   }
+   for(var i =0;i<categories.length;i++){
+        $("#log-categorybox").append($("<option></option>").text(categories[i])); 
+   }
     var currentLog = $("#log-fileselectorbox").val();
     var currentCategory = $("#log-categorybox").val();
-    var LogData = $("logs logfile[name='" + currentLog + "'] category[name='" + currentCategory + "']");
-    $("#log-output").html(LogData.html());
+    GetLogData(currentLog,currentCategory);
+}
+
+function SetupCurrentLogBox(LogData){
+    $("#log-output").html(LogData);
+}
+
+function GetLogCategories(name){
+    $.post( "index.php", { ajaxEvent: "BreadCoreSettings.GetLogCategories",logname:name}, function(returndata){
+        if(returndata === "0"){
+            console.log("Log File not found")
+            PopulateCategoryBox(false);
+        }
+        else if(returndata == false){
+            PopulateCategoryBox(false);
+        }
+        else{
+            PopulateCategoryBox(JSON.parse(returndata));
+        }
+    });
+}
+
+function GetLogData(name,category){
+    $.post( "index.php", { ajaxEvent: "BreadCoreSettings.GetLog",logname:name,category:category }, function(returndata){
+        if(returndata === "0"){
+            console.log("Log File not found")
+            SetupCurrentLogBox("Couldn't find log data!");
+        }
+        else{
+            SetupCurrentLogBox(returndata);
+        }
+    });
 }
 
 $("#log-fileselectorbox").change(function() {
-    PopulateCategoryBox();
-    SetupCurrentLogBox();
+    var currentLog = $("#log-fileselectorbox").val();
+    GetLogCategories(currentLog);
 });
 
 $("#log-categorybox").change(function() {
-    SetupCurrentLogBox();
+    var currentLog = $("#log-fileselectorbox").val();
+    var currentCategory = $("#log-categorybox").val();
+    GetLogData(currentLog,currentCategory);
 });
 
-PopulateCategoryBox();
-SetupCurrentLogBox();
+var currentLog = $("#log-fileselectorbox").val();
+GetLogCategories(currentLog);

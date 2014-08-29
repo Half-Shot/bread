@@ -53,6 +53,7 @@ class BootstrapTheme extends Bread\Modules\Module
     
         function GetClass($name){
             switch($name){
+                //Buttons
                 case "Button.Success":
                     return "btn-success";
                 case "Button.Warning":
@@ -69,6 +70,15 @@ class BootstrapTheme extends Bread\Modules\Module
                     return "btn-sm";
                 case "Button.ExtraSmall":
                     return "btn-xs";
+                //Alerts
+                case "Alert.Success":
+                    return "alert-success";
+                case "Alert.Warning":
+                    return "alert-warning";
+                case "Alert.Info":
+                    return "alert-info";
+                case "Alert.Danger":
+                    return "alert-danger";
             }
         }
         
@@ -362,7 +372,13 @@ class BootstrapTheme extends Bread\Modules\Module
                 }
             }
             $body = $args["body"];
-            return '<div class="'. $class .'">' . $closeButton .  $body . "</div>";
+            if(array_key_exists("id",$args)){
+                $args["id"] = 'id="'.$args["id"].'"';
+            }
+            else{
+                $args["id"] = "";
+            }
+            return '<div '.$args["id"].' class="'. $class .'">' . $closeButton .  $body . "</div>";
         }
         function Collapse($args)
         {

@@ -992,8 +992,9 @@ class Logger
                     $this->openStream($category);
             fwrite($this->fileStreams[$category],$message->ToString() . "\n");
         }
-        if($throw)
+        if($throw){
             throw new $exception($string);
+        }
         
     }
     /**

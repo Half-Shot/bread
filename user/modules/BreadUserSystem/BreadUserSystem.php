@@ -168,46 +168,8 @@ class BreadUserSystem extends Module
            $this->FirstTime($rootSettings . $this->settings->userfile);
         }
         
-        
         $this->CheckSession();
-        if(Site::getRequest()->requestType == "login"){
-            if($this->currentUser){ //Logout
-                Site::$Logger->writeMessage("User is logging out.",$this->name);
-                $this->Logout();
-                Site::Redirect(Site::getBaseURL());
-            }
-            else{ //Login
-                $result = $this->DoLogin();
-            }
-            
-        }
-    }
-    
-    function CreateLoginLink()
-    {
-       $links = array();
-       if(!$this->settings->showNavbarlinks)
-           return $links;
-       if(isset($this->currentUser))
-       {
-           $logout = new \Bread\Structures\BreadLinkStructure();
-           $logout->request = "login";
-           $logout->text = "Logout";
-           $links[] = $logout;
-       }
-       else
-       {
-           $login = new \Bread\Structures\BreadLinkStructure();
-           $login->request = "loginform";
-           $login->text = "Login";
-           $links[] = $login;
-           
-           $register = new \Bread\Structures\BreadLinkStructure();
-           $register->request = "registerform";
-           $register->text = "Register";
-           $links[] = $register;
-       }
-       return $links;
+        
     }
     
     function DrawLoginName($args)
@@ -230,10 +192,11 @@ class BreadUserSystem extends Module
     
     function LoginButton($args)
     {
+        Site::AddScript(Site::ResolvePath("%user-modules/BreadUserSystem/js/breaduser.js"), "BreadUserSystem", true);
         if(isset($this->currentUser))
         {
-            $link = new \Bread\Structures\BreadLinkStructure();
-            $link->request = "login";
+            //$link = new \Bread\Structures\BreadLinkStructure();
+            //$link->request = "login";
         }
         else
         {
@@ -241,7 +204,17 @@ class BreadUserSystem extends Module
             $ModalObject = new \Bread\Structures\BreadModal();
             $ModalObject->title = "Login";
             $ModalObject->id = "login-modal";
-            $ModalObject->body = $this->manager->FireEvent("BreadFormBuilder.DrawForm","login");
+            //Alert Modal
+            //
+            //Wrong
+            $AlertWrong = array("id"=>"login-alert-fail","body"=>"Oh noes: You're username or password was incorrect.","canClose"=>false,"class"=>$this->manager->FireEvent("Theme.GetClass","Alert.Danger"));
+            
+            //Correct
+            $AlertCorrect = array("id"=>"login-alert-success","body"=>"All good. Welcome back!","canClose"=>false,"class"=>$this->manager->FireEvent("Theme.GetClass","Alert.Success"));
+            
+            $ModalObject->body = $this->manager->FireEvent("Theme.Alert",$AlertWrong) . $this->manager->FireEvent("Theme.Alert",$AlertCorrect) . $this->manager->FireEvent("BreadFormBuilder.DrawForm","login");
+            Site::AddRawScriptCode('$("#login-alert-success").hide();',true);
+            Site::AddRawScriptCode('$("#login-alert-fail").hide();',true);
             Site::AddToBodyCode($this->manager->FireEvent("Theme.Modal",$ModalObject));
         }
         $ButtonClass = "";
@@ -254,21 +227,16 @@ class BreadUserSystem extends Module
         $NotLoggedInButton = "Sign In";
         $LoggedInButton = "Sign Out";
         $Button = array();
-        if(isset($link)){
-            $Button["onclick"] = "window.location = '" . $link->createURL() .  "'";
-        }
-        else
-        {
-            $Button["onclick"] = "$('#login-modal').modal();";
-        }
         if($this->currentUser){
             $Button["class"] = "btn-danger " . $ButtonClass;
             $Button["value"] = $LoggedInButton;
+            $Button["onclick"] = "breadLogout();";
         }
         else
         {
             $Button["class"] = "btn-success " . $ButtonClass;
             $Button["value"] = $NotLoggedInButton;
+            $Button["onclick"] = "$('#login-modal').modal();";
         }
         
         return $this->manager->FireEvent("Theme.Button",$Button);
@@ -299,9 +267,16 @@ class BreadUserSystem extends Module
     }
     
     function Logout()
-    {
+    {        
+        if($this->currentUser){ //Logout
+            Site::$Logger->writeMessage("User is logging out.",$this->name);
             session_unset();
             session_destroy();
+            return Site::getBaseURL();
+        }
+        else{
+            return 0;
+        }
     }
     
     function AjaxCheckString($string,$charmin){

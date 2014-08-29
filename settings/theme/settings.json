@@ -6,9 +6,7 @@
     "layouts": {
         "default": "default\/page-layout.json",
         "homepage": "homepage\/page-layout.json",
-        "viewpost": "post\/page-layout.json",
-        "login": "login\/page-layout.json",
-        "register": "register\/page-layout.json",
+        "post": "post\/page-layout.json",
         "controlpanel": "controlpanel\/page-layout.json",
         "search": "search\/page-layout.json"
     },

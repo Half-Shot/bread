@@ -3,10 +3,11 @@ function DoLogin() {
     {
         obj = JSON.parse(returndata);
         if(obj.status == "11"){
+            $("#login-alert-success").show().fadeIn();
             window.location = obj.goto;
         }
         else{
-            alert("That be a bad password.");
+            $("#login-alert-fail").show().fadeIn();
         }
     });
 }

@@ -15,20 +15,6 @@
         "include":["master"],
         "modules":["BreadPageSystem\/module.json"]
     },
-    "loginform":{
-        "layout":"login",
-        "include":["master"],
-        "modules":["BreadFormBuilder\/module.json"]
-    },
-    "registerform":{
-        "layout":"register",
-        "include":["master"],
-        "modules":["BreadFormBuilder\/module.json"]
-    },
-    "login":{
-        "layout":"default",
-        "modules":["BreadUserSystem\/module.json"]
-    },
     "controlpanel":{
         "layout":"controlpanel",
         "include":["master"],

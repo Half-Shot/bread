@@ -137,36 +137,12 @@ class BreadCoreSettings extends Module
             $SelectionBox->type = "dropdown";
             $SelectionBox->dataset = array();
             $SelectionBox->label = "Select a Log File";
-            $Logs = new \SimpleXMLElement('<logs></logs>');
-            $Logs->addAttribute("hidden","true");
             foreach(array_reverse($LogFiles) as $file){
                 if(is_link($file) || $file == "." || $file == ".."){
                     continue;
                 }
-                $fileName = $file;
-                $file = $LogLocations . "/" . $file;
-                $SelectionBox->dataset[] = $fileName;
-                $CurrentLog = $Logs->addChild("logfile");
-                $CurrentLog->addAttribute("name", $fileName);
-                if(is_dir($file)){
-                    foreach(scandir($file) as $logfile){
-                        if(is_link($logfile) || $logfile == "." || $logfile == ".."){
-                            continue;
-                        }
-                        //Replace quotes
-                        $Text = file_get_contents($file . "/" . $logfile);
-                        $LogCategory = $CurrentLog->addChild("category",$Text);
-                        $LogCategory->addAttribute("name",str_replace(".log", "", $logfile));
-                    } 
-                }
-                else
-                {
-                        //Replace quotes
-                        $Text = file_get_contents($file);
-                        $LogCategory = $CurrentLog->addChild("category",$Text);
-                }
+                $SelectionBox->dataset[] = $file;
             }
-            Site::AddToBodyCode($Logs->asXML());
             
             $LogTypeBox = new \Bread\Structures\BreadFormElement();
             $LogTypeBox->id = "log-categorybox";
@@ -181,6 +157,62 @@ class BreadCoreSettings extends Module
             $Form->elements[] = $LogText;
             $FormHTML = $this->manager->FireEvent("Theme.Form",$Form);        
             $Panel_Prev->Body = $FormHTML;
+        }
+        
+        function GetLog(){
+            $category = $_REQUEST["category"];
+            $logname = $_REQUEST["logname"];
+            $LogLocations = Util::ResolvePath("%system-temp/breadlog");
+            $LogFiles = \scandir($LogLocations);
+            foreach(array_reverse($LogFiles) as $file){
+                if(is_link($file) || $file == "." || $file == ".."){
+                    continue;
+                }
+                if($logname !== $file){
+                   continue;
+                }
+                if(is_dir($LogLocations . "/" . $file)){
+                    foreach(scandir($LogLocations . "/" . $file) as $logfile){
+                       if(is_link($LogLocations . "/" . $file . "/" .$logfile) || $logfile == "." || $logfile == ".."){
+                            continue;
+                       }
+                       if(str_replace(".log", "", $logfile) === $category){
+                           return file_get_contents($LogLocations . "/" . $file . "/" . $logfile);
+                       }
+                    } 
+                }
+                else{
+                    return file_get_contents($file);
+                }
+            }
+            return "";
+        }
+        
+        function GetLogCategories(){
+            $logname = $_REQUEST["logname"];
+            $LogLocations = Util::ResolvePath("%system-temp/breadlog");
+            $LogFiles = \scandir($LogLocations);
+            $categorys = array();
+            foreach(array_reverse($LogFiles) as $file){
+                if(is_link($file) || $file == "." || $file == ".."){
+                    continue;
+                }
+                if($logname !== $file){
+                   continue;
+                }
+                if(is_dir($LogLocations . "/" . $file)){
+                    foreach(scandir($LogLocations . "/" . $file) as $logfile){
+                       if(is_link($LogLocations . "/" . $file . "/" . $logfile) || $logfile == "." || $logfile == ".."){
+                            continue;
+                       }
+                       $categorys[] = str_replace(".log", "", $logfile);
+                    } 
+                }
+                else{
+                    return false;
+                }
+            }
+            return json_encode($categorys);
         }
         
         function MainSettingsPanel($Tab_CoreSettings)
