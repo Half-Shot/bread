@@ -19,8 +19,12 @@
                 "function":"Downvote",
                 "security":1
             },
-            "BreadCommentSystem.writeComment":{
+            "BreadCommentSystem.WriteComment":{
                 "function":"AddComment",
+                "security":1
+            },
+            "BreadCommentSystem.DeleteComment":{
+                "function":"DeleteComment",
                 "security":1
             }
 	}

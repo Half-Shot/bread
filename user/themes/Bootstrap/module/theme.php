@@ -33,6 +33,7 @@ class BootstrapTheme extends Bread\Modules\Module
             $this->manager->RegisterHook($this->name,"Theme.Layout.Block","LayoutBlock");
             $this->manager->RegisterHook($this->name,"Theme.Layout.Well","LayoutWell");
             $this->manager->RegisterHook($this->name,"Theme.Layout.ButtonGroup","ButtonGroup");
+            $this->manager->RegisterHook($this->name,"Theme.Layout.ButtonGroupVertical","ButtonGroupVertical");
             $this->manager->RegisterHook($this->name,"Theme.Layout.ButtonToolbar","ButtonToolbar");
             $this->manager->RegisterHook($this->name,"Theme.Layout.Grid.HorizonalStack","GridHorizontalStack");
             $this->manager->RegisterHook($this->name,"Theme.DrawError","ShowErrorScreen");
@@ -178,7 +179,11 @@ class BootstrapTheme extends Bread\Modules\Module
             return $this->breadXML->GetHTMLOfElement("Panel",$args);
         }
         
-        function ButtonGroup($args)
+        function ButtonGroupVertical($args){
+           return $this->ButtonGroup($args, "btn-group-vertical");
+        }
+        
+        function ButtonGroup($args,$class = "btn-group")
         {
             $HTML = "";
             if(is_array($args)){
@@ -204,7 +209,7 @@ class BootstrapTheme extends Bread\Modules\Module
             }
             
                         
-            return '<div class="btn-group">' . $HTML . '</div>';
+            return '<div class="'.$class.'">' . $HTML . '</div>';
         }
         
         function ButtonToolbar($args)

@@ -355,12 +355,11 @@ class Site
 	public static function SetupManagers()
 	{
             $path = static::ResolvePath("%system-settings");
-            if(!static::$isAjax)
-                static::$themeManager = new Themes\ThemeManager();
+            static::$themeManager = new Themes\ThemeManager();
             static::$moduleManager = new Modules\ModuleManager();
             static::$settingsManager = new Settings\SettingsManager();
+            static::$themeManager->LoadSettings($path . "/theme/settings.json");
             if(!static::$isAjax){
-                static::$themeManager->LoadSettings($path . "/theme/settings.json");
                 static::$themeManager->LoadLayouts();
             }
             static::$moduleManager->LoadModulesFromConfig();
@@ -421,17 +420,12 @@ class Site
             //TODO: Allow use to turn this off, could be used as a backdoor.
             if(static::$configuration->core->debug && array_key_exists("ajax", $Params)){
                     static::$isAjax = true;
-                    $requestObject->theme = false;
-                    $requestObject->layout = false;
-                    $requestObject->modules = $requestDB->master->modules;
                     $requestObject->requestType = "ajax";
-                    $requestObject->arguments = $Params;
-                    static::$Request = $requestObject;
-                    return true;
             }
-            if(isset($requestDB->master->layout))
-                $requestObject->layout = $requestDB->master->layout;
-            
+            if(!static::$isAjax){
+                if(isset($requestDB->master->layout))
+                    $requestObject->layout = $requestDB->master->layout;
+            }
             if(isset($requestDB->master->theme))
                 $requestObject->theme  = $requestDB->master->theme;
             /**
@@ -451,9 +445,10 @@ class Site
                 $requestName = static::$configuration->core->defaultrequest;
             }
 
-            if(isset($requestDB->$requestName->layout))
-                $requestObject->layout = $requestDB->$requestName->layout;
-
+            if(!static::$isAjax){
+                if(isset($requestDB->$requestName->layout))
+                    $requestObject->layout = $requestDB->$requestName->layout;
+            }
             if(isset($requestDB->$requestName->theme))
                 $requestObject->theme  = $requestDB->$requestName->theme;
 
@@ -483,11 +478,11 @@ class Site
                 }
             }
             //Overrides
-            if(array_key_exists("theme", $Params))
-                $requestObject->theme = $Params["theme"];
+            //if(array_key_exists("theme", $Params))
+            //    $requestObject->theme = $Params["theme"];
             
-            if(array_key_exists("layout", $Params))
-                $requestObject->layout = $Params["layout"];
+            //if(array_key_exists("layout", $Params))
+            //    $requestObject->layout = $Params["layout"];
             
             
             $requestObject->arguments = $Params;
@@ -509,6 +504,9 @@ class Site
             
         $requestData = static::$Request;
 	    //Load required modules.
+	    if(!static::$themeManager->SelectTheme($requestData)){
+                //static::$Logger->writeError("Couldn't select theme from request.",\Bread\Logger::SEVERITY_CRITICAL,"core",True);
+	    }
             if(static::$isAjax)
             {
                 // Turn off all error reporting
@@ -543,6 +541,9 @@ class Site
                    static::$Logger->writeError("Couldn't hook Ajax Request to requested module.",\Bread\Logger::SEVERITY_CRITICAL,"core");
                    return False;
                 }
+                if(is_object($realdata) || is_array($realdata)){
+                    $realdata = json_encode($realdata);
+                }
                 echo $realdata;
                 return True;
             }
@@ -552,9 +553,6 @@ class Site
 	    static::$Logger->writeMessage("Beginning build of page");
 	    static::$Logger->writeMessage("Request data:\n" . var_export($requestData,True));
 	    //Process request
-	    if(!static::$themeManager->SelectTheme($requestData)){
-			static::$Logger->writeError("Couldn't select theme from request.",\Bread\Logger::SEVERITY_CRITICAL,"core",True);
-	    }
 	    if(!static::$themeManager->SelectLayout($requestData)){
 			static::$Logger->writeError("Couldn't select layout from request.",\Bread\Logger::SEVERITY_CRITICAL,"core",True);
 	    }

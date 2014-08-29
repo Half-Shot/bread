@@ -93,6 +93,37 @@ uploadZone.on("addedfile", function(file) {
     });
 });
 
+function breadContentModalSetType(majortype){
+    $.ajax("index.php",{type:"POST",data:{ ajaxEvent: "BreadContentSystem.GetFileIndex",majortype:majortype},success:function(returnedData)
+    {
+        Files = JSON.parse(returnedData);
+        console.log(Files);
+        $("#breadContentModal tbody").children().remove();
+        for(var i=0;i<Files.length;i++){
+            var button = $("#breadContentModal-selectButtonTemplate").clone();
+            button.show();
+            button.click(function(){
+                if($(this).hasClass("active")){
+                    console.log("File " + Files[i].id + " selected!");
+                }
+                else{
+                    console.log("File " + Files[i].id + " unselected!");
+                }
+            });
+            var row = "<tr id='contentid-"+i+"'>";
+                row += "<td>" + Files[i].filename + "</td>";
+                //Date
+                var d = new Date(0);
+                d.setUTCSeconds(Files[i].time);
+                row += "<td>" + d.toDateString() + "</br>" + d.toTimeString() + "</td>";
+                row += "<td>" + (Files[i].size / 1024000).toFixed(2) + " MB</td>";
+                row += "<td>" + Files[i].minortype + "</td>";
+                row += "<td>"+button.wrap('<p>').parent().html()+"</td>";
+                row += "</tr>";
+            $("#breadContentModal tbody").append(row);
+        }
+    }});
+}
 
 function UploadFile(newID,file,displayElement){
     console.log("Can begin upload!");

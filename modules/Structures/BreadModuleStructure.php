@@ -3,7 +3,7 @@
 /*
  * The MIT License
  *
- * Copyright 2014 will.
+ * Copyright 2014 Half-Shot.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the Software), to deal
@@ -39,4 +39,5 @@ class BreadModuleStructure {
         public $author = "";
         public $dependencies = array();
         public $events = array();
+        public $permissions = array();
 }

@@ -165,6 +165,10 @@
                     <xsl:if test="./readonly = 1">
                         <xsl:attribute name="disabled"/>
                     </xsl:if>
+                    <xsl:if test="./hidden = 1">
+                        <xsl:attribute name="style">display:none;</xsl:attribute>
+                        <xsl:attribute name="hidden">true</xsl:attribute>
+                    </xsl:if>
                     <xsl:if test="./toggle = 1">
                         <xsl:attribute name="data-toggle">button</xsl:attribute>
                     </xsl:if>
@@ -203,6 +207,9 @@
                                 <xsl:value-of select="."/>
                         </option>
                     </xsl:for-each>
+                    <xsl:if test="./variable/hidden = 1">
+                        <xsl:attribute name="hidden">true</xsl:attribute>
+                    </xsl:if>
                 </select>
             </xsl:when>
             <xsl:otherwise>
@@ -215,6 +222,9 @@
                         <xsl:attribute name="name"><xsl:value-of select="./name"/></xsl:attribute>
                     </xsl:otherwise>
                 </xsl:choose>
+                <xsl:if test="./variable/hidden = 1">
+                    <xsl:attribute name="hidden">true</xsl:attribute>
+                </xsl:if>
                 <xsl:attribute name="type"><xsl:value-of select="./type"/></xsl:attribute>
                 <xsl:attribute name="value"><xsl:value-of select="./value"/></xsl:attribute>
                 <xsl:attribute name="onclick"><xsl:value-of select="./onclick"/></xsl:attribute>
@@ -340,6 +350,9 @@
                 <xsl:attribute name="onclick"><xsl:value-of select="./variable/onclick"/></xsl:attribute>
                 <xsl:if test="./variable/form != ''">
                     <xsl:attribute name="form"><xsl:value-of select="./variable/form"/></xsl:attribute>
+                </xsl:if>
+                <xsl:if test="./variable/hidden = 1">
+                    <xsl:attribute name="hidden">true</xsl:attribute>
                 </xsl:if>
                 <xsl:if test="./variable/readonly = 1">
                     <xsl:attribute name="disabled"/>

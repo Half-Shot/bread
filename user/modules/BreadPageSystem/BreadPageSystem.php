@@ -460,7 +460,12 @@ class BreadPageSystem extends Module
             $E_Youtube->value = "Youtube";
             $E_Youtube->onclick = "wrap('!y(',')');";
             
-            $GroupMedia = $this->manager->FireEvent("Theme.Layout.ButtonGroup",$this->manager->FireEvent("Theme.Button",$E_Audio) . $this->manager->FireEvent("Theme.Button",$E_Video). $this->manager->FireEvent("Theme.Button",$E_Youtube));
+            $E_Content = new \Bread\Structures\BreadFormElement;
+            $E_Content->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+            $E_Content->value = "Insert Media";
+            $E_Content = $this->manager->FireEvent("Bread.GetContentButton",$E_Content);
+            
+            $GroupMedia = $this->manager->FireEvent("Theme.Layout.ButtonGroup",$this->manager->FireEvent("Theme.Button",$E_Audio) . $this->manager->FireEvent("Theme.Button",$E_Video). $this->manager->FireEvent("Theme.Button",$E_Youtube) . $E_Content);
             
             $E_Github = new \Bread\Structures\BreadFormElement;
             $E_Github->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
@@ -468,12 +473,8 @@ class BreadPageSystem extends Module
             $E_Github->onclick = "wrap('[%]github(',')[%]');";
             $GithubHTML = $this->manager->FireEvent("Theme.Button",$E_Github);
             
-            $E_Content = new \Bread\Structures\BreadFormElement;
-            $E_Content->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
-            $E_Content->value = "Insert Media";
-            $E_Content = $this->manager->FireEvent("Bread.GetContentButton",$E_Content);
             
-            $Toolbar = $this->manager->FireEvent("Theme.Layout.ButtonToolbar",$Group . $GroupTwo . $GroupMedia . $GithubHTML . $E_Content);
+            $Toolbar = $this->manager->FireEvent("Theme.Layout.ButtonToolbar",$Group . $GroupTwo . $GroupMedia . $GithubHTML);
             
             return "<div id='bps-editor-toolbar' style='display:none;'>" . $Toolbar . "</div>";
         }

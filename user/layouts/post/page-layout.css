@@ -1,29 +1,3 @@
-#navbar
-{
-	width:100%;
-	position:absolute;
-	left:0%;
-	top:0%;
-        
-}
-#homepage-contents
-{
-    position:absolute;
-	width:70%;
-	height:90%;
-    padding-bottom:10%;
-	margin-left:16%;
-    margin-right:6%;
-}
-#footer
-{
-    position:fixed;
-    height:50px;
-    bottom:0;
-    left:0;
-    right:0;
-    margin-bottom:0;
-}
 #right-sidebar
 {
     position:absolute;
@@ -32,11 +6,17 @@
     top:20%;
     left:80%;
 }
-body
-{
-   	font-family: 'Ledger', serif; 
-}
 
+.bps-html.editing{
+    height:50%;
+    overflow-y:scroll;
+}
+.bps-html{
+    height:auto;
+    overflow:auto;
+    transition: all 0.5s ease;
+    
+}
 #contents{
 	margin-top:2%;
 }
@@ -128,4 +108,8 @@ body
 
 .uploadZoneTemplateButtons{
     width:50%;
+}
+
+#bps-editor-toolbar .btn{
+    height:30px;
 }

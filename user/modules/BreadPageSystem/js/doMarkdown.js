@@ -165,7 +165,7 @@ function toggleMarkdown()
                 $(this).removeAttr( "readonly" )
             });
             $("button.bps-editorinfo-input").removeAttr( "disabled" );
-            $(".bps-html").animate({"height": "100%"},400,function(){$(".bps-html").css( "overflow-y", "scroll" )});
+            $(".bps-html").addClass("editing");
             $("#bps-editor").slideDown();
             $("#ig-e_categorys").slideDown();
             $("#bps-editor").animate({"height": "100%"},400,function(){editor.reflow();});
@@ -185,7 +185,7 @@ function toggleMarkdown()
                 $(this).attr("readonly",true);
             });
             $("button.bps-editorinfo-input").attr("disabled",true);
-            $(".bps-html").animate({"height": "100%"},400,function(){$(".bps-html").css( "overflow-y", "none" )});
+            $(".bps-html").removeClass("editing");
             $("#bps-editor").slideUp();
             $("#bps-mdsave").hide();
             $("#bps-editor-toolbar").hide();

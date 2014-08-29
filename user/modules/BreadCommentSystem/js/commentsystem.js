@@ -23,18 +23,44 @@
  */
 window.CommentMaxChars = false;
 
-$("#editcomment-button").click(function(){
-    alert("Edited!");
-});
+function ApplyClickEvents(element){
+    element.find(".editcomment-button").click(function(){
+        alert("Edited!");
+    });
 
-$("#deletecomment-button").click(function(){
-    alert("Deleted!");
-});
+    element.find(".deletecomment-button").click(function(){
+        var parent = $(this).parent().parent().parent().parent();
+        var index = parseInt(parent.find("index").text());
+        $.post( "index.php", {ajaxModule:"BreadCommentSystem",ajaxEvent:"BreadCommentSystem.DeleteComment",commentid:index,uniqueid:window.pageuniqueid}, function(returndata)
+        {
+            if(returndata === "1"){
+                parent.slideUp(400,function(){$(this).remove()});
+            }
+            else{
+                console.log("Couldn't delete comment.")
+            }
+        });
+    });
 
 
-$("#savecomment-button").click(function(){
+    element.find(".savecomment-button").click(function(){
+        alert("Save Comment");
+    });
+    
+    element.find(".upvotecomment-button").click(function(){
+        scoreComment(true,this);
+    });
+
+    element.find(".downvotecomment-button").click(function(){
+        scoreComment(false,this);
+    });
+
+}
+$("#newcomment .savecomment-button").click(SaveNewComment);
+function SaveNewComment()
+{
     if(NewCommentEditor.editor.textContent !== ""){
-        $.post( "index.php", {ajaxModule:"BreadCommentSystem",ajaxEvent:"BreadCommentSystem.writeComment",text:NewCommentEditor.editor.textContent,uniqueid:window.pageuniqueid}, function(returndata)
+        $.post( "index.php", {ajaxModule:"BreadCommentSystem",ajaxEvent:"BreadCommentSystem.WriteComment",text:NewCommentEditor.editor.textContent,uniqueid:window.pageuniqueid}, function(returndata)
         {
             if(returndata === "0")
             {
@@ -44,11 +70,12 @@ $("#savecomment-button").click(function(){
             else
             {
                 //Comment arrived.
-                $(NewCommentEditor.element).parent().parent().parent().append(returndata);
+                NewElement = $(NewCommentEditor.element).parent().parent().parent().append(returndata);
+                ApplyJavascriptToComment($(NewElement));
             }
         });
     }
-});
+}
 
 function scoreComment(upvote,button){
     var parent = $(button).parent().parent().parent().parent();
@@ -72,14 +99,6 @@ function scoreComment(upvote,button){
         }
     });
 }
-
-$(".upvotecomment-button").click(function(){
-    scoreComment(true,this);
-});
-
-$(".downvotecomment-button").click(function(){
-    scoreComment(false,this);
-});
 
 /*
  * Markdown Stuff
@@ -137,3 +156,20 @@ $(document).bind("editorChange",function(obj,text){
 $(NewCommentEditor.editor).keyup(function(){
     $(parent.document).trigger("editorChange",this.textContent);
 });
+
+function ApplyJavascriptToAllComments(){
+    $("#breadcomment-section").each(function(i,obj){
+        ApplyJavascriptToComment($(obj));
+    });
+    
+}
+
+function ApplyJavascriptToComment(commentElement){
+    ApplyClickEvents(commentElement);
+    var obj = commentElement.find(".bcs-markdown");
+    obj = $(obj);
+    var htmlObj = commentElement.find('.bcs-html');
+    var markdown = obj.text();
+    htmlObj.html(window.mdParser.makeHtml(markdown));
+    obj.hide();
+}

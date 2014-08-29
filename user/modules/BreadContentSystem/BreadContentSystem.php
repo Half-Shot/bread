@@ -118,20 +118,127 @@ class BreadContentSystem extends Module
         $totalsize = $_REQUEST["size"];
         $ID = hash("sha256",$type . $totalsize);
         
-        $File = new BreadContentSystemFile();
+        $File = new \Bread\Structures\BreadFile();
         $File->filename = $name;
         $File->size = $totalsize;
         $File->id = $ID;
         $File->mimetype = $type;
+        $File->time = time();
         $File->fileAcceptingData = true;
+        $types = explode("/", $type);
+        $File->majortype = $types[0];
+        $File->minortype = $types[1];
         $this->index->$ID = $File;
         
         mkdir(Site::ResolvePath('%system-temp/chunkfiles/' . $ID),0777,true);
         return $ID;
     }
     
-    function ContentPanel(){
-        return "<b>Placeholder for content button</b>";
+    function ContentPanel($args){
+        $HTML = "";
+        $Modal = new \Bread\Structures\BreadModal();
+        $Modal->id = "breadContentModal";
+        $Modal->title = "Bread Content Browser";
+        
+        //Sources
+
+        $LocalSources = new \Bread\Structures\BreadFormElement();
+        $LocalSources->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+        $LocalSources->value = "Local Files";
+        $LocalSources->class = $this->manager->FireEvent("Theme.GetClass","Button.Default");
+        
+        //Hook to other services
+        
+        $SourceButtonsCell = new \stdClass();
+        $SourceButtonsCell->size = 6;
+        $SourceButtonsCell->body = Site::$moduleManager->FireEvent("Theme.Layout.ButtonGroup",Site::$moduleManager->FireEvent("Theme.InputElement",$LocalSources));
+        
+        $Modal->body  .=  Site::$moduleManager->FireEvent("Theme.Layout.Grid.HorizonalStack",array($SourceButtonsCell)) . "<hr/>";
+        
+        //Types avaiable.
+        $ButtonStack = "<h4>Type</h4>";
+        $TypesFound = array();
+        $TypeButton = new \Bread\Structures\BreadFormElement();
+        $TypeButton->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+        $TypeButton->class = $this->manager->FireEvent("Theme.GetClass","Button.Default");
+        foreach($this->settings->allowedMimes as $mimetype){
+            $types = explode("/", $mimetype);
+            $major = $types[0];
+            if(!in_array($major, $TypesFound)){
+                $TypesFound[] = $major;
+            }
+            else{
+                continue;
+            }
+            $TypeButton->value = $major;
+            $TypeButton->onclick = "breadContentModalSetType('".$major."');";
+            $ButtonStack .= Site::$moduleManager->FireEvent("Theme.InputElement",$TypeButton);
+        }
+        $ButtonStack .= "<hr>";
+        $TypeButton->value = "Upload New...";
+        $TypeButton->class = $this->manager->FireEvent("Theme.GetClass","Button.Info");
+        $TypeButton->onclick = "breadContentModalUploadDialog();";
+        $ButtonStack .= Site::$moduleManager->FireEvent("Theme.InputElement",$TypeButton);
+        //Hook for other types.
+        
+        $MajorTypesCell = new \stdClass();
+        $MajorTypesCell->size = 2;
+        $MajorTypesCell->body = $ButtonStack;
+        
+        
+        $FileTable = new \Bread\Structures\BreadTableElement();
+        $FileTable->class = " table-hover";
+        $FileTable->headingRow = new \Bread\Structures\BreadTableRow();
+        $FileTable->headingRow->FillOutRow(array("Filename","Date","Size","Type",""));
+        
+        $MessageRow = new \Bread\Structures\BreadTableRow();
+        $MessageRow->FillOutRow(array("Select","a","type","of","item."));
+        
+        $FileTable->rows[] = $MessageRow;
+        
+        $SelectButton = new \Bread\Structures\BreadFormElement();
+        $SelectButton->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+        $SelectButton->class = $this->manager->FireEvent("Theme.GetClass","Button.Default");
+        $SelectButton->value = "Insert";
+        $SelectButton->toggle = true;
+        $SelectButton->hidden = true;
+        $SelectButton->id = "breadContentModal-selectButtonTemplate";
+        
+        Site::AddToBodyCode($this->manager->FireEvent("Theme.InputElement",$SelectButton));
+        
+        $FileBrowserCell = new \stdClass();
+        $FileBrowserCell->body = Site::$moduleManager->FireEvent("Theme.Table",$FileTable);
+        
+        $Modal->body .= Site::$moduleManager->FireEvent("Theme.Layout.Grid.HorizonalStack",array($MajorTypesCell,$FileBrowserCell));
+        
+        $CloseButton = new \Bread\Structures\BreadFormElement();
+        $CloseButton->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+        $CloseButton->value = "Close";
+        $CloseButton->class = $this->manager->FireEvent("Theme.GetClass","Button.Primary");
+        $CloseButton->onclick = "$('#breadContentModal').modal('hide');";
+        
+        $Modal->footer = $this->manager->FireEvent("Theme.Layout.ButtonGroup", $this->manager->FireEvent("Theme.InputElement",$CloseButton));
+        
+        //Button
+        Util::CastStdObjectToStruct($args,"Bread\Structures\BreadFormElement");
+        $args->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+        $args->onclick = "$('#breadContentModal').modal('show');";
+        Site::AddToBodyCode($this->manager->FireEvent("Theme.Modal",$Modal));
+        $HTML .= $this->manager->FireEvent("Theme.Button",$args);
+        return $HTML;
+    }
+    
+    function FindFilesByMajorType(){
+        $majortype = $_REQUEST["majortype"];
+        $Files = array();
+        foreach($this->index as $file){
+            $types = explode("/", $file->mimetype);
+            $major = $types[0];
+            if($major == $majortype){
+                $Files[] = $file;
+            }
+        }
+        return $Files;
     }
     
     function UploadChunk(){
@@ -213,13 +320,4 @@ class BreadContentSystem extends Module
 class BreadContentSystemSettings{
     public $allowedMimes = ['image/png'];
     public $maxfilesize = ['image_png'=>3000000];
-}
-
-class BreadContentSystemFile{
-    public $filename = "";
-    public $mimetype = "";
-    public $size = 0;
-    public $md5 = "";
-    public $id = "";
-    public $fileAcceptingData = false;
 }

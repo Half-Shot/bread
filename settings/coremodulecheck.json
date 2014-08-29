@@ -20,6 +20,7 @@
         "./Structures/BreadRequest",
         "./Structures/BreadPanel",
         "./Structures/BreadCommentStructure",
+        "./Structures/BreadFile",
         "./Themes/thememan",
         "./Themes/breadxml"
     ]

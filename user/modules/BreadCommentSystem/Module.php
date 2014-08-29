@@ -47,29 +47,26 @@ class BreadCommentSystem extends Module{
         $Btn_Comment_Edit = new \Bread\Structures\BreadFormElement;
         $Btn_Comment_Edit->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
         $Btn_Comment_Edit->value = $this->manager->FireEvent("Theme.Icon","pencil") . " Edit";
-        $Btn_Comment_Edit->class = $this->manager->FireEvent("Theme.GetClass","Button.Warning"). " " . $this->manager->FireEvent("Theme.GetClass","Button.Small");
-        $Btn_Comment_Edit->id = "editcomment-button";
+        $Btn_Comment_Edit->class = $this->manager->FireEvent("Theme.GetClass","Button.Warning"). " editcomment-button " . $this->manager->FireEvent("Theme.GetClass","Button.Small");
         $this->buttons["Edit"] = $this->manager->FireEvent("Theme.Button",$Btn_Comment_Edit);
         
         $Btn_Comment_Delete = new \Bread\Structures\BreadFormElement;
         $Btn_Comment_Delete->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
         $Btn_Comment_Delete->value = $this->manager->FireEvent("Theme.Icon","trash") . " Delete";
-        $Btn_Comment_Delete->class = $this->manager->FireEvent("Theme.GetClass","Button.Danger"). " " . $this->manager->FireEvent("Theme.GetClass","Button.Small");
-        $Btn_Comment_Delete->id = "deletecomment-button";
+        $Btn_Comment_Delete->class = $this->manager->FireEvent("Theme.GetClass","Button.Danger"). " deletecomment-button " . $this->manager->FireEvent("Theme.GetClass","Button.Small");
         $this->buttons["Delete"] = $this->manager->FireEvent("Theme.Button",$Btn_Comment_Delete);
 
         $Btn_SaveChanges = new \Bread\Structures\BreadFormElement;
         $Btn_SaveChanges->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
         $Btn_SaveChanges->value = $this->manager->FireEvent("Theme.Icon","ok") . " Save";
-        $Btn_SaveChanges->id = "savecomment-button";
-        $Btn_SaveChanges->class = $this->manager->FireEvent("Theme.GetClass","Button.Success"). " " . $this->manager->FireEvent("Theme.GetClass","Button.Small");
+        $Btn_SaveChanges->class = $this->manager->FireEvent("Theme.GetClass","Button.Success"). " savecomment-button " . $this->manager->FireEvent("Theme.GetClass","Button.Small");
         $this->buttons["Save"] = $this->manager->FireEvent("Theme.Button",$Btn_SaveChanges);
         
         if($this->settings->EnableUpvoting){
             $Btn_Comment_Upvote = new \Bread\Structures\BreadFormElement;
             $Btn_Comment_Upvote->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
             $Btn_Comment_Upvote->value = $this->manager->FireEvent("Theme.Icon","thumbs-up");
-            $Btn_Comment_Upvote->class = $this->manager->FireEvent("Theme.GetClass","Button.Success"). " " . $this->manager->FireEvent("Theme.GetClass","Button.Small") . " upvotecomment-button";
+            $Btn_Comment_Upvote->class = $this->manager->FireEvent("Theme.GetClass","Button.Success"). " upvotecomment-button " . $this->manager->FireEvent("Theme.GetClass","Button.Small");
             $this->buttons["Upvote"] = $this->manager->FireEvent("Theme.Button",$Btn_Comment_Upvote);
         }
         else{
@@ -80,7 +77,7 @@ class BreadCommentSystem extends Module{
             $Btn_Comment_Downvote = new \Bread\Structures\BreadFormElement;
             $Btn_Comment_Downvote->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
             $Btn_Comment_Downvote->value = $this->manager->FireEvent("Theme.Icon","thumbs-down");
-            $Btn_Comment_Downvote->class = $this->manager->FireEvent("Theme.GetClass","Button.Danger"). " " . $this->manager->FireEvent("Theme.GetClass","Button.Small") . " downvotecomment-button";
+            $Btn_Comment_Downvote->class = $this->manager->FireEvent("Theme.GetClass","Button.Danger"). " downvotecomment-button " . $this->manager->FireEvent("Theme.GetClass","Button.Small");
             $this->buttons["Downvote"] = $this->manager->FireEvent("Theme.Button",$Btn_Comment_Downvote);
         }
         else{
@@ -112,6 +109,7 @@ class BreadCommentSystem extends Module{
             Site::AddScript(Site::ResolvePath("%user-modules/BreadCommentSystem/js/commentsystem.js"),"BreadCommentSystemScript", true);
             
             Site::AddRawScriptCode("var epiceditor_basepath ='" . Site::ResolvePath("%user-modules/BreadCommentSystem/css/") . "';");//Dirty Hack
+            Site::AddRawScriptCode("ApplyJavascriptToAllComments();",true);
             Site::AddRawScriptCode('window.pageuniqueid="' . $this->uniqueID . '"');
             
             $this->MakeButtons();
@@ -148,21 +146,21 @@ class BreadCommentSystem extends Module{
             $HTML .= $this->ConstructEditableComment();
         }
         $CommentIndex = 0;
-        
+        $HTML .= "<div id='breadcomment-section'>";
         foreach($this->comments->comments as $comment){
             $commentObj = Util::CastStdObjectToStruct($comment, "Bread\Structures\BreadComment");
             $User = $this->manager->FireEvent("Bread.Security.GetUser",$commentObj->user);
             $Avatar = $this->manager->FireEvent("Bread.GetAvatar",$User);
             $EditorButtons = "";
             $ButtonsHTML = "";
-            if($CurrentUser !== null){
+            if($CurrentUser !== null && !$this->comments->locked){
                 $ButtonsHTML = $this->buttons["Upvote"] . $this->buttons["Downvote"];
                 if($comment->user === $CurrentUser->uid){
                     if($this->settings->AllowEditing){
                         //$EditorButtons .= $this->buttons["Edit"] . $this->buttons["Save"];
                     }
                     if($this->settings->AllowDeleting){
-                        //$EditorButtons .= $this->buttons["Delete"];
+                        $EditorButtons .= $this->buttons["Delete"];
                     }
                 }
             }
@@ -173,6 +171,7 @@ class BreadCommentSystem extends Module{
             $HTML .= $this->ConstructComment($CommentIndex,$Name, $Avatar, $commentObj->body, false,$commentObj->time, count($commentObj->karmaupvotees) - count($commentObj->karmadownvotees),$ButtonsHTML,$EditorButtons);
             $CommentIndex++;
         }
+        $HTML .= "</div>";
         return $HTML;
     }
     
@@ -227,7 +226,9 @@ class BreadCommentSystem extends Module{
             return 0;
         }
         $this->comments = Site::$settingsManager->RetriveSettings($path);
-        
+        if($this->comments->locked){
+            return 0;
+        }
         $Comment = new \Bread\Structures\BreadComment();
         $Comment->body = $text;
         $Comment->time = time();
@@ -251,7 +252,7 @@ class BreadCommentSystem extends Module{
                 //$EditorButtons .= $this->buttons["Edit"] . $this->buttons["Save"];
             }
             if($this->settings->AllowDeleting){
-                //$EditorButtons .= $this->buttons["Delete"];
+                $EditorButtons .= $this->buttons["Delete"];
             }
        }
        else{
@@ -265,6 +266,32 @@ class BreadCommentSystem extends Module{
         return $HTML;
     }
     
+    function DeleteComment(){
+        $Moderator = $this->manager->FireEvent("Bread.Security.GetPermission","BreadCommentSystem.Moderator");
+        if(!$this->settings->AllowDeleting || !$Moderator){
+            return 0;
+        }
+        $this->uniqueID = $_REQUEST["uniqueid"];
+        $this->uniqueID = basename($this->uniqueID);
+        $commentID = intval($_REQUEST["commentid"]);
+        $path = Util::ResolvePath("%user-content/comments/" . $this->uniqueID . ".json");
+        if(!file_exists($path)){
+            return 0;
+        }
+        $this->comments = Site::$settingsManager->RetriveSettings($path);  
+        if($this->comments->locked){
+            return 0;
+        }
+        $comment = $this->comments->comments[$commentID];
+        $CurrentUser = $this->manager->FireEvent("Bread.Security.GetCurrentUser");
+        if($this->user === $CurrentUser->uid && $comment->canedit || $Moderator){
+            unset($this->comments->comments[$commentID]);
+            $this->comments->comments = array_values($this->comments->comments);
+            return 1;
+        }
+        return 0;
+    }
+    
     function Upvote(){
         return $this->KarmaVote(true);
     }
@@ -275,14 +302,17 @@ class BreadCommentSystem extends Module{
             return "Fail";
         }
         
-        $this->uniqueID = basename($this->uniqueID);
         $this->uniqueID = $_REQUEST["uniqueid"];
+        $this->uniqueID = basename($this->uniqueID);
         $commentID = intval($_REQUEST["commentid"]);
         $path = Util::ResolvePath("%user-content/comments/" . $this->uniqueID . ".json");
         if(!file_exists($path)){
             return "Fail";
         }
-        $this->comments = Site::$settingsManager->RetriveSettings($path);  
+        $this->comments = Site::$settingsManager->RetriveSettings($path);
+        if($this->comments->locked){
+            return 0;
+        }
         $comment = $this->comments->comments[$commentID];
         
         if($upvote){//Upvote
