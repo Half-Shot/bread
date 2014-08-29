@@ -78,14 +78,15 @@ uploadZone.on("addedfile", function(file) {
     });
     $($(".uploadZone-templateUploadButton")[uploadZone.files.length - 1]).click(function(){
         $(this).attr("disabled", true);
-        $.ajax("index.php",{type:"POST",data:{ ajaxEvent: "BreadContentSystem.BeginUpload",type:file.type,size:file.size},success:function(newID)
+        var parent = $(this).parent().parent();
+        $.ajax("index.php",{type:"POST",data:{ ajaxEvent: "BreadContentSystem.BeginUpload",name:file.name,type:file.type,size:file.size},success:function(newID)
         {
             //Start Upload
             if(newID === "0"){
                 console.log("Invalid Mimetype!");
             }
             else{
-                UploadFile(newID,file);
+                UploadFile(newID,file,parent);
             }
         }});
         //Upload
@@ -93,13 +94,15 @@ uploadZone.on("addedfile", function(file) {
 });
 
 
-function UploadFile(newID,file){
+function UploadFile(newID,file,displayElement){
     console.log("Can begin upload!");
     var fileReader = new FileReader();
+    var progressBar = displayElement.find('#uploadZoneProgress');
     fileReader.onloadend = function () {
       var BytesRead = 0;
       var n = 0;
       var chunkN = -1;
+      var chunksRequired = Math.ceil(file.size / window.chunksize);
       while(BytesRead < file.size){
         var Chunk = this.result.slice(BytesRead,BytesRead + window.chunksize);
         var ChunkArray = new Uint8Array(Chunk);
@@ -107,24 +110,38 @@ function UploadFile(newID,file){
         chunkN += 1;
         BytesRead += window.chunksize;
         //Upload
-        $.ajax("index.php",{type:"POST",data:{ ajaxEvent: "BreadContentSystem.UploadChunk",actualsize:file.size,name:file.name,id:newID,size:Chunk.byteLength,data:ChunkString,chunkN:chunkN},success:function(returnedData)
+        $.ajax("index.php",{type:"POST",data:{ ajaxEvent: "BreadContentSystem.UploadChunk",id:newID,size:Chunk.byteLength,data:ChunkString,chunkN:chunkN},success:function(returnedData)
         {
+            var chunksRequired = Math.ceil(file.size / window.chunksize);
+            var progressBar = displayElement.find('#uploadZoneProgress');
             n += 1;
             if(returnedData === "0"){
                 console.log("Something went wrong.");
             }
             else if(returnedData === "1"){
                 console.log("Chunk " + n + " recieved and processed");
+                progressBar.val(progressBar.val() + ((1 / chunksRequired) * 50));
             }
             else if(returnedData === "-1"){
                 console.log("Chunk " + n + " failed to send!");
             }
             else{
                 //Image Location
-                console.log("Image uploaded to " + returnedData);
+                progressBar.val(100);
+                console.log("File uploaded to " + returnedData);
+                var FinishItem = displayElement.clone();
+                FinishItem.find('.btn-group').remove();
+                FinishItem.find('br').remove();
+                FinishItem.find('#uploadZoneProgress').remove();
+                FinishItem.append("<a href='" + returnedData + "'>Click To View File</a></br>");
+                FinishItem.append("</br><pre>"+ returnedData + "</pre>");
+                FinishItem.hide();
+                $("#content-finished").append(FinishItem);
+                FinishItem.fadeIn();
                 uploadZone.removeFile(file);
             }
         }});
+        progressBar.val(progressBar.val() + ((1 / chunksRequired) * 50));
       }
     }
     fileReader.readAsArrayBuffer(file);

@@ -159,10 +159,10 @@ class BreadCommentSystem extends Module{
                 $ButtonsHTML = $this->buttons["Upvote"] . $this->buttons["Downvote"];
                 if($comment->user === $CurrentUser->uid){
                     if($this->settings->AllowEditing){
-                        $EditorButtons .= $this->buttons["Edit"] . $this->buttons["Save"];
+                        //$EditorButtons .= $this->buttons["Edit"] . $this->buttons["Save"];
                     }
                     if($this->settings->AllowDeleting){
-                        $EditorButtons .= $this->buttons["Delete"];
+                        //$EditorButtons .= $this->buttons["Delete"];
                     }
                 }
             }
@@ -181,7 +181,7 @@ class BreadCommentSystem extends Module{
         $CommentStruct = new \Bread\Structures\BreadThemeCommentStructure();
         $CommentStruct->thumbnail = $Thumb;
         $CommentStruct->header = $Name;
-        $MarkdownArea = '</br><div id="bcs-editor"></div>';
+        $MarkdownArea = '<div id="bcs-editor"></div>';
         if($Editable){
             $CommentStruct->body =  '<span class="commentcharsleft">'.$this->settings->CharacterLimit.'</span>'.$MarkdownArea;
         }
@@ -248,10 +248,10 @@ class BreadCommentSystem extends Module{
         if($CurrentUser !== null){
             $ButtonsHTML = $this->buttons["Upvote"] . $this->buttons["Downvote"];
             if($this->settings->AllowEditing){
-                $EditorButtons .= $this->buttons["Edit"] . $this->buttons["Save"];
+                //$EditorButtons .= $this->buttons["Edit"] . $this->buttons["Save"];
             }
             if($this->settings->AllowDeleting){
-                $EditorButtons .= $this->buttons["Delete"];
+                //$EditorButtons .= $this->buttons["Delete"];
             }
        }
        else{

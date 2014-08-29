@@ -468,7 +468,12 @@ class BreadPageSystem extends Module
             $E_Github->onclick = "wrap('[%]github(',')[%]');";
             $GithubHTML = $this->manager->FireEvent("Theme.Button",$E_Github);
             
-            $Toolbar = $this->manager->FireEvent("Theme.Layout.ButtonToolbar",$Group . $GroupTwo . $GroupMedia . $GithubHTML);
+            $E_Content = new \Bread\Structures\BreadFormElement;
+            $E_Content->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+            $E_Content->value = "Insert Media";
+            $E_Content = $this->manager->FireEvent("Bread.GetContentButton",$E_Content);
+            
+            $Toolbar = $this->manager->FireEvent("Theme.Layout.ButtonToolbar",$Group . $GroupTwo . $GroupMedia . $GithubHTML . $E_Content);
             
             return "<div id='bps-editor-toolbar' style='display:none;'>" . $Toolbar . "</div>";
         }
@@ -748,7 +753,7 @@ class BreadPageSystem extends Module
                  $filename = $this->GenerateFileName($post->name);
                  if(empty($filename))
                  {
-                    Site::$Logger->writeError("Post had a bad name and coudln't save as a file path.",\Bread\Logger::SEVERITY_HIGH,"breadpagesystem");
+                    Site::$Logger->writeError("Post had a bad name and couldn't save as a file path.",\Bread\Logger::SEVERITY_HIGH,"breadpagesystem");
                     return "0";
                  }
                  $post->url = $filename . ".md";

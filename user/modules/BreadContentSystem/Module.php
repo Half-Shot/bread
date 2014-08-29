@@ -4,8 +4,9 @@ use Bread\Site as Site;
 use Bread\Utilitys as Util;
 class BreadContentSystem extends Module
 {
-    const CHUNKSIZE = 64000;
+    const CHUNKSIZE = 256000;
     private $settings;
+    private $index;
     function __construct($manager,$name)
     {
         parent::__construct($manager,$name);
@@ -17,7 +18,7 @@ class BreadContentSystem extends Module
         }
         $this->settings = Site::$settingsManager->RetriveSettings("breadcontentsystem#settings.json",false,new BreadContentSystemSettings());
         $this->settings = Util::CastStdObjectToStruct($this->settings,"Bread\Modules\BreadContentSystemSettings");
-        Site::$settingsManager->SaveSetting($this->settings, "breadcontentsystem#settings.json");
+        $this->index = Site::$settingsManager->RetriveSettings(Site::ResolvePath('%user-content/content/index.json'),false,new \stdClass());
     }
     
     function GetContent($contentID){
@@ -35,8 +36,7 @@ class BreadContentSystem extends Module
             Site::AddRawScriptCode("window.acceptedTypes.push('".$type."')", true);
         }
         foreach($this->settings->maxfilesize as $mimetype => $size){
-            $realmimetype = str_replace("_","/",$mimetype);
-            Site::AddRawScriptCode("window.maxfilesize.set('".$realmimetype."',".$size.")", true);
+            Site::AddRawScriptCode("window.maxfilesize.set('".$mimetype."',".$size.")", true);
         }
         Site::AddRawScriptCode("window.chunksize = " . BreadContentSystem::CHUNKSIZE, true);
         $UploadPanel = new \Bread\Structures\BreadPanel();
@@ -46,6 +46,9 @@ class BreadContentSystem extends Module
         $Body = $this->manager->FireEvent("Theme.Layout.Well",array("small"=>0,"id"=>"uploadZone-thumbnail"));
         //Dropzone
         $Body .= $this->manager->FireEvent("Theme.Layout.Well",array("small"=>0,"id"=>"content-dropzone"));
+        //Endzone
+        $Body .= $this->manager->FireEvent("Theme.Layout.Well",array("small"=>0,"id"=>"content-finished"));
+        
         
         //Template
         
@@ -108,36 +111,54 @@ class BreadContentSystem extends Module
     
     function BeginUpload(){
         $type = $_REQUEST["type"];
+        $name = $_REQUEST["name"];
         if(!in_array($type,$this->settings->allowedMimes)){
             return 0;
         }
         $totalsize = $_REQUEST["size"];
         $ID = hash("sha256",$type . $totalsize);
-        mkdir(Site::ResolvePath('%system-temp/' . $ID));
+        
+        $File = new BreadContentSystemFile();
+        $File->filename = $name;
+        $File->size = $totalsize;
+        $File->id = $ID;
+        $File->mimetype = $type;
+        $File->fileAcceptingData = true;
+        $this->index->$ID = $File;
+        
+        mkdir(Site::ResolvePath('%system-temp/chunkfiles/' . $ID),0777,true);
         return $ID;
+    }
+    
+    function ContentPanel(){
+        return "<b>Placeholder for content button</b>";
     }
     
     function UploadChunk(){
         $size = $_REQUEST["size"];
-        $actualsize = $_REQUEST["actualsize"];
         $id = $_REQUEST["id"];
         $data = $_REQUEST["data"];
-        $name = $_REQUEST["name"];
         $ChunkN = $_REQUEST["chunkN"];
-        //Check the file is accepting more data.
-        if(BreadContentSystem::CHUNKSIZE < $size){
-            //Chunk too big.
+        $ReturnCode = 1;
+        if(!isset($this->index->$id)){
+            //File not found
             return 0;
         }
-        $directory = Site::ResolvePath('%system-temp/' . $id);
+        $File = $this->index->$id;
+        if($File->fileAcceptingData == false){
+            return 0;
+        }
+        $directory = Site::ResolvePath('%system-temp/chunkfiles/' . $id);
         if(!file_exists($directory)){
+            //Shoudln't really ever get here.
             return -1; //No upload was ever started, probably a hack.
         }
         $data = base64_decode($data);
         file_put_contents($directory . "/" . $ChunkN, $data, FILE_APPEND);
-        $ChunksRequired = ceil($actualsize / BreadContentSystem::CHUNKSIZE);
+        $ChunksRequired = ceil($File->size / BreadContentSystem::CHUNKSIZE);
         $Chunks = array_diff(scandir($directory), array('..', '.'));
         if(count($Chunks) == $ChunksRequired){
+            $File->fileAcceptingData = false;
             //Build File
             $FinalFileData = "";
             natsort($Chunks);
@@ -146,13 +167,31 @@ class BreadContentSystem extends Module
                 $FinalFileData .= $fdata;
             }
             Util::RecursiveRemove($directory);
+            //Check MD5s
+            $MD5 = md5($FinalFileData);
+            foreach($this->index as $OtherFile){
+                if($OtherFile->md5 == $MD5){
+                    //Duplicate detected!
+                    $fileInfo = pathinfo($OtherFile->filename);
+                    $newpath = Site::ResolvePath('%user-content/content/' . $mime . '/' . $OtherFile->id . "." . $fileInfo["extension"]);
+                    unset($this->index->$id);
+                    return $newpath; //Return the old file.
+                }
+            }
+            $File->md5 = $MD5;
             file_put_contents($directory, $FinalFileData);
             //Less than equal amount of bytes, the file must have finished.
             $mime = $this->DetectMimeType($directory);
+            if($mime !== $File->mimetype){
+                unlink(Site::ResolvePath('%system-temp/' . $id));
+                unset($this->index->$id);
+                return 0;
+            }
             if(in_array($mime, $this->settings->allowedMimes)){
                 //Save it properly
                 //Index and check it doesn't already exist.
-                $newpath = Site::ResolvePath('%user-content/content/' . $mime . '/' . $name);
+                $fileInfo = pathinfo($File->filename);
+                $newpath = Site::ResolvePath('%user-content/content/' . $mime . '/' . $id . "." . $fileInfo["extension"]);
                 mkdir(Site::ResolvePath('%user-content/content/' . $mime . '/'), 0777, true);
                 rename($directory,$newpath);
                 unlink($directory);
@@ -160,7 +199,9 @@ class BreadContentSystem extends Module
             }
             else{
                 //Error and delete
-                unlink(Site::ResolvePath('%system-temp/' . $id));
+                unset($this->index->$id);
+                unlink($directory);
+                return 0;
             }
         }
         else{
@@ -172,4 +213,13 @@ class BreadContentSystem extends Module
 class BreadContentSystemSettings{
     public $allowedMimes = ['image/png'];
     public $maxfilesize = ['image_png'=>3000000];
+}
+
+class BreadContentSystemFile{
+    public $filename = "";
+    public $mimetype = "";
+    public $size = 0;
+    public $md5 = "";
+    public $id = "";
+    public $fileAcceptingData = false;
 }

@@ -480,5 +480,14 @@ class Utilitys {
             }
             return $object;
         }
-        
+        /**
+         * Replaces spaces and non numerical/alphabetical characters with underscores.
+         * @param type $filename
+         * @return type
+         */
+        function URLSafeFileName($filename){
+            $filename = preg_replace("/[^a-zA-Z0-9 ]/", "_",$filename);
+            $filename = preg_replace('/\s+/', '', $filename);
+            return $filename;
+        }
 }

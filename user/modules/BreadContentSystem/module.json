@@ -15,6 +15,10 @@
             "function":"DrawUploader",
             "security":0
         },
+        "Bread.GetContentButton":{
+            "function":"ContentPanel",
+            "security":0
+        },
         "BreadContentSystem.BeginUpload":{
             "function":"BeginUpload",
             "security":1
