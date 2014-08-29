@@ -19,7 +19,11 @@ class BreadContentSystem extends Module
     }
     
     function GetContent($contentID){
-        
+        $File = $this->index->$contentID;
+        $fileInfo = pathinfo($File->filename);
+        $path = Site::ResolvePath('%user-content/content/' . $File->mimetype . '/' . $contentID . "." . $fileInfo["extension"]);
+        $File->data = file_get_contents($path);
+        return $File;
     }
     
     function onDropSubmit(){
