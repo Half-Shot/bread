@@ -2,6 +2,11 @@
     "name": "BreadPageSystem",
     "entryclass": "BreadPageSystem",
     "entryfile": "BreadPageSystem\/BreadPageSystem.php",
+    "permissions":["BreadPageSystem.NewPost",
+                   "BreadPageSystem.Editor",
+                   "BreadPageSystem.EditOwnPosts",
+                   "BreadPageSystem.DeletePost",
+                   "BreadPageSystem.AdminPanel.Read"],
     "events": {
         "Bread.DrawModule": {
             "function": "DrawPage",

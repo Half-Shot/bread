@@ -13,9 +13,6 @@ class BreadContentSystem extends Module
     }
     
     function Setup(){
-        if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadCoreSettings.Write")){
-            $this->manager->UnregisterModule($this->name);
-        }
         $this->settings = Site::$settingsManager->RetriveSettings("breadcontentsystem#settings.json",false,new BreadContentSystemSettings());
         $this->settings = Util::CastStdObjectToStruct($this->settings,"Bread\Modules\BreadContentSystemSettings");
         $this->index = Site::$settingsManager->RetriveSettings(Site::ResolvePath('%user-content/content/index.json'),false,new \stdClass());
@@ -30,6 +27,9 @@ class BreadContentSystem extends Module
     }
     
     function DrawUploader(){
+        if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadContentSystem.CanUpload")){
+            return false;
+        }
         Site::AddScript(Site::ResolvePath("%user-modules/BreadContentSystem/js/dropzone.min.js"), "Dropzone", true);
         Site::AddScript(Site::ResolvePath("%user-modules/BreadContentSystem/js/contentUpload.js"), "BreadContentSystem", true);
         foreach($this->settings->allowedMimes as $type){
@@ -110,6 +110,9 @@ class BreadContentSystem extends Module
     }
     
     function BeginUpload(){
+        if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadContentSystem.CanUpload")){
+            return false;
+        }
         $type = $_REQUEST["type"];
         $name = $_REQUEST["name"];
         if(!in_array($type,$this->settings->allowedMimes)){
@@ -135,6 +138,9 @@ class BreadContentSystem extends Module
     }
     
     function ContentPanel($args){
+        if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadContentSystem.UseFiles")){
+            return false;
+        }
         $HTML = "";
         $Modal = new \Bread\Structures\BreadModal();
         $Modal->id = "breadContentModal";
@@ -229,6 +235,9 @@ class BreadContentSystem extends Module
     }
     
     function FindFilesByMajorType(){
+        if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadContentSystem.UseFiles")){
+            return false;
+        }
         $majortype = $_REQUEST["majortype"];
         $Files = array();
         foreach($this->index as $file){
@@ -242,6 +251,9 @@ class BreadContentSystem extends Module
     }
     
     function UploadChunk(){
+        if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadContentSystem.CanUpload")){
+            return false;
+        }
         $size = $_REQUEST["size"];
         $id = $_REQUEST["id"];
         $data = $_REQUEST["data"];

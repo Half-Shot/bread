@@ -1,8 +1,16 @@
 {
     "name":"BreadCoreSettings",
-	"entryclass":"BreadCoreSettings",
-	"entryfile":"BreadCoreSettings/BreadCoreSettings.php",
-	"events":{
+    "entryclass":"BreadCoreSettings",
+    "entryfile":"BreadCoreSettings/BreadCoreSettings.php",
+    "permissions":[
+        "BreadCoreSettings.Write",
+        "BreadCoreSettings.Read",
+        "BreadCoreSettings.Settings.Read",
+        "BreadCoreSettings.Logger.Read",
+        "BreadCoreSettings.Updater.Read",
+        "BreadCoreSettings.Modules.Read",
+        "Bread.SystemUpdate"],
+    "events":{
         "BreadCoreSettings.SaveCoreSettings":{
        		"function":"SaveCore",
        		"security":1
@@ -19,5 +27,5 @@
        		"function":"Setup",
        		"security":0
        	}
-	}
+    }
 }

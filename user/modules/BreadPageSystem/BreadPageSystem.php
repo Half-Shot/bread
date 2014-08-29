@@ -111,7 +111,7 @@ class BreadPageSystem extends Module
             $this->EnableEditor = $this->CheckEditorRights();
             if(array_key_exists("newpost", Site::getRequest()->arguments))
             {   
-               if(!$this->manager->FireEvent("Bread.Security.GetPermission","NewPost"))
+               if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadPageSystem.NewPost"))
                     Site::$Logger->writeError("Request to create new post but user has no right!",  \Bread\Logger::SEVERITY_MEDIUM, $this->name, true);
                $this->isnewpost = true;
                if(empty($this->settings->templatePath)){
@@ -140,15 +140,15 @@ class BreadPageSystem extends Module
         
         function CheckEditorRights()
         {
-            if($this->manager->FireEvent("Bread.Security.GetPermission","Editor")){
+            if($this->manager->FireEvent("Bread.Security.GetPermission","BreadPageSystem.Editor")){
                 return true;
             }
             $id = $this->GetActivePostPageId();
-            if($this->manager->FireEvent("Bread.Security.GetPermission","NewPost") && (!isset($this->settings->postindex->$id) || array_key_exists("newpost", Site::getRequest()->arguments))){
+            if($this->manager->FireEvent("Bread.Security.GetPermission","BreadPageSystem.NewPost") && (!isset($this->settings->postindex->$id) || array_key_exists("newpost", Site::getRequest()->arguments))){
                 return true;
             }
             
-            if($this->manager->FireEvent("Bread.Security.GetPermission","EditOwnPosts"))
+            if($this->manager->FireEvent("Bread.Security.GetPermission","BreadPageSystem.EditOwnPosts"))
             {
                 $PostUID = $this->GetActivePost()->author;
                 $UserUID = $this->manager->FireEvent("Bread.Security.GetCurrentUser")->uid;
@@ -821,7 +821,7 @@ class BreadPageSystem extends Module
         
         function DeletePost()
         {   
-             $canModify = $this->manager->FireEvent("Bread.Security.GetPermission","DeletePost");
+             $canModify = $this->manager->FireEvent("Bread.Security.GetPermission","BreadPageSystem.DeletePost");
              if(!$canModify){
                  Site::$Logger->writeError("User tried to delete a post without permission!",\Bread\Logger::SEVERITY_MEDIUM,"breadpagesystem");
                  return "0";

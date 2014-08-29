@@ -119,7 +119,7 @@ class BreadCommentSystem extends Module{
     function ConstructEditableComment(){
         //Editable comment.
         $CurrentUser = $this->manager->FireEvent("Bread.Security.GetCurrentUser");
-        if($this->manager->FireEvent("Bread.Security.GetPermission","WriteComment")){
+        if($this->manager->FireEvent("Bread.Security.GetPermission","Bread.WriteComment")){
             $Avatar = $this->manager->FireEvent("Bread.GetAvatar",$CurrentUser);
             $Name = Util::EmptySub($CurrentUser->information->Name, "Unknown");
             $HTML = '<div id="newcomment">' . $this->ConstructComment(-1,$Name, $Avatar, "Click here to edit...", true,false,false,"",$this->buttons["Save"]) . '</div>';
@@ -215,7 +215,7 @@ class BreadCommentSystem extends Module{
             return 0;
         }
         elseif($CurrentUser !== null){
-            if(!$this->manager->FireEvent("Bread.Security.GetPermission","WriteComment")){
+            if(!$this->manager->FireEvent("Bread.Security.GetPermission","Bread.WriteComment")){
                 return 0;
             }
         }

@@ -2,6 +2,7 @@
     "name":"BreadCommentSystem",
 	"entryclass":"BreadCommentSystem",
 	"entryfile":"BreadCommentSystem/Module.php",
+        "permissions": ["Bread.WriteComment","BreadCommentSystem.Moderator"],
 	"events":{
             "Bread.ProcessRequest":{
                 "function":"Setup",

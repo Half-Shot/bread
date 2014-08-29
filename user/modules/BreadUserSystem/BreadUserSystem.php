@@ -392,7 +392,7 @@ class BreadUserSystem extends Module
         $AddNewUserButton->id = "NewUserButton";
         $AddNewUserButton->class = "btn-primary";
         $AddNewUserButton->value = "New User";
-        $AddNewUserButton->readonly = !$this->manager->FireEvent("Bread.Security.GetPermission","BreadUserSystem.AddnNewUser");
+        $AddNewUserButton->readonly = !$this->manager->FireEvent("Bread.Security.GetPermission","BreadUserSystem.AddNewUser");
         $ToolsPanel->Body .= Site::$moduleManager->FireEvent("Theme.Button",$AddNewUserButton);
         
         return $MasterSettings;

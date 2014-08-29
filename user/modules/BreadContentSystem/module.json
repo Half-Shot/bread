@@ -2,6 +2,7 @@
     "name": "BreadContentSystem",
     "entryclass": "BreadContentSystem",
     "entryfile": "BreadContentSystem\/BreadContentSystem.php",
+    "permissions":["BreadContentSystem.CanUpload","BreadContentSystem.UseFiles"],
     "events":{
         "Bread.ProcessRequest":{
             "function":"Setup",
