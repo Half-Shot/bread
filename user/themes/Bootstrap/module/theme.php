@@ -85,6 +85,11 @@ class BootstrapTheme extends Bread\Modules\Module
 	function Load()
 	{
             $this->breadXML = new BreadXML(Site::FindFile("Bootstrap/theme.xsl"));
+            //Enable tooltips
+            $String = '$("[data-toggle=';
+            $String .= "'tooltip'";
+            $String .= ']").tooltip();';
+            Site::AddRawScriptCode($String, true);
 	}
         
 	function Navbar($args)

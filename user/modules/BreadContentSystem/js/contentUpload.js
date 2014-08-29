@@ -118,6 +118,10 @@ function breadContentModalSetType(majortype){
                 row += "<td>" + d.toDateString() + "</br>" + d.toTimeString() + "</td>";
                 row += "<td>" + (Files[i].size / 1024000).toFixed(2) + " MB</td>";
                 row += "<td>" + Files[i].minortype + "</td>";
+                button.attr("fileid",Files[i].id);
+                button.attr("source","local");
+                button.attr("major",Files[i].majortype);
+                button.attr("minor",Files[i].minortype);
                 row += "<td>"+button.wrap('<p>').parent().html()+"</td>";
                 row += "</tr>";
             $("#breadContentModal tbody").append(row);
@@ -187,3 +191,30 @@ uploadZone.on("removedfile", function(file) {
         $("#uploadZone-uploadbutton").attr("disabled", true);
     }
 });
+
+function breadContentModalinsertFiles(){
+    $('#breadContentModal-fileTable td .active').each(function(i,obj){
+        var fileid = $(obj).attr("fileid");
+        var source = $(obj).attr("source");
+        var major = $(obj).attr("major");
+        var minor = $(obj).attr("minor");
+        if(source === "local"){ //We have all we need.
+            $.ajax("index.php",{type:"POST",data:{ ajaxEvent: "Bread.GetContentURL",contentid:fileid},success:function(returnedData)
+            {
+                if(returnedData !== "0"){
+                    //HARDCODED IMAGE INSERT
+                    if (typeof wrap !== "undefined") { 
+                        // safe to use the function
+                        if(major == "image"){
+                            wrap('![','](' + returnedData + ')');
+                        }
+                        else{
+                            wrap('[%]'+major+'('+ returnedData +')[%]');
+                        }
+                    }
+                }
+            }});
+        }
+    });
+    $('#breadContentModal').modal('hide');
+}

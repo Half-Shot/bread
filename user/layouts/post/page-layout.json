@@ -90,12 +90,6 @@
                 "id":"editor-infomation",
                 "human": "Editor Information Panel",
                 "event":"BreadPageSystem.EditorInformation"
-            },
-            {
-                "name": "uploader",
-                "human": "Content Uploader",
-                "id": "contentUploader",
-                "event":"Bread.ShowUploader"
             }
         ]
     }

@@ -12,6 +12,10 @@
             "function":"GetContent",
             "security":0
         },
+        "Bread.GetContentURL":{
+            "function":"GetContentURL",
+            "security":1
+        },
         "Bread.ShowUploader":{
             "function":"DrawUploader",
             "security":0

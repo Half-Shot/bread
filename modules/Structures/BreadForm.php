@@ -44,6 +44,9 @@ class BreadFormElement
     public $form = false;
     public $pattern = false;
     public $patten_help = false;
+    public $tooltip = false;
+    public $tooltipDirection = "top";
+    public $tooltipText = "";
     const TYPE_TEXTBOX = "text";
     const TYPE_PASSWORD = "password";
     const TYPE_HTMLFIVEBUTTON = "button";

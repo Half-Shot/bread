@@ -174,6 +174,11 @@
                     </xsl:if>
                     <xsl:attribute name="class">btn form-control <xsl:value-of select="./class"/></xsl:attribute>
                     <xsl:value-of select="./value"/>
+                    <xsl:if test="./variable/tooltip = 1">
+                        <xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+                        <xsl:attribute name="data-placement"><xsl:value-of select="./variable/tooltipDirection"/></xsl:attribute>
+                        <xsl:attribute name="title"><xsl:value-of select="./variable/tooltipText"/></xsl:attribute>
+                    </xsl:if>
                 </button>
             </xsl:when>
             <xsl:when test="./type = 'dropdown'">
@@ -353,6 +358,11 @@
                 </xsl:if>
                 <xsl:if test="./variable/hidden = 1">
                     <xsl:attribute name="hidden">true</xsl:attribute>
+                </xsl:if>
+                <xsl:if test="./variable/tooltip = 1">
+                    <xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+                    <xsl:attribute name="data-placement"><xsl:value-of select="./variable/tooltipDirection"/></xsl:attribute>
+                    <xsl:attribute name="title"><xsl:value-of select="./variable/tooltipText"/></xsl:attribute>
                 </xsl:if>
                 <xsl:if test="./variable/readonly = 1">
                     <xsl:attribute name="disabled"/>

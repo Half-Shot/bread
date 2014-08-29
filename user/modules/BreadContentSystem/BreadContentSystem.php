@@ -20,10 +20,26 @@ class BreadContentSystem extends Module
     
     function GetContent($contentID){
         $File = $this->index->$contentID;
+        if(!isset($this->index->$contentID)){
+            return 0;
+        }
         $fileInfo = pathinfo($File->filename);
         $path = Site::ResolvePath('%user-content/content/' . $File->mimetype . '/' . $contentID . "." . $fileInfo["extension"]);
         $File->data = file_get_contents($path);
         return $File;
+    }
+    
+    function GetContentURL($contentID){
+        if(array_key_exists("contentid", $_REQUEST)){
+            $contentID = $_REQUEST["contentid"];
+        }
+        if(!isset($this->index->$contentID)){
+            return 0;
+        }
+        $File = $this->index->$contentID;
+        $fileInfo = pathinfo($File->filename);
+        $path = Site::ResolvePath('%user-content/content/' . $File->mimetype . '/' . $contentID . "." . $fileInfo["extension"]);
+        return $path;
     }
     
     function onDropSubmit(){
@@ -43,8 +59,6 @@ class BreadContentSystem extends Module
             Site::AddRawScriptCode("window.maxfilesize.set('".$mimetype."',".$size.")", true);
         }
         Site::AddRawScriptCode("window.chunksize = " . BreadContentSystem::CHUNKSIZE, true);
-        $UploadPanel = new \Bread\Structures\BreadPanel();
-        $UploadPanel->title = "Upload Content";
         
         //Queue
         $Body = $this->manager->FireEvent("Theme.Layout.Well",array("small"=>0,"id"=>"uploadZone-thumbnail"));
@@ -92,18 +106,8 @@ class BreadContentSystem extends Module
         $SelectButton->class = $this->manager->FireEvent("Theme.GetClass","Button.Info") . " uploadZoneButtons";
         $SelectButton->id = "uploadZone-selectbutton";
         
-        $UploadButton = new \Bread\Structures\BreadFormElement();
-        $UploadButton->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
-        $UploadButton->value = "Upload File";
-        $UploadButton->readonly = true; 
-        $UploadButton->class = $this->manager->FireEvent("Theme.GetClass","Button.Success"). " uploadZoneButtons";
-        $UploadButton->id = "uploadZone-uploadbutton";
-        $UploadButton->onclick = "uploadZone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED);";
-        
-        $Body .= $this->manager->FireEvent("Theme.Layout.ButtonGroup", $this->manager->FireEvent("Theme.InputElement",$SelectButton) . $this->manager->FireEvent("Theme.InputElement",$UploadButton));
-        $UploadPanel->body = $Body; 
-        $HTML = $this->manager->FireEvent("Theme.Panel",$UploadPanel);
-        return $HTML;
+        $Body .= $this->manager->FireEvent("Theme.InputElement",$SelectButton);
+        return $Body;
     }
     
     function DetectMimeType($file){
@@ -146,6 +150,19 @@ class BreadContentSystem extends Module
             return false;
         }
         $HTML = "";
+        $UploadModal = new \Bread\Structures\BreadModal();
+        $UploadModal->id = "breadContentUploadModal";
+        $UploadModal->title = "Upload Content...";
+        $UploadModal->body = Site::$moduleManager->FireEvent("Bread.ShowUploader");
+        
+        $CloseButton = new \Bread\Structures\BreadFormElement();
+        $CloseButton->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+        $CloseButton->value = "Close";
+        $CloseButton->class = $this->manager->FireEvent("Theme.GetClass","Button.Info");
+        $CloseButton->onclick = "$('#breadContentUploadModal').modal('hide');";
+        
+        $UploadModal->footer = Site::$moduleManager->FireEvent("Theme.InputElement",$CloseButton);
+        
         $Modal = new \Bread\Structures\BreadModal();
         $Modal->id = "breadContentModal";
         $Modal->title = "Bread Content Browser";
@@ -185,9 +202,9 @@ class BreadContentSystem extends Module
             $ButtonStack .= Site::$moduleManager->FireEvent("Theme.InputElement",$TypeButton);
         }
         $ButtonStack .= "<hr>";
-        $TypeButton->value = "Upload New...";
+        $TypeButton->value = "Upload...";
         $TypeButton->class = $this->manager->FireEvent("Theme.GetClass","Button.Info");
-        $TypeButton->onclick = "breadContentModalUploadDialog();";
+        $TypeButton->onclick = "$('#breadContentUploadModal').modal('show');";
         $ButtonStack .= Site::$moduleManager->FireEvent("Theme.InputElement",$TypeButton);
         //Hook for other types.
         
@@ -198,6 +215,7 @@ class BreadContentSystem extends Module
         
         $FileTable = new \Bread\Structures\BreadTableElement();
         $FileTable->class = " table-hover";
+        $FileTable->id = "breadContentModal-fileTable";
         $FileTable->headingRow = new \Bread\Structures\BreadTableRow();
         $FileTable->headingRow->FillOutRow(array("Filename","Date","Size","Type",""));
         
@@ -209,7 +227,7 @@ class BreadContentSystem extends Module
         $SelectButton = new \Bread\Structures\BreadFormElement();
         $SelectButton->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
         $SelectButton->class = $this->manager->FireEvent("Theme.GetClass","Button.Default");
-        $SelectButton->value = "Insert";
+        $SelectButton->value = "Select";
         $SelectButton->toggle = true;
         $SelectButton->hidden = true;
         $SelectButton->id = "breadContentModal-selectButtonTemplate";
@@ -221,19 +239,28 @@ class BreadContentSystem extends Module
         
         $Modal->body .= Site::$moduleManager->FireEvent("Theme.Layout.Grid.HorizonalStack",array($MajorTypesCell,$FileBrowserCell));
         
+        $InsertButton = new \Bread\Structures\BreadFormElement();
+        $InsertButton->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+        $InsertButton->value = "Insert Selected";
+        $InsertButton->class = $this->manager->FireEvent("Theme.GetClass","Button.Primary");
+        $InsertButton->onclick = "breadContentModalinsertFiles();";
+        
         $CloseButton = new \Bread\Structures\BreadFormElement();
         $CloseButton->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
         $CloseButton->value = "Close";
-        $CloseButton->class = $this->manager->FireEvent("Theme.GetClass","Button.Primary");
+        $CloseButton->class = $this->manager->FireEvent("Theme.GetClass","Button.Info");
         $CloseButton->onclick = "$('#breadContentModal').modal('hide');";
         
-        $Modal->footer = $this->manager->FireEvent("Theme.Layout.ButtonGroup", $this->manager->FireEvent("Theme.InputElement",$CloseButton));
+        $Modal->footer = $this->manager->FireEvent("Theme.Layout.ButtonGroup",$this->manager->FireEvent("Theme.Button",$InsertButton) . $this->manager->FireEvent("Theme.Button",$CloseButton));
         
         //Button
         Util::CastStdObjectToStruct($args,"Bread\Structures\BreadFormElement");
         $args->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
         $args->onclick = "$('#breadContentModal').modal('show');";
+        
         Site::AddToBodyCode($this->manager->FireEvent("Theme.Modal",$Modal));
+        Site::AddToBodyCode($this->manager->FireEvent("Theme.Modal",$UploadModal));
+        
         $HTML .= $this->manager->FireEvent("Theme.Button",$args);
         return $HTML;
     }
@@ -334,6 +361,17 @@ class BreadContentSystem extends Module
 }
 
 class BreadContentSystemSettings{
-    public $allowedMimes = ['image/png'];
-    public $maxfilesize = ['image_png'=>3000000];
+    public $allowedMimes = ['image/png',
+                            'image/jpeg',
+                            'image/pjpeg',
+                            'audio/mpeg3',
+                            'video/mpeg3',
+                            'audio/ogg'];
+    
+    public $maxfilesize = ['image/png'=>   5000000,
+                           'image/jpeg'=>  5000000,
+                           'image/pjpeg'=> 5000000,
+                           'video/mpeg3'=> 50000000,
+                           'audio/mpeg3'=> 5000000,
+                           'audio/ogg'=>   5000000];
 }

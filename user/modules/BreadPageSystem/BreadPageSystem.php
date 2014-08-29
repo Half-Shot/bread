@@ -472,9 +472,12 @@ class BreadPageSystem extends Module
             $E_Github->value = "Github";
             $E_Github->onclick = "wrap('[%]github(',')[%]');";
             $GithubHTML = $this->manager->FireEvent("Theme.Button",$E_Github);
-            
-            
-            $Toolbar = $this->manager->FireEvent("Theme.Layout.ButtonToolbar",$Group . $GroupTwo . $GroupMedia . $GithubHTML);
+            $MDMessage = "Not sure on syntax? Goto <a target='_new' href='https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet'>this cheatsheet</a>";
+            $MarkdownLogo = '<span id="breadPageSystem-MarkdownLogo" data-toggle="popover" title="Markdown" data-content="'.$MDMessage.'">';
+            $MarkdownLogo .= file_get_contents(Site::ResolvePath("%user-modules/BreadPageSystem/markdown-mark-solid.svg"));
+            $MarkdownLogo .= "</span>";
+            Site::AddRawScriptCode("$('#breadPageSystem-MarkdownLogo').popover({'html':true});",true);
+            $Toolbar = $this->manager->FireEvent("Theme.Layout.ButtonToolbar",$Group . $GroupTwo . $GroupMedia . $GithubHTML . $MarkdownLogo);
             
             return "<div id='bps-editor-toolbar' style='display:none;'>" . $Toolbar . "</div>";
         }
