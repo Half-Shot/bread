@@ -226,6 +226,7 @@ class BreadIndexSystem extends Module
             $ResultObj = new \stdClass;
             $ResultObj->header = $result->Name;
             $ResultObj->headerurl = $result->Url;
+            //Remove Headers
             if(count_chars($result->Content) > 150)
             {
                 $ResultObj->body = substr($result->Content, 0,150) . "...";
