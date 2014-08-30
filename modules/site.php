@@ -861,6 +861,10 @@ class Logger
         $this->cleanUpLogFiles($maxlogs,$filepath,$keepfor);
         static::writeMessage("Bread Version " . Site::Configuration()->core->version);
         static::writeMessage("Log Date: " . date('l jS \of F Y'));
+        $tmppath = Site::ResolvePath("%system-temp");
+        if(!file_exists($tmppath)){
+            mkdir($tmppath,0777,true);
+        }
    }
     /**
      * Function to clean up old log files from the log dir.
