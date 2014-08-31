@@ -286,10 +286,11 @@ $('#bps-selectcategories .badge').click(RemoveOnClick);
 
 function addNewCategory()
 {
+    var TemplateBadge = $(".breadPageSystemBadge .badge");
     if($('#e_newcategory').val() == ""){
         return false;
     }
-    var Element = $('#bps-listcategories .badge').first().clone().text($('#e_newcategory').val()).click(AddOnClick);;
+    var Element = TemplateBadge.clone().text($('#e_newcategory').val()).click(AddOnClick);;
     if(!ContainsCategory(Element,$('#bps-listcategories .badge'))){
         Element.appendTo('#bps-listcategories');
     }

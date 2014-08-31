@@ -95,7 +95,7 @@ class BreadContentSystem extends Module
         $MediaObject = new \Bread\Structures\BreadThemeCommentStructure();
         $MediaObject->header = '<p class="name" data-dz-name></p>';
         $MediaObject->body = '<p class="size" data-dz-size></p>' . $ButtonToolbar . '</br>' . ' </br><progress data-dz-uploadprogress id="uploadZoneProgress" value="0" max="100"></progress> ' ;
-        $MediaObject->thumbnail = 'Icon';
+        $MediaObject->thumbnail = '';
         $MediaObject->id = 'uploadZone-previewtmp';
         $Body .= $this->manager->FireEvent("Theme.Comment",$MediaObject);
         

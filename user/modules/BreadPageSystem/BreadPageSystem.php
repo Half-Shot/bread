@@ -257,6 +257,8 @@ class BreadPageSystem extends Module
             $E_New_Category_Button->class = "btn-default";
             $HTML_Categories->value .= "<br>" . $this->manager->FireEvent("Theme.Button",$E_New_Category_Button);
             
+            Site::AddToBodyCode('<div style="display:none;" class="breadPageSystemBadge">'.$this->manager->FireEvent("Theme.Badge","Template Badge").'</div>');
+            
             $E_Categories_List = new \stdClass();
             $E_Categories_List->id = "bps-listcategories";
             $E_Categories_List->small = true;
@@ -641,7 +643,7 @@ class BreadPageSystem extends Module
                $breadLink->request = $this->settings->searchRequest;
                $breadLink->args->content = 0;
                $breadLink->args->author = 0;
-               $breadLink->args->category = 5;
+               $breadLink->args->categories = 5;
                $breadLink->args->tags = 0;
                $breadLink->args->name = 0;
                $breadLink->args->terms = $text;
