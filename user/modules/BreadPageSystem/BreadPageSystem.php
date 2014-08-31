@@ -162,8 +162,9 @@ class BreadPageSystem extends Module
         
         function PostEditorInformationPanel()
         {
-            if(!$this->CheckEditorRights())
+            if(!$this->CheckEditorRights()){
                 return "";
+            }
             $panel = new \stdClass();
             $panel->title = "Post Details";
             $form = new \Bread\Structures\BreadForm;
@@ -238,39 +239,39 @@ class BreadPageSystem extends Module
                 $E_Delete->onclick = "$('#warnDeletePost').modal('show');return false;";
                 $form->elements[] = $E_Delete;
             }
-            $HTML_Categorys = new \Bread\Structures\BreadFormElement;
-            $HTML_Categorys->type = \Bread\Structures\BreadFormElement::TYPE_RAWHTML;
-            $HTML_Categorys->value = "<h4>Categorys</h4>";
-            $HTML_Categorys->id ="e_categorys";
-            $HTML_Categorys->hidden = true;
+            $HTML_Categories = new \Bread\Structures\BreadFormElement;
+            $HTML_Categories->type = \Bread\Structures\BreadFormElement::TYPE_RAWHTML;
+            $HTML_Categories->value = "<h4>Categories</h4>";
+            $HTML_Categories->id ="e_categories";
+            $HTML_Categories->hidden = true;
             $E_New_Category = new \Bread\Structures\BreadFormElement;
             $E_New_Category->id = "e_newcategory";
             $E_New_Category->type = \Bread\Structures\BreadFormElement::TYPE_TEXTBOX;
             $E_New_Category->label = "Add a new category";
-            $HTML_Categorys->value .= $this->manager->FireEvent("Theme.InputElement",$E_New_Category);
+            $HTML_Categories->value .= $this->manager->FireEvent("Theme.InputElement",$E_New_Category);
             
             $E_New_Category_Button = new \Bread\Structures\BreadFormElement;
             $E_New_Category_Button->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
             $E_New_Category_Button->value = "Add Category";
             $E_New_Category_Button->onclick = "addNewCategory();";
             $E_New_Category_Button->class = "btn-default";
-            $HTML_Categorys->value .= "<br>" . $this->manager->FireEvent("Theme.Button",$E_New_Category_Button);
+            $HTML_Categories->value .= "<br>" . $this->manager->FireEvent("Theme.Button",$E_New_Category_Button);
             
-            $E_Categorys_List = new \stdClass();
-            $E_Categorys_List->id = "bps-listcategories";
-            $E_Categorys_List->small = true;
-            $E_Categorys_List->value = $this->manager->FireEvent("Theme.Badge","Yay");
-            $HTML_Categorys->value .= "<h5>Available Categorys</h5>" . $this->manager->FireEvent("Theme.Layout.Well",$E_Categorys_List);
+            $E_Categories_List = new \stdClass();
+            $E_Categories_List->id = "bps-listcategories";
+            $E_Categories_List->small = true;
+            $E_Categories_List->value = "";
+            $HTML_Categories->value .= "<h5>Available Categories</h5>" . $this->manager->FireEvent("Theme.Layout.Well",$E_Categories_List);
             
-            $E_Categorys_Selected = new \stdClass();
-            $E_Categorys_Selected->id = "bps-selectcategories";
-            $E_Categorys_Selected->small = true;
-            $E_Categorys_Selected->value = "";
-            foreach($this->GetActivePost ()->categorys as $category)
-                $E_Categorys_Selected->value .= $this->manager->FireEvent("Theme.Badge",$category);
-            $HTML_Categorys->value .= "<h5>Selected Categorys</h5>" . $this->manager->FireEvent("Theme.Layout.Well",$E_Categorys_Selected);
+            $E_Categories_Selected = new \stdClass();
+            $E_Categories_Selected->id = "bps-selectcategories";
+            $E_Categories_Selected->small = true;
+            $E_Categories_Selected->value = "";
+            foreach($this->GetActivePost ()->categories as $category)
+                $E_Categories_Selected->value .= $this->manager->FireEvent("Theme.Badge",$category);
+            $HTML_Categories->value .= "<h5>Selected Categories</h5>" . $this->manager->FireEvent("Theme.Layout.Well",$E_Categories_Selected);
             
-            $form->elements[] = $HTML_Categorys;
+            $form->elements[] = $HTML_Categories;
                     
             $E_Modal_Confirm = new \Bread\Structures\BreadFormElement;
             $E_Modal_Confirm->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
@@ -546,7 +547,7 @@ class BreadPageSystem extends Module
         
         function GetUniqueID(){
             $id = $this->GetActivePostPageId();
-            if($id === -1){
+            if($id === -1 || $this->isnewpost){
                 return false;
             }
             else{
@@ -629,7 +630,7 @@ class BreadPageSystem extends Module
            $page = $this->GetActivePost();
            if($page == False)
             return False;
-           $breadcrumbs = $page->categorys;
+           $breadcrumbs = $page->categories;
            $links = array();
            foreach($breadcrumbs as $i => $text)
            {
@@ -668,31 +669,45 @@ class BreadPageSystem extends Module
         function DrawPostInformation()
         {
             $page = $this->GetActivePost();
-            if($page === False)
+            if($page === False || $this->isnewpost){
                 return False;
-            $info = array();
-            $CommentStruct = array();
-            $CommentStruct["thumbnailurl"] = "#"; //Needs a author profile link
-            $AvatarPath = $this->manager->FireEvent("Bread.GetAvatar",$page->author);
-            if($AvatarPath){
-                $CommentStruct["thumbnail"] = $AvatarPath;
             }
-            $author = $this->manager->FireEvent("Bread.Security.GetUser",$page->author);
-            $CommentStruct["header"] = $author->information->Name;
+            $info = array();
             $info["Last Modified"] = \date("F d Y H:i:s", $page->time_modified);
             $info["Created On"] = \date("F d Y H:i:s", $page->time_created);
-            if(isset($author->information->Biography)){
-                $biography = Site::$moduleManager->FireEvent("Theme.Panel", array("body"=>$author->information->Biography) );
+            $author = $this->manager->FireEvent("Bread.Security.GetUser",$page->author);
+            if($author !== false){
+                $CommentStruct = array();
+                $CommentStruct["thumbnailurl"] = "#"; //Needs a author profile link
+                if(isset($author->information->Name)){
+                    $CommentStruct["header"] = $author->information->Name;
+                }
+                else{
+                    $CommentStruct["header"] = $author->username;
+                }
+                
+                if(isset($author->information->Biography)){
+                    $biography = Site::$moduleManager->FireEvent("Theme.Panel", array("body"=>$author->information->Biography) );
+                }
+                else{
+                    $biography = "";
+                }
+                
+                $AvatarPath = $this->manager->FireEvent("Bread.GetAvatar",$page->author);
+                if($AvatarPath){
+                    $CommentStruct["thumbnail"] = $AvatarPath;
+                }
+                
+                $CommentStruct["body"] = $biography;
+                $CommentHTML = Site::$moduleManager->FireEvent("Theme.Comment",$CommentStruct);
             }
             else{
-                $biography = "";
+                $CommentHTML = "";
             }
-            $CommentStruct["body"] = $biography;
             $PostInfo = "";
             foreach($info as $label => $value){
                 $PostInfo .= "<div><b>" . $label . "</b> - " . $value . "</div>";
             }
-            $CommentHTML = Site::$moduleManager->FireEvent("Theme.Comment",$CommentStruct);
             
             $GridCellBio = new \stdClass();
             $GridCellBio->size = 6;
@@ -803,9 +818,9 @@ class BreadPageSystem extends Module
              $pageData->time_modified = time();
              $pageData->time_released = strtotime($_POST["timereleased"]);
              
-             $pageData->categorys = $_POST["categorys"];
-             if(is_null($pageData->categorys))
-                 $pageData->categorys = array();
+             $pageData->categories = $_POST["categories"];
+             if(is_null($pageData->categories))
+                 $pageData->categories = array();
 
              
              try
@@ -881,7 +896,7 @@ class BreadPageSystem extends Module
                     continue;
                 $Page = new \Bread\Structures\BreadSearchItem;
                 $Page->Name = $post->title;
-                $Page->Categorys = $post->categorys;
+                $Page->Categories = $post->categories;
                 $Page->Content = $this->TransformMDtoHTML(file_get_contents($this->GetPostPath($post->url)));
                 //URL
                 $parts["post"] = $post->id;
@@ -950,7 +965,7 @@ class BreadPageSystemPost
    public $name= "";
    public $title= "";
    public $subtitle= "";
-   public $categorys= array();
+   public $categories= array();
    public $liveedit= true;
    public $author = 0;
    public $hidden = false;

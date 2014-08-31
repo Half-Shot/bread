@@ -35,6 +35,10 @@
         "BreadContentSystem.GetFileIndex":{
             "function":"FindFilesByMajorType",
             "security":1
+        },
+        "BreadContentSystem.DeleteContent":{
+            "function":"DeleteContent",
+            "security":1
         }
     }
 }

@@ -180,7 +180,7 @@ class BreadAdminTools extends Module
     
     function Setup()
     {
-        if(!$this->manager->FireEvent("Bread.Security.GetCurrentUser")){
+        if(!$this->manager->FireEvent("Bread.Security.GetPermission","Bread.ViewControlPanel")){
             $this->manager->UnregisterModule($this->name);
         }
         

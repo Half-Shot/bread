@@ -4,7 +4,7 @@ use Bread\Site as Site;
 use Bread\Utilitys as Util;
 class BreadContentSystem extends Module
 {
-    const CHUNKSIZE = 256000;
+    const CHUNKSIZE = 96000;
     private $settings;
     private $index;
     function __construct($manager,$name)
@@ -53,10 +53,10 @@ class BreadContentSystem extends Module
         Site::AddScript(Site::ResolvePath("%user-modules/BreadContentSystem/js/dropzone.min.js"), "Dropzone", true);
         Site::AddScript(Site::ResolvePath("%user-modules/BreadContentSystem/js/contentUpload.js"), "BreadContentSystem", true);
         foreach($this->settings->allowedMimes as $type){
-            Site::AddRawScriptCode("window.acceptedTypes.push('".$type."')", true);
+            Site::AddRawScriptCode("window.acceptedTypes.push('".$type."');", true);
         }
         foreach($this->settings->maxfilesize as $mimetype => $size){
-            Site::AddRawScriptCode("window.maxfilesize.set('".$mimetype."',".$size.")", true);
+            Site::AddRawScriptCode("window.maxfilesize['".$mimetype."'] = ".$size.";", true);
         }
         Site::AddRawScriptCode("window.chunksize = " . BreadContentSystem::CHUNKSIZE, true);
         
@@ -151,6 +151,7 @@ class BreadContentSystem extends Module
         }
         $HTML = "";
         $UploadModal = new \Bread\Structures\BreadModal();
+        $UploadModal->width = 50;
         $UploadModal->id = "breadContentUploadModal";
         $UploadModal->title = "Upload Content...";
         $UploadModal->body = Site::$moduleManager->FireEvent("Bread.ShowUploader");
@@ -217,22 +218,26 @@ class BreadContentSystem extends Module
         $FileTable->class = " table-hover";
         $FileTable->id = "breadContentModal-fileTable";
         $FileTable->headingRow = new \Bread\Structures\BreadTableRow();
-        $FileTable->headingRow->FillOutRow(array("Filename","Date","Size","Type",""));
+        $FileTable->headingRow->FillOutRow(array("Filename","Date","Size","Type","",""));
         
-        $MessageRow = new \Bread\Structures\BreadTableRow();
-        $MessageRow->FillOutRow(array("Select","a","type","of","item."));
-        
-        $FileTable->rows[] = $MessageRow;
         
         $SelectButton = new \Bread\Structures\BreadFormElement();
         $SelectButton->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
-        $SelectButton->class = $this->manager->FireEvent("Theme.GetClass","Button.Default");
+        $SelectButton->class = $this->manager->FireEvent("Theme.GetClass","Button.Primary");
         $SelectButton->value = "Select";
         $SelectButton->toggle = true;
         $SelectButton->hidden = true;
         $SelectButton->id = "breadContentModal-selectButtonTemplate";
         
+        $DeleteButton = new \Bread\Structures\BreadFormElement();
+        $DeleteButton->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+        $DeleteButton->class = $this->manager->FireEvent("Theme.GetClass","Button.Danger");
+        $DeleteButton->value = $this->manager->FireEvent("Theme.Icon","trash") . " Delete";
+        $DeleteButton->hidden = true;
+        $DeleteButton->id = "breadContentModal-deleteButtonTemplate";
+        
         Site::AddToBodyCode($this->manager->FireEvent("Theme.InputElement",$SelectButton));
+        Site::AddToBodyCode($this->manager->FireEvent("Theme.InputElement",$DeleteButton));
         
         $FileBrowserCell = new \stdClass();
         $FileBrowserCell->body = Site::$moduleManager->FireEvent("Theme.Table",$FileTable);
@@ -332,17 +337,17 @@ class BreadContentSystem extends Module
             file_put_contents($directory, $FinalFileData);
             //Less than equal amount of bytes, the file must have finished.
             $mime = $this->DetectMimeType($directory);
-            if($mime !== $File->mimetype){
+            if($mime !== $File->mimetype && explode("/",$mime)[1] !== $File->minortype){
                 unlink(Site::ResolvePath('%system-temp/' . $id));
                 unset($this->index->$id);
-                return 0;
+                return 3;
             }
             if(in_array($mime, $this->settings->allowedMimes)){
                 //Save it properly
                 //Index and check it doesn't already exist.
                 $fileInfo = pathinfo($File->filename);
-                $newpath = Site::ResolvePath('%user-content/content/' . $mime . '/' . $id . "." . $fileInfo["extension"]);
-                mkdir(Site::ResolvePath('%user-content/content/' . $mime . '/'), 0777, true);
+                $newpath = Site::ResolvePath('%user-content/content/' . $File->mimetype . '/' . $id . "." . $fileInfo["extension"]);
+                mkdir(Site::ResolvePath('%user-content/content/' . $File->mimetype . '/'), 0777, true);
                 rename($directory,$newpath);
                 unlink($directory);
                 return $newpath;
@@ -358,20 +363,50 @@ class BreadContentSystem extends Module
             return 1;
         }
     }
-}
 
+    function DeleteContent($args){
+        if(is_string($args)){
+            $id = $args;
+        }
+        else{
+            $id = $_REQUEST["id"];
+        }
+
+        if(!isset($this->index->$id) || !$this->manager->FireEvent("Bread.Security.GetPermission","BreadContentSystem.CanUpload")){
+            //File not found
+            return 0;
+        }
+
+        $File = $this->index->$id;
+
+        $fileInfo = pathinfo($File->filename);
+        $path = Site::ResolvePath('%user-content/content/' . $File->mimetype . '/' . $id . "." . $fileInfo["extension"]);
+        $worked = unlink($path);
+        if($worked){
+            unset($this->index->$id);
+        }
+        else{
+            return 0;
+        }
+        return 1;
+    }
+}
 class BreadContentSystemSettings{
     public $allowedMimes = ['image/png',
                             'image/jpeg',
                             'image/pjpeg',
                             'audio/mpeg3',
+                            'audio/mpeg',
                             'video/mpeg3',
-                            'audio/ogg'];
+                            'audio/ogg',
+                            'application/ogg'];
     
-    public $maxfilesize = ['image/png'=>   5000000,
-                           'image/jpeg'=>  5000000,
-                           'image/pjpeg'=> 5000000,
-                           'video/mpeg3'=> 50000000,
-                           'audio/mpeg3'=> 5000000,
-                           'audio/ogg'=>   5000000];
+    public $maxfilesize = ['image/png'          =>   5000000,
+                           'image/jpeg'         =>   5000000,
+                           'image/pjpeg'        =>   5000000,
+                           'video/mpeg3'        =>   50000000,
+                           'audio/mpeg3'        =>   5000000,
+                           'audio/mpeg'         =>   5000000,
+                           'audio/ogg'          =>   5000000,
+                           'application/ogg'    =>   5000000];
 }

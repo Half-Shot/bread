@@ -3,9 +3,7 @@
     "name": "root",
     "subtitle": "subtitle",
     "title": "title",
-    "categorys": [
-        "firstpost"
-    ],
+    "categories": [],
     "isstatic": false,
     "liveedit": true,
     "hidden": true,

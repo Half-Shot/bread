@@ -4,7 +4,7 @@
     "entryfile": "BreadUserSystem\/BreadUserSystem.php",
     "permissions":["BreadUserSystem.AdminPanel.Read",
                    "BreadUserSystem.AdminPanel.Write",
-                   "BreadUserSystem.AddnNewUser",
+                   "BreadUserSystem.AddNewUser",
                    "Bread.Security.RemoveUser",
                    "BreadUserSystem.ChangeOwn.*",
                    "BreadUserSystem.Change.*"],

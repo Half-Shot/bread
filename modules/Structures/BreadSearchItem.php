@@ -30,7 +30,7 @@ namespace Bread\Structures;
 class BreadSearchItem {
     public $Name = "";
     public $Tags = array();
-    public $Categorys = array();
+    public $Categories = array();
     public $Author = "";
     public $Content = "";
     public $Url = "";
@@ -39,7 +39,7 @@ class BreadSearchItem {
 class BreadSearchRequest {
     public $Weight_Name = 0;
     public $Weight_Tags = 0;
-    public $Weight_Categorys = 0;
+    public $Weight_Categories = 0;
     public $Weight_Author = 0;
     public $Weight_Content = 0;
     public $IgnoreCase = true;

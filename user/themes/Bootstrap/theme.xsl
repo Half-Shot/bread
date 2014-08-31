@@ -332,6 +332,9 @@
                 <xsl:value-of select="./variable/label"/>
             </xsl:attribute>
             <div class="modal-dialog">
+            <xsl:attribute name="style">
+                width:<xsl:value-of select="./variable/width"/>%;
+            </xsl:attribute>
               <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove-circle"></span></button>
@@ -421,7 +424,7 @@
                 <xsl:attribute name="id"><xsl:value-of select="./variable/id"/></xsl:attribute>
             </xsl:if>
             <xsl:if test="./variable/class != ''">
-                <xsl:attribute name="class"><xsl:value-of select="./variable/class"/></xsl:attribute>
+                <xsl:attribute name="class">media <xsl:value-of select="./variable/class"/></xsl:attribute>
             </xsl:if>
             <xsl:if test="./variable/thumbnail != ''">
                 <a class="pull-left" href = "#">

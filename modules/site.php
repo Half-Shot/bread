@@ -861,7 +861,7 @@ class Logger
         $this->cleanUpLogFiles($maxlogs,$filepath,$keepfor);
         static::writeMessage("Bread Version " . Site::Configuration()->core->version);
         static::writeMessage("Log Date: " . date('l jS \of F Y'));
-        $tmppath = Site::ResolvePath("%system-temp");
+        $tmppath = Site::ResolvePath("%system-temp/breadlog");
         if(!file_exists($tmppath)){
             mkdir($tmppath,0777,true);
         }
@@ -983,7 +983,7 @@ class Logger
         if(isset(Site::$moduleManager)){
             Site::$moduleManager->FireEvent("Bread.LogError",$severity,false);
             if($severity > static::SEVERITY_LOW){
-                if(!in_array($string,$this->reportedErrors)){
+                if(!in_array($string,$this->reportedErrors) && !Site::GetisAjax()){
                     $html = Site::$moduleManager->FireEvent("Theme.DrawError",$message,true);
                     echo $html;
                     $this->reportedErrors[] = $string;

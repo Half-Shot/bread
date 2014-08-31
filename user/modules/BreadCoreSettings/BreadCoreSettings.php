@@ -192,7 +192,7 @@ class BreadCoreSettings extends Module
             $logname = $_REQUEST["logname"];
             $LogLocations = Util::ResolvePath("%system-temp/breadlog");
             $LogFiles = \scandir($LogLocations);
-            $categorys = array();
+            $categories = array();
             foreach(array_reverse($LogFiles) as $file){
                 if(is_link($file) || $file == "." || $file == ".."){
                     continue;
@@ -205,14 +205,14 @@ class BreadCoreSettings extends Module
                        if(is_link($LogLocations . "/" . $file . "/" . $logfile) || $logfile == "." || $logfile == ".."){
                             continue;
                        }
-                       $categorys[] = str_replace(".log", "", $logfile);
+                       $categories[] = str_replace(".log", "", $logfile);
                     } 
                 }
                 else{
                     return false;
                 }
             }
-            return json_encode($categorys);
+            return json_encode($categories);
         }
         
         function MainSettingsPanel($Tab_CoreSettings)

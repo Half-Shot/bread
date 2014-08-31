@@ -120,7 +120,7 @@ function CustomMarkdownHook(markdown){
         matches = ytNameRegex.exec(markdown);
         index = markdown.search(ytNameRegex);
         if(matches != null){
-            var youtubeElement = '<iframe id="ytplayer" type="text/html"src="http://www.youtube.com/embed/'+matches[1]+'?autoplay=0" frameborder="0"/>';
+            var youtubeElement = '<iframe id="ytplayer" type="text/html"src="http://www.youtube.com/embed/'+matches[1]+'?autoplay=0&wmode=transparent" frameborder="0"/>';
             markdown = markdown.replace(matches[0],youtubeElement);
         }
     }
@@ -167,7 +167,7 @@ function toggleMarkdown()
             $("button.bps-editorinfo-input").removeAttr( "disabled" );
             $(".bps-html").addClass("editing");
             $("#bps-editor").slideDown();
-            $("#ig-e_categorys").slideDown();
+            $("#ig-e_categories").slideDown();
             $("#bps-editor").animate({"height": "100%"},400,function(){editor.reflow();});
             $("#bps-mdsave").show();
             $("#bps-editor-toolbar").show();
@@ -191,7 +191,7 @@ function toggleMarkdown()
             $("#bps-editor-toolbar").hide();
             $("#bps-title").attr('contentEditable',false);
             $("#bps-subtitle").attr('contentEditable',false);
-            $("#ig-e_categorys").slideUp();
+            $("#ig-e_categories").slideUp();
             $("#bps-title").css("border","none");
             $("#bps-subtitle").css("border","none");
             $.each($("#bps-mdtoggle"),function(){$(this).html("Open Editor") });
@@ -203,7 +203,7 @@ function toggleMarkdown()
 function saveMarkdown()
 {
     var md = editor.exportFile();
-    $.post( "index.php", { ajaxEvent: "BreadPageSystem.SavePost",ajaxModule:"BreadPageSystem", url: document.URL, markdown: md, title: $("#bps-title").text(), subtitle: $("#bps-subtitle").text(), name: $("#e_postname")[0].value ,author: $("#e_author")[0].value, timereleased: $("#e_timereleased")[0].value, categorys: CategoryArray()}, function(returndata)
+    $.post( "index.php", { ajaxEvent: "BreadPageSystem.SavePost",ajaxModule:"BreadPageSystem", url: document.URL, markdown: md, title: $("#bps-title").text(), subtitle: $("#bps-subtitle").text(), name: $("#e_postname")[0].value ,author: $("#e_author")[0].value, timereleased: $("#e_timereleased")[0].value, categories: CategoryArray()}, function(returndata)
     {
         if(returndata != "0"){
             window.location = returndata;
@@ -297,11 +297,11 @@ function addNewCategory()
 
 function CategoryArray()
 {
-    var categorys = [];
+    var categories = [];
     $('#bps-selectcategories .badge').each(function(){
-        categorys.push($(this).text());
+        categories.push($(this).text());
     });
-    return categorys;
+    return categories;
 }
 
 $('#savePost').click(saveMarkdown);

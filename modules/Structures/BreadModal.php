@@ -34,4 +34,8 @@ class BreadModal extends BreadThemeElement{
     public $title = "";
     public $body = "";
     public $footer = "";
+    /*
+     * In percentage
+     */
+    public $width = 50;
 }

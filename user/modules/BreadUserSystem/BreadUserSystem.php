@@ -69,7 +69,7 @@ class BreadUserSystem extends Module
     function FirstTime($path)
     {
         Site::$Logger->writeError("First time setup, if this is not the first time then somethings wrong.",\Bread\Logger::SEVERITY_MEDIUM,$this->name);
-        $this->StoreNewUser("root","ILikeToast",0,array("root"));
+        $this->StoreNewUser("root","ILikeToast",0,array("root"),array("Name"=>"Root"));
         Site::$settingsManager->SaveSetting($this->userDB,$path);
     }
     
@@ -791,6 +791,7 @@ class BreadUserSystemSettings{
     
     function __construct(){
         $this->successredirect = new \Bread\Structures\BreadLinkStructure();
+        $this->successredirect->request = "homepage";
         $this->adminPanelSettings = new \Bread\Modules\BreadUserSystemAdminPanelSettings();
     }
     
@@ -801,7 +802,7 @@ class BreadUserSystemSettings{
     public $successredirect;
     public $showNavbarlinks = true;
     public $adminPanelSettings;
-    public $minusernamelength = 8;
+    public $minusernamelength = 4;
     public $minpasswordlength = 8;
 }
 
@@ -821,6 +822,8 @@ class BreadUserSystemAdminPanelSettings{
         $this->usereditForm[] = $Name;    
         $Email = new \StdClass();
         $this->usereditForm[] = $Email;    
+        $Biography = new \StdClass();
+        $this->usereditForm[] = $Biography;
         
         $Username->label = "Username";
         $Username->required = true;
@@ -832,9 +835,8 @@ class BreadUserSystemAdminPanelSettings{
         $Username->validationEvent = "BreadUserSystem.ValidateUsername";
         $Username->validationModule = "BreadUserSystem";
         
-        
         $Password->label = "Password";
-        $Password->required = false;
+        $Password->required = true;
         $Password->type = "password";
         $Password->value = "password";
         $Password->informationKey = "password";
@@ -856,8 +858,14 @@ class BreadUserSystemAdminPanelSettings{
         $Email->informationKey = "EMail";
         $Email->multiuser = false;
         
+        $Biography->label = "Biography";
+        $Biography->required = false;
+        $Biography->type = "text";
+        $Biography->informationKey = "Biography";
+        $Biography->multiuser = true;
+        
     }
-    public $hiddenUsers = array(0);
+    public $hiddenUsers = array();
     public $usereditForm;
     public $informationKeysToShowInTable = array("Name","EMail");
 }

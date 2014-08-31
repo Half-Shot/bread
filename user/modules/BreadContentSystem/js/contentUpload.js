@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 window.acceptedTypes = [];
-window.maxfilesize = new Map();
+window.maxfilesize = {};
 if (window.File && window.FileReader && window.FileList && window.Blob) {
   // Great success! All the File APIs are supported.
 } else {
@@ -62,7 +62,7 @@ uploadZone.on("addedfile", function(file) {
         alert("You can't add that type of file!");
         uploadZone.removeFile(file);
     }
-    if(file.size > window.maxfilesize.get(file.type)){
+    if(file.size > window.maxfilesize[file.type]){
         alert("That file is too big!");
         uploadZone.removeFile(file);
     }
@@ -93,6 +93,21 @@ uploadZone.on("addedfile", function(file) {
     });
 });
 
+function RemoveContentOnClick()
+{
+    var fileid = $(this).attr("fileid");
+    var row = $(this).parent().parent();
+    $.ajax("index.php",{type:"POST",data:{ ajaxEvent: "BreadContentSystem.DeleteContent",id:fileid},success:function(result)
+    {
+        if(result === "0"){
+            console.log("Couldn't delete");
+        }
+        else{
+            row.slideUp(400,function(){row.remove()});
+        }
+    }});
+}
+
 function breadContentModalSetType(majortype){
     $.ajax("index.php",{type:"POST",data:{ ajaxEvent: "BreadContentSystem.GetFileIndex",majortype:majortype},success:function(returnedData)
     {
@@ -100,9 +115,11 @@ function breadContentModalSetType(majortype){
         console.log(Files);
         $("#breadContentModal tbody").children().remove();
         for(var i=0;i<Files.length;i++){
-            var button = $("#breadContentModal-selectButtonTemplate").clone();
-            button.show();
-            button.click(function(){
+            var selectButton = $("#breadContentModal-selectButtonTemplate").clone();
+            var deleteButton = $("#breadContentModal-deleteButtonTemplate").clone();
+            selectButton.show();
+            deleteButton.show();
+            selectButton.click(function(){
                 if($(this).hasClass("active")){
                     console.log("File " + Files[i].id + " selected!");
                 }
@@ -118,13 +135,16 @@ function breadContentModalSetType(majortype){
                 row += "<td>" + d.toDateString() + "</br>" + d.toTimeString() + "</td>";
                 row += "<td>" + (Files[i].size / 1024000).toFixed(2) + " MB</td>";
                 row += "<td>" + Files[i].minortype + "</td>";
-                button.attr("fileid",Files[i].id);
-                button.attr("source","local");
-                button.attr("major",Files[i].majortype);
-                button.attr("minor",Files[i].minortype);
-                row += "<td>"+button.wrap('<p>').parent().html()+"</td>";
+                selectButton.attr("fileid",Files[i].id);
+                deleteButton.attr("fileid",Files[i].id);
+                selectButton.attr("source","local");
+                selectButton.attr("major",Files[i].majortype);
+                selectButton.attr("minor",Files[i].minortype);
+                row += "<td>"+selectButton.wrap('<p>').parent().html()+"</td>";
+                row += "<td>"+deleteButton.wrap('<p>').parent().html()+"</td>";
                 row += "</tr>";
             $("#breadContentModal tbody").append(row);
+            $("#breadContentModal tbody tr").last().find("#breadContentModal-deleteButtonTemplate").click(RemoveContentOnClick);
         }
     }});
 }
@@ -152,6 +172,9 @@ function UploadFile(newID,file,displayElement){
             n += 1;
             if(returnedData === "0"){
                 console.log("Something went wrong.");
+            }
+            else if(returnedData === "3"){
+                console.log(file.type + " is not a valid mimetype");
             }
             else if(returnedData === "1"){
                 console.log("Chunk " + n + " recieved and processed");
@@ -209,7 +232,7 @@ function breadContentModalinsertFiles(){
                             wrap('![','](' + returnedData + ')');
                         }
                         else{
-                            wrap('[%]'+major+'('+ returnedData +')[%]');
+                            wrap('[%]'+major+'('+ returnedData +')[%]','');
                         }
                     }
                 }

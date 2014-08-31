@@ -25,7 +25,7 @@ window.CommentMaxChars = false;
 
 function ApplyClickEvents(element){
     element.find(".editcomment-button").click(function(){
-        alert("Edited!");
+        console.log("Edited!");
     });
 
     element.find(".deletecomment-button").click(function(){
@@ -44,7 +44,7 @@ function ApplyClickEvents(element){
 
 
     element.find(".savecomment-button").click(function(){
-        alert("Save Comment");
+         console.log("Save Comment");
     });
     
     element.find(".upvotecomment-button").click(function(){
@@ -70,8 +70,9 @@ function SaveNewComment()
             else
             {
                 //Comment arrived.
-                NewElement = $(NewCommentEditor.element).parent().parent().parent().append(returndata);
-                ApplyJavascriptToComment($(NewElement));
+                var Parent = $("#breadcomment-section").append(returndata);
+                ApplyJavascriptToComment(Parent.children().last());
+                $('html, body').animate({scrollTop: $(Parent.children().last()).offset().top}, 1000);
             }
         });
     }
@@ -143,13 +144,13 @@ $(document).bind("editorChange",function(obj,text){
     if(window.CommentMaxChars == false){
         window.CommentMaxChars = parseInt(CharLeftElement.text())
     }
-    
+
     var CharsExceeding = text.length - window.CommentMaxChars;
     if(CharsExceeding > 0)
     {
        $(NewCommentEditor.editor).focus().text('').text(text.slice(0,-CharsExceeding));
     }
-    
+
     CharLeftElement.text(window.CommentMaxChars - text.length);
 });
 
@@ -158,8 +159,8 @@ $(NewCommentEditor.editor).keyup(function(){
 });
 
 function ApplyJavascriptToAllComments(){
-    $("#breadcomment-section").each(function(i,obj){
-        ApplyJavascriptToComment($(obj));
+    $("#breadcomment-section .bcs-markdown").each(function(i,obj){
+        ApplyJavascriptToComment($(obj).parent());
     });
     
 }

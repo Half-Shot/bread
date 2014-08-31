@@ -93,9 +93,10 @@ class BreadCommentSystem extends Module{
     
     function PageSetup(){
         if(!$this->completedPageSetup){
-             $this->uniqueID = $this->manager->FireEvent("Bread.PageUniqueID");
+            $this->uniqueID = $this->manager->FireEvent("Bread.PageUniqueID");
             if($this->uniqueID === false){
                 $this->manager->UnregisterModule("BreadCommentSystem");
+                return false;
             }
             else{
                 $path = Util::ResolvePath("%user-content/comments/" . $this->uniqueID . ".json");
@@ -114,6 +115,7 @@ class BreadCommentSystem extends Module{
             
             $this->MakeButtons();
         }
+        return true;
     }
     
     function ConstructEditableComment(){
@@ -135,7 +137,9 @@ class BreadCommentSystem extends Module{
     }
     
     function ShowComments(){
-        $this->PageSetup();
+        if(!$this->PageSetup()){
+            return "";
+        }
         $HTML = "<hr>";
         $CurrentUser = $this->manager->FireEvent("Bread.Security.GetCurrentUser"); 
 
@@ -148,13 +152,16 @@ class BreadCommentSystem extends Module{
         $CommentIndex = 0;
         $HTML .= "<div id='breadcomment-section'>";
         foreach($this->comments->comments as $comment){
+            $ExtraClasses = "";
             $commentObj = Util::CastStdObjectToStruct($comment, "Bread\Structures\BreadComment");
             $User = $this->manager->FireEvent("Bread.Security.GetUser",$commentObj->user);
             $Avatar = $this->manager->FireEvent("Bread.GetAvatar",$User);
             $EditorButtons = "";
             $ButtonsHTML = "";
             if($CurrentUser !== null && !$this->comments->locked){
-                $ButtonsHTML = $this->buttons["Upvote"] . $this->buttons["Downvote"];
+                if($this->manager->FireEvent("Bread.Security.GetPermission","BreadCommentSystem.CanVote")){
+                    $ButtonsHTML = $this->buttons["Upvote"] . $this->buttons["Downvote"];
+                }
                 if($comment->user === $CurrentUser->uid){
                     if($this->settings->AllowEditing){
                         //$EditorButtons .= $this->buttons["Edit"] . $this->buttons["Save"];
@@ -165,10 +172,16 @@ class BreadCommentSystem extends Module{
                 }
             }
             $Name = "Anonymous";
-            if($CurrentUser !== null){
-                $Name = $CurrentUser->information->Name;
+            if($User !== false){
+                $Name = $User->information->Name;
+                if(!empty($CurrentUser)){
+                    if($User->uid === $CurrentUser->uid){
+                        $ExtraClasses .= "currentusercomment";
+                    }
+                }
             }
-            $HTML .= $this->ConstructComment($CommentIndex,$Name, $Avatar, $commentObj->body, false,$commentObj->time, count($commentObj->karmaupvotees) - count($commentObj->karmadownvotees),$ButtonsHTML,$EditorButtons);
+            
+            $HTML .= $this->ConstructComment($CommentIndex,$Name, $Avatar, $commentObj->body, false,$commentObj->time, count($commentObj->karmaupvotees) - count($commentObj->karmadownvotees),$ButtonsHTML,$EditorButtons,$ExtraClasses);
             $CommentIndex++;
         }
         $HTML .= "</div>";
@@ -176,16 +189,18 @@ class BreadCommentSystem extends Module{
     }
     
     
-    private function ConstructComment($Index,$Name,$Thumb,$Text,$Editable,$Time,$Karma,$Buttons,$EditorButtons){
+    private function ConstructComment($Index,$Name,$Thumb,$Text,$Editable,$Time,$Karma,$Buttons,$EditorButtons,$ExtraClasses = ""){
         $CommentStruct = new \Bread\Structures\BreadThemeCommentStructure();
         $CommentStruct->thumbnail = $Thumb;
         $CommentStruct->header = $Name;
-        $MarkdownArea = '<div id="bcs-editor"></div>';
+        if($ExtraClasses != ""){
+            $CommentStruct->class .= " " . $ExtraClasses;
+        }
         if($Editable){
-            $CommentStruct->body =  '<span class="commentcharsleft">'.$this->settings->CharacterLimit.'</span>'.$MarkdownArea;
+            $CommentStruct->body =  '<span class="commentcharsleft">'.$this->settings->CharacterLimit.'</span><div id="bcs-editor"></div>';
         }
         else{
-            $CommentStruct->body =  '<index hidden=true>'.$Index.'</index>'.$MarkdownArea.'<div class="bcs-markdown">' .  $Text . '</div><div class="bcs-html"></div>';
+            $CommentStruct->body =  '<index hidden=true>'.$Index.'</index><div class="bcs-markdown">' .  $Text . '</div><div class="bcs-html"></div>';
         }
         $CommentStruct->body .= '<small class="stats">';
         if($Time){
@@ -297,6 +312,10 @@ class BreadCommentSystem extends Module{
     }
     
     function KarmaVote($upvote){
+        
+        if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadCommentSystem.CanVote")){
+            return "Fail";
+        }
         $CurrentUser = $this->manager->FireEvent("Bread.Security.GetCurrentUser");
         if($CurrentUser === null){
             return "Fail";

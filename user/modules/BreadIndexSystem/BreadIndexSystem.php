@@ -60,7 +60,12 @@ class BreadIndexSystem extends Module
     function Search(\Bread\Structures\BreadSearchRequest $searchRequest)
     {
         $ModResults = $this->manager->FireEvent("Bread.GetAllPages",null,false);
-        $results = Site::MashArraysToSingleArray($ModResults);
+        if(!empty($ModResults)){
+            $results = Site::MashArraysToSingleArray($ModResults);
+        }
+        else{
+            $results = array();
+        }
         if(empty($searchRequest->SearchTerm))
             return $results;
         if(empty($results))
@@ -77,8 +82,8 @@ class BreadIndexSystem extends Module
             $searchItem->Name = Site::RemovePunctuation($searchItem->Name);
             for($v=0;$v<count($searchItem->Tags);$v++)
                 $searchItem->Tags[$v] = Site::RemovePunctuation($searchItem->Tags[$v]);
-            for($v=0;$v<count($searchItem->Categorys);$v++)
-                $searchItem->Categorys[$v] = Site::RemovePunctuation($searchItem->Categorys[$v]);
+            for($v=0;$v<count($searchItem->Categories);$v++)
+                $searchItem->Categories[$v] = Site::RemovePunctuation($searchItem->Categories[$v]);
             $searchItem->Author = Site::RemovePunctuation($searchItem->Author);
             $searchItem->Content = Site::RemovePunctuation($searchItem->Content);
             if($searchRequest->IgnoreCase){
@@ -86,8 +91,8 @@ class BreadIndexSystem extends Module
                 $searchItem->Name = strtolower($searchItem->Name);
                 for($v=0;$v<count($searchItem->Tags);$v++)
                     $searchItem->Tags[$v] = strtolower($searchItem->Tags[$v]);
-                for($v=0;$v<count($searchItem->Categorys);$v++)
-                    $searchItem->Categorys[$v] = strtolower($searchItem->Categorys[$v]);
+                for($v=0;$v<count($searchItem->Categories);$v++)
+                    $searchItem->Categories[$v] = strtolower($searchItem->Categories[$v]);
                 $searchItem->Author = strtolower($searchItem->Author);
                 $searchItem->Content = strtolower($searchItem->Content);
             }
@@ -113,10 +118,10 @@ class BreadIndexSystem extends Module
                 foreach($page->Tags as $Tag)
                     if($Term == $Tag)
                         $weight[$pn] += $searchRequest->Weight_Tags;
-                //Categorys
-                foreach($page->Categorys as $Category)
+                //Categories
+                foreach($page->Categories as $Category)
                     if($Term == $Category)
-                        $weight[$pn] += $searchRequest->Weight_Categorys;
+                        $weight[$pn] += $searchRequest->Weight_Categories;
                 if($Term == $page->Author)
                     $weight[$pn] += $searchRequest->Weight_Author;
                 //Content
@@ -164,12 +169,12 @@ class BreadIndexSystem extends Module
         {
             $SearchRequest->Weight_Tags = $this->settings->Weight_Tags;
         }
-        if(isset($args->categorys)){
-            $SearchRequest->Weight_Categorys = $args->categorys;
+        if(isset($args->categories)){
+            $SearchRequest->Weight_Categories = $args->categories;
         }
         else
         {
-            $SearchRequest->Weight_Categorys = $this->settings->Weight_Categorys;
+            $SearchRequest->Weight_Categories = $this->settings->Weight_Categories;
         }
         if(isset($args->author)){
             $SearchRequest->Weight_Author    = $args->author;
@@ -276,7 +281,7 @@ class BreadIndexSystem extends Module
 class BreadIndexSystemSettings{
     public $Weight_Name = 5;
     public $Weight_Tags = 2;
-    public $Weight_Categorys = 1;
+    public $Weight_Categories = 1;
     public $Weight_Author = 0;
     public $Weight_Content = 1;
     public $IgnoreCase = true;

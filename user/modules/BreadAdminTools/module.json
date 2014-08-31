@@ -2,7 +2,7 @@
     "name": "BreadAdminTools",
     "entryclass": "BreadAdminTools",
     "entryfile": "BreadAdminTools\/BreadAdminTools.php",
-    "permissions": [],
+    "permissions": ["Bread.ViewControlPanel"],
     "events": {
         "Bread.ProcessRequest": {
             "function": "Setup",

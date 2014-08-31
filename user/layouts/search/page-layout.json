@@ -10,7 +10,7 @@
         "event":"Bread.DisplaySearchPage",
         "arguments":
         {
-            "categorys":5
+            "categories":5
         },
         "tag":"article"
     },
