@@ -165,6 +165,9 @@ class BreadPageSystem extends Module
             if(!$this->CheckEditorRights()){
                 return "";
             }
+            
+            $Post = $this->GetActivePost();
+            
             $panel = new \stdClass();
             $panel->title = "Post Details";
             $form = new \Bread\Structures\BreadForm;
@@ -182,10 +185,11 @@ class BreadPageSystem extends Module
             $E_PostName->type = \Bread\Structures\BreadFormElement::TYPE_TEXTBOX;
             $E_PostName->label = "Post Name";
             if(!$this->isnewpost)
-                $E_PostName->value = $this->GetActivePost ()->name;
+                $E_PostName->value = $Post->name;
             $E_PostName->readonly = true;
             $E_PostName->required = true;
             $form->elements[] = $E_PostName;
+            
             
             $E_TimeReleased = new \Bread\Structures\BreadFormElement;
             $E_TimeReleased->id = "e_timereleased";
@@ -194,8 +198,9 @@ class BreadPageSystem extends Module
             $E_TimeReleased->label = "Release On";
             $E_TimeReleased->required = true;
             $E_TimeReleased->readonly = true;
-            if(!$this->isnewpost)
-                $E_TimeReleased->value = date ("m/d/Y h:i A",  $this->GetActivePost()->time_released);
+            if(!$this->isnewpost){
+                $E_TimeReleased->value = date ("Y-m-d\TH:i:s\Z",  $Post->time_released);
+            }
             $form->elements[] = $E_TimeReleased;
             
             $E_Author = new \Bread\Structures\BreadFormElement;
@@ -206,17 +211,17 @@ class BreadPageSystem extends Module
             $E_Author->class = "";
             $E_Author->required = true;
             if(!$this->isnewpost){
-                $author = $this->GetActivePost ()->author;
+                $author = $Post->author;
                 if(is_int($author)){
                     $E_Author->value = $this->manager->FireEvent("Bread.Security.GetUser",$author)->username;
                 }
                 else{
-                    $E_Author->value = $this->GetActivePost ()->author;
+                    $E_Author->value = $Post->author;
                 }
             }
             else
             {
-                $E_Author->value = $this->GetActivePost ()->name = $this->manager->FireEvent("Bread.Security.GetCurrentUser")->username;
+                $E_Author->value = $Post->name = $this->manager->FireEvent("Bread.Security.GetCurrentUser")->username;
             }
             $form->elements[] = $E_Author;
             
@@ -269,7 +274,7 @@ class BreadPageSystem extends Module
             $E_Categories_Selected->id = "bps-selectcategories";
             $E_Categories_Selected->small = true;
             $E_Categories_Selected->value = "";
-            foreach($this->GetActivePost ()->categories as $category)
+            foreach($Post->categories as $category)
                 $E_Categories_Selected->value .= $this->manager->FireEvent("Theme.Badge",$category);
             $HTML_Categories->value .= "<h5>Selected Categories</h5>" . $this->manager->FireEvent("Theme.Layout.Well",$E_Categories_Selected);
             
@@ -290,7 +295,7 @@ class BreadPageSystem extends Module
             $Buttons = $this->manager->FireEvent("Theme.Layout.ButtonGroup",$Buttons);
             
             //Modal for deleting posts.
-            $ModalHTML = $this->manager->FireEvent("Theme.Modal",array("id"=>"warnDeletePost","label"=>"modalDeletePost","title"=>"Are You Sure?","body"=>"Are you sure you want to delete <strong>" . $this->GetActivePost ()->name . "</strong>?","footer"=>$Buttons));
+            $ModalHTML = $this->manager->FireEvent("Theme.Modal",array("id"=>"warnDeletePost","label"=>"modalDeletePost","title"=>"Are You Sure?","body"=>"Are you sure you want to delete <strong>" . $Post->name . "</strong>?","footer"=>$Buttons));
             
             $E_OpenEditor = new \Bread\Structures\BreadFormElement;
             $E_OpenEditor->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
@@ -891,11 +896,15 @@ class BreadPageSystem extends Module
         {
             $Pages = array();
             $parts = array();
+            $Time = time();
             $parts["request"] = $this->settings->postRequest;
             foreach($this->settings->postindex as $post)
             {
                 if($post->hidden)
                     continue;
+                if($post->time_released > $Time && !$this->manager->FireEvent("Bread.Security.GetPermission","BreadPageSystem.Editor")){
+                    continue;
+                }
                 $Page = new \Bread\Structures\BreadSearchItem;
                 $Page->Name = $post->title;
                 $Page->Categories = $post->categories;
