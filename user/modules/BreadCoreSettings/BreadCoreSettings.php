@@ -78,24 +78,24 @@ class BreadCoreSettings extends Module
             $ModuleTable->headingRow->cells[4]->width = 10;
             $ModuleList = $this->manager->GetModuleList();
             
-            $ButtonDisable = new \Bread\Structures\BreadFormElement;
-            $ButtonDisable->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
-            $ButtonDisable->value = "Disable";
-            $ButtonDisable->readonly = true;
-            $ButtonDisable->onclick = "$('#warnDeleteUser').modal('hide');isDisable = true;";
-            $ButtonDisable->class = "btn-warning";
-            
-            $ButtonDelete = new \Bread\Structures\BreadFormElement;
-            $ButtonDelete->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
-            $ButtonDelete->value = "Delete";
-            $ButtonDelete->onclick = "$('#warnDeleteUser').modal('hide');isDisable = false;";
-            $ButtonDelete->class = "btn-danger";
+//            $ButtonDisable = new \Bread\Structures\BreadFormElement;
+//            $ButtonDisable->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+//            $ButtonDisable->value = "Disable";
+//            $ButtonDisable->readonly = true;
+//            $ButtonDisable->onclick = "$('#warnDeleteUser').modal('hide');isDisable = true;";
+//            $ButtonDisable->class = "btn-warning";
+//            
+//            $ButtonDelete = new \Bread\Structures\BreadFormElement;
+//            $ButtonDelete->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+//            $ButtonDelete->value = "Delete";
+//            $ButtonDelete->onclick = "$('#warnDeleteUser').modal('hide');isDisable = false;";
+//            $ButtonDelete->class = "btn-danger";
             
             foreach($ModuleList as $Name => $Module){
                 $ModuleRow = new \Bread\Structures\BreadTableRow();
                 $ModuleConfig = $this->manager->GetModuleConfig($Name);
                 $Author = Util::EmptySub($ModuleConfig->author, "Unknown");
-                $ModuleRow->FillOutRow(array($Name,$Author,$ModuleConfig->version,$this->manager->FireEvent("Theme.Button",$ButtonDisable),$this->manager->FireEvent("Theme.Button",$ButtonDelete)));
+                $ModuleRow->FillOutRow(array($Name,$Author,$ModuleConfig->version));//,$this->manager->FireEvent("Theme.Button",$ButtonDisable),$this->manager->FireEvent("Theme.Button",$ButtonDelete)));
                 $ModuleTable->rows[] = $ModuleRow;
             }
             

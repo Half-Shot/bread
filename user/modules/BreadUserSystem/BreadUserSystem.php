@@ -50,7 +50,7 @@ class BreadUserSystem extends Module
         if($hasher->CheckPassword($pw,$user->hash))
         {
             Site::$Logger->writeMessage("Password was correct!",$this->name);
-            session_start();
+            if (session_status() === PHP_SESSION_NONE){session_start();}
             $_SESSION["lastlogin"] = time(); //Setting this is enough.
             $_SESSION["REMOTE_ADDR"] = $_SERVER["REMOTE_ADDR"];
             $_SESSION["HTTP_USER_AGENT"] = $_SERVER["HTTP_USER_AGENT"];

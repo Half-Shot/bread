@@ -269,9 +269,11 @@ class Site
          * such as yourself. Starts disabled.
          * @param Boolean $enable Toggle
          */
-	public static function ShowDebug($enable)
+	public static function ShowDebug($enable,$disablevisualonly = false)
 	{
-                static::$isdebug = $enable;
+                if(!$disablevisualonly){
+                    static::$isdebug = $enable;
+                }
 		if($enable)
 		{
 			error_reporting(E_ALL);
@@ -513,7 +515,6 @@ class Site
             if(static::$isAjax)
             {
                 // Turn off all error reporting
-                static::ShowDebug(false);
                 site::$Logger->writeMessage("Request is AJAX!");
                 $module = "";
                 $event = "Bread.AjaxRequest";
