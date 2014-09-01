@@ -35,7 +35,7 @@ class BootstrapTheme extends Bread\Modules\Module
             $this->manager->RegisterHook($this->name,"Theme.Layout.ButtonGroup","ButtonGroup");
             $this->manager->RegisterHook($this->name,"Theme.Layout.ButtonGroupVertical","ButtonGroupVertical");
             $this->manager->RegisterHook($this->name,"Theme.Layout.ButtonToolbar","ButtonToolbar");
-            $this->manager->RegisterHook($this->name,"Theme.Layout.Grid.HorizonalStack","GridHorizontalStack");
+            $this->manager->RegisterHook($this->name,"Theme.Layout.Grid.HorizontalStack","GridHorizontalStack");
             $this->manager->RegisterHook($this->name,"Theme.DrawError","ShowErrorScreen");
             //Misc
             $this->manager->RegisterHook($this->name,"Theme.Icon","DrawIcon");
@@ -90,6 +90,8 @@ class BootstrapTheme extends Bread\Modules\Module
             $String .= "'tooltip'";
             $String .= ']").tooltip();';
             Site::AddRawScriptCode($String, true);
+            //Image fix
+            Site::AddRawScriptCode("$('img').addClass('img-responsive');",true);
 	}
         
 	function Navbar($args)

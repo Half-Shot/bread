@@ -163,7 +163,7 @@ class BreadAdminTools extends Module
             }
             $SettingsPanels[] = $Panel;
         }  
-        $SettingsPanelsHTML = $this->manager->FireEvent("Theme.Layout.Grid.HorizonalStack",$SettingsPanels);
+        $SettingsPanelsHTML = $this->manager->FireEvent("Theme.Layout.Grid.HorizontalStack",$SettingsPanels);
         return $TabsHTML . $this->manager->FireEvent("Theme.Layout.Well",array("value"=>$SettingsPanelsHTML));
     }
     

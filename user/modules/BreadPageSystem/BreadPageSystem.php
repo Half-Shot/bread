@@ -724,7 +724,7 @@ class BreadPageSystem extends Module
             $GridCellPostInfo->size = 6;
             $GridCellPostInfo->body = $PostInfo;
             
-            $Grid = Site::$moduleManager->FireEvent("Theme.Layout.Grid.HorizonalStack",array($GridCellBio,$GridCellPostInfo));
+            $Grid = Site::$moduleManager->FireEvent("Theme.Layout.Grid.HorizontalStack",array($GridCellBio,$GridCellPostInfo));
             return $Grid;
         }
         

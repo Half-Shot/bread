@@ -216,7 +216,7 @@ class BreadIndexSystem extends Module
         
         $object = new \stdClass;
         $object->small = true;
-        $object->value = $this->manager->FireEvent("Theme.Layout.Grid.HorizonalStack",array($listOfGrids));
+        $object->value = $this->manager->FireEvent("Theme.Layout.Grid.HorizontalStack",array($listOfGrids));
         $HTML .= $this->manager->FireEvent("Theme.Layout.Well",$object);
         if(!empty($SearchRequest->SearchTerm)){
             $HTML .= $this->manager->FireEvent("Theme.Title",array("Search Results for",  $SearchRequest->SearchTerm));

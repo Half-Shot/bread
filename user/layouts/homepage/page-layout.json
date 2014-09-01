@@ -4,13 +4,29 @@
 "css":["homepage/page-layout.css"],
 "elements": [
     {
-        "name": "contents",
-	    "id": "homepage-contents",
-        "human": "Page Contents",
-        "description": "Middle section where contents will be placed.",
-        "event":"Bread.DrawModule",
-        "module":"BreadPageSystem",
-        "tag":"article"
+	"name"	: "LowerContents",
+	"id"	: "lower-contents",
+	"human"	: "Page Contents",
+	"description" :	"Lower section for social feeds",
+	"event" : "Theme.Layout.Grid.HorizontalStack",
+	"elements": [
+		{
+                        "name": "contents",
+                        "id": "homepage-contents",
+                        "human": "Page Contents",
+                        "description": "Middle section where contents will be placed.",
+                        "event":"Bread.DrawModule",
+        		"module":"BreadPageSystem",
+        		"tag":"article"
+		 },
+                 {
+                        "name"  : "OctoCat",
+                        "id"    : "octocat",
+                        "event" : "BreadPageSystem.PlainMarkdown",
+                        "arguments":"![OctoCat](https://octodex.github.com/images/labtocat.png)"
+                 }
+	]
     }
 ]
 }
+

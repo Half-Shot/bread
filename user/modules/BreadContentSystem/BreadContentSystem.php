@@ -181,7 +181,7 @@ class BreadContentSystem extends Module
         $SourceButtonsCell->size = 6;
         $SourceButtonsCell->body = Site::$moduleManager->FireEvent("Theme.Layout.ButtonGroup",Site::$moduleManager->FireEvent("Theme.InputElement",$LocalSources));
         
-        $Modal->body  .=  Site::$moduleManager->FireEvent("Theme.Layout.Grid.HorizonalStack",array($SourceButtonsCell)) . "<hr/>";
+        $Modal->body  .=  Site::$moduleManager->FireEvent("Theme.Layout.Grid.HorizontalStack",array($SourceButtonsCell)) . "<hr/>";
         
         //Types avaiable.
         $ButtonStack = "<h4>Type</h4>";
@@ -242,7 +242,7 @@ class BreadContentSystem extends Module
         $FileBrowserCell = new \stdClass();
         $FileBrowserCell->body = Site::$moduleManager->FireEvent("Theme.Table",$FileTable);
         
-        $Modal->body .= Site::$moduleManager->FireEvent("Theme.Layout.Grid.HorizonalStack",array($MajorTypesCell,$FileBrowserCell));
+        $Modal->body .= Site::$moduleManager->FireEvent("Theme.Layout.Grid.HorizontalStack",array($MajorTypesCell,$FileBrowserCell));
         
         $InsertButton = new \Bread\Structures\BreadFormElement();
         $InsertButton->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;

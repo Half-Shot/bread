@@ -25,7 +25,7 @@
         "human": "Main Panel",
         "description": "Grid for both tabs and the settings panel.",
         "tag":"div",
-        "event":"Theme.Layout.Grid.HorizonalStack",
+        "event":"Theme.Layout.Grid.HorizontalStack",
         "elements":[
                 {
                     "name": "sidetabs",

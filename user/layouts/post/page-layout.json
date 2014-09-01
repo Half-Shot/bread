@@ -17,7 +17,7 @@
         "id":"midsection",
         "human":"Mid Section",
         "description":"Middle area of document for gridding.",
-        "event":"Theme.Layout.Grid.HorizonalStack",
+        "event":"Theme.Layout.Grid.HorizontalStack",
         "elements":[
             {
                 "name": "recent-posts",
