@@ -491,12 +491,12 @@ class BreadCoreSettings extends Module
             //
             //Footer
             $StartButton = array("id"=>"startButton","onclick"=>"startUpdate();","class"=>"btn-info","value"=>"Start Update");
-            $CancelButton = array("id"=>"cancelButton","onclick"=>"cancelUpdate();","class"=>"btn-danger","value"=>"Cancel Update");
+            //$CancelButton = array("id"=>"cancelButton","onclick"=>"cancelUpdate();","class"=>"btn-danger","value"=>"Cancel Update");
             $StartButtonHTML = $this->manager->FireEvent("Theme.Button",$StartButton);
-            $CancelButtonHTML = $this->manager->FireEvent("Theme.Button",$CancelButton);
-            $footerButtons = $this->manager->FireEvent("Theme.Layout.ButtonGroup",array($StartButtonHTML,$CancelButtonHTML));
+            //$CancelButtonHTML = $this->manager->FireEvent("Theme.Button",$CancelButton);
+            $footerButtons = $this->manager->FireEvent("Theme.Layout.ButtonGroup",array($StartButtonHTML));//,$CancelButtonHTML));
             
-            $modalBody = "<h4>Update Progress</h4><hr>";
+            $modalBody = "<h4>The update may take a while, please be patient.</h4><hr>";
             $modalBody .= "<h2  id='label-status' style='display:none;'>" . $this->manager->FireEvent("Theme.Label","In Progress!") . "</h2>";
             $modal = $this->manager->FireEvent("Theme.Modal", array("id"=>"update-modal","label"=>"update-modal","title"=>"Updating Bread","body"=>$modalBody,"footer"=>$footerButtons));
             Site::AddToBodyCode($modal);
