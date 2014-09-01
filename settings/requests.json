@@ -1,28 +1,23 @@
 {
     "master":
     {
-        "theme":"theme-bootstrap",
-        "modules":["BreadIndexSystem\/module.json","WebShim\/module.json","BreadUserSystem\/module.json","BreadAdminTools\/module.json","BreadFormBuilder\/module.json"]
+        "theme":"theme-bootstrap"
     },
     "homepage":{
         "layout":"homepage",
         "include":["master","post"],
-        "modules":["BreadPageSystem\/module.json"],
         "args":[{"post":"bkgkgk50"}]
     },
     "post":{
         "layout":"post",
-        "include":["master"],
-        "modules":["BreadPageSystem\/module.json"]
+        "include":["master"]
     },
     "controlpanel":{
         "layout":"controlpanel",
-        "include":["master"],
-        "modules":["BreadPageSystem\/module.json","BreadCoreSettings\/module.json"]
+        "include":["master"]
     },
     "search":{
         "include":["master"],
-        "layout":"search",
-        "modules":["BreadPageSystem\/module.json"]
+        "layout":"search"
     }
 }

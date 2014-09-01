@@ -474,7 +474,10 @@ class Site
                         static::$Logger->writeError ("Request includes " . $includedRequest . " but is not defined in the file. Ignoring" ,\Bread\Logger::SEVERITY_MEDIUM);
                         continue;
                     }
-                    $requestObject->modules = array_merge($requestObject->modules,$requestDB->$includedRequest->modules);
+                    if(isset($requestDB->$includedRequest->modules)){
+                        $requestObject->modules = array_merge($requestObject->modules,$requestDB->$includedRequest->modules);
+                    }
+                    
                 }
             }
             //Overrides
