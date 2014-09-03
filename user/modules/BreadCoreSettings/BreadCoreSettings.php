@@ -360,7 +360,7 @@ class BreadCoreSettings extends Module
             $Panel_Updater->Name = "updaterPanel";
             $Panel_Updater->HumanTitle = $this->manager->FireEvent("Theme.Icon","cog") . "Deploy THAR Update!";
             if(time() - ($this->settings->lastRequest + $TimeBetweenChecks) > 0){
-                $ReleaseRequest = \Unirest::get("https://api.github.com/repos/Half-Shot/bread/releases");
+                $ReleaseRequest = \Unirest::get("https://api.github.com/repos/BreadFramework/bread/releases");
                 if($ReleaseRequest->code != 200)
                 {
                     $Panel_Updater->Body = "<h3 style='text-align:center;'>You are running Bread <strong>". Site::Configuration()->core->version ."</strong></h3><br><p> Couldn't reach github at the moment. Please try again later.</p><pre>" . var_export($ReleaseRequest->body,true) . "</pre>";
@@ -453,7 +453,7 @@ class BreadCoreSettings extends Module
             
             if(time() - ($this->settings->lastRequest + $TimeBetweenChecks) > 0){
                 $this->settings->lastRequest = time();
-                $ReleaseRequest = \Unirest::get("https://api.github.com/repos/Half-Shot/bread/commits/devbread");
+                $ReleaseRequest = \Unirest::get("https://api.github.com/repos/BreadFramework/bread/commits/devbread");
                 $LatestGit = $ReleaseRequest->body;
                 $this->settings->GitData = $LatestGit;
             }
@@ -599,7 +599,7 @@ class BreadCoreSettings extends Module
             }
             elseif($channel === 2 && is_object($this->settings->GitData))
             {
-               $URL = "https://github.com/Half-Shot/bread/archive/devbread.zip"; //Current master git download.
+               $URL = "https://github.com/BreadFramework/bread/archive/devbread.zip"; //Current master git download.
                $version = substr($this->settings->GitData->sha, 0,7);
             }
             else {
