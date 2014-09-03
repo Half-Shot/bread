@@ -19,6 +19,7 @@ use Bread\Structures\BreadRequestCommand as BreadRequestCommand;
  */
 class Site
 {       
+        const CHARSET = "utf-8";
         /**
          *
          * @var string array Names of loaded Scripts
@@ -564,6 +565,7 @@ class Site
 	    static::$themeManager->ReadElementsFromLayout(static::$themeManager->Theme["layout"]);#Build layout into HTML
             static::$moduleManager->FireEvent("Bread.FinishedLayoutProcess",null,false);
 	    static::$htmlcode .= "<head>\n";
+            static::$htmlcode .= '<meta charset="'.Site::CHARSET.'">';
 	    static::$htmlcode .= static::ProcessMetadata($requestData);
             $titleArray = static::$moduleManager->FireEvent("Bread.PageTitle",null,false);
             if($titleArray == false){

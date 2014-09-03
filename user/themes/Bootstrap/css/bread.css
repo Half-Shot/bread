@@ -28,4 +28,10 @@ THE SOFTWARE.
 
 body{
     padding:40px;
+} 
+img {
+  display: block;
+  width: 100% ;
+  max-width: 100%;
+  height: auto;
 }
