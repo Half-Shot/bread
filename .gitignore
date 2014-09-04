@@ -8,3 +8,5 @@
 # IDE Files
 *.sublime-workspace
 *.sublime-project
+
+.gitmodules
