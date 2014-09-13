@@ -114,7 +114,6 @@ class BreadContentSystem extends Module
         if(!extension_loaded("fileinfo")){
             return false;//TODO:Find an alternative for fileinfo less servers.
         }
-        return false;
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mimetype = finfo_file($finfo, $file);
         finfo_close($finfo);
@@ -346,7 +345,7 @@ class BreadContentSystem extends Module
                 $mime = mime_content_type($File->filename);
             }
             if($mime !== $File->mimetype && explode("/",$mime)[1] !== $File->minortype){
-                Site::$Logger->writeError("File failed the serverside mimetype test!",  \Bread\Logger::SEVERITY_MEDIUM, $this->name);
+                Site::$Logger->writeError("Server file type did not match client file type!",  \Bread\Logger::SEVERITY_MEDIUM, $this->name);
                 Site::$Logger->writeError("    Filename: " . $File->filename,  \Bread\Logger::SEVERITY_MEDIUM, $this->name);
                 Site::$Logger->writeError("    Mimetype: " . $File->mimetype,  \Bread\Logger::SEVERITY_MEDIUM, $this->name);
                 unlink(Site::ResolvePath('%system-temp/' . $id));
@@ -356,14 +355,23 @@ class BreadContentSystem extends Module
             if(in_array($mime, $this->settings->allowedMimes)){
                 //Save it properly
                 //Index and check it doesn't already exist.
+                Site::$Logger->writeError("New file added to content: "     ,  \Bread\Logger::SEVERITY_MESSAGE               , $this->name);
+                Site::$Logger->writeError("    Filename: " . $File->filename,  \Bread\Logger::SEVERITY_MESSAGE               , $this->name);
+                Site::$Logger->writeError("    Mimetype: " . $File->mimetype,  \Bread\Logger::SEVERITY_MESSAGE               , $this->name);
                 $fileInfo = pathinfo($File->filename);
-                $newpath = Site::ResolvePath('%user-content/content/' . $File->mimetype . '/' . $id . "." . $fileInfo["extension"]);
-                mkdir(Site::ResolvePath('%user-content/content/' . $File->mimetype . '/'), 0777, true);
+                $newDirectory = Site::ResolvePath('%user-content/content/' . $File->mimetype . '/');
+                $newpath = $newDirectory . $id . "." . $fileInfo["extension"];
+                if(!file_exists($newDirectory)){
+                    mkdir($newDirectory, 0777, true);
+                }
                 rename($directory,$newpath);
                 unlink($directory);
                 return $newpath;
             }
             else{
+                Site::$Logger->writeError("Mimetype was not allowed!",  \Bread\Logger::SEVERITY_MEDIUM, $this->name);
+                Site::$Logger->writeError("    Filename: " . $File->filename,  \Bread\Logger::SEVERITY_MEDIUM, $this->name);
+                Site::$Logger->writeError("    Mimetype: " . $File->mimetype,  \Bread\Logger::SEVERITY_MEDIUM, $this->name);
                 //Error and delete
                 unset($this->index->$id);
                 unlink($directory);

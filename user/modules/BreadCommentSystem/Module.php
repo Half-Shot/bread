@@ -151,6 +151,7 @@ class BreadCommentSystem extends Module{
         }
         $CommentIndex = 0;
         $HTML .= "<div id='breadcomment-section'>";
+        $Moderator = $this->manager->FireEvent("Bread.Security.GetPermission","BreadCommentSystem.Moderator");
         foreach($this->comments->comments as $comment){
             $ExtraClasses = "";
             $commentObj = Util::CastStdObjectToStruct($comment, "Bread\Structures\BreadComment");
@@ -158,15 +159,15 @@ class BreadCommentSystem extends Module{
             $Avatar = $this->manager->FireEvent("Bread.GetAvatar",$User);
             $EditorButtons = "";
             $ButtonsHTML = "";
-            if($CurrentUser !== null && !$this->comments->locked){
+            if($CurrentUser !== null && !$this->comments->locked || $Moderator){
                 if($this->manager->FireEvent("Bread.Security.GetPermission","BreadCommentSystem.CanVote")){
                     $ButtonsHTML = $this->buttons["Upvote"] . $this->buttons["Downvote"];
                 }
-                if($comment->user === $CurrentUser->uid){
+                if($comment->user === $CurrentUser->uid || $Moderator){
                     if($this->settings->AllowEditing){
                         //$EditorButtons .= $this->buttons["Edit"] . $this->buttons["Save"];
                     }
-                    if($this->settings->AllowDeleting){
+                    if($this->settings->AllowDeleting || $Moderator){
                         $EditorButtons .= $this->buttons["Delete"];
                     }
                 }

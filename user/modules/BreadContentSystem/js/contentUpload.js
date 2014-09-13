@@ -172,9 +172,13 @@ function UploadFile(newID,file,displayElement){
             n += 1;
             if(returnedData === "0"){
                 console.log("Something went wrong.");
+                uploadZone.removeFile(file);
+                $("#content-finished").append("<hr><b>" + file.name + "</b> failed to send due to an unknown error.");
             }
             else if(returnedData === "3"){
+                uploadZone.removeFile(file);
                 console.log(file.type + " is not a valid mimetype");
+                $("#content-finished").append("<hr><b>" + file.name + "</b> failed to send due to being the wrong type.");
             }
             else if(returnedData === "1"){
                 console.log("Chunk " + n + " recieved and processed");
