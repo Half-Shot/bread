@@ -111,6 +111,10 @@ class BreadContentSystem extends Module
     }
     
     function DetectMimeType($file){
+        if(!extension_loaded("fileinfo")){
+            return false;//TODO:Find an alternative for fileinfo less servers.
+        }
+        return false;
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mimetype = finfo_file($finfo, $file);
         finfo_close($finfo);
@@ -337,7 +341,14 @@ class BreadContentSystem extends Module
             file_put_contents($directory, $FinalFileData);
             //Less than equal amount of bytes, the file must have finished.
             $mime = $this->DetectMimeType($directory);
+            if($mime === false){
+                //Terrible bad method for finding file mimetypes when we are left with no option. Really insecure.
+                $mime = mime_content_type($File->filename);
+            }
             if($mime !== $File->mimetype && explode("/",$mime)[1] !== $File->minortype){
+                Site::$Logger->writeError("File failed the serverside mimetype test!",  \Bread\Logger::SEVERITY_MEDIUM, $this->name);
+                Site::$Logger->writeError("    Filename: " . $File->filename,  \Bread\Logger::SEVERITY_MEDIUM, $this->name);
+                Site::$Logger->writeError("    Mimetype: " . $File->mimetype,  \Bread\Logger::SEVERITY_MEDIUM, $this->name);
                 unlink(Site::ResolvePath('%system-temp/' . $id));
                 unset($this->index->$id);
                 return 3;
