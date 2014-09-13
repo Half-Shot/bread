@@ -67,7 +67,6 @@ class BreadPageSystem extends Module
             foreach($index as $page)
             {
                 if($page->time_released > time() && !$this->CheckEditorRights()){
-                    Site::$Logger->writeError("Post is hidden (" . $page->time_released . ") because current time (" . time() . ") is older",  \Bread\Logger::SEVERITY_MESSAGE, $this->name,false);
                     continue;
                 }
                 if(isset($page->hidden)){
@@ -86,9 +85,9 @@ class BreadPageSystem extends Module
                         $titleRecurances[$page->title] += 1;
                     }
                     else{
-                        $titleRecurances[$page->title] = 0;
+                        $titleRecurances[$page->title] = 1;
                     }
-                    $pages[$page->title . "_" . $titleRecurances[$page->title]] = Site::CondenseURLParams(false,$parts);
+                    $pages[$page->title . " (" . $titleRecurances[$page->title] . ")"] = Site::CondenseURLParams(false,$parts);
                 }
             }
             $pages = array_slice($pages, 0, $this->settings->maxRecentPosts, true);
@@ -179,18 +178,6 @@ class BreadPageSystem extends Module
             $E_Header_Basic->value = "<h4>Basic Settings</h4>";
             $form->elements[] = $E_Header_Basic;
             
-            $E_PostName = new \Bread\Structures\BreadFormElement;
-            $E_PostName->id = "e_postname";
-            $E_PostName->class = "bps-editorinfo-input";
-            $E_PostName->type = \Bread\Structures\BreadFormElement::TYPE_TEXTBOX;
-            $E_PostName->label = "Post Name";
-            if(!$this->isnewpost)
-                $E_PostName->value = $Post->name;
-            $E_PostName->readonly = true;
-            $E_PostName->required = true;
-            $form->elements[] = $E_PostName;
-            
-            
             $E_TimeReleased = new \Bread\Structures\BreadFormElement;
             $E_TimeReleased->id = "e_timereleased";
             $E_TimeReleased->class = "bps-editorinfo-input";
@@ -221,7 +208,7 @@ class BreadPageSystem extends Module
             }
             else
             {
-                $E_Author->value = $Post->name = $this->manager->FireEvent("Bread.Security.GetCurrentUser")->username;
+                $E_Author->value = $this->manager->FireEvent("Bread.Security.GetCurrentUser")->username;
             }
             $form->elements[] = $E_Author;
             
@@ -295,7 +282,7 @@ class BreadPageSystem extends Module
             $Buttons = $this->manager->FireEvent("Theme.Layout.ButtonGroup",$Buttons);
             
             //Modal for deleting posts.
-            $ModalHTML = $this->manager->FireEvent("Theme.Modal",array("id"=>"warnDeletePost","label"=>"modalDeletePost","title"=>"Are You Sure?","body"=>"Are you sure you want to delete <strong>" . $Post->name . "</strong>?","footer"=>$Buttons));
+            $ModalHTML = $this->manager->FireEvent("Theme.Modal",array("id"=>"warnDeletePost","label"=>"modalDeletePost","title"=>"Are You Sure?","body"=>"Are you sure you want to delete <strong>" . $Post->title . "</strong>?","footer"=>$Buttons));
             
             $E_OpenEditor = new \Bread\Structures\BreadFormElement;
             $E_OpenEditor->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
@@ -734,19 +721,8 @@ class BreadPageSystem extends Module
             return $filename;
         }
         
-        function FixDuplicatePostName($postname){
-            $duplicate = true;
-            $dupn = 0;
-            while($duplicate){
-                $duplicate = false;
-                foreach($this->settings->postindex as $posts){
-                    if($posts->name == $postname){
-                        $duplicate = true;
-                        $postname = $postname . "_" . $dupn;
-                    }
-                }
-            }
-            return $postname;
+        function GenerateName($post){
+            return $this->GenerateFileName($post->title . "_" . $post->id);
         }
         
         function SavePost()
@@ -762,9 +738,9 @@ class BreadPageSystem extends Module
              $subtitle = $_POST["subtitle"];
              $url_data = Site::DigestURL($url);
              
-             if(isset($url_data["name"]))
+             if(isset($url_data["title"]))
              {
-                 $id = $this->GetPostIDByKey("name",$url_data["name"]);
+                 $id = $this->GetPostIDByKey("title",$url_data["title"]);
              }
              else if(isset($url_data["post"]))
              {
@@ -774,9 +750,12 @@ class BreadPageSystem extends Module
              {
                  $id = $this->GenerateID();
                  $post = new BreadPageSystemPost;
-                 $post->name = $this->FixDuplicatePostName($_POST["name"]);
+                 $post->id = $id;
+                 $post->time_created = time();
+                 $post->title = $title;
+                 $post->name = $this->GenerateName($post);
                  $post->author = $this->manager->FireEvent("Bread.Security.GetCurrentUser")->uid;
-                 $filename = $this->GenerateFileName($post->name);
+                 $filename = $post->name;
                  if(empty($filename))
                  {
                     Site::$Logger->writeError("Post had a bad name and couldn't save as a file path.",\Bread\Logger::SEVERITY_HIGH,"breadpagesystem");
@@ -785,8 +764,6 @@ class BreadPageSystem extends Module
                  $post->url = $filename . ".md";
                  
                  $post->jsonurl =  $this->settings->postdir . "/" . $filename . ".json";
-                 $post->id = $id;
-                 $post->time_created = time();
                  $this->settings->postindex->$id = $post;
                  Site::$settingsManager->SaveSetting($post,$post->jsonurl,True);
              }
@@ -798,24 +775,6 @@ class BreadPageSystem extends Module
              
              $url = $this->settings->postdir . "/" . $this->settings->postindex->$id->url;
              $pageData = Site::$settingsManager->RetriveSettings($this->settings->postindex->$id->jsonurl); //Get actual file
-             
-             if($pageData->name != $_POST["name"])
-             {
-                 Site::$Logger->writeError("Page got renamed (" . $pageData->name . "=>" . $_POST["name"] . ")",\Bread\Logger::SEVERITY_MESSAGE,$this->name);
-                 $pageData->name = $this->FixDuplicatePostName($_POST["name"]);
-                 
-                 $filename = $this->GenerateFileName($pageData->name);
-                 if(empty($filename))
-                 {
-                    Site::$Logger->writeError("Post had a bad name and coudln't save as a file path.",\Bread\Logger::SEVERITY_HIGH,"breadpagesystem");
-                    return "0";
-                 }
-                 
-                 \rename($pageData->jsonurl,$this->settings->postdir . "/" . $filename . ".json");
-                 \rename($url,$this->settings->postdir . "/" . $filename . ".md");
-                 $pageData->jsonurl =  $this->settings->postdir . "/" . $pageData->name . ".json";
-                 $pageData->url = $pageData->name . ".md";
-             }
              
              file_put_contents($url, $md);
              
