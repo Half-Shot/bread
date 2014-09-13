@@ -830,7 +830,7 @@ class BreadUserSystemAdminPanelSettings{
         $Username->type = "text";
         $Username->informationKey = "username";
         $Username->multiuser = false;
-        $Username->pattern = ".{8,}";
+        $Username->pattern = ".{4,}";
         $Username->patten_help = "Usernames need to be at least 8 characters.";
         $Username->validationEvent = "BreadUserSystem.ValidateUsername";
         $Username->validationModule = "BreadUserSystem";
