@@ -39,6 +39,10 @@
         "BreadContentSystem.DeleteContent":{
             "function":"DeleteContent",
             "security":1
+        },
+        "Bread.Cleanup":{
+            "function":"OptimiseCache",
+            "security":0
         }
     }
 }
