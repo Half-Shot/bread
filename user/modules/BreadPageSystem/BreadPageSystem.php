@@ -413,6 +413,7 @@ class BreadPageSystem extends Module
                $ToolbarHTML = $this->GenerateEditorToolbar();
                $editor = "editor";
                Site::AddRawScriptCode("var epiceditor_basepath ='" . Site::ResolvePath("%user-modules/BreadPageSystem/css/") . "';");//Dirty Hack
+               Site::AddRawScriptCode("var bpspostid ='" . $page->id . "';");//Tell it the page id
                Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/epiceditor.min.js"),"EpicEditor", true);
            }
            return "<div class='bps-content' " . $editor . "><textarea class='bps-markdown'>" . $markdown ."</textarea></div>" . $ToolbarHTML;
@@ -745,6 +746,11 @@ class BreadPageSystem extends Module
              else if(isset($url_data["post"]))
              {
                  $id = $url_data["post"];
+             }
+             else if(isset($url_data["latest"])){
+                $index = get_object_vars($this->settings->postindex);
+                $postsDated = usort($index,"\Bread\Modules\BreadPageSystem::USortDate");
+                $id = $index[0]->id;
              }
              else if(isset($url_data["newpost"]))
              {
