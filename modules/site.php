@@ -263,30 +263,30 @@ class Site
                     throw new \Exception("Configuration could be <b>read</b> but not be <b>loaded</b>. Game Over!");
             }
             date_default_timezone_set(static::$configuration->core->timezone);//Setting timezone before its too late.
-            static::ShowDebug(static::$configuration->core->debug);
 	}
         /**
          * Enables/Disables Debug Statements. Very useful for a developer
          * such as yourself. Starts disabled.
          * @param Boolean $enable Toggle
          */
-	public static function ShowDebug($enable,$disablevisualonly = false)
+	public static function ShowDebug($enable,$dontshowerrors = false)
 	{
-                if(!$disablevisualonly){
-                    static::$isdebug = $enable;
+            static::$isdebug = $enable;
+            if(!$dontshowerrors)
+            {
+                if($enable)
+                {
+                        error_reporting(E_ALL);
+                        ini_set('display_errors', 1);
                 }
-		if($enable)
-		{
-			error_reporting(E_ALL);
-			ini_set('display_errors', 1);
-		}
-		else
-		{
-			error_reporting(false);
-			ini_set('display_errors', 0);
+                else
+                {
+                        error_reporting(false);
+                        ini_set('display_errors', 0);
                         error_reporting(0);
 
-		}
+                }
+            }
 	}
         /**
          * A simple ban-by-ip system which will be swapped out in the future.
@@ -418,6 +418,7 @@ class Site
             $URL = $_SERVER['REQUEST_URI'];
             $Params = static::DigestURL($URL);
             static::$baseurl = $Params["BASEURL"];
+            unset($Params["BASEURL"]);
             static::$URLParameters = $Params;
             //Override for ajax.
             //TODO: Allow use to turn this off, could be used as a backdoor.
@@ -425,6 +426,8 @@ class Site
                     static::$isAjax = true;
                     $requestObject->requestType = "ajax";
             }
+            
+            static::ShowDebug(static::$configuration->core->debug,static::$isAjax);
             if(!static::$isAjax){
                 if(isset($requestDB->master->layout))
                     $requestObject->layout = $requestDB->master->layout;
@@ -603,7 +606,7 @@ class Site
          */
 	public static function Cleanup()
 	{
-                static::$moduleManager->FireEvent("Bread.Cleanup",NULL);//Broadcast that we are cleaning up.
+                static::$moduleManager->FireEvent("Bread.Cleanup",NULL,false);//Broadcast that we are cleaning up.
                 static::$settingsManager->SaveChanges(); //Save all changes.
 		static::$Logger->closeStream();
 	}

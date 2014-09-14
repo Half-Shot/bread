@@ -5,6 +5,7 @@ use Bread\Utilitys as Util;
 class BreadContentSystem extends Module
 {
     const CHUNKSIZE = 96000;
+    const CHUNKTIMEOUT = 15;
     private $settings;
     private $index;
     function __construct($manager,$name)
@@ -143,6 +144,7 @@ class BreadContentSystem extends Module
         $File->majortype = $types[0];
         $File->minortype = $types[1];
         $this->index->$ID = $File;
+        $File->lastchunktime = time();
         
         mkdir(Site::ResolvePath('%system-temp/chunkfiles/' . $ID),0777,true);
         return $ID;
@@ -289,6 +291,27 @@ class BreadContentSystem extends Module
         return $Files;
     }
     
+    function OptimiseCache(){
+        if((time() - $this->settings->lastoptimise) > $this->settings->optimiseinterval)
+        {
+            $this->settings->lastoptimise = time();
+            //Check all files exist
+            $filesCleaned = 0;
+            foreach($this->index as $id => $File){
+                if(!$File->fileAcceptingData || ($File->fileAcceptingData && time() - $File->lastchunktime > BreadContentSystem::CHUNKTIMEOUT)){
+                    $fileInfo = pathinfo($File->filename);
+                    $path = Site::ResolvePath('%user-content/content/' . $File->mimetype . '/' . $id . "." . $fileInfo["extension"]);
+                    if(!file_exists($path)){
+                        unset($this->index->$id);
+                    }
+                }
+                $filesCleaned += 1;
+            }
+            Site::$settingsManager->ChangeSetting("breadcontentsystem#settings.json", $this->settings);
+            Site::$Logger->writeMessage("Cleaned up cache, removed " . $filesCleaned . " entries.", $this->name);
+        }
+    }
+    
     function UploadChunk(){
         if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadContentSystem.CanUpload")){
             return false;
@@ -313,6 +336,7 @@ class BreadContentSystem extends Module
         }
         $data = base64_decode($data);
         file_put_contents($directory . "/" . $ChunkN, $data, FILE_APPEND);
+        $File->lastchunktime = time();
         $ChunksRequired = ceil($File->size / BreadContentSystem::CHUNKSIZE);
         $Chunks = array_diff(scandir($directory), array('..', '.'));
         if(count($Chunks) == $ChunksRequired){
@@ -428,4 +452,6 @@ class BreadContentSystemSettings{
                            'audio/mpeg'         =>   5000000,
                            'audio/ogg'          =>   5000000,
                            'application/ogg'    =>   5000000];
+    public $optimiseinterval = 15; /* Seconds between cleanups */
+    public $lastoptimise = 0;
 }

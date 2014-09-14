@@ -195,8 +195,7 @@ function UploadFile(newID,file,displayElement){
                 FinishItem.find('.btn-group').remove();
                 FinishItem.find('br').remove();
                 FinishItem.find('#uploadZoneProgress').remove();
-                FinishItem.append("<a href='" + returnedData + "'>Click To View File</a></br>");
-                FinishItem.append("</br><pre>"+ returnedData + "</pre>");
+                FinishItem.append("<a target='_blank' href='" + returnedData + "'>Click To View File</a></br>");
                 FinishItem.hide();
                 $("#content-finished").append(FinishItem);
                 FinishItem.fadeIn();

@@ -87,6 +87,7 @@ class SettingsManager {
      */
     function ChangeSetting($path,$newObj)
     {
+        $path = $this->GetHashPath($path);
         $this->settings[$path] = $newObj;
     }
     
