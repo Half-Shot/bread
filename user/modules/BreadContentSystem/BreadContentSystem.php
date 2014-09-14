@@ -389,7 +389,6 @@ class BreadContentSystem extends Module
                     mkdir($newDirectory, 0777, true);
                 }
                 rename($directory,$newpath);
-                unlink($directory);
                 return $newpath;
             }
             else{
