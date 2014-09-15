@@ -93,6 +93,10 @@
         "Bread.PageUniqueID": {
             "function": "GetUniqueID",
             "security": 0
+        },
+        "BreadPageSystem.PostDigest":{
+            "function": "DrawDigest",
+            "security": 0
         }
     }
 }

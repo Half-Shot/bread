@@ -5,7 +5,7 @@ use Bread\Utilitys as Util;
 class BreadPageSystem extends Module
 {
         private $settings;
-        private $settingspath;
+        private $index;
         private $isnewpost = false;
         private $activePost = false;
         private $noPosts = false;
@@ -62,7 +62,7 @@ class BreadPageSystem extends Module
         {
             $pages = array();
             $titleRecurances = array();
-            $index = get_object_vars($this->settings->postindex);
+            $index = get_object_vars($this->index);
             usort($index,"\Bread\Modules\BreadPageSystem::USortDate");
             foreach($index as $page)
             {
@@ -97,13 +97,13 @@ class BreadPageSystem extends Module
         function Setup()
         {           
             //Get a settings file.
-            $rootSettings = Site::$settingsManager->FindModuleDir("breadpages");
-            $this->settingspath = $rootSettings . "settings.json";
-            $this->settings = Site::$settingsManager->RetriveSettings($this->settingspath,false, new BreadPageSystemSettings());
+            $this->settings = Site::$settingsManager->RetriveSettings("breadpages#settings",false, new BreadPageSystemSettings());
+            $this->settings = Util::CastStdObjectToStruct($this->settings, "\Bread\Modules\BreadPageSystemSettings");
+            $this->index = Site::$settingsManager->RetriveSettings("breadpages#index",false,new \stdClass());
             if( ( time() - $this->settings->BuildTime) > $this->settings->CheckIndexEvery){
                 $this->BuildIndex();
             }
-            if(count($this->settings->postindex) == 0){
+            if(count($this->index) == 0){
                 $noPosts = true;
             }
             
@@ -143,7 +143,7 @@ class BreadPageSystem extends Module
                 return true;
             }
             $id = $this->GetActivePostPageId();
-            if($this->manager->FireEvent("Bread.Security.GetPermission","BreadPageSystem.NewPost") && (!isset($this->settings->postindex->$id) || array_key_exists("newpost", Site::getRequest()->arguments))){
+            if($this->manager->FireEvent("Bread.Security.GetPermission","BreadPageSystem.NewPost") && (!isset($this->index->$id) || array_key_exists("newpost", Site::getRequest()->arguments))){
                 return true;
             }
             
@@ -261,8 +261,9 @@ class BreadPageSystem extends Module
             $E_Categories_Selected->id = "bps-selectcategories";
             $E_Categories_Selected->small = true;
             $E_Categories_Selected->value = "";
-            foreach($Post->categories as $category)
+            foreach($Post->categories as $category){
                 $E_Categories_Selected->value .= $this->manager->FireEvent("Theme.Badge",$category);
+            }
             $HTML_Categories->value .= "<h5>Selected Categories</h5>" . $this->manager->FireEvent("Theme.Layout.Well",$E_Categories_Selected);
             
             $form->elements[] = $HTML_Categories;
@@ -298,7 +299,10 @@ class BreadPageSystem extends Module
         
         function BuildIndex()
         {
-            $this->settings->postindex = new \stdClass;//Wipe object, we are rebuilding it.
+            //Wipe object, we are rebuilding it.
+            foreach($this->index as $id => $page){
+                unset($this->index->$id);
+            }
             foreach(new \recursiveIteratorIterator( new \recursiveDirectoryIterator($this->settings->postdir)) as $file)
             {
                 if(pathinfo($file->getFilename())['extension'] == "json")
@@ -312,13 +316,10 @@ class BreadPageSystem extends Module
                             if(!isset($pageData->id))
                                 $pageData->id = $this->GenerateID();
                             $id = $pageData->id;
-                            $this->settings->postindex->$id = $pageData;
+                            $this->index->$id = $pageData;
                         }
                 }
             }
-            
-                
-            
             $this->settings->BuildTime = time();
             Site::$Logger->writeMessage("Built Page Index!",$this->name);
         }
@@ -512,13 +513,88 @@ class BreadPageSystem extends Module
             return Site::$moduleManager->FireEvent("Theme.VerticalNavbar",$links);
         }
         
+        function Digest_PostByCategories($post,$categories){
+            if(is_array($categories)){
+                if(count(array_intersect($categories,$post->categories)) < 0){
+                    return false;
+                }
+            }
+            else{
+                if(!in_array($categories, $post->categories)){
+                    return false;
+                }
+            }
+            return true;
+        }
+          function Digest_PostByAuthors($post,$authors){
+            if(is_array($authors)){
+                if(!in_array($post->author,$authors)){
+                    return false;
+                }
+            }
+            else{
+                if($post->author !== $authors){
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        function DrawDigest($args){
+            $index = array_values((array)$this->index);
+            foreach($index as $i => $post){
+                if(in_array("categories",$args)){
+                    if(!$this->Digest_PostByCategories($post,$args["categories"])){
+                        unset($index[$i]);
+                        continue;
+                    }
+                }
+                if(in_array("authors",$args)){
+                    if(!$this->Digest_PostByAuthors($post,$args["authors"])){
+                        unset($index[$i]);
+                        continue;
+                    }
+                }
+                if($post->hidden || $post->time_released > time()){
+                    unset($index[$i]);
+                    continue;
+                }
+            }
+            
+            usort($index,"\Bread\Modules\BreadPageSystem::USortDate");
+            $HTML = "";
+            
+            foreach($index as $i => $post){
+                $PostInfo = new \Bread\Structures\BreadThemeCommentStructure();
+                $PostInfo->header = $post->title;
+                $Markdown = $this->TransformMDtoHTML(file_get_contents($this->GetPostPath($post->url)));
+                $PostInfo->body = strip_tags(substr($Markdown, 0, $this->settings->digest_bodylength));
+                
+                //Link
+                
+                $parts = array();
+                $parts["request"] = $this->settings->postRequest;
+                $parts["post"] = $post->id;
+                $PostInfo->headerurl = Site::CondenseURLParams(false,$parts);
+                
+                $Well = new \stdClass();
+                $Well->value = $this->manager->FireEvent("Theme.Comment",$PostInfo);
+                $Well->small = true;
+                $HTML .= $this->manager->FireEvent("Theme.Layout.Well",$Well);
+                if($i + 1 == $this->settings->digest_maxposts){
+                    break;
+                }
+            }
+            return $HTML;
+        }
+        
         function GenerateID()
         {
             $newIDNeeded = true;
             while($newIDNeeded){
                 $randomString = substr(md5(microtime()),rand(0,26),8);
                 $newIDNeeded = false;
-                foreach($this->settings->postindex as $post)
+                foreach($this->index as $post)
                 {
                     if(!isset($post->id))
                         continue;
@@ -575,7 +651,7 @@ class BreadPageSystem extends Module
            }
             //Hacky way to get first post.
             if(isset($request->arguments["latest"])){
-                $index = get_object_vars($this->settings->postindex);
+                $index = get_object_vars($this->index);
                 $postsDated = usort($index,"\Bread\Modules\BreadPageSystem::USortDate");
                 return $index[0]->id;
             }
@@ -586,9 +662,9 @@ class BreadPageSystem extends Module
         {       
            if(!$this->activePost){
                 $postid = $this->GetActivePostPageId();
-                if($postid !== false && isset($this->settings->postindex->$postid))
+                if($postid !== false && isset($this->index->$postid))
                 {
-                     $this->activePost = $this->settings->postindex->$postid;
+                     $this->activePost = $this->index->$postid;
                 }
                 else
                 {
@@ -607,7 +683,7 @@ class BreadPageSystem extends Module
          */
         function GetPostIDByKey($key,$value)
         {
-            foreach ($this->settings->postindex as $index => $post)
+            foreach ($this->index as $index => $post)
             {
                 if(!isset($post->$key))
                     continue;
@@ -748,7 +824,7 @@ class BreadPageSystem extends Module
                  $id = $url_data["post"];
              }
              else if(isset($url_data["latest"])){
-                $index = get_object_vars($this->settings->postindex);
+                $index = get_object_vars($this->index);
                 $postsDated = usort($index,"\Bread\Modules\BreadPageSystem::USortDate");
                 $id = $index[0]->id;
              }
@@ -770,7 +846,7 @@ class BreadPageSystem extends Module
                  $post->url = $filename . ".md";
                  
                  $post->jsonurl =  $this->settings->postdir . "/" . $filename . ".json";
-                 $this->settings->postindex->$id = $post;
+                 $this->index->$id = $post;
                  Site::$settingsManager->SaveSetting($post,$post->jsonurl,True);
              }
              else
@@ -779,8 +855,8 @@ class BreadPageSystem extends Module
                  return "0";
              }
              
-             $url = $this->settings->postdir . "/" . $this->settings->postindex->$id->url;
-             $pageData = Site::$settingsManager->RetriveSettings($this->settings->postindex->$id->jsonurl); //Get actual file
+             $url = $this->settings->postdir . "/" . $this->index->$id->url;
+             $pageData = Site::$settingsManager->RetriveSettings($this->index->$id->jsonurl); //Get actual file
              
              file_put_contents($url, $md);
              
@@ -797,7 +873,7 @@ class BreadPageSystem extends Module
              
              try
              {
-                Site::$settingsManager->SaveSetting($pageData,$this->settings->postindex->$id->jsonurl,True);
+                Site::$settingsManager->SaveSetting($pageData,$this->index->$id->jsonurl,True);
              }
              catch(Exception $e)
              {
@@ -838,7 +914,7 @@ class BreadPageSystem extends Module
                  return "0";
              }
              //Delete the files
-             $post = $this->settings->postindex->$id;
+             $post = $this->index->$id;
              $pathToJSON = Site::GetRootPath() . "/" . $post->jsonurl;
              $pathToMarkdown = dirname($pathToJSON) . "/" . $post->url;
              Site::$Logger->writeError("Markdown:" . $pathToMarkdown,\Bread\Logger::SEVERITY_MESSAGE,"breadpagesystem");
@@ -863,7 +939,7 @@ class BreadPageSystem extends Module
             $parts = array();
             $Time = time();
             $parts["request"] = $this->settings->postRequest;
-            foreach($this->settings->postindex as $post)
+            foreach($this->index as $post)
             {
                 if($post->hidden)
                     continue;
@@ -915,7 +991,6 @@ class BreadPageSystem extends Module
 
 class BreadPageSystemSettings
 {
-    public $postindex = array();
     public $postdir;
     public $BuildTime = 0;
     public $CheckIndexEvery = 4;
@@ -924,6 +999,8 @@ class BreadPageSystemSettings
     public $maxRecentPosts = 5;
     public $templatePath = "template.json";
     public $navbar;
+    public $digest_maxposts = 5;
+    public $digest_bodylength = 100;
     function __construct() {
        $this->postdir = Site::ResolvePath("%user-posts");
        $this->navbar = new BreadPageSystemNavBarSettings();
