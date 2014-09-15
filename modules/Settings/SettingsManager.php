@@ -138,7 +138,7 @@ class SettingsManager {
      * @throws FileNotFoundException
      * @throws FailedToParseException
      */
-    function RetriveSettings($path,$dontsave = False,$template = null)
+    function RetriveSettings($path,$dontsave = False,$template = null,$ignorefail = false)
     {
         if(array_key_exists($path, $this->settings))
         {
@@ -148,13 +148,22 @@ class SettingsManager {
         if($template !== null){
             $this->CreateSettingsFiles($path,$template);
         }
-        if(!file_exists($path)){
+        if(!file_exists($path) && !$ignorefail){
             Site::$Logger->writeError ("Couldn't load path '" . $path . "' for parsing settings.", \Bread\Logger::SEVERITY_MEDIUM, "core" , True, "Bread\Settings\FileNotFoundException");   
+        }        
+        try{
+            $jsonObj = $this->GetJsonObject($path);
+        } catch (FailedToParseException $ex) {
+            if(!$ignorefail){
+                throw $ex;
+            }
+            else{
+                $jsonObj = $template;
+            }
         }
-        $jsonObj = $this->GetJsonObject($path);
-        if(!$dontsave)
+        if(!$dontsave){
             $this->settings[$path] = $jsonObj;
-        
+        }
         return $jsonObj;
     }
     
@@ -213,10 +222,11 @@ class SettingsManager {
     public function SaveSetting($object,$path,$shouldThrow = True)
     {        
         $path = $this->GetHashPath($path);
-         Site::$Logger->writeMessage ("Saving " . $path, "SettingsManager");
-         $string = $this->CompileJson($object);
-         $worked = \file_put_contents($path, $string);
-         if($worked == False || is_null($string))    
-             Site::$Logger->writeError ("Couldn't write json to file. path: '" . $path . "'", \Bread\Logger::SEVERITY_MEDIUM,"core" , $shouldThrow, "Bread\Settings\FileNotWrittenException");                  
+        Site::$Logger->writeMessage ("Saving " . $path, "SettingsManager");
+        $string = $this->CompileJson($object);
+        $worked = \file_put_contents($path, $string);
+        if($worked == False || is_null($string)){    
+            Site::$Logger->writeError ("Couldn't write json to file. path: '" . $path . "'", \Bread\Logger::SEVERITY_MEDIUM,"core" , $shouldThrow, "Bread\Settings\FileNotWrittenException");     
+        }
     }
 }
