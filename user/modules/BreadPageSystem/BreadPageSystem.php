@@ -845,9 +845,9 @@ class BreadPageSystem extends Module
                  }
                  $post->url = $filename . ".md";
                  
-                 $post->jsonurl =  $this->settings->postdir . "/" . $filename . ".json";
+                 $post->jsonurl =  $filename . ".json";
                  $this->index->$id = $post;
-                 Site::$settingsManager->SaveSetting($post,$post->jsonurl,True);
+                 Site::$settingsManager->SaveSetting($post, $this->settings->postdir . "/" . $filename . ".json",True);
              }
              else
              {
@@ -856,7 +856,7 @@ class BreadPageSystem extends Module
              }
              
              $url = $this->settings->postdir . "/" . $this->index->$id->url;
-             $pageData = Site::$settingsManager->RetriveSettings($this->index->$id->jsonurl); //Get actual file
+             $pageData = Site::$settingsManager->RetriveSettings($this->settings->postdir . "/" . $this->index->$id->jsonurl); //Get actual file
              
              file_put_contents($url, $md);
              
@@ -873,7 +873,7 @@ class BreadPageSystem extends Module
              
              try
              {
-                Site::$settingsManager->SaveSetting($pageData,$this->index->$id->jsonurl,True);
+                Site::$settingsManager->SaveSetting($pageData,$this->settings->postdir . "/" . $this->index->$id->jsonurl,True);
              }
              catch(Exception $e)
              {
