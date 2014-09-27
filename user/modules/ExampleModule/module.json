@@ -1,8 +1,11 @@
 {
     "name": "ExampleModule",
-    "permissions": [
-        "read:user\/resource"
-    ],
     "entryclass": "ExampleModule",
-    "entryfile": "ExampleModule\/ExampleModule.php"
+    "entryfile": "ExampleModule\/ExampleModule.php",
+    "events": {
+        "ExampleModule.HelloWorld": {
+            "function": "HelloWorld",
+            "security": 0
+        }
+    }
 }

@@ -10,7 +10,7 @@
         "request": "post",
         "text": "Posts",
         "args": {
-            "post": "e81abdc3"
+            "layout":true
         },
         "hidden": false,
         "targetWindow": "_self"
