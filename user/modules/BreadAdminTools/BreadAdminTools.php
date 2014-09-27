@@ -53,24 +53,28 @@ class BreadAdminTools extends Module
         if(!$this->HasGenerated){
             $ModulesGenerating = true;
             $ModOffset = 0;
+            $ListOffset = 0;
             while($ModulesGenerating){
                 $NewSetting = $this->manager->FireEvent("BreadAdminTools.AddModuleSettings",array($this->CurrentModuleIndex == $ModOffset,  $this->CurrentTabIndex,$this->CurrentModuleIndex),true,true,$ModOffset);
-                if($NewSetting != False){
-                    $this->ModuleSettings[] = $NewSetting;
-                    //Swap if needed!
-                    $ModuleData = $NewSetting;
-                    if($ModuleData->OverrideIndex !== -1 && $ModuleData->OverrideIndex !== $ModOffset) 
-                    {
-                        if(array_key_exists($ModuleData->OverrideIndex, $this->ModuleSettings)){
-                            $SwapSpace = clone $this->ModuleSettings[$ModuleData->OverrideIndex];
-                            $this->ModuleSettings[$ModuleData->OverrideIndex] = $ModuleData;
-                            $this->ModuleSettings[$ModOffset] = $SwapSpace;
-                        }
-                        else
+                if($NewSetting !== False){
+                    if($NewSetting !== NULL){
+                        $this->ModuleSettings[] = $NewSetting;
+                        //Swap if needed!
+                        $ModuleData = $NewSetting;
+                        if($ModuleData->OverrideIndex !== -1 && $ModuleData->OverrideIndex !== $ListOffset) 
                         {
-                            $this->ModuleSettings[$ModuleData->OverrideIndex] = clone $ModuleData;
-                            unset($this->ModuleSettings[$ModOffset]);
+                            if(array_key_exists($ModuleData->OverrideIndex, $this->ModuleSettings)){
+                                $SwapSpace = clone $this->ModuleSettings[$ModuleData->OverrideIndex];
+                                $this->ModuleSettings[$ModuleData->OverrideIndex] = $ModuleData;
+                                $this->ModuleSettings[$ListOffset] = $SwapSpace;
+                            }
+                            else
+                            {
+                                $this->ModuleSettings[$ModuleData->OverrideIndex] = clone $ModuleData;
+                                unset($this->ModuleSettings[$ListOffset]);
+                            }
                         }
+                        $ListOffset++;
                     }
                     $ModOffset++;
                 }

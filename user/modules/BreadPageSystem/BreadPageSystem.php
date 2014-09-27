@@ -972,20 +972,21 @@ class BreadPageSystem extends Module
             if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadPageSystem.AdminPanel.Read")){
                 return false;
             }
-            $MasterSettings = new \Bread\Structures\BreadModuleSettings();
-            $MasterSettings->Name = "Pages";
-            
-            $PostConfigurator = new \Bread\Structures\BreadModuleSettingsTab;
-            $PostConfigurator->Name = "postconfig";
-            $PostConfigurator->HumanTitle = "Posts";
-            $MasterSettings->SettingsGroups[] = $PostConfigurator;
-            
-            $GlobalSettings = new \Bread\Structures\BreadModuleSettingsTab;
-            $GlobalSettings->Name = "jsonconfig";
-            $GlobalSettings->HumanTitle = "Settings";
-            $MasterSettings->SettingsGroups[] = $GlobalSettings;
-            
-            return $MasterSettings;
+//            $MasterSettings = new \Bread\Structures\BreadModuleSettings();
+//            $MasterSettings->Name = "Pages";
+//            
+//            $PostConfigurator = new \Bread\Structures\BreadModuleSettingsTab;
+//            $PostConfigurator->Name = "postconfig";
+//            $PostConfigurator->HumanTitle = "Posts";
+//            $MasterSettings->SettingsGroups[] = $PostConfigurator;
+//            
+//            $GlobalSettings = new \Bread\Structures\BreadModuleSettingsTab;
+//            $GlobalSettings->Name = "jsonconfig";
+//            $GlobalSettings->HumanTitle = "Settings";
+//            $MasterSettings->SettingsGroups[] = $GlobalSettings;
+//            
+//            return $MasterSettings;
+            return NULL;
         }
 }
 
