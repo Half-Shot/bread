@@ -419,7 +419,7 @@ class BreadCoreSettings extends Module
                     $ApplyButton->readonly = true;
                     $Message = "You are already up to date on this channel!";
                 }
-                $StablePanel->body = "<p>The latest LTS release is " . $StableBuild->target_commitish . ", " . $StableBuild->name . "</p>"
+                $StablePanel->body = "<p>The latest LTS release is " . $StableBuild->tag_name . ", " . $StableBuild->name . "</p>"
                                     ."<p><u>Release Notes:</u></p><p>" . $StableBuild->body . "</p>" . "<small>". $Message."</small>"
                                     . $this->manager->FireEvent("Theme.Form",$ApplyButtonsForm);
             }
@@ -445,12 +445,10 @@ class BreadCoreSettings extends Module
             $ReleasePanel = new \stdClass();
             $ReleasePanel->id = "release-panel";
             $ReleasePanel->header = "Release Channel";
-            $ReleasePanel->body = "<p>The latest release is " . $ReleaseBuild->target_commitish . ", " . $ReleaseBuild->name . "</p>"
-                                 ."<p><u>Release Notes:</u></p><p>" . $ReleaseBuild->body . "</p>" . "<small>". $Message."</small>"
+            $ReleasePanel->body = "<p>The latest release is " . $ReleaseBuild->tag_name . ", " . $ReleaseBuild->name . "</p>"
+                                 ."<p><u>Release Notes:</u></p><pre>" . $ReleaseBuild->body . "</pre>" . "<small>". $Message."</small>"
                                  . $this->manager->FireEvent("Theme.Form",$ApplyButtonsForm);
 
-            
-            
             if(time() - ($this->settings->lastRequest + $TimeBetweenChecks) > 0){
                 $this->settings->lastRequest = time();
                 $ReleaseRequest = \Unirest::get("https://api.github.com/repos/BreadFramework/bread/commits/devbread");
@@ -590,12 +588,12 @@ class BreadCoreSettings extends Module
             if($channel === 1 && is_object($this->settings->releaseBuild))
             {
                $URL = $this->settings->releaseBuild->zipball_url;
-               $version = $this->settings->releaseBuild->target_commitish;
+               $version = $this->settings->releaseBuild->tag_name;
             }
             elseif($channel === 0 && is_object($this->settings->stableBuild))
             {
                $URL = $this->settings->stableBuild->zipball_url;
-               $version = $this->settings->stableBuild->target_commitish;
+               $version = $this->settings->stableBuild->tag_name;
             }
             elseif($channel === 2 && is_object($this->settings->GitData))
             {

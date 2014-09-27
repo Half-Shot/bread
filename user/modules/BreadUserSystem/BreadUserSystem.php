@@ -349,9 +349,9 @@ class BreadUserSystem extends Module
         $PostConfigurator->HumanTitle = "Users";
         $MasterSettings->SettingsGroups[] = $PostConfigurator;
         
-        $GlobalSettings = new \Bread\Structures\BreadModuleSettingsTab;
-        $GlobalSettings->HumanTitle = "Permissions";
-        $MasterSettings->SettingsGroups[] = $GlobalSettings;
+       # $GlobalSettings = new \Bread\Structures\BreadModuleSettingsTab;
+       # $GlobalSettings->HumanTitle = "Permissions";
+       # $MasterSettings->SettingsGroups[] = $GlobalSettings;
         if(!$args[0])
             return $MasterSettings;
 
@@ -517,7 +517,7 @@ class BreadUserSystem extends Module
         
         
         $ModalData->footer = $this->manager->FireEvent("Theme.Layout.ButtonGroup",$FooterButtonGroup);
-        $ModalData->body = $this->manager->FireEvent("Theme.Form", $ModalForm);
+        $ModalData->body = $this->manager->FireEvent("Theme.Form", $ModalForm) . "</br><small>If you want to edit permissions, for now check /settings/breadusersystem/users.json</small></br><small>Permission IDs can be found in each module file</small>";
         Site::AddRawScriptCode($Javascript, true);
         Site::AddToBodyCode($this->manager->FireEvent("Theme.Modal", $ModalData) . $ModalHTML);
         
