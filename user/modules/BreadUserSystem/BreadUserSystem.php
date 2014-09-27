@@ -68,8 +68,10 @@ class BreadUserSystem extends Module
     
     function FirstTime($path)
     {
+        $rootpasswd = "ILikeToast";
         Site::$Logger->writeError("First time setup, if this is not the first time then somethings wrong.",\Bread\Logger::SEVERITY_MEDIUM,$this->name);
-        $this->StoreNewUser("root","ILikeToast",0,array("root"),array("Name"=>"Root"));
+        Site::$Logger->writeError("Pay close attention! You're password for <b>root</b> is <b>".$rootpasswd."</b>",\Bread\Logger::SEVERITY_MEDIUM,$this->name);
+        $this->StoreNewUser("root",$rootpasswd,0,array("root"),array("Name"=>"Root"));
         Site::$settingsManager->SaveSetting($this->userDB,$path);
     }
     
