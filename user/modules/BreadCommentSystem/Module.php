@@ -36,6 +36,12 @@ class BreadCommentSystem extends Module{
     private $settings;
     private $comments;
     private $uniqueID;
+    /**
+     * Maximum threshold for a string to be determined the same.
+     */
+    const SIMILAR_THRESHOLD = 1; 
+    const SIMILAR_SCALEUP = 50;
+    const MINGRACEPERIOD = 5;
     private $completedPageSetup = false;
     private $buttons = array();
     function __construct($manager,$name)
@@ -222,10 +228,12 @@ class BreadCommentSystem extends Module{
         $text = $_REQUEST["text"];
         $this->uniqueID = $_REQUEST["uniqueid"];
         
+        //1. Check Length
         if(strlen($text) > $this->settings->CharacterLimit || strlen($text) == 0){
             return 0; //Too long
         }
         
+        //2. Check User and rights.
         $CurrentUser = $this->manager->FireEvent("Bread.Security.GetCurrentUser");
         if($CurrentUser === null && !$this->settings->AllowAnonComments){
             return 0;
@@ -236,15 +244,43 @@ class BreadCommentSystem extends Module{
             }
         }
         
-        $this->uniqueID = basename($this->uniqueID);
+        //3. Check comments exists.
         $path = Util::ResolvePath("%user-content/comments/" . $this->uniqueID . ".json");
         if(!file_exists($path)){
             return 0;
         }
-        $this->comments = Site::$settingsManager->RetriveSettings($path);
+        
+        //4. Check comments not locked.
         if($this->comments->locked){
             return 0;
         }
+        
+        $this->comments = Site::$settingsManager->RetriveSettings($path);
+        //5. Check not a recent comment or a similar comment.
+        $similarity = 0;
+        $textlength = strlen($text);
+        $maxsimularity = 100 - ceil(self::SIMILAR_THRESHOLD * ($textlength / self::SIMILAR_SCALEUP));
+        if($maxsimularity > 100 - self::SIMILAR_THRESHOLD){
+            $maxsimularity = 100 - self::SIMILAR_THRESHOLD;
+        }
+        foreach($this->comments->comments as $comment){
+            if($comment->user == $CurrentUser->uid && $comment->user !== -1){
+                //Check time
+                if(time() - $comment->time < self::MINGRACEPERIOD)
+                {
+                    return 2;
+                }
+                //Check similarity
+                similar_text($comment->body, $text,$similarity);
+                if(round($similarity) > $maxsimularity){
+                    //It's too similar.
+                    return 3;
+                }
+            }
+        }
+        
+        $this->uniqueID = basename($this->uniqueID);
+        
         $Comment = new \Bread\Structures\BreadComment();
         $Comment->body = $text;
         $Comment->time = time();
@@ -300,7 +336,7 @@ class BreadCommentSystem extends Module{
         }
         $comment = $this->comments->comments[$commentID];
         $CurrentUser = $this->manager->FireEvent("Bread.Security.GetCurrentUser");
-        if($this->user === $CurrentUser->uid && $comment->canedit || $Moderator){
+        if($comment->user === $CurrentUser->uid && $comment->canedit || $Moderator){
             unset($this->comments->comments[$commentID]);
             $this->comments->comments = array_values($this->comments->comments);
             return 1;

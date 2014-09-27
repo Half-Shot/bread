@@ -67,6 +67,12 @@ function SaveNewComment()
                 //Failed to comment.
                 alert("Failed to write comment!");
             }
+            else if(returndata === "2"){
+                alert("Your commenting too fast! Slow down");
+            }
+            else if(returndata === "3"){
+                alert("Your commenting basically the same thing! Vary yourself.");
+            }
             else
             {
                 //Comment arrived.
