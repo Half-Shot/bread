@@ -635,8 +635,10 @@ class BreadCoreSettings extends Module
             Util::xcopy($rootBread . "modules", Site::GetRootPath() . "/modules");
             Util::xcopy($rootBread . "user/modules", Site::GetRootPath() . "/user/modules");
             Util::xcopy($rootBread . "user/themes", Site::GetRootPath() . "/user/themes");
+            
             //Set Version
             $Settings = new \stdClass();
+            $Settings->core = new \stdClass();
             $Settings->core->version = $version;
             Site::EditConfigurationValues($Settings);
             $this->settings->updateChannel = $channel;
