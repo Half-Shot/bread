@@ -10,7 +10,7 @@ If you are the **admin**, you may change this homepage via
     
 Thanks for choosing bread, by doing so you're helping me just
 by using it and any bugs you may find as a result of using new
-software can be reported directly to me on my [Github Issue Tracker](https://github.com/Half-Shot/bread/issues).
+software can be reported directly to me on my [Github Issue Tracker](https://github.com/BreadFramework/bread/issues).
 
 This release includes the following
 
