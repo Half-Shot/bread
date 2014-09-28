@@ -94,6 +94,10 @@ class BreadXML {
     
     public function GetHTMLOfElement($ElementId,$Variables = array(),$ElementType = "telement")
     {
+        //Allows layouts to set arguments for theme objects
+        if(array_key_exists(0,$Variables) && array_key_exists("_inner",$Variables)){
+            $Variables = (array)$Variables[0];
+        }
         $xmldoc = new \DOMDocument('1.0', 'utf-8');
         $root = $xmldoc->createElement("root");
         $xmldoc->appendChild($root);
