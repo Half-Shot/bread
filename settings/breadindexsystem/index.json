@@ -10,7 +10,7 @@
         "request": "post",
         "text": "Posts",
         "args": {
-            "layout":true
+            "latest":"true"
         },
         "hidden": false,
         "targetWindow": "_self"

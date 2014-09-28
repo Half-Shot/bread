@@ -82,12 +82,12 @@ class Utilitys {
                 $baseurl = Site::getBaseURL();
             
             $url = $baseurl;
-            if(array_count_values($params) < 1)
+            if(count($params) < 1)
                 return $url;
             $key = array_keys($params)[0];
             $url .= "?" . $key . "=" .$params[$key];
             unset($params[$key]);
-            if(array_count_values($params) < 1)
+            if(count($params) < 1)
                 return $url;
             foreach ($params as $key => $value)
             {
