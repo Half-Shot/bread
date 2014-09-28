@@ -53,6 +53,9 @@ class BreadCoreSettings extends Module
                     {
                         $val = false;
                     }
+                    if(!isset($newObj->$cat)){
+                    	$newObj->$cat = new \stdClass();
+                    }
                     $newObj->$cat->$key = $val;
                 }
             }
