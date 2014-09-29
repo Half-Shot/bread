@@ -193,6 +193,9 @@ class BootstrapTheme extends Bread\Modules\Module
         
         function Panel($args)
         {
+            if(array_key_exists("_inner", $args)){
+                $args["body"] = $this->LayoutBlock($args);
+            }
             return $this->breadXML->GetHTMLOfElement("Panel",$args);
         }
         
@@ -263,6 +266,9 @@ class BootstrapTheme extends Bread\Modules\Module
         
         function LayoutWell($args)
         {
+            if(array_key_exists("_inner", $args)){
+                $args["body"] = $this->LayoutBlock($args);
+            }
             return $this->breadXML->GetHTMLOfElement("Well",$args);
         }
         
