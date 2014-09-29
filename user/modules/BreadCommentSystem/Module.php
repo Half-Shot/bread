@@ -250,12 +250,13 @@ class BreadCommentSystem extends Module{
             return 0;
         }
         
+        $this->comments = Site::$settingsManager->RetriveSettings($path);
+        
         //4. Check comments not locked.
         if($this->comments->locked){
             return 0;
         }
         
-        $this->comments = Site::$settingsManager->RetriveSettings($path);
         //5. Check not a recent comment or a similar comment.
         $similarity = 0;
         $textlength = strlen($text);
@@ -263,18 +264,21 @@ class BreadCommentSystem extends Module{
         if($maxsimularity > 100 - self::SIMILAR_THRESHOLD){
             $maxsimularity = 100 - self::SIMILAR_THRESHOLD;
         }
+        
         foreach($this->comments->comments as $comment){
-            if($comment->user == $CurrentUser->uid && $comment->user !== -1){
-                //Check time
-                if(time() - $comment->time < self::MINGRACEPERIOD)
-                {
-                    return 2;
-                }
-                //Check similarity
-                similar_text($comment->body, $text,$similarity);
-                if(round($similarity) > $maxsimularity){
-                    //It's too similar.
-                    return 3;
+            if($comment->user !== -1 && $CurrentUser != False){
+                if($comment->user == $CurrentUser->uid){
+                    //Check time
+                    if(time() - $comment->time < self::MINGRACEPERIOD)
+                    {
+                        return 2;
+                    }
+                    //Check similarity
+                    similar_text($comment->body, $text,$similarity);
+                    if(round($similarity) > $maxsimularity){
+                        //It's too similar.
+                        return 3;
+                    }
                 }
             }
         }
