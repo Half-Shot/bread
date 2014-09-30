@@ -18,7 +18,9 @@ class HitboxModule extends Module
         
         function GetHTMLObject($args,$ischat = false){
             if(array_key_exists(0, $args)){
-                $streamName = $args[0];
+                if(is_string($args[0])){
+                    $streamName = $args[0];
+                }
             }
             else{
                 $streamName = $this->settings->streamName;
