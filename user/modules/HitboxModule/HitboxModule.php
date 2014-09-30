@@ -22,7 +22,8 @@ class HitboxModule extends Module
                     $streamName = $args[0];
                 }
             }
-            else{
+            
+            if(!isset($streamName)){
                 $streamName = $this->settings->streamName;
             }
             
