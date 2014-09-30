@@ -849,7 +849,6 @@ class BreadPageSystem extends Module
                     return "0";
                  }
                  $post->url = $filename . ".md";
-                 
                  $post->jsonurl =  $filename . ".json";
                  $this->index->$id = $post;
                  Site::$settingsManager->SaveSetting($post,$this->settings->postdir . "/" . $filename . ".json", True);
@@ -874,7 +873,6 @@ class BreadPageSystem extends Module
              if(array_key_exists("categories", $_POST)){
                 $pageData->categories = $_POST["categories"];
              }
-             
              try
              {
                 Site::$settingsManager->SaveSetting($pageData,$JSONURL,True);
