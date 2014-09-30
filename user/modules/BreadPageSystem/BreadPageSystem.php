@@ -310,7 +310,7 @@ class BreadPageSystem extends Module
                     $path = $file->getPathname();
                     $pageData = Site::$settingsManager->RetriveSettings($path,true);
                     $pageData = Site::CastStdObjectToStruct($pageData, "\Bread\Modules\BreadPageSystemPost");
-                    $pageData->jsonurl = $path;
+                    $jsonurl = $path;
                     if(isset(pathinfo($pageData->url)['extension']))
                         if(pathinfo($pageData->url)['extension'] == "md"){
                             if(!isset($pageData->id))
@@ -653,7 +653,12 @@ class BreadPageSystem extends Module
             if(isset($request->arguments["latest"])){
                 $index = get_object_vars($this->index);
                 $postsDated = usort($index,"\Bread\Modules\BreadPageSystem::USortDate");
-                return $index[0]->id;
+                foreach($index as $post){
+                    if($post->time_released < time() && !$post->hidden){
+                        return $post->id;
+                    }
+                }
+                return false;
             }
            
         }
@@ -844,7 +849,6 @@ class BreadPageSystem extends Module
                     return "0";
                  }
                  $post->url = $filename . ".md";
-                 
                  $post->jsonurl =  $filename . ".json";
                  $this->index->$id = $post;
                  Site::$settingsManager->SaveSetting($post,$this->settings->postdir . "/" . $filename . ".json", True);
@@ -854,11 +858,11 @@ class BreadPageSystem extends Module
                  Site::$Logger->writeError("Couldn't find the post for saving markdown file. Nonstandard URL!'",\Bread\Logger::SEVERITY_HIGH,"breadpagesystem");
                  return "0";
              }
+             $JSONURL = $this->settings->postdir . "/" . $this->index->$id->jsonurl;
+             $PageURL = $this->settings->postdir . "/" . $this->index->$id->url;
+             $pageData = Site::$settingsManager->RetriveSettings($JSONURL); //Get actual file
              
-             $url = $this->settings->postdir . "/" . $this->index->$id->url;
-             $pageData = Site::$settingsManager->RetriveSettings($this->index->$id->jsonurl); //Get actual file
-             
-             file_put_contents($url, $md);
+             file_put_contents($PageURL, $md);
              
              $this->settings->BuildTime = 0; //Reset Index.
              $pageData->title = $title;
@@ -866,14 +870,13 @@ class BreadPageSystem extends Module
              $pageData->time_modified = time();
              $pageData->time_released = strtotime($_POST["timereleased"]);
              
-             $pageData->categories = $_POST["categories"];
-             if(is_null($pageData->categories))
-                 $pageData->categories = array();
+             if(array_key_exists("categories", $_POST)){
+                $pageData->categories = $_POST["categories"];
+             }
 
-             
              try
              {
-                Site::$settingsManager->SaveSetting($pageData,$this->settings->postdir . "/" . $this->index->$id->jsonurl,True);
+                Site::$settingsManager->SaveSetting($pageData,$JSONURL,True);
              }
              catch(Exception $e)
              {
@@ -881,7 +884,7 @@ class BreadPageSystem extends Module
                  return "0";
              }
              
-             Site::$Logger->writeMessage("Modified " . $url . " with new data.","breadpagesystem");
+             Site::$Logger->writeMessage("Modified " . $JSONURL . " with new data.","breadpagesystem");
              return Site::getBaseURL() . "?request=" . $this->settings->postRequest . "&post=" . $id;
         }
         
@@ -915,13 +918,13 @@ class BreadPageSystem extends Module
              }
              //Delete the files
              $post = $this->index->$id;
-             $pathToJSON = Site::GetRootPath() . "/" . $post->jsonurl;
-             $pathToMarkdown = dirname($pathToJSON) . "/" . $post->url;
+             $pathToJSON = $this->settings->postdir . "/" . $post->jsonurl;
+             $pathToMarkdown = $this->settings->postdir . "/" . $post->url;
              Site::$Logger->writeError("Markdown:" . $pathToMarkdown,\Bread\Logger::SEVERITY_MESSAGE,"breadpagesystem");
              Site::$Logger->writeError("JSON:" . $pathToJSON,\Bread\Logger::SEVERITY_MESSAGE,"breadpagesystem");
              unlink($pathToMarkdown);
              unlink($pathToJSON);
-             if(!file_exists($post->url) && !file_exists($post->jsonurl))
+             if(!file_exists($pathToJSON) && !file_exists($pathToMarkdown))
              {
                  return "1";
              }
