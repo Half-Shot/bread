@@ -68,6 +68,7 @@ class BreadCommentSystem extends Module{
         $Btn_SaveChanges->class = $this->manager->FireEvent("Theme.GetClass","Button.Success"). " savecomment-button " . $this->manager->FireEvent("Theme.GetClass","Button.Small");
         $this->buttons["Save"] = $this->manager->FireEvent("Theme.Button",$Btn_SaveChanges);
         
+        
         if($this->settings->EnableUpvoting){
             $Btn_Comment_Upvote = new \Bread\Structures\BreadFormElement;
             $Btn_Comment_Upvote->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
@@ -298,7 +299,12 @@ class BreadCommentSystem extends Module{
         $Comment->karmaupvotees[] = $CurrentUser->uid;
         
         $CArray = array_keys((array)$this->comments->comments);
-        $Index = $CArray[count($CArray) - 1] + 1;
+        if(!empty($CArray)){
+            $Index = $CArray[count($CArray) - 1] + 1;
+        }
+        else{
+            $Index = 0;
+        }
          
         
         $this->comments->comments->$Index = $Comment;
@@ -443,7 +449,7 @@ class BreadCommentsStack{
     public $locked = false;
     public $id = "";
     
-    public function BreadCommentsStack()
+    function __construct()
     {
         $this->comments = new \stdClass();
     }
