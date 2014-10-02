@@ -36,6 +36,9 @@ function ApplyClickEvents(element){
             if(returndata === "1"){
                 parent.slideUp(400,function(){$(this).remove()});
             }
+            else if(returndata === "2"){ 
+                location.reload(); 
+            }
             else{
                 console.log("Couldn't delete comment.")
             }
@@ -79,6 +82,7 @@ function SaveNewComment()
                 var Parent = $("#breadcomment-section").append(returndata);
                 ApplyJavascriptToComment(Parent.children().last());
                 $('html, body').animate({scrollTop: $(Parent.children().last()).offset().top}, 1000);
+                NewCommentEditor.editor.textContent = "";
             }
         });
     }

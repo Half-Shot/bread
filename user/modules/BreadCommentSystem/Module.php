@@ -155,10 +155,10 @@ class BreadCommentSystem extends Module{
         else{
             $HTML .= $this->ConstructEditableComment();
         }
-        $CommentIndex = 0;
         $HTML .= "<div id='breadcomment-section'>";
         $Moderator = $this->manager->FireEvent("Bread.Security.GetPermission","BreadCommentSystem.Moderator");
-        foreach($this->comments->comments as $comment){
+        foreach($this->comments->comments as $Str_CommentIndex => $comment){
+            $CommentIndex = intval($Str_CommentIndex);
             $ExtraClasses = "";
             $commentObj = Util::CastStdObjectToStruct($comment, "Bread\Structures\BreadComment");
             $User = $this->manager->FireEvent("Bread.Security.GetUser",$commentObj->user);
@@ -189,7 +189,6 @@ class BreadCommentSystem extends Module{
             }
             
             $HTML .= $this->ConstructComment($CommentIndex,$Name, $Avatar, $commentObj->body, false,$commentObj->time, count($commentObj->karmaupvotees) - count($commentObj->karmadownvotees),$ButtonsHTML,$EditorButtons,$ExtraClasses);
-            $CommentIndex++;
         }
         $HTML .= "</div>";
         return $HTML;
@@ -235,8 +234,17 @@ class BreadCommentSystem extends Module{
         
         //2. Check User and rights.
         $CurrentUser = $this->manager->FireEvent("Bread.Security.GetCurrentUser");
-        if($CurrentUser === null && !$this->settings->AllowAnonComments){
-            return 0;
+        if($CurrentUser === null){
+            if($this->settings->AllowAnonComments){
+                //Dummy object
+                $CurrentUser = new \stdClass();
+                $CurrentUser->uid = -1;
+                $CurrentUser->information = new \stdClass();
+                $CurrentUser->information->Name = "Anonymous";
+            }
+            else{
+                return 0;
+            }
         }
         elseif($CurrentUser !== null){
             if(!$this->manager->FireEvent("Bread.Security.GetPermission","Bread.WriteComment")){
@@ -266,19 +274,17 @@ class BreadCommentSystem extends Module{
         }
         
         foreach($this->comments->comments as $comment){
-            if($comment->user !== -1 && $CurrentUser != False){
-                if($comment->user == $CurrentUser->uid){
-                    //Check time
-                    if(time() - $comment->time < self::MINGRACEPERIOD)
-                    {
-                        return 2;
-                    }
-                    //Check similarity
-                    similar_text($comment->body, $text,$similarity);
-                    if(round($similarity) > $maxsimularity){
-                        //It's too similar.
-                        return 3;
-                    }
+            if($comment->user == $CurrentUser->uid){
+                //Check time
+                if(time() - $comment->time < self::MINGRACEPERIOD)
+                {
+                    return 2;
+                }
+                //Check similarity
+                similar_text($comment->body, $text,$similarity);
+                if(round($similarity) > $maxsimularity){
+                    //It's too similar.
+                    return 3;
                 }
             }
         }
@@ -288,21 +294,20 @@ class BreadCommentSystem extends Module{
         $Comment = new \Bread\Structures\BreadComment();
         $Comment->body = $text;
         $Comment->time = time();
-        if($CurrentUser === null){
-            $Comment->user = -1;
-            $Comment->karmaupvotees[] = -1;
-        }
-        else{
-            $Comment->user = $CurrentUser->uid;
-            $Comment->karmaupvotees[] = $CurrentUser->uid;
-        }
-        $Index = count($this->comments->comments);
-        $this->comments->comments[$Index] = $Comment;
+        $Comment->user = $CurrentUser->uid;
+        $Comment->karmaupvotees[] = $CurrentUser->uid;
+        
+        $CArray = array_keys((array)$this->comments->comments);
+        $Index = $CArray[count($CArray) - 1] + 1;
+         
+        
+        $this->comments->comments->$Index = $Comment;
+        
         $Avatar = $this->manager->FireEvent("Bread.GetAvatar",$CurrentUser);
         $this->MakeButtons();
         $ButtonsHTML = "";
         $EditorButtons = "";
-        if($CurrentUser !== null){
+        if($CurrentUser->uid !== -1){
             $ButtonsHTML = $this->buttons["Upvote"] . $this->buttons["Downvote"];
             if($this->settings->AllowEditing){
                 //$EditorButtons .= $this->buttons["Edit"] . $this->buttons["Save"];
@@ -314,9 +319,13 @@ class BreadCommentSystem extends Module{
        else{
            $ButtonsHTML = "";
        }
-        $Name = "Anonymous";
-        if($CurrentUser->information->Name){
-            $Name = $CurrentUser->information->Name;
+        //Fallback
+        if(isset($CurrentUser->information->Name)){
+             $Name = $CurrentUser->information->Name;
+        }
+        else
+        {
+            $Name = $CurrentUser->username;
         }
         $HTML = $this->ConstructComment($Index,$Name,$Avatar,$text,false,$Comment->time,1,$ButtonsHTML,$EditorButtons);
         return $HTML;
@@ -338,11 +347,14 @@ class BreadCommentSystem extends Module{
         if($this->comments->locked){
             return 0;
         }
-        $comment = $this->comments->comments[$commentID];
+        if(!isset($this->comments->comments->$commentID)){
+            //Probably already deleted! Force a reload
+            return 2;
+        }
+        $comment = $this->comments->comments->$commentID;
         $CurrentUser = $this->manager->FireEvent("Bread.Security.GetCurrentUser");
         if($comment->user === $CurrentUser->uid && $comment->canedit || $Moderator){
-            unset($this->comments->comments[$commentID]);
-            $this->comments->comments = array_values($this->comments->comments);
+            unset($this->comments->comments->$commentID);
             return 1;
         }
         return 0;
@@ -373,7 +385,7 @@ class BreadCommentSystem extends Module{
         if($this->comments->locked){
             return 0;
         }
-        $comment = $this->comments->comments[$commentID];
+        $comment = $this->comments->comments->$commentID;
         
         if($upvote){//Upvote
             if(in_array($CurrentUser->uid,$comment->karmadownvotees)){//Did the user also downvote
@@ -427,7 +439,12 @@ class BreadCommentSystemSettings {
 
 
 class BreadCommentsStack{
-    public $comments = array();
+    public $comments;
     public $locked = false;
     public $id = "";
+    
+    public function BreadCommentsStack()
+    {
+        $this->comments = new \stdClass();
+    }
 }
