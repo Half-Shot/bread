@@ -139,6 +139,21 @@ function DoMarkdown()
         //Add an editor too.
         if(parent.hasAttribute("editor") && !editor)
         {
+            if (typeof(Storage) != "undefined") {
+                var tempMD = localStorage.getItem("lastPostEdit_" + bpspostid);
+                if(tempMD !== null){
+                    console.log("Loading last changes for post.");
+                    $(parent).prepend("<h4>Your unsaved changes were loaded.<button id='unsavedChangesRemoveButton'>Remove</button></h4><hr>");
+                    $("#unsavedChangesRemoveButton").click(function(){
+                        localStorage.removeItem("lastPostEdit_" + bpspostid);
+                        location.reload();
+                    })
+                    markdown = tempMD;
+                }
+                else{
+                    console.log("Couldn't find any unsaved changes for post.");
+                }
+            }
             editorDOM = document.createElement('div');
             editorDOM.setAttribute("id", "bps-editor");
             editorHTML = html;
@@ -158,7 +173,11 @@ function toggleMarkdown()
     switch(editorState){
         case 0:
             editor.on('autosave', function () {
-                ParseMarkdown(editor.exportFile(),editorHTML,false); 
+                var md = editor.exportFile();
+                ParseMarkdown(md,editorHTML,false); 
+                if (typeof(Storage) !== "undefined") {
+                    localStorage.setItem("lastPostEdit_" + bpspostid, md);
+                }
             });
             //Content
             $.each($(".bps-editorinfo-input"),function(){
@@ -179,7 +198,7 @@ function toggleMarkdown()
             editorState = 1;
             break;
         case 1:
-            editor.removeListener('save');
+            editor.removeListener('autosave');
             ParseMarkdown(editor.exportFile(),editorHTML,true); 
             $.each($(".bps-editorinfo-input"),function(){
                 $(this).attr("readonly",true);
@@ -207,6 +226,8 @@ function saveMarkdown()
     {
         if(returndata != "0"){
             window.location = returndata;
+            localStorage.setItem("lastPostEdit_" + bpspostid, null);
+
         }
         else{
             alert("Something went wrong :|");
@@ -262,7 +283,7 @@ $("#bps-mdsave").hide();
 //Category Selector
 
 AddOnClick = function(event){
-    if(ContainsCategory($(this),$('#bps-selectcategories .badge')) == false){
+    if(ContainsCategory($(this).text(),$('#bps-selectcategories .badge')) == false){
         $(this).clone().click(RemoveOnClick).appendTo('#bps-selectcategories');
     }
 }
@@ -275,11 +296,11 @@ RemoveOnClick = function(event){
 
 function ContainsCategory(category,element)
 {
-    element.each(function(i,scategory){
-        if(category.text() == scategory.textContent){
+    for(var i = 0;i<element.length;i++){
+        if(category === element[i].textContent){
             return true;
         }
-    });
+    }
     return false;
 }
 $('#bps-selectcategories .badge').click(RemoveOnClick);
@@ -291,7 +312,7 @@ function addNewCategory()
         return false;
     }
     var Element = TemplateBadge.clone().text($('#e_newcategory').val()).click(AddOnClick);;
-    if(!ContainsCategory(Element,$('#bps-listcategories .badge'))){
+    if(!ContainsCategory(Element.text(),$('#bps-listcategories .badge'))){
         Element.appendTo('#bps-listcategories');
     }
 }

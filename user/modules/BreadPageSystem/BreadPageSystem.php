@@ -236,6 +236,7 @@ class BreadPageSystem extends Module
             $HTML_Categories->value = "<h4>Categories</h4>";
             $HTML_Categories->id ="e_categories";
             $HTML_Categories->hidden = true;
+            
             $E_New_Category = new \Bread\Structures\BreadFormElement;
             $E_New_Category->id = "e_newcategory";
             $E_New_Category->type = \Bread\Structures\BreadFormElement::TYPE_TEXTBOX;
@@ -255,8 +256,18 @@ class BreadPageSystem extends Module
             $E_Categories_List->id = "bps-listcategories";
             $E_Categories_List->small = true;
             $E_Categories_List->value = "";
-            $HTML_Categories->value .= "<h5>Available Categories</h5>" . $this->manager->FireEvent("Theme.Layout.Well",$E_Categories_List);
             
+            //Get Categories
+            $Categories = array();
+            foreach($this->index as $Post){
+                $Categories = array_merge($Categories,$Post->categories);
+            }
+            $Categories = array_unique($Categories);
+            foreach($Categories as $Category){
+                $E_Categories_List->value .= $this->manager->FireEvent("Theme.Badge",$Category);
+            }
+            
+            $HTML_Categories->value .= "<h5>Available Categories</h5>" . $this->manager->FireEvent("Theme.Layout.Well",$E_Categories_List);
             $E_Categories_Selected = new \stdClass();
             $E_Categories_Selected->id = "bps-selectcategories";
             $E_Categories_Selected->small = true;
