@@ -35,51 +35,41 @@ class SettingsManager {
      * @var array
      */
     private $settings;
+    private $filters;
+    private $interfaces = [];
     const SAVEMODE = 0755;
     function __construct() {
         $this->settings = array();
     }
     
-    /**
-     * Creates a settings folder for your module or just returns the path.
-     * You will also want to create settings files.
-     * PLEASE use module names and not anything else.
-     * We are changing this soon.
-     * @see https://github.com/Half-Shot/bread/issues/51
-     * @param string $dirname The module name.
-     * @todo Add a secure way to lock settings files.
-     */
-    function FindModuleDir($dirname)
-    {
-        $dirname = Site::ResolvePath("%system-settings") . "/" . $dirname . "/";
-        if(!file_exists($dirname)){
-            mkdir($dirname);
-            chmod($dirname, $this::SAVEMODE);
+    function Setup($filterpath){
+        if(file_exists($filterpath)){
+            $FileData = file_get_contents($filterpath);
+            $this->filters = json_decode($FileData);
         }
-        return $dirname;
+        else
+        {
+            //Regenerate
+            Site::$Logger->writeError("Settings Filter file does not exist. Creating the default", \Bread\Logger::SEVERITY_MEDIUM);
+            $this->filters = array();
+            $JsonCatchallFilter = new SettingsFilter();
+            $JsonCatchallFilter->type = "Json";
+            $JsonCatchallFilter->module = "*";
+            $JsonCatchallFilter->setting = "*";
+            $this->filters = $JsonCatchallFilter;
+            $FileData = json_encode($JsonCatchallFilter);
+            file_put_contents($filterpath, $FileData);
+        }
+        
+        if($this->filters === null){
+            Site::$Logger->writeError("Settings Filter file at " . $filterpath . " appear to be corrupt. Bread cannot start.", \Bread\Logger::SEVERITY_CRITICAL,true);
+        }
+        
+        //Load interfaces
+            //JSON
+            $this->interfaces["Json"] = new SettingsInterfaceJson();
     }
     
-    /**
-     * Creates a new settings file, sets the permissions and uses the specified template. If the file exists then returns False, else True.
-     * @param string $filename Filename. Not relative (use CreateModInfo to get the directory).
-     * @param stdClass $template Specify a template to use for the settings file. Could be a included json file with your module (must be decoded as a class).
-     * @depreciated Please use RetriveSettings with the template argument.
-     * @see $this::CreateModDir()
-     */
-    private function CreateSettingsFiles($filename,$template)
-    {
-        if(file_exists($filename))
-            return False;
-        $dir = dirname($filename);
-        if(!file_exists($dir)){
-            mkdir(dirname($filename), $this::SAVEMODE,true);
-        }
-        file_put_contents($filename, '');
-        $this->settings[$filename] = $template;
-        chmod($filename, $this::SAVEMODE);
-        $this->SaveSetting($this->settings[$filename],$filename,True); //Save to be safe.
-        return True;
-    }
     /**
      * Replace a setting file in the stack with a new object.
      * @param string $path The path of the setting
@@ -87,21 +77,24 @@ class SettingsManager {
      */
     function ChangeSetting($path,$newObj)
     {
-        $path = $this->GetHashPath($path);
-        $this->settings[$path] = $newObj;
+        $this->settings[$path]->data = $newObj;
     }
     
     /**
      * Removes a setting from the filesystem/database entirely. Use at your own risk!
      * @param type $path
      */
-    function DeleteSetting($path,$removeFromStack = true){
-        
+    function DeleteSetting($path,$removeFromStack = true)
+    {
         if(file_exists($path)){
             if($removeFromStack){
                 $this->RemoveSettingFromStack($path);
             }
-            return unlink ($path);
+            if(!array_key_exists($path, $this->settings)){
+                return false;
+            }
+            $Interface = $this->settings[$path]->interface;
+            return $this->interfaces[$Interface]->DeleteSetting($path);
         }
         return false;
     }
@@ -125,9 +118,40 @@ class SettingsManager {
         
         if(count($Parts) === 2){
             $Parts[1] = str_replace('.json','',$Parts[1]);
-            $path = $this->FindModuleDir($Parts[0]) . $Parts[1] . '.json';
+            
+            $dirname = Site::ResolvePath("%system-settings") . "/" . $Parts[0] . "/";
+            if(!file_exists($dirname)){
+                mkdir($dirname);
+                chmod($dirname, $this::SAVEMODE);
+            }
+            $path = $dirname . $Parts[1] . '.json';
         }
         return $path;
+    }
+    
+    function FindCorrectInterface($path){
+        //Does the string have an extension
+        $extension = pathinfo($path, PATHINFO_EXTENSION);
+        if($extension == ""){
+            //Extension Based Interface Find (fallback)
+            foreach($this->interfaces as $name => $interface){
+               if(in_array($extension,$interface->MatchExtensions)){
+                   return $name;
+               }
+            }
+            return false; //No interface found!
+        }
+        else{
+           //Filter Based Interface Find (preferred)
+           $Parts = explode('#', $path);
+           foreach($this->filters as $Filter){
+              $ModuleMatch = fnmatch($this->filters->module, $Parts[0]);
+              $SettingMatch = fnmatch($this->filters->setting, $Parts[1]);
+              if($SettingMatch && $ModuleMatch){
+                  return $Filer->type;
+              }
+           }
+        }
     }
     
     /**
@@ -142,14 +166,21 @@ class SettingsManager {
     {
         if(array_key_exists($path, $this->settings))
         {
-            return $this->settings[$path];
+            return $this->settings[$path]->data;
         }
-        $path = $this->GetHashPath($path);
+        
+        //Find a correct interface.
+        $InterfaceName = $this->FindCorrectInterface($path);
+        if($InterfaceName == false){
+            Site::$Logger->writeError ("Couldn't load path '" . $path . "' for parsing settings. No interface found", \Bread\Logger::SEVERITY_MEDIUM, "core" , !$ignorefail, "Bread\Settings\FileNotFoundException");  
+        }
+        
         if($template !== null){
-            $this->CreateSettingsFiles($path,$template);
+            //Does the file exist.
         }
-        if(!file_exists($path) && !$ignorefail){
-            Site::$Logger->writeError ("Couldn't load path '" . $path . "' for parsing settings.", \Bread\Logger::SEVERITY_MEDIUM, "core" , True, "Bread\Settings\FileNotFoundException");   
+        
+        if(!file_exists($path)){
+            Site::$Logger->writeError ("Couldn't load path '" . $path . "' for parsing settings.", \Bread\Logger::SEVERITY_MEDIUM, "core" , !$ignorefail, "Bread\Settings\FileNotFoundException");   
         }        
         try{
             $jsonObj = $this->GetJsonObject($path);

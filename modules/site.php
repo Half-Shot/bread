@@ -361,6 +361,7 @@ class Site
             static::$themeManager = new Themes\ThemeManager();
             static::$moduleManager = new Modules\ModuleManager();
             static::$settingsManager = new Settings\SettingsManager();
+            static::$settingsManager->Setup($path . "/datainterfaces.json");
             static::$themeManager->LoadSettings($path . "/theme/settings.json");
             if(!static::$isAjax){
                 static::$themeManager->LoadLayouts();
