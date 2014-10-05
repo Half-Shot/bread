@@ -75,6 +75,10 @@
             "function": "ValidatePassword",
             "security": 0
         },
+        "BreadUserSystem.ValidateGroups":{
+            "function": "ValidateGroups",
+            "security": 0
+        },
         "BreadUserSystem.RemoveUser": {
             "function": "AjaxRemoveUser",
             "security": 1
@@ -85,6 +89,10 @@
         },
         "Bread.Security.ChangePassword": {
             "function": "ChangePassword",
+            "security": 0
+        },
+        "Bread.Security.ChangeGroups": {
+            "function": "ChangeGroups",
             "security": 0
         },
         "Bread.Security.ChangeInformation": {

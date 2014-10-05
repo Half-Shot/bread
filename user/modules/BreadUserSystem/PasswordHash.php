@@ -44,12 +44,12 @@ class PasswordHash {
 		if (function_exists('getmypid'))
 			$this->random_state .= getmypid();
 	}
-        
+
 	function get_random_bytes($count)
 	{
 		$output = '';
 		if (is_readable('/dev/urandom') &&
-		    ($fh = @fopen('/dev/urandom', 'rb'))) {
+				($fh = @fopen('/dev/urandom', 'rb'))) {
 			$output = fread($fh, $count);
 			fclose($fh);
 		}
@@ -58,9 +58,9 @@ class PasswordHash {
 			$output = '';
 			for ($i = 0; $i < $count; $i += 16) {
 				$this->random_state =
-				    md5(microtime() . $this->random_state);
+					md5(microtime() . $this->random_state);
 				$output .=
-				    pack('H*', md5($this->random_state));
+					pack('H*', md5($this->random_state));
 			}
 			$output = substr($output, 0, $count);
 		}
@@ -95,7 +95,7 @@ class PasswordHash {
 	{
 		$output = '$P$';
 		$output .= $this->itoa64[min($this->iteration_count_log2 +
-			((PHP_VERSION >= '5') ? 5 : 3), 30)];
+				((PHP_VERSION >= '5') ? 5 : 3), 30)];
 		$output .= $this->encode64($input, 6);
 
 		return $output;
@@ -108,7 +108,7 @@ class PasswordHash {
 			$output = '*1';
 
 		$id = substr($setting, 0, 3);
-		# We use "$P$", phpBB3 uses "$H$" for the same thing
+# We use "$P$", phpBB3 uses "$H$" for the same thing
 		if ($id != '$P$' && $id != '$H$')
 			return $output;
 
@@ -122,12 +122,12 @@ class PasswordHash {
 		if (strlen($salt) != 8)
 			return $output;
 
-		# We're kind of forced to use MD5 here since it's the only
-		# cryptographic primitive available in all versions of PHP
-		# currently in use.  To implement our own low-level crypto
-		# in PHP would result in much worse performance and
-		# consequently in lower iteration counts and hashes that are
-		# quicker to crack (by non-PHP code).
+# We're kind of forced to use MD5 here since it's the only
+# cryptographic primitive available in all versions of PHP
+# currently in use.  To implement our own low-level crypto
+# in PHP would result in much worse performance and
+# consequently in lower iteration counts and hashes that are
+# quicker to crack (by non-PHP code).
 		if (PHP_VERSION >= '5') {
 			$hash = md5($salt . $password, TRUE);
 			do {
@@ -149,8 +149,8 @@ class PasswordHash {
 	function gensalt_extended($input)
 	{
 		$count_log2 = min($this->iteration_count_log2 + 8, 24);
-		# This should be odd to not reveal weak DES keys, and the
-		# maximum valid value is (2**24 - 1) which is odd anyway.
+# This should be odd to not reveal weak DES keys, and the
+# maximum valid value is (2**24 - 1) which is odd anyway.
 		$count = (1 << $count_log2) - 1;
 
 		$output = '_';
@@ -166,14 +166,14 @@ class PasswordHash {
 
 	function gensalt_blowfish($input)
 	{
-		# This one needs to use a different order of characters and a
-		# different encoding scheme from the one in encode64() above.
-		# We care because the last character in our encoded string will
-		# only represent 2 bits.  While two known implementations of
-		# bcrypt will happily accept and correct a salt string which
-		# has the 4 unused bits set to non-zero, we do not want to take
-		# chances and we also do not want to waste an additional byte
-		# of entropy.
+# This one needs to use a different order of characters and a
+# different encoding scheme from the one in encode64() above.
+# We care because the last character in our encoded string will
+# only represent 2 bits.  While two known implementations of
+# bcrypt will happily accept and correct a salt string which
+# has the 4 unused bits set to non-zero, we do not want to take
+# chances and we also do not want to waste an additional byte
+# of entropy.
 		$itoa64 = './ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 		$output = '$2a$';
@@ -212,7 +212,7 @@ class PasswordHash {
 		if (CRYPT_BLOWFISH == 1 && !$this->portable_hashes) {
 			$random = $this->get_random_bytes(16);
 			$hash =
-			    crypt($password, $this->gensalt_blowfish($random));
+				crypt($password, $this->gensalt_blowfish($random));
 			if (strlen($hash) == 60)
 				return $hash;
 		}
@@ -221,7 +221,7 @@ class PasswordHash {
 			if (strlen($random) < 3)
 				$random = $this->get_random_bytes(3);
 			$hash =
-			    crypt($password, $this->gensalt_extended($random));
+				crypt($password, $this->gensalt_extended($random));
 			if (strlen($hash) == 20)
 				return $hash;
 		}
@@ -229,14 +229,14 @@ class PasswordHash {
 		if (strlen($random) < 6)
 			$random = $this->get_random_bytes(6);
 		$hash =
-		    $this->crypt_private($password,
-		    $this->gensalt_private($random));
+			$this->crypt_private($password,
+					$this->gensalt_private($random));
 		if (strlen($hash) == 34)
 			return $hash;
 
-		# Returning '*' on error is safe here, but would _not_ be safe
-		# in a crypt(3)-like function used _both_ for generating new
-		# hashes and for validating passwords against existing hashes.
+# Returning '*' on error is safe here, but would _not_ be safe
+# in a crypt(3)-like function used _both_ for generating new
+# hashes and for validating passwords against existing hashes.
 		return '*';
 	}
 
