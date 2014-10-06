@@ -13,12 +13,20 @@
             "function": "GetPlayer",
             "security": 0
         },
+        "Hitbox.GetTeamlist":{
+            "function": "GetMembers",
+            "security": 0
+        },
         "Hitbox.GetChat": {
             "function": "GetChat",
             "security": 0
         },
         "Hitbox.Live": {
             "function": "Text_IsLive",
+            "security": 0
+        },
+        "Hitbox.TeamName": {
+            "function": "GetTeamName",
             "security": 0
         },
         "Hitbox.Game": {

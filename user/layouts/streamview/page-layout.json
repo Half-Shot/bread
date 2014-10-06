@@ -1,0 +1,48 @@
+{
+"name": "streamview",
+"master":["default"],
+"css":["streamview/page-layout.css"],
+"elements": [
+    {
+        "name" : "header",
+        "event" : "Theme.Layout.Grid.HorizontalStack",
+        "elements": [
+            {
+                "name"	: "TeamName",
+                "id"	: "team-name",
+                "event" : "Hitbox.TeamName"
+            },
+            {
+                "name"	: "GameName",
+                "id"	: "game-name",
+                "event" : "Hitbox.Game"
+            },
+            {
+                "name" : "teamlist",
+                "event": "Hitbox.GetTeamlist"
+            }
+        ]
+    },
+    {
+	"name"	: "ContentsGrid",
+	"id"	: "contents-grid",
+	"human"	: "Page Contents",
+	"description" :	"Lower section for social feeds",
+	"event" : "Theme.Layout.Grid.HorizontalStack",
+	"elements": [
+    			{
+ 				"name"	: "player",
+ 				"id"    : "player",
+    				"event"	: "Hitbox.GetPlayer",
+    				"arguments":{
+                    			"cell_size":9
+    				}
+    			},
+			{
+ 				"name"	: "chat",
+				"event"	: "Hitbox.GetChat"
+		        }
+	]
+    }
+]
+}
