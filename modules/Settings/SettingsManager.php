@@ -34,12 +34,12 @@ class SettingsManager {
      * @see SettingsManager->RetriveSettings()
      * @var array
      */
-    private $settings;
+    private $files;
     private $filters;
     private $interfaces = [];
     const SAVEMODE = 0755;
     function __construct() {
-        $this->settings = array();
+        $this->files = array();
     }
     
     function Setup($filterpath){
@@ -50,7 +50,7 @@ class SettingsManager {
         else
         {
             //Regenerate
-            Site::$Logger->writeError("Settings Filter file does not exist. Creating the default", \Bread\Logger::SEVERITY_MEDIUM);
+            Site::$Logger->writeError("Settings Filter file does not exist. Creating the default.", \Bread\Logger::SEVERITY_MEDIUM);
             $this->filters = array();
             $JsonCatchallFilter = new SettingsFilter();
             $JsonCatchallFilter->type = "Json";
@@ -66,8 +66,8 @@ class SettingsManager {
         }
         
         //Load interfaces
-            //JSON
-            $this->interfaces["Json"] = new SettingsInterfaceJson();
+        //JSON
+        $this->interfaces["Json"] = new SettingsInterfaceJson();
     }
     
     /**
@@ -77,7 +77,7 @@ class SettingsManager {
      */
     function ChangeSetting($path,$newObj)
     {
-        $this->settings[$path]->data = $newObj;
+        $this->files[$path]->data = $newObj;
     }
     
     /**
@@ -90,19 +90,19 @@ class SettingsManager {
             if($removeFromStack){
                 $this->RemoveSettingFromStack($path);
             }
-            if(!array_key_exists($path, $this->settings)){
+            if(!array_key_exists($path, $this->files)){
                 return false;
             }
-            $Interface = $this->settings[$path]->interface;
-            return $this->interfaces[$Interface]->DeleteSetting($path);
+            $Interface = $this->files[$path]->interface;
+            return $Interface->DeleteSetting($this->files[$path]);
         }
         return false;
     }
     
     function RemoveSettingFromStack($path,$template = null)
     {
-        if(array_key_exists($path, $this->settings)){
-            unset($this->settings[$path]);
+        if(array_key_exists($path, $this->files)){
+            unset($this->files[$path]);
             return True;
         }
         else
@@ -112,10 +112,9 @@ class SettingsManager {
         }
     }
     
-    function GetHashPath($path){
+    function GetHashFilePath($path){
         //Extract Settings File
         $Parts = explode('#',$path);
-        
         if(count($Parts) === 2){
             $Parts[1] = str_replace('.json','',$Parts[1]);
             
@@ -132,7 +131,7 @@ class SettingsManager {
     function FindCorrectInterface($path){
         //Does the string have an extension
         $extension = pathinfo($path, PATHINFO_EXTENSION);
-        if($extension == ""){
+        if($extension !== ""){
             //Extension Based Interface Find (fallback)
             foreach($this->interfaces as $name => $interface){
                if(in_array($extension,$interface->MatchExtensions)){
@@ -145,10 +144,10 @@ class SettingsManager {
            //Filter Based Interface Find (preferred)
            $Parts = explode('#', $path);
            foreach($this->filters as $Filter){
-              $ModuleMatch = fnmatch($this->filters->module, $Parts[0]);
-              $SettingMatch = fnmatch($this->filters->setting, $Parts[1]);
+              $ModuleMatch = fnmatch($Filter->module, $Parts[0]);
+              $SettingMatch = fnmatch($Filter->setting, $Parts[1]);
               if($SettingMatch && $ModuleMatch){
-                  return $Filer->type;
+                  return $Filter->type;
               }
            }
         }
@@ -164,74 +163,43 @@ class SettingsManager {
      */
     function RetriveSettings($path,$dontsave = False,$template = null,$ignorefail = false)
     {
-        if(array_key_exists($path, $this->settings))
+        if(array_key_exists($path, $this->files))
         {
-            return $this->settings[$path]->data;
+            return $this->files[$path]->data;
         }
         
         //Find a correct interface.
         $InterfaceName = $this->FindCorrectInterface($path);
-        if($InterfaceName == false){
+        if($InterfaceName === false){
             Site::$Logger->writeError ("Couldn't load path '" . $path . "' for parsing settings. No interface found", \Bread\Logger::SEVERITY_MEDIUM, "core" , !$ignorefail, "Bread\Settings\FileNotFoundException");  
         }
+        $File = new SettingsFile();
         
-        if($template !== null){
+        $File->interface = $this->interfaces[$InterfaceName];
+        $File->path = $path;
+        if($template !== null && !$File->interface->SettingExists($File)){
             //Does the file exist.
+            $File->interface->CreateSetting($File,$template);
         }
         
-        if(!file_exists($path)){
+        if(!$File->interface->SettingExists($File)){
             Site::$Logger->writeError ("Couldn't load path '" . $path . "' for parsing settings.", \Bread\Logger::SEVERITY_MEDIUM, "core" , !$ignorefail, "Bread\Settings\FileNotFoundException");   
         }        
         try{
-            $jsonObj = $this->GetJsonObject($path);
+            $File->data = $File->interface->RetriveSettings($File);
         } catch (FailedToParseException $ex) {
             if(!$ignorefail){
                 throw $ex;
             }
             else{
-                $jsonObj = $template;
+                $File->data = $template;
+                Site::$Logger->writeError ("Couldn't load path '" . $path . "' for parsing settings. Using template.", \Bread\Logger::SEVERITY_MEDIUM, "core");   
             }
         }
         if(!$dontsave){
-            $this->settings[$path] = $jsonObj;
+            $this->files[$path] = $File;
         }
-        return $jsonObj;
-    }
-    
-    /**
-     * Convert a path to a json object. Better to use RetriveSettings for long term use.
-     * @param type $path Path of the JSON File.
-     * @return stdObject Json Object
-     * @see SettingsManager->RetriveSettings()
-     */
-    public static function GetJsonObject($path)
-    {
-        $contents = \file_get_contents($path);
-      
-        if($contents == "")
-        {
-            Site::$Logger->writeMessage("Settings file is empty (" . $path . "), this could be a bug or there really isn't any settings yet.'");
-            $contents = "{}"; //The equivalent of a empty file but cleaner.
-        }
-        if($contents == FALSE)
-           Site::$Logger->writeError ("Couldn't open path '" . $path . "' for parsing settings.", \Bread\Logger::SEVERITY_MEDIUM, "core" , True, "Bread\Settings\FileNotFoundException");
-        
-        $jsonObj = \json_decode($contents);
-        if(is_null($jsonObj)) //Stops php from interpreting a empty object as null. That was a really bad bug.
-           Site::$Logger->writeError ("Couldn't parse file '" . $path . "' for reading settings.", \Bread\Logger::SEVERITY_MEDIUM, "core" ,True, "Bread\Settings\FailedToParseException");   
-        return $jsonObj;
-    }
-    /**
-     * Converts a Json Object into its string notation.
-     * @param stdObject $object
-     * @return string The JSON string. 
-     */
-    public static function CompileJson($object)
-    {
-        $obj = json_encode($object,JSON_PRETTY_PRINT);
-        if($obj == False)
-           Site::$Logger->writeError ("Couldn't parse object into json string.", \Bread\Logger::SEVERITY_MEDIUM, "core" , True, "Bread\Settings\FailedToParseException");   
-        return $obj;
+        return $File->data;
     }
     
     /**
@@ -240,8 +208,8 @@ class SettingsManager {
     public function SaveChanges()
     {
         Site::$Logger->writeError ("Preforming Dump of all saveable settings.", \Bread\Logger::SEVERITY_MESSAGE, "SettingsManager");
-        foreach($this->settings as $path => $obj){
-            $this->SaveSetting($obj,$path,False); //Don't throw on such a large operation.
+        foreach($this->files as $path => $obj){
+            $obj->interface->SaveSetting($obj); //Don't throw on such a large operation.
         }
     }
     /**
@@ -252,12 +220,7 @@ class SettingsManager {
      */
     public function SaveSetting($object,$path,$shouldThrow = True)
     {        
-        $path = $this->GetHashPath($path);
-        Site::$Logger->writeMessage ("Saving " . $path, "SettingsManager");
-        $string = $this->CompileJson($object);
-        $worked = \file_put_contents($path, $string);
-        if($worked == False || is_null($string)){    
-            Site::$Logger->writeError ("Couldn't write json to file. path: '" . $path . "'", \Bread\Logger::SEVERITY_MEDIUM,"core" , $shouldThrow, "Bread\Settings\FileNotWrittenException");     
-        }
+       Site::$Logger->writeMessage ("Saving " . $path, "SettingsManager");
+       $this->files[$path]->interface->SaveSetting($this->files[$path]);
     }
 }

@@ -32,9 +32,9 @@ namespace Bread\Settings;
  * @author will
  */
 interface SettingsInterface {
-    function SettingExists($File);
-    function CreateSetting($File,$Template);
-    function RetriveSettings($File);
-    function SaveSetting($BreadPath,$Object,$ShouldThrow = true);
-    function DeleteSetting($File);
+    function SettingExists(SettingsFile $File);
+    function CreateSetting(SettingsFile $File,$Template);
+    function RetriveSettings(SettingsFile $File);
+    function SaveSetting(SettingsFile $File,$ShouldThrow = true);
+    function DeleteSetting(SettingsFile $File);
 }

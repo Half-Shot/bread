@@ -72,7 +72,7 @@ class BreadUserSystem extends Module
         Site::$Logger->writeError("First time setup, if this is not the first time then somethings wrong.",\Bread\Logger::SEVERITY_MEDIUM,$this->name);
         Site::$Logger->writeError("Pay close attention! You're password for <b>root</b> is <b>".$rootpasswd."</b>",\Bread\Logger::SEVERITY_MEDIUM,$this->name);
         $this->StoreNewUser("root",$rootpasswd,0,array("root"),array("Name"=>"Root"));
-        Site::$settingsManager->SaveSetting($this->userDB,$path);
+        Site::$settingsManager->SaveSetting($this->userDB,"breadusersystem#users");
     }
     
     function GetUserByUID($uid)
@@ -110,7 +110,7 @@ class BreadUserSystem extends Module
         $packet->breaduserdata = $newUser;
         $packet->hash = $hash;
         $this->userDB[] = $packet;
-        Site::$settingsManager->SaveSetting($this->userDB,$this->userDBPath);
+        Site::$settingsManager->SaveSetting($this->userDB,"breadusersystem#users");
         return $newUser;
     }
     
@@ -146,23 +146,19 @@ class BreadUserSystem extends Module
     function Setup()
     {          
         require_once("PasswordHash.php");
-        $rootSettings = Site::$settingsManager->FindModuleDir("breadusersystem");
-        $this->settingsPath = $rootSettings . "settings.json";
-        $this->settings = Util::CastStdObjectToStruct(Site::$settingsManager->RetriveSettings($rootSettings . "settings.json",true,new BreadUserSystemSettings()), "\Bread\Modules\BreadUserSystemSettings");
+        $this->settings = Util::CastStdObjectToStruct(Site::$settingsManager->RetriveSettings("breadusersystem#settings",true,new BreadUserSystemSettings()), "\Bread\Modules\BreadUserSystemSettings");
         $this->settings->successredirect = Site::CastStdObjectToStruct($this->settings->successredirect, "\Bread\Structures\BreadLinkStructure");
         
-        $this->userDBPath = $rootSettings . $this->settings->userfile;
-        $this->userDB = Site::$settingsManager->RetriveSettings($this->userDBPath,true,array());
+        $this->userDB = Site::$settingsManager->RetriveSettings("breadusersystem#users",true,array());
         
-        $groupPath = $rootSettings . $this->settings->groupfile;
-        $this->groups = Site::$settingsManager->RetriveSettings($groupPath,true,array());
+        $this->groups = Site::$settingsManager->RetriveSettings("breadusersystem#groups",true,array());
         if(empty($this->groups))
         {
             $rootGroup = new \Bread\Structures\BreadGroup();
             $rootGroup->name = "superadmin";
             $rootGroup->rights = array("root");
             $this->groups[] = $rootGroup;
-            Site::$settingsManager->SaveSetting($this->groups,$groupPath);
+            Site::$settingsManager->SaveSetting($this->groups,"breadusersystem#groups");
         }
         $this->groups = Util::ArraySetKeyByProperty($this->groups, "name");
 
@@ -613,7 +609,7 @@ class BreadUserSystem extends Module
             Site::$Logger->writeMessage("User " . $uid . "(" . $user->username . ") has been deleted",$this->name);
             unset($this->userDB[$uindex]);
         }
-        Site::$settingsManager->SaveSetting($this->userDB,$this->userDBPath);
+        Site::$settingsManager->SaveSetting($this->userDB,"breadusersystem#users");
         return true;
     }
     
@@ -631,7 +627,7 @@ class BreadUserSystem extends Module
         
         $user->username = strtolower($args["value"]);
         Site::$Logger->writeMessage("User " . $user->uid . "(" . $user->username . ") has new username" ,$this->name);
-        Site::$settingsManager->SaveSetting($this->userDB,$this->userDBPath);
+        Site::$settingsManager->SaveSetting($this->userDB,"breadusersystem#users");
         return true;
     }
     
@@ -661,7 +657,7 @@ class BreadUserSystem extends Module
 
         $hasher = new \PasswordHash(BreadUserSystem::STRETCH_FACTOR, false);
         $RootUser->hash = $hasher->HashPassword($value);
-        Site::$settingsManager->SaveSetting($this->userDB,$this->userDBPath);
+        Site::$settingsManager->SaveSetting($this->userDB,"breadusersystem#users");
         return true;
     }
     
@@ -680,7 +676,7 @@ class BreadUserSystem extends Module
             return false;
         
         $user->information->$key = $args["value"];
-        Site::$settingsManager->SaveSetting($this->userDB,$this->userDBPath);
+        Site::$settingsManager->SaveSetting($this->userDB,"breadusersystem#users");
         return true;
     }
  
@@ -784,7 +780,7 @@ class BreadUserSystem extends Module
                 }
             }
         }
-        Site::$settingsManager->SaveSetting($this->userDB,$this->userDBPath);
+        Site::$settingsManager->SaveSetting($this->userDB,"breadusersystem#users");
         return true;
     }
 }
@@ -798,8 +794,6 @@ class BreadUserSystemSettings{
     }
     
     public $limitToHTTPS = true;
-    public $userfile  = "users.json";
-    public $groupfile = "groups.json";
     public $sessiontimeout = 604800;
     public $successredirect;
     public $showNavbarlinks = true;
