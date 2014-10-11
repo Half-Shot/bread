@@ -35,4 +35,6 @@ class SettingsFile{
     public $data;
     public $interface = "";
     public $path = "";
+    public $args;
+    public $MD5OnOpen;
 }

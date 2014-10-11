@@ -41,13 +41,7 @@ class SettingsInterfaceJson implements SettingsInterface {
         $path = Site::$settingsManager->GetHashFilePath($File->path);
         return unlink ($path);
     }
-
-    /**
-     * Convert a path to a json object. Better to use RetriveSettings for long term use.
-     * @param type $path Path of the JSON File.
-     * @return stdObject Json Object
-     * @see SettingsManager->RetriveSettings()
-     */
+    
     public function RetriveSettings(SettingsFile $File) {
         $path = Site::$settingsManager->GetHashFilePath($File->path);
         $contents = \file_get_contents($path);
@@ -67,8 +61,8 @@ class SettingsInterfaceJson implements SettingsInterface {
         if (is_null($jsonObj)) { //Stops php from interpreting a empty object as null. That was a really bad bug.
             Site::$Logger->writeError("Couldn't parse file '" . $path . "' for reading settings.", \Bread\Logger::SEVERITY_MEDIUM, "core", True, "Bread\Settings\FailedToParseException");
         }
-        
-        return $jsonObj;
+        $File->data = $jsonObj;
+        return $File;
     }
 
     public function SaveSetting(SettingsFile $File,$ShouldThrow = true) {     

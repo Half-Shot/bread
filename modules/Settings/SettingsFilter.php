@@ -33,8 +33,12 @@ namespace Bread\Settings;
  */
 class SettingsFilter {
     //put your code here
+    function SettingsFilter(){
+        $args = new \stdClass();
+    }
+    
     public $module = '*';
     public $setting = '*';
     public $type = '';
-    public $args = [];
+    public $args;
 }

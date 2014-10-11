@@ -56,8 +56,9 @@ class SettingsManager {
             $JsonCatchallFilter->type = "Json";
             $JsonCatchallFilter->module = "*";
             $JsonCatchallFilter->setting = "*";
-            $this->filters = $JsonCatchallFilter;
-            $FileData = json_encode($JsonCatchallFilter);
+            $JsonCatchallFilter->args = new \stdClass();
+            $this->filters = array($JsonCatchallFilter);
+            $FileData = json_encode($this->filters);
             file_put_contents($filterpath, $FileData);
         }
         
@@ -66,8 +67,12 @@ class SettingsManager {
         }
         
         //Load interfaces
+        
         //JSON
         $this->interfaces["Json"] = new SettingsInterfaceJson();
+        
+        //PDO
+        $this->interfaces["PDO"] = new SettingsInterfacePDO();
     }
     
     /**
@@ -135,7 +140,8 @@ class SettingsManager {
             //Extension Based Interface Find (fallback)
             foreach($this->interfaces as $name => $interface){
                if(in_array($extension,$interface->MatchExtensions)){
-                   return $name;
+                   $args = new \stdClass();
+                   return array($name,$args);
                }
             }
             return false; //No interface found!
@@ -147,7 +153,7 @@ class SettingsManager {
               $ModuleMatch = fnmatch($Filter->module, $Parts[0]);
               $SettingMatch = fnmatch($Filter->setting, $Parts[1]);
               if($SettingMatch && $ModuleMatch){
-                  return $Filter->type;
+                  return array($Filter->type,$Filter->args);
               }
            }
         }
@@ -167,15 +173,15 @@ class SettingsManager {
         {
             return $this->files[$path]->data;
         }
-        
+        $args = null;
         //Find a correct interface.
-        $InterfaceName = $this->FindCorrectInterface($path);
-        if($InterfaceName === false){
+        $Interface = $this->FindCorrectInterface($path,$args);
+        if($Interface === false){
             Site::$Logger->writeError ("Couldn't load path '" . $path . "' for parsing settings. No interface found", \Bread\Logger::SEVERITY_MEDIUM, "core" , !$ignorefail, "Bread\Settings\FileNotFoundException");  
         }
         $File = new SettingsFile();
-        
-        $File->interface = $this->interfaces[$InterfaceName];
+        $File->args = $Interface[1];
+        $File->interface = $this->interfaces[$Interface[0]];
         $File->path = $path;
         if($template !== null && !$File->interface->SettingExists($File)){
             //Does the file exist.
@@ -186,7 +192,8 @@ class SettingsManager {
             Site::$Logger->writeError ("Couldn't load path '" . $path . "' for parsing settings.", \Bread\Logger::SEVERITY_MEDIUM, "core" , !$ignorefail, "Bread\Settings\FileNotFoundException");   
         }        
         try{
-            $File->data = $File->interface->RetriveSettings($File);
+            $File = $File->interface->RetriveSettings($File);
+            $File->MD5OnOpen = md5(serialize($File->data));
         } catch (FailedToParseException $ex) {
             if(!$ignorefail){
                 throw $ex;
@@ -207,9 +214,11 @@ class SettingsManager {
      */
     public function SaveChanges()
     {
-        Site::$Logger->writeError ("Preforming Dump of all saveable settings.", \Bread\Logger::SEVERITY_MESSAGE, "SettingsManager");
+        Site::$Logger->writeError ("Preforming dump of all saveable settings.", \Bread\Logger::SEVERITY_MESSAGE, "SettingsManager");
         foreach($this->files as $path => $obj){
-            $obj->interface->SaveSetting($obj); //Don't throw on such a large operation.
+            if($obj->MD5OnOpen !== md5(serialize($obj->data))){ //Did the file actually change?
+                $obj->interface->SaveSetting($obj,false); //Don't throw on such a large operation.
+            }
         }
     }
     /**
@@ -221,6 +230,15 @@ class SettingsManager {
     public function SaveSetting($object,$path,$shouldThrow = True)
     {        
        Site::$Logger->writeMessage ("Saving " . $path, "SettingsManager");
-       $this->files[$path]->interface->SaveSetting($this->files[$path]);
+       $this->files[$path]->data = $object;
+       $result = false;
+       try {
+           $result = $this->files[$path]->interface->SaveSetting($this->files[$path]);
+       } catch (Exception $ex) {
+           if($shouldThrow){
+               throw $ex;
+           }
+       }
+       return $result;
     }
 }

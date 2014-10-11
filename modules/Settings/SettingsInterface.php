@@ -32,9 +32,31 @@ namespace Bread\Settings;
  * @author will
  */
 interface SettingsInterface {
+    /**
+     * Check to see if the requested File exists.
+     * @param \Bread\Settings\SettingsFile $File
+     */
     function SettingExists(SettingsFile $File);
+    /**
+     * Create and save an empty file from template.
+     * @param \Bread\Settings\SettingsFile $File
+     * @param stdClass $Template
+     */
     function CreateSetting(SettingsFile $File,$Template);
+    /**
+     * Retrieve a stdobject from a source.
+     * @param \Bread\Settings\SettingsFile $File
+     */
     function RetriveSettings(SettingsFile $File);
+    /**
+     * Save a setting back to it's source.
+     * @param \Bread\Settings\SettingsFile $File
+     * @param bool $ShouldThrow Should you be worried about a failed save.
+     */
     function SaveSetting(SettingsFile $File,$ShouldThrow = true);
+    /**
+     * Delete a setting's source.
+     * @param \Bread\Settings\SettingsFile $File
+     */
     function DeleteSetting(SettingsFile $File);
 }
