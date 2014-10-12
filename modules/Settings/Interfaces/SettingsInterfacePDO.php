@@ -33,10 +33,11 @@ namespace Bread\Settings;
  */
 
 use Bread\Utilitys as Util;
+use Bread\Site as Site;
 
 class SettingsInterfacePDO implements SettingsInterface {
     
-    public $InterfaceName = "PDO";
+    public static $InterfaceName = "PDO";
     public $MatchExtensions = array();
     public $databaseConnections = array();
     
@@ -97,18 +98,16 @@ class SettingsInterfacePDO implements SettingsInterface {
         }
     }
     
-    public function TableFromObject($object,$rootTableName,$dbtype,$PrimaryKey = True){
-        
-        $Statements = array();
-        
-        $Values = array();
-        $Keys = array();
-        
-        $Statement = "CREATE TABLE '" . $this->GetTableNameFromPath($rootTableName) . "' (";
-        $Statement .= "'BreadDB_ID' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT";
-        
+    public function TableStructureFromObject($object,&$Statement,&$Values,$objectName = false){
+        if($objectName !== false){
+            $Statement .= "'" . $objectName . "'" . " TEXT";
+            $Values[] = "BreadDB_Object";
+        }
         foreach($object as $key => $value){
             $Statement .= ",";
+            if($objectName !== false){
+                $key = $objectName . '_' . $key;
+            }
             if(is_string($value)){
                 $Statement .= "'" . $key . "'" . " TEXT";
                 $Values[] = '"'.$value.'"';
@@ -125,15 +124,30 @@ class SettingsInterfacePDO implements SettingsInterface {
                 $Statement .= "'" . $key . "'" . " NULL";
                 $Values[] = '';
             }
-            else{
-                //Can't do anything with it.
-                
-                //If Object then create additional fields.
-                
+            else if(is_object($value)){
+                $Statement .= "'BreadDB_Object_" . $key . "'" . " TEXT";
+                //TODO:FIX THIS HACK!
+                $Values[] = 'json::' . json_encode($value);
+            }
+            else{                
                 //If Array then create a new table and use the ID field.
                 continue;
             }
         }
+    }
+    
+    public function TableFromObject($object,$rootTableName){
+        
+        $Statements = array();
+        
+        $Values = array();
+        $Keys = array();
+        
+        $Statement = "CREATE TABLE '" . $this->GetTableNameFromPath($rootTableName) . "' (";
+        $Statement .= "'BreadDB_ID' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT";
+        
+        $this->TableStructureFromObject($object, $Statement, $Values);
+        
         $Statement .= ");";
         if(count($Values) > 0){
             $InsertStatement = "INSERT INTO '" . $this->GetTableNameFromPath($rootTableName) . "' VALUES (NULL,";
@@ -175,7 +189,7 @@ class SettingsInterfacePDO implements SettingsInterface {
         if($DBC == false){
             return false;
         }
-        $Worked = $DBC->exec($this->TableFromObject($File->data,$File->path,$File->args->dbtype));
+        $Worked = $DBC->exec($this->TableFromObject($File->data,$File->path));
         return $Worked;
     }
 
@@ -193,20 +207,42 @@ class SettingsInterfacePDO implements SettingsInterface {
         $Statement = "SELECT * FROM '" . $this->GetTableNameFromPath($File->path) . "'";
         $Object = $conn->query($Statement);
         $Object = $Object->fetchAll(\PDO::FETCH_OBJ);
+
         if(count($Object) === 1){
             $Object = $Object[0];
         }
         else if(count($Object) === 0){
             $Object = False;
         }
+        if($Object === false){
+            Site::$Logger->writeError("Setting not found in database.", \Bread\Logger::SEVERITY_HIGH, "SettingsManager", true);
+        }
         if(isset($Object->BreadDB_ID)){
             $File->BreadDB_ID = $Object->BreadDB_ID;
         }
+        
+        //Get Objects
+        $this->DecompressObject($Object);
+        
         $File->data = $Object;
         
         return $File;
     }
     
+    public function DecompressObject(&$object){
+        foreach($Object as $name => $value){
+            if(is_string($Object)){
+                $value = explode('json::', $value);
+                $realname = explode('json::', $value);
+                if(count($value) > 1 && count($realname) > 1){
+                    $realname = $realname[1];
+                    unset($Object->$name);
+                    $Object->$realname = json_decode($value[1]);
+                }
+            }
+        }
+    }
+               
 
     public function SaveSetting(SettingsFile $File, $ShouldThrow = true) {
         if(!$this->CheckArgs($File)){

@@ -33,7 +33,7 @@ use Bread\Site as Site;
  */
 class SettingsInterfaceJson implements SettingsInterface {
     
-    public $InterfaceName = "Json";
+    public static $InterfaceName = "Json";
     public $MatchExtensions = array("json","js");
     const SAVEMODE = 0755;
     

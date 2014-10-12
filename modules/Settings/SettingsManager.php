@@ -69,10 +69,13 @@ class SettingsManager {
         //Load interfaces
         
         //JSON
-        $this->interfaces["Json"] = new SettingsInterfaceJson();
+        $this->interfaces[SettingsInterfaceJson::$InterfaceName] = new SettingsInterfaceJson();
         
-        //PDO
-        $this->interfaces["PDO"] = new SettingsInterfacePDO();
+        //PDO - Disabled while Half-Shot thinks on it.
+        //$this->interfaces[SettingsInterfacePDO::$InterfaceName] = new SettingsInterfacePDO();
+        
+        //XML - Disabled while Half-Shot thinks on it.
+        $this->interfaces[SettingsInterfaceXML::$InterfaceName] = new SettingsInterfaceXML();
     }
     
     /**
