@@ -361,15 +361,16 @@ class Site
 	 */
 	public static function SetupManagers()
 	{
-		$path = static::ResolvePath("%system-settings");
-		static::$themeManager = new Themes\ThemeManager();
-		static::$moduleManager = new Modules\ModuleManager();
-		static::$settingsManager = new Settings\SettingsManager();
-		static::$themeManager->LoadSettings($path . "/theme/settings.json");
-		if(!static::$isAjax){
-			static::$themeManager->LoadLayouts();
-		}
-		static::$moduleManager->LoadModulesFromConfig();
+            $path = static::ResolvePath("%system-settings");
+            static::$themeManager = new Themes\ThemeManager();
+            static::$moduleManager = new Modules\ModuleManager();
+            static::$settingsManager = new Settings\SettingsManager();
+            static::$settingsManager->Setup($path . "/datainterfaces.json");
+            static::$themeManager->LoadSettings($path . "/theme/settings.json");
+            if(!static::$isAjax){
+                static::$themeManager->LoadLayouts();
+            }
+            static::$moduleManager->LoadModulesFromConfig();
 	}
 	/**
 	 * Creates metadata tags for the header. This function calls moduleman

@@ -14,7 +14,7 @@ class BreadIndexSystem extends Module
     function Setup()
     {
         $this->navbar   = Site::$settingsManager->RetriveSettings("breadindexsystem#index",true, array());
-        $this->settings = Site::$settingsManager->RetriveSettings("breadindexsystem#settings",true,new BreadIndexSystemSettings());
+        $this->settings = Site::$settingsManager->RetriveSettings("breadindexsystem#settings",false,new BreadIndexSystemSettings());
         $this->settings = Site::CastStdObjectToStruct($this->settings, "\Bread\Modules\BreadIndexSystemSettings");
     }
     
@@ -22,6 +22,7 @@ class BreadIndexSystem extends Module
     {
         //Filter hidden
         $pages = array();
+        Site::$settingsManager->SaveSetting($this->settings,"breadindexsystem#settings");
         foreach($this->navbar as $page){
             if(isset($page->permissionrequired))
                 if(!$this->manager->FireEvent("Bread.Security.GetPermission",$page->permissionrequired))
