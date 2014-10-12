@@ -35,14 +35,12 @@ class ThemeManager
          */
         function LoadSettings($filepath)
 	{
-                $this->configuration = Site::$settingsManager->RetriveSettings($filepath);
-
-		foreach ($this->configuration->themes as $theme)
-		{
-			$json = Site::$settingsManager->RetriveSettings(Site::ResolvePath("%user-themes"). "/" . $theme,true);
-                        $this->themes[$json->module->name] = $json;
-                        
-                }
+            $this->configuration = Site::$settingsManager->RetriveSettings($filepath,true);
+            foreach ($this->configuration->themes as $theme)
+            {
+                $json = Site::$settingsManager->RetriveSettings(Site::ResolvePath("%user-themes"). "/" . $theme,true);
+                $this->themes[$json->module->name] = $json;
+            }
 	}
 
 	/**

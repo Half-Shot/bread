@@ -512,5 +512,18 @@ class Utilitys {
             }
             return $results;
         }
-            
+        /**
+         * Checks if every item in an array is an object.
+         * @param array $object
+         * @return boolean
+         */ 
+        public static function IsArrayOfObjects(array $object){
+            foreach($object as $value){
+                if(!is_object($value)){
+                    //Not Array 
+                    return false;
+                }
+            }
+            return true;
+        }
 }

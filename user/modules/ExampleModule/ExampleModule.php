@@ -16,6 +16,7 @@ class ExampleModule extends Module
         
         function HelloWorld($arguments)
         {
+            Site::$settingsManager->RetriveSettings("examplemodule#test");
             return "<p><b>Hello World</b></p>";
         }
 

@@ -1,6 +1,11 @@
 {
     "phpfilelist":[
         "./Settings/SettingsManager",
+        "./Settings/SettingsFile",
+        "./Settings/SettingsFilter",
+        "./Settings/SettingsInterface",
+        "./Settings/Interfaces/SettingsInterfaceJson",
+        "./Settings/Interfaces/SettingsInterfacePDO",
         "./Unirest/Unirest",
         "./Unirest/HttpMethod",
         "./Unirest/HttpResponse",
