@@ -53,13 +53,14 @@ class BreadContentSystem extends Module
         }
         Site::AddScript(Site::ResolvePath("%user-modules/BreadContentSystem/js/dropzone.min.js"), "Dropzone", true);
         Site::AddScript(Site::ResolvePath("%user-modules/BreadContentSystem/js/contentUpload.js"), "BreadContentSystem", true);
+        $RawCode = "";
         foreach($this->settings->allowedMimes as $type){
-            Site::AddRawScriptCode("window.acceptedTypes.push('".$type."');", true);
+            $RawCode .= "window.acceptedTypes.push('".$type."');";
         }
         foreach($this->settings->maxfilesize as $mimetype => $size){
-            Site::AddRawScriptCode("window.maxfilesize['".$mimetype."'] = ".$size.";", true);
+            $RawCode .= "window.maxfilesize['".$mimetype."'] = ".$size.";";
         }
-        Site::AddRawScriptCode("window.chunksize = " . BreadContentSystem::CHUNKSIZE, true);
+        Site::AddRawScriptCode($RawCode . "window.chunksize = " . BreadContentSystem::CHUNKSIZE, true);
         
         //Queue
         $Body = $this->manager->FireEvent("Theme.Layout.Well",array("small"=>0,"id"=>"uploadZone-thumbnail"));

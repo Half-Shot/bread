@@ -341,9 +341,9 @@ class BreadUserSystem extends Module
         $MasterSettings = new \Bread\Structures\BreadModuleSettings();
         $MasterSettings->Name = "User Security";
             
-        $PostConfigurator = new \Bread\Structures\BreadModuleSettingsTab();
-        $PostConfigurator->HumanTitle = "Users";
-        $MasterSettings->SettingsGroups[] = $PostConfigurator;
+        $Users = new \Bread\Structures\BreadModuleSettingsTab();
+        $Users->HumanTitle = "Users";
+        $MasterSettings->SettingsGroups[] = $Users;
         
        # $GlobalSettings = new \Bread\Structures\BreadModuleSettingsTab;
        # $GlobalSettings->HumanTitle = "Permissions";
@@ -353,13 +353,13 @@ class BreadUserSystem extends Module
 
         Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/adminpanel.js"),"AdminPanelScript",true);
         //Current Users Table
-        $PostConfigurator->Panels[] = $this->ConstructUserPanel();
+        $Users->Panels[] = $this->ConstructUserPanel();
         
         $ToolsPanel = new \Bread\Structures\BreadModuleSettingsPanel();
         $ToolsPanel->Name = "currentusers";
         $ToolsPanel->HumanTitle = "Users";
         $ToolsPanel->PercentageWidth = 25;
-        $PostConfigurator->Panels[] = $ToolsPanel;
+        $Users->Panels[] = $ToolsPanel;
         
         $AddNewUserButton = new \Bread\Structures\BreadFormElement();
         $AddNewUserButton->id = "NewUserButton";

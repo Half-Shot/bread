@@ -60,17 +60,16 @@ class BreadAdminTools extends Module
                     if($NewSetting !== NULL){
                         $this->ModuleSettings[] = $NewSetting;
                         //Swap if needed!
-                        $ModuleData = $NewSetting;
-                        if($ModuleData->OverrideIndex !== -1 && $ModuleData->OverrideIndex !== $ListOffset) 
+                        if($NewSetting->OverrideIndex !== -1 && $NewSetting->OverrideIndex !== $ListOffset) 
                         {
-                            if(array_key_exists($ModuleData->OverrideIndex, $this->ModuleSettings)){
-                                $SwapSpace = clone $this->ModuleSettings[$ModuleData->OverrideIndex];
-                                $this->ModuleSettings[$ModuleData->OverrideIndex] = $ModuleData;
+                            if(array_key_exists($NewSetting->OverrideIndex, $this->ModuleSettings)){
+                                $SwapSpace = clone $this->ModuleSettings[$NewSetting->OverrideIndex];
+                                $this->ModuleSettings[$NewSetting->OverrideIndex] = $NewSetting;
                                 $this->ModuleSettings[$ListOffset] = $SwapSpace;
                             }
                             else
                             {
-                                $this->ModuleSettings[$ModuleData->OverrideIndex] = clone $ModuleData;
+                                $this->ModuleSettings[$NewSetting->OverrideIndex] = clone $NewSetting;
                                 unset($this->ModuleSettings[$ListOffset]);
                             }
                         }
