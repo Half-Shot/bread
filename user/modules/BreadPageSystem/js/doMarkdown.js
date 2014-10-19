@@ -222,12 +222,18 @@ function toggleMarkdown()
 function saveMarkdown()
 {
     var md = editor.exportFile();
-    $.post( "index.php", { ajaxEvent: "BreadPageSystem.SavePost",ajaxModule:"BreadPageSystem", url: document.URL, markdown: md, title: $("#bps-title").text(), subtitle: $("#bps-subtitle").text(),author: $("#e_author")[0].value, timereleased: $("#e_timereleased")[0].value, categories: CategoryArray()}, function(returndata)
+    var time = $("#e_timereleased");
+    if(time.length > 0){
+        var time = time[0].value;
+    }
+    else{
+        var time = null;
+    }
+    $.post( "index.php", { ajaxEvent: "BreadPageSystem.SavePost",ajaxModule:"BreadPageSystem",id:bpspostid, url: document.URL, markdown: md, title: $("#bps-title").text(), subtitle: $("#bps-subtitle").text(),author: $("#e_author")[0].value, timereleased: time, categories: CategoryArray()}, function(returndata)
     {
         if(returndata != "0"){
             window.location = returndata;
-            localStorage.setItem("lastPostEdit_" + bpspostid, null);
-
+            localStorage.removeItem("lastPostEdit_" + bpspostid);
         }
         else{
             alert("Something went wrong :|");
@@ -237,7 +243,7 @@ function saveMarkdown()
 
 function deletePost()
 {
-    $.post( "index.php", { ajaxEvent: "BreadPageSystem.DeletePost",ajaxModule:"BreadPageSystem", url: document.URL}, function(returndata)
+    $.post( "index.php", { ajaxEvent: "BreadPageSystem.DeletePost",ajaxModule:"BreadPageSystem",id:bpspostid, url: document.URL}, function(returndata)
     {
         if(returndata === "1"){
             alert("The deed is done.");
