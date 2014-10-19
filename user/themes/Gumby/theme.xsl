@@ -28,21 +28,23 @@
       </div>
     </xsl:template>
     <xsl:template match="telement[@id='VerticalNavbar']">
-        <ul class="nav nav-pills nav-stacked">
-        <xsl:for-each select="./variable/variable">
-            <li>
-                <xsl:if test="./active = 1">
-                    <xsl:attribute name="class">active</xsl:attribute>
-                </xsl:if>
-                <a>
-                    <xsl:attribute name="href">
-                        <xsl:value-of select="./url"/>
-                    </xsl:attribute>
-                    <xsl:value-of select="./text"/>
-                </a>
-            </li>
-        </xsl:for-each>
-        </ul>
+        <section class="tabs">
+            <ul class="tab-nav">
+                <xsl:for-each select="./variable/variable">
+                    <li>
+                        <xsl:if test="./active = 1">
+                            <xsl:attribute name="class">active</xsl:attribute>
+                        </xsl:if>
+                        <a>
+                            <xsl:attribute name="href">
+                                <xsl:value-of select="./url"/>
+                            </xsl:attribute>
+                            <xsl:value-of select="./text"/>
+                        </a>
+                    </li>
+                </xsl:for-each>
+            </ul>
+        </section>
     </xsl:template>
     <xsl:template match="telement[@id='Title']">
         <h1>
@@ -53,45 +55,40 @@
         </h1>
     </xsl:template>
     <xsl:template match="telement[@id='Navbar']">
-        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".collapse.navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                    </button>
-                    <a class="navbar-brand">
-                        <xsl:attribute name="href"><xsl:value-of select="./variable/variable/url"/></xsl:attribute>
-                        <xsl:value-of select="./variable/variable/text"/>
+        <div class="row navbar" id="nav1">
+            <!-- Toggle for mobile navigation, targeting the <ul> -->
+            <a class="toggle" gumby-trigger="#nav1 > ul" href="#"><i class="icon-menu"></i></a>
+            <h1 class="four columns logo">
+                <a href="#">
+                    <xsl:attribute name="href"><xsl:value-of select="./variable/variable/url"/></xsl:attribute>
+                    <xsl:value-of select="./variable/variable/text"/>
+                </a>
+            </h1>
+            <ul class="eight columns">
+                <xsl:for-each select="./variable/variable[position() != 1]">
+                <li>
+                    <xsl:if test="./active = 1">
+                        <xsl:attribute name="class">active</xsl:attribute>
+                    </xsl:if>
+                    <a>
+                        <xsl:attribute name="href"><xsl:value-of select="./url"/></xsl:attribute>
+                        <xsl:value-of select="./text"/>
                     </a>
-                </div>
-                <div class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav">
-                        <xsl:for-each select="./variable/variable[position() != 1]">
-                            <li>
-                                <xsl:if test="./active = 1">
-                                    <xsl:attribute name="class">active</xsl:attribute>
-                                </xsl:if>
-                                <a>
-                                    <xsl:attribute name="href"><xsl:value-of select="./url"/></xsl:attribute>
-                                    <xsl:value-of select="./text"/>
-                                </a>
-                            </li>
-                        </xsl:for-each>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <xsl:for-each select="./variable/inner/variable">
-                            <li><xsl:value-of select="."/></li>
-                        </xsl:for-each>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+                </li>
+                </xsl:for-each>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <xsl:for-each select="./variable/inner/variable">
+                    <li><xsl:value-of select="."/></li>
+                </xsl:for-each>
+            </ul>
+        </div>
     </xsl:template>
     <xsl:template match="telement[@id='LabelValuePairs']">
         <xsl:for-each select="./variable/variable">
+            <span>
             <xsl:value-of select="./label"/>
-            <span class="label label-info">
-                <xsl:value-of select="./data"/>
+            <li class="info label"><xsl:value-of select="./data"/></li>
             </span>
             <br></br>
         </xsl:for-each>
@@ -389,7 +386,7 @@
     </xsl:template>
     <xsl:template name="Label" match="telement[@id='Label']">
         <span>
-            <xsl:attribute name="class">label <xsl:value-of select="./variable/type"/></xsl:attribute>
+            <xsl:attribute name="class">label label-<xsl:value-of select="./variable/type"/></xsl:attribute>
             <xsl:value-of select="./variable/value"/>
         </span>
     </xsl:template>
@@ -529,32 +526,5 @@
                 </xsl:for-each>
             </tbody>
         </table>
-    </xsl:template>
-    <xsl:template match="telement[@id='Dropdown']">
-        <div class="dropdown">
-            <xsl:attribute name="name"><xsl:value-of select="./variable/name"/></xsl:attribute>
-            <xsl:attribute name="id"><xsl:value-of select="./variable/id"/></xsl:attribute>
-            <xsl:attribute name="class"><xsl:value-of select="./variable/class"/></xsl:attribute>
-            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown">
-                <xsl:value-of select="./variable/value"/>
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-                <xsl:for-each select="./variable/items/variable">
-                    <xsl:choose>
-                        <xsl:when test="./value = 'seperator'">
-                            <li role="presentation" class="divider"></li>
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <li role="presentation">
-                                <a role="menuitem" tabindex="-1" href="#">
-                                    <xsl:value-of select="."/>
-                                </a>
-                            </li>
-                        </xsl:otherwise>
-                    </xsl:choose>
-                </xsl:for-each>
-            </ul>
-        </div>
     </xsl:template>
 </xsl:stylesheet>

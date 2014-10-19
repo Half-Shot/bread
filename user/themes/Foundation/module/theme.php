@@ -1,8 +1,7 @@
 <?php
 use Bread\Site as Site;
-use Bread\Structures\BreadFormElement as BreadFormElement;
 use Bread\Themes\BreadXML as BreadXML;
-class BootstrapTheme extends Bread\Modules\Module
+class FoundationTheme extends Bread\Modules\Module
 {
 	public $breadXML;
 	function __construct($manager,$name)
@@ -98,14 +97,8 @@ class BootstrapTheme extends Bread\Modules\Module
         
 	function Load()
 	{
-            $this->breadXML = new BreadXML(Site::FindFile("Bootstrap/theme.xsl"));
-            //Enable tooltips
-            $String = '$("[data-toggle=';
-            $String .= "'tooltip'";
-            $String .= ']").tooltip();';
-            Site::AddRawScriptCode($String, true);
-            //Image fix
-            Site::AddRawScriptCode("$('img').addClass('img-responsive');",true);
+            $this->breadXML = new BreadXML(Site::FindFile("Foundation/theme.xsl"));
+            Site::AddRawScriptCode("$(document).foundation();",true);
 	}
         
 	function Navbar($args)
@@ -289,7 +282,8 @@ class BootstrapTheme extends Bread\Modules\Module
             if(array_key_exists("_inner", $args)){
                 $args["body"] = $this->LayoutBlock($args);
             }
-            return $this->breadXML->GetHTMLOfElement("Well",$args);
+            //Foundation has no well class.
+            return $this->breadXML->GetHTMLOfElement("Panel",$args);
         }
         
         function Tabs($args)
@@ -365,7 +359,7 @@ class BootstrapTheme extends Bread\Modules\Module
             {
                 $offset = "";
                 if(isset($cell->offset)){
-                    $offset = " col-md-offset-" . $cell->offset;
+                    $offset = " large-offset-" . $cell->offset;
                 }
                 else
                 {
@@ -383,7 +377,7 @@ class BootstrapTheme extends Bread\Modules\Module
                         $cell->size = $spaceLeft;
                     }
                 }
-                $HTML .= '<div class="col-md-'. $cell->size . $offset . '">'. $cell->body .'</div>';
+                $HTML .= '<div class="columns large-'. $cell->size . $offset . ' ">'. $cell->body .'</div>';
                 $spaceLeft -= $cell->size;
             }
             return $HTML . "</div>";

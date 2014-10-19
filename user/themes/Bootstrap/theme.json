@@ -2,7 +2,7 @@
 	"module":
 	{
 		"name":"theme-bootstrap",
-		"humanname":"Boostrap",
+		"humanname":"Bootstrap",
 		"description":"Twitter Bootstrap for Bread.",
 		"version":"3.11",
 		"author":"Bootstrap team & ported by Half-Shot",
@@ -10,6 +10,6 @@
 		"entryclass":"BootstrapTheme",
 		"entryfile":"Bootstrap/module/theme.php",
 		"css":["Bootstrap/css/bootstrap.min.css","Bootstrap/css/bootstrap-theme.min.css","Bootstrap/css/bread.css"],
-                "js":["http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js","Bootstrap/js/bootstrap.min.js"]
+                "js":["Bootstrap/js/jquery.min.js","Bootstrap/js/bootstrap.min.js"]
 	}
 }

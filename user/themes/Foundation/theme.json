@@ -1,0 +1,28 @@
+{
+	"module":
+	{
+		"name":"theme-foundation",
+		"humanname":"Foundation",
+		"description":"Zurb Foundation for Bread.",
+		"version":"5",
+		"author":"Foundation team & ported by Half-Shot",
+		"e-mail":"half-shot@molrams.com",
+		"entryclass":"FoundationTheme",
+		"entryfile":"Foundation/module/theme.php",
+		"css":
+                    [   
+                        "Foundation/css/foundation.min.css",
+                        "Foundation/css/normalize.css",
+                        "Foundation/css/bread.css"
+                    ],
+                "js":
+                    [  
+                        "Foundation/js/vendor/jquery.cookie.js",
+                        "Foundation/js/vendor/placeholder.js",
+                        "Foundation/js/vendor/fastclick.js",
+                        "Foundation/js/vendor/modernizr.js",
+                        "Foundation/js/vendor/jquery.js",
+                        "Foundation/js/foundation.min.js"
+                    ]
+	}
+}
