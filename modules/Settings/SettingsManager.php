@@ -221,6 +221,7 @@ class SettingsManager {
         foreach($this->files as $path => $obj){
             if($obj->MD5OnOpen !== md5(serialize($obj->data))){ //Did the file actually change?
                 $obj->interface->SaveSetting($obj,false); //Don't throw on such a large operation.
+                $obj->interface->CloseConnection($obj);
             }
         }
     }
@@ -233,10 +234,23 @@ class SettingsManager {
     public function SaveSetting($object,$path,$shouldThrow = True)
     {        
        Site::$Logger->writeMessage ("Saving " . $path, "SettingsManager");
-       $this->files[$path]->data = $object;
        $result = false;
        try {
-           $result = $this->files[$path]->interface->SaveSetting($this->files[$path]);
+           //The programmer must choose whether to be cool and use the new format
+           //Or be lazy and use the old format.
+           if(in_array($path, $this->files)){
+              $this->files[$path]->data = $object;
+              $result = $this->files[$path]->interface->SaveSetting($this->files[$path]); 
+           }
+           else{
+              $File = new SettingsFile();
+              $File->path = $path;
+              $File->data = $object;
+              $File->interface = $this->interfaces[$this->FindCorrectInterface($path)[0]];
+              $File->args = $this->FindCorrectInterface($path)[1];
+              $result = $File->interface->SaveSetting($File);
+           }
+           
        } catch (Exception $ex) {
            if($shouldThrow){
                throw $ex;

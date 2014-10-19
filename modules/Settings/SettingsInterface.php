@@ -59,4 +59,6 @@ interface SettingsInterface {
      * @param \Bread\Settings\SettingsFile $File
      */
     function DeleteSetting(SettingsFile $File);
+    
+    function CloseConnection(SettingsFile $File);
 }
