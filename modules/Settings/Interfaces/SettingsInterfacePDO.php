@@ -98,67 +98,19 @@ class SettingsInterfacePDO implements SettingsInterface {
         }
     }
     
-    public function TableStructureFromObject($object,&$Statement,&$Values,$objectName = false){
-        if($objectName !== false){
-            $Statement .= "'" . $objectName . "'" . " TEXT";
-            $Values[] = "BreadDB_Object";
-        }
-        foreach($object as $key => $value){
-            $Statement .= ",";
-            if($objectName !== false){
-                $key = $objectName . '_' . $key;
-            }
-            if(is_string($value)){
-                $Statement .= "'" . $key . "'" . " TEXT";
-                $Values[] = '"'.$value.'"';
-            }
-            else if(is_bool($value)){
-                $Statement .= "'" . $key . "'" . " BOOLEAN";
-                $Values[] = $value;
-            }
-            else if(is_int($value)){
-                $Statement .= "'" . $key . "'" . " NUMERIC";
-                $Values[] = $value;
-            }
-            else if(is_null($value)){
-                $Statement .= "'" . $key . "'" . " NULL";
-                $Values[] = '';
-            }
-            else if(is_object($value)){
-                $Statement .= "'BreadDB_Object_" . $key . "'" . " TEXT";
-                //TODO:FIX THIS HACK!
-                $Values[] = 'json::' . json_encode($value);
-            }
-            else{                
-                //If Array then create a new table and use the ID field.
-                continue;
-            }
-        }
-    }
     
-    public function TableFromObject($object,$rootTableName){
-        
-        $Statements = array();
-        
-        $Values = array();
-        $Keys = array();
-        
-        $Statement = "CREATE TABLE '" . $this->GetTableNameFromPath($rootTableName) . "' (";
-        $Statement .= "'BreadDB_ID' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT";
-        
-        $this->TableStructureFromObject($object, $Statement, $Values);
-        
-        $Statement .= ");";
-        if(count($Values) > 0){
-            $InsertStatement = "INSERT INTO '" . $this->GetTableNameFromPath($rootTableName) . "' VALUES (NULL,";
-            $InsertStatement .= implode(',',$Values);
-            $InsertStatement .= ");";       
+    public function TablesFromObject($object,$rootTableName){
+        $tables = array();
+        if(is_array($object)){
+            $tables[] = $object[0];
         }
-        else{
-            $InsertStatement = "";
+        
+        foreach($tables as &$object){
+            $iterator = new \RecursiveIteratorIterator($object);
+            foreach($iterator as $key => $value){
+                echo $key "=>" $value;
+            }
         }
-       
-        return $Statement . $InsertStatement;
     }
     
     public function ObjectToMYSQL($object,$rootTableName){
@@ -287,6 +239,10 @@ class SettingsInterfacePDO implements SettingsInterface {
 
         // Result is either boolean FALSE (no table found) or PDOStatement Object (table found)
         return $result !== FALSE;
+    }
+
+    public function CloseConnection(SettingsFile $File) {
+        return true;
     }
 
 //put your code here

@@ -1,7 +1,8 @@
 {
     "themes": [
         "VanillaBread\/theme.json",
-        "Bootstrap\/theme.json"
+        "Bootstrap\/theme.json",
+        "Foundation\/theme.json"
     ],
     "layouts": {
         "default": "default\/page-layout.json",

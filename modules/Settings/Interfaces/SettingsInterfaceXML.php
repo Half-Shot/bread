@@ -109,4 +109,8 @@ class SettingsInterfaceXML implements SettingsInterface {
         return (file_exists($path));
     }
 
+    public function CloseConnection(SettingsFile $File) {
+        return true;
+    }
+
 }
