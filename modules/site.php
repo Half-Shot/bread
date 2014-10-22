@@ -104,6 +104,12 @@ class Site
 	 */
 	private static $Request = NULL;
 
+        /**
+         * Content Type of the document
+         * @var string
+         */
+        private static $ContentType = "text/html";
+        
 	/**
 	 * The base url of the site, written when the request is digested.
 	 * @var string 
@@ -562,46 +568,53 @@ class Site
 		}
 
 		//Draw
-		static::$htmlcode .= "<!DOCTYPE html5>\n<html>\n"; //Obviously.
-		static::$Logger->writeMessage("Beginning build of page");
-		static::$Logger->writeMessage("Request data:\n" . var_export($requestData,True));
-		//Process request
-		if(!static::$themeManager->SelectLayout($requestData)){
-			static::$Logger->writeError("Couldn't select layout from request.",\Bread\Logger::SEVERITY_CRITICAL,"core",True);
-		}
+                static::$moduleManager->FireEvent("Bread.Override",null,false);
+                header('Content-type: ' . static::$ContentType);
+                if(static::$ContentType == "text/html"){ //Do HTML Stuff
+                    static::$htmlcode .= "<!DOCTYPE html5>\n<html>\n"; //Obviously.
+                    static::$Logger->writeMessage("Beginning build of page");
+                    static::$Logger->writeMessage("Request data:\n" . var_export($requestData,True));
+                    //Process request
+                    if(!static::$themeManager->SelectLayout($requestData)){
+                            static::$Logger->writeError("Couldn't select layout from request.",\Bread\Logger::SEVERITY_CRITICAL,"core",True);
+                    }
 
-		static::$themeManager->ReadElementsFromLayout(static::$themeManager->Theme["layout"]);#Build layout into HTML
-			static::$moduleManager->FireEvent("Bread.FinishedLayoutProcess",null,false);
-		static::$htmlcode .= "<head>\n";
-		static::$htmlcode .= '<meta charset="'.Site::CHARSET.'">';
-		static::$htmlcode .= static::ProcessMetadata($requestData);
-		$titleArray = static::$moduleManager->FireEvent("Bread.PageTitle",null,false);
-		if($titleArray == false){
-			Site::AddToHeaderCode("<title>" . self::$configuration->strings->sitename ."</title>");
-		}
-		elseif(is_string($titleArray)){
-			Site::AddToHeaderCode("<title>" . $titleArray. " - "  . self::$configuration->strings->sitename ."</title>");
-		}
-		else{
-			foreach($titleArray as $title){
-				if($title){
-					Site::AddToHeaderCode("<title>" . $title . " - " . self::$configuration->strings->sitename ."</title>");
-				}
-			}
-		}
-		static::$htmlcode .= static::$headercode;
-		static::$htmlcode .= static::$themeManager->CSSLines;
-		static::$moduleManager->FireEvent("Bread.InsertScript",NULL,false); //Must use add to head.
-		static::$htmlcode .= static::$ScriptLines;
-		static::$moduleManager->FireEvent("Bread.FinishedHead",NULL,false); //Must use add to head.
-		static::$htmlcode .= "</head>\n";
-		static::$htmlcode .= "<body>\n";
-		static::$htmlcode .= static::$bodycode;
-		static::$moduleManager->FireEvent("Bread.LowPriorityScripts",NULL,false);
-		static::$htmlcode .= static::$LowPriorityScriptLines;
-		static::$moduleManager->FireEvent("Bread.FinishedBody",NULL,false); //Must use add to body.
-		static::$htmlcode .= "</body>\n";
-		static::$htmlcode .= "</html>\n";
+                    static::$themeManager->ReadElementsFromLayout(static::$themeManager->Theme["layout"]);#Build layout into HTML
+                    static::$moduleManager->FireEvent("Bread.FinishedLayoutProcess",null,false);
+                    static::$htmlcode .= "<head>\n";
+                    static::$htmlcode .= '<meta charset="'.Site::CHARSET.'">';
+                    static::$htmlcode .= static::ProcessMetadata($requestData);
+                    $titleArray = static::$moduleManager->FireEvent("Bread.PageTitle",null,false);
+                    if($titleArray == false){
+                            Site::AddToHeaderCode("<title>" . self::$configuration->strings->sitename ."</title>");
+                    }
+                    elseif(is_string($titleArray)){
+                            Site::AddToHeaderCode("<title>" . $titleArray. " - "  . self::$configuration->strings->sitename ."</title>");
+                    }
+                    else{
+                            foreach($titleArray as $title){
+                                    if($title){
+                                            Site::AddToHeaderCode("<title>" . $title . " - " . self::$configuration->strings->sitename ."</title>");
+                                    }
+                            }
+                    }
+                    static::$htmlcode .= static::$headercode;
+                    static::$htmlcode .= static::$themeManager->CSSLines;
+                    static::$moduleManager->FireEvent("Bread.InsertScript",NULL,false); //Must use add to head.
+                    static::$htmlcode .= static::$ScriptLines;
+                    static::$moduleManager->FireEvent("Bread.FinishedHead",NULL,false); //Must use add to head.
+                    static::$htmlcode .= "</head>\n";
+                    static::$htmlcode .= "<body>\n";
+                    static::$htmlcode .= static::$bodycode;
+                    static::$moduleManager->FireEvent("Bread.LowPriorityScripts",NULL,false);
+                    static::$htmlcode .= static::$LowPriorityScriptLines;
+                    static::$moduleManager->FireEvent("Bread.FinishedBody",NULL,false); //Must use add to body.
+                    static::$htmlcode .= "</body>\n";
+                    static::$htmlcode .= "</html>\n";
+                }
+                else{ //A different mimetype
+                    echo "What?";
+                }
 		echo static::$htmlcode;
 	}
 

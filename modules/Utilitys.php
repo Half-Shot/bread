@@ -526,4 +526,11 @@ class Utilitys {
             }
             return true;
         }
+        
+        public static function DOMElementToString($element){
+            $newdoc = new \DOMDocument();
+            $cloned = $element->cloneNode(TRUE);
+            $newdoc->appendChild($newdoc->importNode($cloned,TRUE));
+            return $newdoc->saveHTML();
+        }
 }

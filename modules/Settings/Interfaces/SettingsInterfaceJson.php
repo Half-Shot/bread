@@ -69,10 +69,14 @@ class SettingsInterfaceJson implements SettingsInterface {
         $path = Site::$settingsManager->GetHashFilePath($File->path);
         Site::$Logger->writeMessage ("Saving " . $path, "SettingsManager");
         $string = $this->Serialize($File->data);
+        if(is_null($string)){
+             Site::$Logger->writeError ("Couldn't write json to file. path: '" . $path . "'", \Bread\Logger::SEVERITY_MEDIUM,"core" , $ShouldThrow, "Bread\Settings\FailedToParseException");     
+        }
         $worked = file_put_contents($path, $string);
-        if($worked == False || is_null($string)){    
+        if($worked == False){    
             Site::$Logger->writeError ("Couldn't write json to file. path: '" . $path . "'", \Bread\Logger::SEVERITY_MEDIUM,"core" , $ShouldThrow, "Bread\Settings\FileNotWrittenException");     
         }
+        return true;
     }
     
     public function Serialize($data){
@@ -99,6 +103,10 @@ class SettingsInterfaceJson implements SettingsInterface {
     public function SettingExists(SettingsFile $File) {
         $path = Site::$settingsManager->GetHashFilePath($File->path);
         return (file_exists($path));
+    }
+
+    public function CloseConnection(SettingsFile $File) {
+        return true;
     }
 
 }

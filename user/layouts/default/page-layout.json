@@ -21,6 +21,15 @@
                 }
             },
             {
+                "name":"login-name",
+                "id":"login-name",
+                "event":"BreadNotify.GetNotificationNavbarWidget",
+                "arguments":
+                {
+                   "Class":"navbar-btn"
+                }
+            },
+            {
                 "name":"button-squisher",
                 "id":"loginbuttongroup",
                 "event":"Theme.Layout.ButtonGroup",

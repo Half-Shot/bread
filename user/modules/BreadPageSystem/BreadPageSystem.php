@@ -4,6 +4,7 @@ use Bread\Site as Site;
 use Bread\Utilitys as Util;
 class BreadPageSystem extends Module
 {
+        const ADMINPANEL_MAXPOSTS = 25;
         private $settings;
         private $index;
         private $isnewpost = false;
@@ -45,6 +46,14 @@ class BreadPageSystem extends Module
         
         static function USortDate($a,$b)
         {
+            if($a->time_released === false){
+                return 1;
+            } 
+            
+            if($b->time_released === false){
+                return -1;
+            } 
+            
             if($a->time_released > $b->time_released)
             {
                 return -1;
@@ -64,30 +73,30 @@ class BreadPageSystem extends Module
             $titleRecurances = array();
             $index = get_object_vars($this->index);
             usort($index,"\Bread\Modules\BreadPageSystem::USortDate");
-            foreach($index as $page)
+            foreach($index as $post)
             {
-                if($page->time_released > time() && !$this->CheckEditorRights()){
+                if(!$this->IsPostReleased($post->time_released) && !$this->CheckEditorRights()){
                     continue;
                 }
-                if(isset($page->hidden)){
-                    if($page->hidden){
+                if(isset($post->hidden)){
+                    if($post->hidden){
                         continue;
                     }
                 }
                 $parts = array();
                 $parts["request"] = $this->settings->postRequest;
-                $parts["post"] = $page->id;
-                if(!array_key_exists($page->title, $pages)){
-                    $pages[$page->title] = Site::CondenseURLParams(false,$parts);
+                $parts["post"] = $post->id;
+                if(!array_key_exists($post->title, $pages)){
+                    $pages[$post->title] = Site::CondenseURLParams(false,$parts);
                 }
                 else{
-                    if(array_key_exists($page->title, $titleRecurances)){
-                        $titleRecurances[$page->title] += 1;
+                    if(array_key_exists($post->title, $titleRecurances)){
+                        $titleRecurances[$post->title] += 1;
                     }
                     else{
-                        $titleRecurances[$page->title] = 1;
+                        $titleRecurances[$post->title] = 1;
                     }
-                    $pages[$page->title . " (" . $titleRecurances[$page->title] . ")"] = Site::CondenseURLParams(false,$parts);
+                    $pages[$post->title . " (" . $titleRecurances[$post->title] . ")"] = Site::CondenseURLParams(false,$parts);
                 }
             }
             $pages = array_slice($pages, 0, $this->settings->maxRecentPosts, true);
@@ -178,17 +187,20 @@ class BreadPageSystem extends Module
             $E_Header_Basic->value = "<h4>Basic Settings</h4>";
             $form->elements[] = $E_Header_Basic;
             
-            $E_TimeReleased = new \Bread\Structures\BreadFormElement;
-            $E_TimeReleased->id = "e_timereleased";
-            $E_TimeReleased->class = "bps-editorinfo-input";
-            $E_TimeReleased->type = "datetime-local";
-            $E_TimeReleased->label = "Release On";
-            $E_TimeReleased->required = true;
-            $E_TimeReleased->readonly = true;
-            if(!$this->isnewpost){
-                $E_TimeReleased->value = date ("Y-m-d\TH:i:s\Z",  $Post->time_released);
+            if($this->manager->FireEvent("Bread.Security.GetPermission","BreadPageSystem.Editor")){ //Editors are the only ones that can set publish dates.
+                $E_TimeReleased = new \Bread\Structures\BreadFormElement;
+                $E_TimeReleased->id = "e_timereleased";
+                $E_TimeReleased->class = "bps-editorinfo-input";
+                $E_TimeReleased->type = "datetime-local";
+                $E_TimeReleased->label = "Release On";
+                $E_TimeReleased->required = true;
+                $E_TimeReleased->readonly = true;
+                if(!$this->isnewpost && $this->IsPostReleased($Post->time_released)){
+                    $E_TimeReleased->value = date ("Y-m-d\TH:i:s\Z",  $Post->time_released);
+                }
+                $form->elements[] = $E_TimeReleased;
             }
-            $form->elements[] = $E_TimeReleased;
+
             
             $E_Author = new \Bread\Structures\BreadFormElement;
             $E_Author->id = "e_author";
@@ -212,25 +224,7 @@ class BreadPageSystem extends Module
             }
             $form->elements[] = $E_Author;
             
-            $E_Submit = new \Bread\Structures\BreadFormElement;
-            $E_Submit->class = "bps-editorinfo-input btn-success";
-            $E_Submit->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
-            $E_Submit->value = "Save Post";
-            $E_Submit->id = "savePost";
-            if($this->isnewpost)
-                $E_Submit->value = "Save New Post";
-            $E_Submit->readonly = true;
-            $form->elements[] = $E_Submit;
-            if(!$this->isnewpost)
-            {
-                $E_Delete = new \Bread\Structures\BreadFormElement;
-                $E_Delete->class = "bps-editorinfo-input btn-danger";
-                $E_Delete->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
-                $E_Delete->value = "Delete Post";
-                $E_Delete->readonly = true;
-                $E_Delete->onclick = "$('#warnDeletePost').modal('show');return false;";
-                $form->elements[] = $E_Delete;
-            }
+            
             $HTML_Categories = new \Bread\Structures\BreadFormElement;
             $HTML_Categories->type = \Bread\Structures\BreadFormElement::TYPE_RAWHTML;
             $HTML_Categories->value = "<h4>Categories</h4>";
@@ -304,7 +298,48 @@ class BreadPageSystem extends Module
             $E_OpenEditor->toggle = true;
             $E_OpenEditor->readonly = !$this->EnableEditor;
             $OpenEditorHTML = $this->manager->FireEvent("Theme.Button",$E_OpenEditor);
+            
+            
+            $E_Submit = new \Bread\Structures\BreadFormElement;
+            $E_Submit->class = "bps-editorinfo-input btn-success";
+            $E_Submit->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+            $E_Submit->value = "Save Post";
+            $E_Submit->id = "savePost";
+            
+            if($this->isnewpost)
+            {
+                if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadPageSystem.Editor")){
+                    $E_Submit->value = "Queue Post";
+                }
+                else{
+                    $E_Submit->value = "Save New Post";
+                }
+            }
+            $E_Submit->readonly = true;
+            $form->elements[] = $E_Submit;
+            if(!$this->isnewpost)
+            {
+                $E_Delete = new \Bread\Structures\BreadFormElement;
+                $E_Delete->class = "bps-editorinfo-input btn-danger";
+                $E_Delete->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+                $E_Delete->value = "Delete Post";
+                $E_Delete->readonly = true;
+                $E_Delete->onclick = "$('#warnDeletePost').modal('show');return false;";
+                $form->elements[] = $E_Delete;
+            }
+            
             $panel->body = $OpenEditorHTML . "<hr>" . $this->manager->FireEvent("Theme.Form",$form) . $ModalHTML;
+            
+            //Suppliments
+            $suppliments = $this->manager->FireEvent("BreadPageSystem.PostEditorSuppliments",$Post->id,true,true);
+            if(!is_array($suppliments))
+            {
+                $suppliments = array($suppliments);
+            }
+            foreach($suppliments as $html){
+                $panel->body .= $html;
+            }
+            
             return $this->manager->FireEvent("Theme.Panel",$panel);
         }
         
@@ -408,7 +443,7 @@ class BreadPageSystem extends Module
            $page = $this->GetActivePost();
            if($page == False)
             return False;
-           if($page->time_released > time() && !$this->CheckEditorRights())
+           if(!$this->IsPostReleased($page->time_released) && !$this->CheckEditorRights())
             return False;
            $markdown = "";
            $markdown = file_get_contents($this->GetPostPath($page->url));
@@ -486,7 +521,6 @@ class BreadPageSystem extends Module
             $MarkdownLogo .= "</span>";
             Site::AddRawScriptCode("$('#breadPageSystem-MarkdownLogo').popover({'html':true});",true);
             $Toolbar = $this->manager->FireEvent("Theme.Layout.ButtonToolbar",$Group . $GroupTwo . $GroupMedia . $GithubHTML . $MarkdownLogo);
-            
             return "<div id='bps-editor-toolbar' style='display:none;'>" . $Toolbar . "</div>";
         }
         
@@ -566,7 +600,7 @@ class BreadPageSystem extends Module
                         continue;
                     }
                 }
-                if($post->hidden || $post->time_released > time()){
+                if($post->hidden || !$this->IsPostReleased($post->time_released)){
                     unset($index[$i]);
                     continue;
                 }
@@ -660,12 +694,12 @@ class BreadPageSystem extends Module
                    return $pageid;
                }
            }
-            //Hacky way to get first post.
+            //Hacky way to get first post. Line 666 a coincidence.
             if(isset($request->arguments["latest"])){
                 $index = get_object_vars($this->index);
                 $postsDated = usort($index,"\Bread\Modules\BreadPageSystem::USortDate");
                 foreach($index as $post){
-                    if($post->time_released < time() && !$post->hidden){
+                    if($this->IsPostReleased($post->time_released) && !$post->hidden){
                         return $post->id;
                     }
                 }
@@ -826,25 +860,14 @@ class BreadPageSystem extends Module
                  return "0";
              }
              $url = $_POST["url"];
+             $id = $_POST["id"];
              $md = $_POST["markdown"];
              $title = $_POST["title"];
              $subtitle = $_POST["subtitle"];
              $url_data = Site::DigestURL($url);
              
-             if(isset($url_data["title"]))
-             {
-                 $id = $this->GetPostIDByKey("title",$url_data["title"]);
-             }
-             else if(isset($url_data["post"]))
-             {
-                 $id = $url_data["post"];
-             }
-             else if(isset($url_data["latest"])){
-                $index = get_object_vars($this->index);
-                $postsDated = usort($index,"\Bread\Modules\BreadPageSystem::USortDate");
-                $id = $index[0]->id;
-             }
-             else if(isset($url_data["newpost"]))
+            
+             if(isset($url_data["newpost"]))
              {
                  $id = $this->GenerateID();
                  $post = new BreadPageSystemPost;
@@ -864,11 +887,7 @@ class BreadPageSystem extends Module
                  $this->index->$id = $post;
                  Site::$settingsManager->SaveSetting($post,$this->settings->postdir . "/" . $filename . ".json", True);
              }
-             else
-             {
-                 Site::$Logger->writeError("Couldn't find the post for saving markdown file. Nonstandard URL!'",\Bread\Logger::SEVERITY_HIGH,"breadpagesystem");
-                 return "0";
-             }
+             
              $JSONURL = $this->settings->postdir . "/" . $this->index->$id->jsonurl;
              $PageURL = $this->settings->postdir . "/" . $this->index->$id->url;
              $pageData = Site::$settingsManager->RetriveSettings($JSONURL); //Get actual file
@@ -879,7 +898,12 @@ class BreadPageSystem extends Module
              $pageData->title = $title;
              $pageData->subtitle = $subtitle; //Needs changing.
              $pageData->time_modified = time();
-             $pageData->time_released = strtotime($_POST["timereleased"]);
+             if($this->manager->FireEvent("Bread.Security.GetPermission","BreadPageSystem.Editor")){
+                $pageData->time_released = strtotime($_POST["timereleased"]);
+             }
+             else{
+                $pageData->time_released = false;
+             }
              
              if(array_key_exists("categories", $_POST)){
                 $pageData->categories = $_POST["categories"];
@@ -906,26 +930,15 @@ class BreadPageSystem extends Module
                  return "0";
              }
              $url = $_POST["url"];
+             $id = $_POST["id"];
              $url_data = Site::DigestURL($url);
              
-             if(isset($url_data["name"]))
-             {
-                 $id = $this->GetPostIDByKey("name",$url_data["name"]);
-             }
-             else if(isset($url_data["post"]))
-             {
-                 $id = $url_data["post"];
-             }
-             else if(isset($url_data["newpost"]))
+             if(isset($url_data["newpost"]))
              {
                  Site::$Logger->writeError("User tried to delete a new post, ignoring.",\Bread\Logger::SEVERITY_LOW,"breadpagesystem");
                  return "2";
              }
-             else
-             {
-                 Site::$Logger->writeError("Couldn't find the post for deleting file. Nonstandard URL!'",\Bread\Logger::SEVERITY_MEDIUM,"breadpagesystem");
-                 return "0";
-             }
+             
              //Delete the files
              $post = $this->index->$id;
              $pathToJSON = $this->settings->postdir . "/" . $post->jsonurl;
@@ -950,19 +963,19 @@ class BreadPageSystem extends Module
         {
             $Pages = array();
             $parts = array();
-            $Time = time();
             $parts["request"] = $this->settings->postRequest;
             foreach($this->index as $post)
             {
                 if($post->hidden)
                     continue;
-                if($post->time_released > $Time && !$this->manager->FireEvent("Bread.Security.GetPermission","BreadPageSystem.Editor")){
+                if($this->IsPostReleased($post->time_released) && !$this->manager->FireEvent("Bread.Security.GetPermission","BreadPageSystem.Editor")){
                     continue;
                 }
                 $Page = new \Bread\Structures\BreadSearchItem;
                 $Page->Name = $post->title;
                 $Page->Categories = $post->categories;
-                $Page->Content = $this->TransformMDtoHTML(file_get_contents($this->GetPostPath($post->url)));
+                $Source = $this->GetPostPath($post->url);
+                $Page->Content = $this->TransformMDtoHTML(file_get_contents($Source));
                 //URL
                 $parts["post"] = $post->id;
                 $Page->Url = Site::CondenseURLParams(false,$parts);
@@ -980,26 +993,163 @@ class BreadPageSystem extends Module
         //
         //Admin Panel Functions
         //
-        function ConstructAdminSettings()
+        function ConstructAdminSettings($args)
         {
             if(!$this->manager->FireEvent("Bread.Security.GetPermission","BreadPageSystem.AdminPanel.Read")){
                 return false;
             }
-//            $MasterSettings = new \Bread\Structures\BreadModuleSettings();
-//            $MasterSettings->Name = "Pages";
-//            
-//            $PostConfigurator = new \Bread\Structures\BreadModuleSettingsTab;
-//            $PostConfigurator->Name = "postconfig";
-//            $PostConfigurator->HumanTitle = "Posts";
-//            $MasterSettings->SettingsGroups[] = $PostConfigurator;
-//            
-//            $GlobalSettings = new \Bread\Structures\BreadModuleSettingsTab;
-//            $GlobalSettings->Name = "jsonconfig";
-//            $GlobalSettings->HumanTitle = "Settings";
-//            $MasterSettings->SettingsGroups[] = $GlobalSettings;
-//            
-//            return $MasterSettings;
+
+            $MasterSettings = new \Bread\Structures\BreadModuleSettings();
+            $MasterSettings->Name = "Pages";
+            
+            $PostConfigurator = new \Bread\Structures\BreadModuleSettingsTab;
+            $PostConfigurator->Name = "postconfig";
+            $PostConfigurator->HumanTitle = "Posts";
+            $MasterSettings->SettingsGroups[] = $PostConfigurator;
+                        
+            if($args[1] == 0){
+               Site::AddScript(Site::ResolvePath("%user-modules/BreadPageSystem/js/adminpanel.js"),"BreadPageSystemAdminPanel", true);
+               $PostConfigurator->Panels = $this->ConstructPostConfigurator();
+            }
+            
+            
+            $GlobalSettings = new \Bread\Structures\BreadModuleSettingsTab;
+            $GlobalSettings->Name = "jsonconfig";
+            $GlobalSettings->HumanTitle = "Settings";
+            $MasterSettings->SettingsGroups[] = $GlobalSettings;
+            
+            return $MasterSettings;
             return NULL;
+        }
+        
+        function IsPostReleased($time){
+            if($time === false){
+                return false;
+            }
+            else{
+                return ($time < time());
+            }
+        }
+        
+        function ConstructPostConfigurator(){
+            $CurrentPosts = new \Bread\Structures\BreadModuleSettingsPanel();
+            $CurrentPosts->PercentageWidth = 80;
+            $CurrentPosts->HumanTitle = "Current Posts";
+            //Build post index.
+            
+            $UserTable = new \Bread\Structures\BreadTableElement();
+            $UserTable->headingRow = new \Bread\Structures\BreadTableRow();
+            $UserTable->headingRow->FillOutRow(array("Title","Subtitle","Author","Written","Edited","Published","Id"));
+            $UserTable->class = "table-hover";
+            $UserTable->id = "postTable";
+            if(isset($_REQUEST["page"])){
+                $page = intval($_REQUEST["page"]);
+            }
+            else{
+                $page = 0;
+            }
+            $posts = array_slice((array)$this->index, $page * self::ADMINPANEL_MAXPOSTS,self::ADMINPANEL_MAXPOSTS);
+            usort($posts,"\Bread\Modules\BreadPageSystem::USortDate");
+            $publishedclass = $this->manager->FireEvent("Theme.GetClass", "Label.Success");
+            $unpublishedclass = $this->manager->FireEvent("Theme.GetClass", "Label.Warning");
+            foreach($posts as $posts){
+                $PostRow = new \Bread\Structures\BreadTableRow();
+                if($posts->time_released == false){
+                    $released = "Not set for release.";
+                }
+                else{
+                    $released = date("Y-m-d H:i:s",$posts->time_released);
+                }
+                if($this->IsPostReleased($posts->time_released)){
+                    $badgetype = $publishedclass;
+                }
+                else{
+                    $badgetype = $unpublishedclass;
+                }
+                $publishedHTML = $this->manager->FireEvent("Theme.Label",array("value"=>$released,"type"=>$badgetype));
+                $PostRow->FillOutRow(array(
+                    $posts->title,
+                    $posts->subtitle,
+                    $this->manager->FireEvent("Bread.Security.GetUser",$posts->author)->information->Name,
+                    date("Y-m-d H:i:s",$posts->time_created),
+                    date("Y-m-d H:i:s",$posts->time_modified),
+                    $publishedHTML,
+                    $posts->id));
+                $UserTable->rows[] = $PostRow;
+            }
+            $PostsHTML = $this->manager->FireEvent("Theme.Table", $UserTable);
+            $CurrentPosts->Body = $PostsHTML;
+            
+            
+            $ToolsPanel = new \Bread\Structures\BreadModuleSettingsPanel();
+            $ToolsPanel->PercentageWidth = 20;
+            $ToolsPanel->HumanTitle = "Tools";
+            
+            //Build Tools.
+            
+            $ToolHTML = "";
+            
+            $EditPostButton = new \Bread\Structures\BreadFormElement;
+            $EditPostButton->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+            $EditPostButton->value = "Read/Edit Post";
+            $EditPostButton->readonly = true;
+            $EditPostButton->class = $this->manager->FireEvent("Theme.GetClass","Button.Primary");
+            
+            $DeletePostButton = new \Bread\Structures\BreadFormElement;
+            $DeletePostButton->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+            $DeletePostButton->value = "Delete Post";
+            $DeletePostButton->onclick = "adminDeletePost();";
+            $DeletePostButton->readonly = true;
+            $DeletePostButton->class = $this->manager->FireEvent("Theme.GetClass","Button.Danger");
+            
+            $LockPostButton = new \Bread\Structures\BreadFormElement;
+            $LockPostButton->type = \Bread\Structures\BreadFormElement::TYPE_HTMLFIVEBUTTON;
+            $LockPostButton->value = "Lock Edits";
+            $LockPostButton->onclick = "adminLockPost();";
+            $LockPostButton->readonly = true;
+            $LockPostButton->toggle = true;
+            $LockPostButton->id = "LockPostButton";
+            $LockPostButton->class = $this->manager->FireEvent("Theme.GetClass","Button.Warning");
+            
+            $Buttons = "<div id='toolButtons'><a target='_blank' id='EditPostButton' href='#'>" . $this->manager->FireEvent("Theme.Button",$EditPostButton) . '</a>'. $this->manager->FireEvent("Theme.Button",$LockPostButton) . $this->manager->FireEvent("Theme.Button",$DeletePostButton) . "</div>";
+            $ToolHTML .= $this->manager->FireEvent("Theme.Layout.ButtonGroupVertical",$Buttons);
+            
+            
+            $ToolsPanel->Body = $ToolHTML;
+            
+            
+            return array($CurrentPosts,$ToolsPanel);
+            
+        }
+        
+        function GetPostURL(){
+            if(!isset($_REQUEST["postid"])){
+                return 0;
+            }
+            $id = $_REQUEST["postid"];
+            $breadLink = new \Bread\Structures\BreadLinkStructure();
+            $breadLink->args->post = $id;
+            $breadLink->request = $this->settings->postRequest;
+            return $breadLink->createURL();
+        }
+        
+        function GetPostLockStatus(){
+            if(!isset($_REQUEST["postid"])){
+                return 0;
+            }
+            $id = $_REQUEST["postid"];
+            return $this->index->$id->liveedit;
+        }
+        
+        function AJAXLockPost(){
+            if(!isset($_REQUEST["postid"])){
+                return 0;
+            }
+            $id = $_REQUEST["postid"];
+            $this->index->$id->liveedit = !$this->index->$id->liveedit;
+            $JSONURL = $this->settings->postdir . "/" . $this->index->$id->jsonurl;
+            Site::$settingsManager->SaveSetting($this->index->$id,$JSONURL,True);
+            return 1;
         }
 }
 

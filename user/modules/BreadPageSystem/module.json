@@ -97,6 +97,18 @@
         "BreadPageSystem.PostDigest":{
             "function": "DrawDigest",
             "security": 0
+        },
+        "BreadPageSystem.GetPostURL":{
+            "function": "GetPostURL",
+            "security": 1
+        },
+        "BreadPageSystem.GetPostLockStatus":{
+            "function": "GetPostLockStatus",
+            "security": 1
+        },
+        "BreadPageSystem.LockPost":{
+            "function": "AJAXLockPost",
+            "security": 1
         }
     }
 }

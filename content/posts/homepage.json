@@ -1,12 +1,18 @@
 {
     "url": "homepage.md",
     "name": "Homepage",
-    "liveedit": false,
+    "title": "Homepage",
+    "subtitle": "-",
+    "categories": [
+        "breaddocs"
+    ],
+    "liveedit": true,
     "author": 0,
     "hidden": true,
+    "thumb": "",
     "jsonurl": "homepage.json",
     "time_created": 1406828758,
     "time_released": 1406828758,
-    "time_modified": 1406828889,
+    "time_modified": 1413230964,
     "id": "bkgkgk50"
 }

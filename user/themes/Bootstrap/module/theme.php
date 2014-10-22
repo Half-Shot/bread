@@ -47,6 +47,7 @@ class BootstrapTheme extends Bread\Modules\Module
             $this->manager->RegisterHook($this->name,"Theme.Comment","Comment");
             $this->manager->RegisterHook($this->name,"Theme.Alert","Alert");
             $this->manager->RegisterHook($this->name,"Theme.Table","Table");
+            $this->manager->RegisterHook($this->name,"Theme.Dropdown","Dropdown");
             
             $this->manager->RegisterHook($this->name,"Theme.GetClass","GetClass");
 	}
@@ -79,6 +80,19 @@ class BootstrapTheme extends Bread\Modules\Module
                     return "alert-info";
                 case "Alert.Danger":
                     return "alert-danger";
+                //Label
+                case "Label.Default":
+                    return "label-default";
+                case "Label.Primary":
+                    return "label-primary";
+                case "Label.Success":
+                    return "label-success";
+                case "Label.Info":
+                    return "label-info";
+                case "Label.Warning":
+                    return "label-warning";
+                case "Label.Danger":
+                    return "label-danger";
             }
         }
         
@@ -135,10 +149,16 @@ class BootstrapTheme extends Bread\Modules\Module
                 }
                 return $this->breadXML->GetHTMLOfElement("Navbar",$Vars);
 	}
+        
         function VerticalNavbar($args)
         {
             unset($args["_inner"]);//Useful practise for theme elements that do not do layout processing.
             return $this->breadXML->GetHTMLOfElement("VerticalNavbar",$args);
+        }
+        
+        function Dropdown($args)
+        {
+            return $this->breadXML->GetHTMLOfElement("Dropdown",$args);
         }
 
         function Title($args)

@@ -47,6 +47,18 @@
         {
             "name": "BreadContentSystem",
             "file": "BreadContentSystem\/module.json"
+        },
+        {
+            "name": "ReviewSystemModule",
+            "file": "ReviewSystem\/module.json"
+        },
+        {
+            "name": "BreadNotify",
+            "file": "BreadNotify\/module.json"
+        },
+        {
+            "name": "JQuery",
+            "file": "JQuery\/module.json"
         }
     ]
 }

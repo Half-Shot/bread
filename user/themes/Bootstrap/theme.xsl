@@ -58,9 +58,6 @@
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".collapse.navbar-collapse">
                         <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
                     </button>
                     <a class="navbar-brand">
                         <xsl:attribute name="href"><xsl:value-of select="./variable/variable/url"/></xsl:attribute>
@@ -392,7 +389,7 @@
     </xsl:template>
     <xsl:template name="Label" match="telement[@id='Label']">
         <span>
-            <xsl:attribute name="class">label label-<xsl:value-of select="./variable/type"/></xsl:attribute>
+            <xsl:attribute name="class">label <xsl:value-of select="./variable/type"/></xsl:attribute>
             <xsl:value-of select="./variable/value"/>
         </span>
     </xsl:template>
@@ -532,5 +529,32 @@
                 </xsl:for-each>
             </tbody>
         </table>
+    </xsl:template>
+    <xsl:template match="telement[@id='Dropdown']">
+        <div class="dropdown">
+            <xsl:attribute name="name"><xsl:value-of select="./variable/name"/></xsl:attribute>
+            <xsl:attribute name="id"><xsl:value-of select="./variable/id"/></xsl:attribute>
+            <xsl:attribute name="class"><xsl:value-of select="./variable/class"/></xsl:attribute>
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown">
+                <xsl:value-of select="./variable/value"/>
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                <xsl:for-each select="./variable/items/variable">
+                    <xsl:choose>
+                        <xsl:when test="./value = 'seperator'">
+                            <li role="presentation" class="divider"></li>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <li role="presentation">
+                                <a role="menuitem" tabindex="-1" href="#">
+                                    <xsl:value-of select="."/>
+                                </a>
+                            </li>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:for-each>
+            </ul>
+        </div>
     </xsl:template>
 </xsl:stylesheet>

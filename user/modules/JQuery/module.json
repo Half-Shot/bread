@@ -1,0 +1,22 @@
+{
+    "name": "JQuery",
+    "entryclass": "JQuery",
+    "entryfile": "JQuery\/JQuery.php",
+    "events": {
+        "Bread.ProcessRequest":{
+            "function":"Setup"
+        },
+        "JQuery.Load": {
+            "function": "LoadJQuery",
+            "security": 0
+        },
+        "JQuery.LoadUI": {
+            "function": "LoadJQueryUI",
+            "security": 0
+        },
+        "JQuery.LoadMobile": {
+            "function": "LoadJQueryMobile",
+            "security": 0
+        }
+    }
+}
