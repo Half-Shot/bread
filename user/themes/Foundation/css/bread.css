@@ -6,3 +6,16 @@ body {
     margin: 0px auto;
     max-width: none;
 }
+
+img{
+    margin:5px;
+}
+.top-bar-section li:not(.has-form) a:not(.button) {
+    padding-top:14px;
+    padding-bottom:14px;
+    line-height: normal;
+}
+
+.top-bar li{
+    padding: 0px 5px;
+}

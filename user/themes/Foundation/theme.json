@@ -17,12 +17,13 @@
                     ],
                 "js":
                     [  
+                        "Foundation/js/vendor/jquery.js",
                         "Foundation/js/vendor/jquery.cookie.js",
                         "Foundation/js/vendor/placeholder.js",
                         "Foundation/js/vendor/fastclick.js",
                         "Foundation/js/vendor/modernizr.js",
-                        "Foundation/js/vendor/jquery.js",
-                        "Foundation/js/foundation.min.js"
+                        "Foundation/js/foundation.min.js",
+                        "Foundation/js/bread.js"
                     ]
 	}
 }

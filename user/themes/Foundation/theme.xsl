@@ -102,32 +102,6 @@
         </xsl:for-each>
     </xsl:template>
     
-    <xsl:template name="InlineForm">
-        <xsl:choose>
-            <xsl:when test="../../standalone = '1'">
-                <div class="input-group">
-                    <xsl:if test="./id">
-                        <xsl:attribute name="id">ig-<xsl:value-of select="./id"/></xsl:attribute>
-                    </xsl:if>
-                    <xsl:if test="./hidden = '1'">
-                        <xsl:attribute name="style">display:none;</xsl:attribute>
-                    </xsl:if>
-                    <xsl:if test="./label != ''">
-                        <span class="input-group-addon"><xsl:value-of select="./label"/></span>
-                    </xsl:if>
-                    <xsl:call-template name="FormElement"/>
-                </div>
-                <xsl:if test="not(../../isinline = '1')">
-                    <xsl:if test="not(position() = last())">
-                        <br></br>
-                    </xsl:if>
-                </xsl:if>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:call-template name="FormElement"/>
-            </xsl:otherwise>
-        </xsl:choose>
-    </xsl:template>
     
     <xsl:template match="telement[@id='Form']">
         <form>
@@ -137,20 +111,11 @@
             <xsl:attribute name="formtarget"><xsl:value-of select="./variable/formtarget"/></xsl:attribute>
             <xsl:attribute name="onsubmit"><xsl:value-of select="./variable/onsubmit"/></xsl:attribute>
             <xsl:attribute name="id"><xsl:value-of select="./variable/id"/></xsl:attribute>
-            <xsl:choose>
-                <xsl:when test="./variable/isinline = '1'">
-                    <xsl:for-each select="./variable/elements/variable">
-                        <xsl:call-template name="FormElement"/>
-                    </xsl:for-each>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:for-each select="./variable/elements/variable">
-                        <div class="row">
-                            <xsl:call-template name="FormElement"/>
-                        </div>
-                    </xsl:for-each>
-                </xsl:otherwise>
-            </xsl:choose>
+            <xsl:for-each select="./variable/elements/variable">
+                <div class="row">
+                    <xsl:call-template name="FormElement"/>
+                </div>
+            </xsl:for-each>
         </form>
     </xsl:template>
     

@@ -180,7 +180,24 @@ class FoundationTheme extends Bread\Modules\Module
         
         function BuildForm(Bread\Structures\BreadForm $form)
         {
-            return $this->breadXML->GetHTMLOfElement("Form",$form);
+            $formHTML = $this->breadXML->GetHTMLOfElement("Form",$form);
+            if($form->isinline == true){
+                //Wrap it in a grid.
+                $formDOM = new DOMDocument();
+                $formHTML=str_replace('id=""', '', $formHTML);
+                $formDOM->loadHTML($formHTML);
+                //Convert rows to columns.
+                $xpath = new DOMXPath($formDOM);
+                $results = $xpath->query("//*[@class='row']//*[@type!='hidden']");
+                $elements = array();
+                foreach($results as $element){
+                    $classValue = $element->getAttribute('class');
+                    $elements[] = \Bread\Utilitys::DOMElementToString($element);
+                }
+                $formHTML = $this->GridHorizontalStack($elements);
+            }
+            return $formHTML;
+            
         }
         
         function BuildInput($element)
@@ -320,8 +337,21 @@ class FoundationTheme extends Bread\Modules\Module
         function GridHorizontalStack($args){
             if(count($args) < 1)
                 return "";
-
-            if(array_key_exists(0, $args))
+            
+            if(!is_array($args)){
+                return "";
+            }
+            
+            if(is_string(array_values($args)[0])){
+                    $listOfCells = array();
+                    foreach($args as $string){
+                        $cell = new stdClass();
+                        $cell->body = $string;
+                        $listOfCells[] = $cell;
+                    }
+            }
+            
+            if(array_key_exists(0, $args) && !isset($listOfCells))
             {
                 $listOfCells = $args[0];
                 if(is_object($listOfCells)){
