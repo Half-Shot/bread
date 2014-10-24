@@ -66,7 +66,7 @@ class BreadUserSystem extends Module
         return json_encode($return);
     }
     
-    function FirstTime($path)
+    function FirstTime()
     {
         $rootpasswd = "ILikeToast";
         Site::$Logger->writeError("First time setup, if this is not the first time then somethings wrong.",\Bread\Logger::SEVERITY_MEDIUM,$this->name);
@@ -163,7 +163,7 @@ class BreadUserSystem extends Module
         $this->groups = Util::ArraySetKeyByProperty($this->groups, "name");
 
         if(\count($this->userDB) < 1){
-           $this->FirstTime($rootSettings . $this->settings->userfile);
+           $this->FirstTime();
         }
         
         $this->CheckSession();

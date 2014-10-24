@@ -694,7 +694,6 @@ class BreadPageSystem extends Module
                    return $pageid;
                }
            }
-            //Hacky way to get first post. Line 666 a coincidence.
             if(isset($request->arguments["latest"])){
                 $index = get_object_vars($this->index);
                 $postsDated = usort($index,"\Bread\Modules\BreadPageSystem::USortDate");
