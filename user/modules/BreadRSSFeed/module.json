@@ -1,0 +1,20 @@
+{
+    "name": "BreadRSSFeed",
+    "entryclass": "BreadRSSFeed",
+    "entryfile": "BreadRSSFeed\/BreadRSSFeed.php",
+    "events": {
+        "Bread.ProcessRequest": {
+            "function": "Setup",
+            "security": 0
+        },
+        "BreadRSS.ShowFeed": {
+            "function": "ShowFeed",
+            "security": 0,
+            "dependencys": [
+                {
+                    "module": "BreadIndexSystem"
+                }
+            ]
+        }
+    }
+}

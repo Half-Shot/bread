@@ -1,12 +1,15 @@
 {
     "master":
     {
-        "theme":"theme-bootstrap"
+        "theme":"theme-bootstrap",
+        "header":{
+            "Content-Type":"text/html"
+        }
     },
     "homepage":{
         "layout":"homepage",
         "include":["master","post"],
-        "args":[{"post":"bkgkgk50"}]
+        "arguments":[{"post":"bkgkgk50"}]
     },
     "post":{
         "layout":"post",
@@ -19,5 +22,11 @@
     "search":{
         "include":["master"],
         "layout":"search"
+    },
+    "rss":{
+        "Content-Type":"text/html",
+        "events":[
+            "BreadRSS.ShowFeed"
+        ]
     }
 }

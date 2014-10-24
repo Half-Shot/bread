@@ -718,7 +718,7 @@ class BreadPageSystem extends Module
                 }
                 else
                 {
-                    if(Site::getRequest()->requestType == $this->settings->postRequest){
+                    if(Site::getRequest()->requestName == $this->settings->postRequest){
                         Site::$Logger->writeError("That page does not exist. Sorry :(",\Bread\Logger::SEVERITY_HIGH,"breadpagesystem");
                     }
                 }
@@ -964,7 +964,9 @@ class BreadPageSystem extends Module
             $Pages = array();
             $parts = array();
             $parts["request"] = $this->settings->postRequest;
-            foreach($this->index as $post)
+            $posts = (array)$this->index;
+            usort($posts,"\Bread\Modules\BreadPageSystem::USortDate");
+            foreach($posts as $post)
             {
                 if($post->hidden)
                     continue;
@@ -972,6 +974,7 @@ class BreadPageSystem extends Module
                     continue;
                 }
                 $Page = new \Bread\Structures\BreadSearchItem;
+                /** @var $post Bread/Modules/BreadPageSystemPost **/
                 $Page->Name = $post->title;
                 $Page->Categories = $post->categories;
                 $Source = $this->GetPostPath($post->url);
@@ -979,6 +982,7 @@ class BreadPageSystem extends Module
                 //URL
                 $parts["post"] = $post->id;
                 $Page->Url = Site::CondenseURLParams(false,$parts);
+                $Page->PublishTime = $post->time_released;
                 $Pages[] = $Page;
             }
             return $Pages;

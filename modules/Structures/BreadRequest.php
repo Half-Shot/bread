@@ -6,18 +6,22 @@ namespace Bread\Structures;
  */
 class BreadRequestData
 {
-        /**
-         * @var string The request from the browser. Avaliable requests are defined in the requests.json file.
-         */
-	public $requestType = False;
+    public function __construct() {
+        $this->header = new \stdClass();
+    }
+       
+        public $requestName = "";
+    
         /**
          * @var integer From the list of compatible layouts with the request, select this index. 
          */
         public $layout = -1;
+        
         /**
          * @var integer From the list of compatible themes with the request, select this index. 
          */
         public $theme = -1;
+        
         /**
          *
          * @var array The list of additional arguments given by the browser, e.g. page number.
@@ -25,9 +29,19 @@ class BreadRequestData
         public $arguments = array();
         
         /**
-         * The specifed module names to load.
-         * @var array Module name list
+         * @var array Events to run before starting the request.
          */
-        public $modules = array();
+        public $events = array();
+        
+        /**
+         * @var array(string) Parent requests to use as template.
+         */
+        public $include = array();
+        
+        /**
+         * @var stdObject Header to write (technically overwrite)
+         * e.g ContentType => text/html
+         */
+        public $header;
 }
 ?>

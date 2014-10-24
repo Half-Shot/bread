@@ -19,6 +19,7 @@ class ThemeManager
 	//Selected Items
 	public $Theme;
 	public $CSSLines = "";
+        public $themeName = "";
 
 	function __construct()
 	{
@@ -77,6 +78,7 @@ class ThemeManager
                 }
                 //Request Theme
                 $this->SetTheme($this->themes[$Request->theme]);
+                $themeName = $this->Theme["data"]->name;
                 return True;
 	}
         

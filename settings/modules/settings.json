@@ -59,6 +59,10 @@
         {
             "name": "JQuery",
             "file": "JQuery\/module.json"
+        },
+        {
+            "name": "BreadRSSFeed",
+            "file": "BreadRSSFeed\/module.json"
         }
     ]
 }

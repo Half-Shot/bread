@@ -379,8 +379,9 @@ class ModuleManager
 
             //Load the module if not loaded!
             foreach ($ModList as $moduleName => $data) {
-                if($moduleName == Site::$themeManager->Theme["data"]->name)
+                if($moduleName == Site::$themeManager->themeName){
                     break;
+                }
                 if($this->LoadModule($moduleName)){
                     $this->FireSpecifiedModuleEvent("Bread.ProcessRequest", $moduleName, null, true);
                     return $this->FireEvent($eventName, $arguments, $singleOnly,$isInternal, $singleOffset); //Reload the request as $this->events might have changed!
@@ -433,7 +434,7 @@ class ModuleManager
 	function FireSpecifiedModuleEvent($eventName,$moduleName,$arguments = null,$isInternal = true)
 	{       
             //Load the module if not loaded!
-            if($moduleName != Site::$themeManager->Theme["data"]->name)
+            if($moduleName != Site::$themeManager->themeName)
             {
                 if($this->LoadModule($moduleName)){
                     $this->FireSpecifiedModuleEvent("Bread.ProcessRequest", $moduleName, null, true);

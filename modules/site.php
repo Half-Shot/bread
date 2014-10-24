@@ -136,6 +136,13 @@ class Site
 	 * Is the request Ajax?
 	 * @return bool
 	 */
+        
+        /**
+         * Storage for the request file.
+         * @var stdclass 
+         */
+        private static $requestDB;
+        
 	public static function GetisAjax()
 	{
 		return static::$isAjax;
@@ -172,6 +179,16 @@ class Site
 	{
 		return static::$Request;
 	}
+        
+        
+        public static function SetContentType($ContentType){
+            if(is_string($ContentType)){
+                static::$ContentType = $ContentType;
+            }
+            
+            return (static::$ContentType = $ContentType);
+        }
+        
 	/**
 	 * Return the base URL.
 	 * @return string
@@ -273,6 +290,7 @@ class Site
 			throw new \Exception("Configuration could be <b>read</b> but not be <b>loaded</b>. Game Over!");
 		}
 		date_default_timezone_set(static::$configuration->core->timezone);//Setting timezone before its too late.
+                static::ShowDebug(static::$configuration->core->debug,static::$isAjax);
 	}
 	/**
 	 * Enables/Disables Debug Statements. Very useful for a developer
@@ -421,82 +439,78 @@ class Site
 	 * Users have no need to call this, its done automatically.
 	 * @see Site::$Request
 	 */
-	public static function DigestRequest()
+	public static function DigestRequest($requestName = "",$childRequest = false,&$requestChain = [])
 	{
-		//Load the requests file.
-		$requestDB = static::$settingsManager->RetriveSettings(static::ResolvePath("%system-requests"),true);
-		$requestObject = new BreadRequestData();
-		$URL = $_SERVER['REQUEST_URI'];
-		$Params = static::DigestURL($URL);
-		static::$baseurl = $Params["BASEURL"];
-		unset($Params["BASEURL"]);
-		static::$URLParameters = $Params;
-		//Override for ajax.
-		//TODO: Allow use to turn this off, could be used as a backdoor.
-		if(static::$configuration->core->debug && array_key_exists("ajax", $Params)){
-			static::$isAjax = true;
-			$requestObject->requestType = "ajax";
+                if($childRequest == false){
+                    $root = true;
+                    //Load the requests file.
+                    static::$requestDB = static::$settingsManager->RetriveSettings(static::ResolvePath("%system-requests"),true);
+                    
+                    $URL = $_SERVER['REQUEST_URI'];
+                    $Params = static::DigestURL($URL);
+                    static::$baseurl = $Params["BASEURL"];
+                    unset($Params["BASEURL"]);
+                    static::$URLParameters = $Params;
+                    
+                    $childRequest = new \Bread\Structures\BreadRequestData();
+                    $childRequest->arguments = $Params;
+                    if(array_key_exists("request", $Params)){
+                        $requestName = $Params["request"];
+                    }
+                    else
+                    {
+                        $requestName = static::$configuration->core->defaultrequest;
+                    }
+                    $childRequest->requestName = $requestName;
+                    $childRequest->header = array();
+                    
+                }
+                else{
+                    $root = false;
+                }
+                if(!isset(static::$requestDB->$requestName)){
+                    static::$Logger->writeError ("Request " . $requestName . " not defined." ,\Bread\Logger::SEVERITY_MEDIUM);
+                }
+                $requestObject = static::$requestDB->$requestName;
+                $requestObject = Utilitys::CastStdObjectToStruct($requestObject, "\Bread\Structures\BreadRequestData");
+                $requestChain[] = $requestName;
+                
+                foreach ($requestObject->include as $includeName){
+                    if(!in_array($includeName, $requestChain)){
+                        $childRequest = static::DigestRequest($includeName,$childRequest,$requestChain);
+                    }
+                    else
+                    {
+                        $path =  implode("->", $requestChain);
+                        static::$Logger->writeError ("Request include path (".$path. "->[$includeName]) is recursive, skipping $includeName"  ,\Bread\Logger::SEVERITY_LOW);
+                    }
+                }
+                
+                if(!static::$isAjax){
+                    if($requestObject->layout !== -1){
+                           $childRequest->layout = $requestObject->layout;
+                    }
 		}
+                
+		if($requestObject->theme !== -1){
+                    $childRequest->theme  = $requestObject->theme;
+                }
 
-		static::ShowDebug(static::$configuration->core->debug,static::$isAjax);
-		if(!static::$isAjax){
-			if(isset($requestDB->master->layout))
-				$requestObject->layout = $requestDB->master->layout;
-		}
-		if(isset($requestDB->master->theme))
-			$requestObject->theme  = $requestDB->master->theme;
-		/**
-		 * @todo Find a way to make sure only needed modules are loaded.
-		 */
-		if(isset($requestDB->master->modules))
-			$requestObject->modules = $requestDB->master->modules;
-
-		if(isset($requestDB->master->requestType))
-			$requestObject->requestType = "master";
-
-		if(array_key_exists("request", $Params)){
-			$requestName = $Params["request"];
-		}
-		else
+		if(count($requestObject->arguments))
 		{
-			$requestName = static::$configuration->core->defaultrequest;
-		}
-
-		if(!static::$isAjax){
-			if(isset($requestDB->$requestName->layout))
-				$requestObject->layout = $requestDB->$requestName->layout;
-		}
-		if(isset($requestDB->$requestName->theme))
-			$requestObject->theme  = $requestDB->$requestName->theme;
-
-		if(isset($requestDB->$requestName->modules))
-			$requestObject->modules = $requestDB->$requestName->modules;
-
-		$requestObject->requestType = $requestName;
-
-		if(isset($requestDB->$requestName->args))
-		{
-			foreach($requestDB->$requestName->args as $argpair)
+			foreach($requestObject->arguments as $argpair)
 			{
 				$argpair = get_object_vars($argpair);
-				$Params = array_merge($argpair,$Params);
+				$childRequest->arguments = array_merge($argpair,$childRequest->arguments);
 			}
 		}
-		//Add included stuff (modules)
-		if(isset($requestDB->$requestName->include))
-		{
-			foreach($requestDB->$requestName->include as $includedRequest)
-			{
-				if(!isset($requestDB->$includedRequest)){
-					static::$Logger->writeError ("Request includes " . $includedRequest . " but is not defined in the file. Ignoring" ,\Bread\Logger::SEVERITY_MEDIUM);
-					continue;
-				}
-				if(isset($requestDB->$includedRequest->modules)){
-					$requestObject->modules = array_merge($requestObject->modules,$requestDB->$includedRequest->modules);
-				}
-
-			}
-		}
+                
+                $childRequest->events = array_merge($requestObject->events,$childRequest->events);
+                
+                $requestObject->header = (array)$requestObject->header;
+                
+                $childRequest->header = array_merge($childRequest->header,$requestObject->header);
+                
 		//Overrides
 		//if(array_key_exists("theme", $Params))
 		//    $requestObject->theme = $Params["theme"];
@@ -505,9 +519,12 @@ class Site
 		//    $requestObject->layout = $Params["layout"];
 
 
-		$requestObject->arguments = $Params;
-		static::$Request = $requestObject;
-		return true;
+                if($root){
+                    $childRequest->header = Utilitys::ArrayToStdObject($childRequest->header);
+                    static::$Request = $childRequest;
+                }
+                
+		return $childRequest;
 	}
 
 	/**
@@ -521,12 +538,11 @@ class Site
 	 */
 	public static function ProcessRequest()
 	{
-
-		$requestData = static::$Request;
-		//Load required modules.
-		if(!static::$themeManager->SelectTheme($requestData)){
-			//static::$Logger->writeError("Couldn't select theme from request.",\Bread\Logger::SEVERITY_CRITICAL,"core",True);
-		}
+                if(static::$Request->theme !== -1){
+                    if(!static::$themeManager->SelectTheme(static::$Request)){
+                            //static::$Logger->writeError("Couldn't select theme from request.",\Bread\Logger::SEVERITY_CRITICAL,"core",True);
+                    }
+                }
 		if(static::$isAjax)
 		{
 			// Turn off all error reporting
@@ -568,22 +584,34 @@ class Site
 		}
 
 		//Draw
-                static::$moduleManager->FireEvent("Bread.Override",null,false);
+                foreach(static::$Request->header as $key => $val){
+                    header("$key: $val");
+                }
+                
+                foreach(static::$Request->events as $event){
+                    static::$moduleManager->FireEvent($event);
+                }
+                
                 header('Content-type: ' . static::$ContentType);
                 if(static::$ContentType == "text/html"){ //Do HTML Stuff
                     static::$htmlcode .= "<!DOCTYPE html5>\n<html>\n"; //Obviously.
                     static::$Logger->writeMessage("Beginning build of page");
-                    static::$Logger->writeMessage("Request data:\n" . var_export($requestData,True));
+                    static::$Logger->writeMessage("Request data:\n" . var_export(static::$Request,True));
                     //Process request
-                    if(!static::$themeManager->SelectLayout($requestData)){
-                            static::$Logger->writeError("Couldn't select layout from request.",\Bread\Logger::SEVERITY_CRITICAL,"core",True);
+                    if(static::$Request->layout !== -1){
+                        if(!static::$themeManager->SelectLayout(static::$Request)){
+                                static::$Logger->writeError("Couldn't select layout from request.",\Bread\Logger::SEVERITY_CRITICAL,"core",True);
+                        }
+                        static::$themeManager->ReadElementsFromLayout(static::$themeManager->Theme["layout"]);#Build layout into HTML
+                    }
+                    else{
+                        static::$Logger->writeMessage("No layout defined, but drawing a standard HTML page. Interesting manoeuvre captain.");
                     }
 
-                    static::$themeManager->ReadElementsFromLayout(static::$themeManager->Theme["layout"]);#Build layout into HTML
                     static::$moduleManager->FireEvent("Bread.FinishedLayoutProcess",null,false);
                     static::$htmlcode .= "<head>\n";
                     static::$htmlcode .= '<meta charset="'.Site::CHARSET.'">';
-                    static::$htmlcode .= static::ProcessMetadata($requestData);
+                    static::$htmlcode .= static::ProcessMetadata(static::$Request);
                     $titleArray = static::$moduleManager->FireEvent("Bread.PageTitle",null,false);
                     if($titleArray == false){
                             Site::AddToHeaderCode("<title>" . self::$configuration->strings->sitename ."</title>");
@@ -612,8 +640,8 @@ class Site
                     static::$htmlcode .= "</body>\n";
                     static::$htmlcode .= "</html>\n";
                 }
-                else{ //A different mimetype
-                    echo "What?";
+                else{
+                    static::$htmlcode = static::$headercode . static::$bodycode;
                 }
 		echo static::$htmlcode;
 	}

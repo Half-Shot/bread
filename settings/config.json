@@ -15,7 +15,9 @@
         "keepfor": 60
     },
     "strings": {
-        "sitename": "The Bakery"
+        "sitename": "The Bakery",
+        "description":"Baking code into content"
+        
     },
     "bans": [],
     "directorys": {
