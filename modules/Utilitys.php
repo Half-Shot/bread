@@ -302,9 +302,6 @@ class Utilitys {
 	 * @param any $ValueToUse Value to use.
 	 */
 	static function EmptySub($CheckMe,$ValueToUse){
-            if(@\is_null($CheckMe)){
-                return $ValueToUse;
-            }
 		if(empty($CheckMe)){
 			return $ValueToUse;
 		}
