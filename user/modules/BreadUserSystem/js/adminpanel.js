@@ -153,11 +153,19 @@ EditUserFunction = function(event) {
         users: selectedUIds,
         data: data
     }, function(returndata) {
-        if (returndata == true) {
-            location.reload();
-        } else {
-            alert("Failed!");
+        result = JSON.parse(returndata);
+        var Message = "";
+        for (var uid in result){
+            var user = result[uid];
+            Message = "<p>Changed ";
+            for(var id in user.changed){
+                if(user.changed[id]){
+                    Message += "<b>"+id+"</b> "; 
+                }
+            }
+            ShowAlert(1,Message);
         }
+        ModalElement.modal('hide');
     });
 };
 
@@ -169,11 +177,9 @@ NewUserFunction = function(event) {
         users: false,
         data: data
     }, function(returndata) {
-        if (returndata == true) {
-            location.reload();
-        } else {
-            alert("Failed!");
-        }
+        result = JSON.parse(returndata);
+        ShowAlert(1,"New ");
+        ModalElement.modal('hide');
     });
 };
 

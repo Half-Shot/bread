@@ -205,6 +205,7 @@ class BreadAdminTools extends Module
         {
         $this->CurrentTabIndex = $this->settings->defaultTab;
         }
+        Site::AddScript(Util::FindFile(Util::GetDirectorySubsection(__DIR__,0,1) . "js/admintools.js"),"BreadAdminToolsUtils" , true);
     }
 }
 
