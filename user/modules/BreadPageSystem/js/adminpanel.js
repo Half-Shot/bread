@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-BREADURL = 
 postTable = $('#postTable');
 postTable.find('tr').prop('selected', 0);
 

@@ -969,7 +969,7 @@ class BreadPageSystem extends Module
             {
                 if($post->hidden)
                     continue;
-                if($this->IsPostReleased($post->time_released) && !$this->manager->FireEvent("Bread.Security.GetPermission","BreadPageSystem.Editor")){
+                if(!$this->IsPostReleased($post->time_released) && !$this->manager->FireEvent("Bread.Security.GetPermission","BreadPageSystem.Editor")){
                     continue;
                 }
                 $Page = new \Bread\Structures\BreadSearchItem;

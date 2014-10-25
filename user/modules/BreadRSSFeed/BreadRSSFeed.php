@@ -43,7 +43,6 @@ class BreadRSSFeed extends Module
         $channel->appendChild($feed->createElement("pubdate",date("D, d M Y H:i:s T",  time()))); //Title
         
         $posts = $this->manager->FireEvent("Bread.RunSearch",$SearchRequest);
-        
         foreach($posts as $post){
             $feedItem = $feed->createElement("item");
             $channel->appendChild($feedItem);
