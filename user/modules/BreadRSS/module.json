@@ -1,7 +1,7 @@
 {
-    "name": "BreadRSSFeed",
-    "entryclass": "BreadRSSFeed",
-    "entryfile": "BreadRSSFeed\/BreadRSSFeed.php",
+    "name": "BreadRSS",
+    "entryclass": "BreadRSS",
+    "entryfile": "BreadRSS\/BreadRSS.php",
     "events": {
         "Bread.ProcessRequest": {
             "function": "Setup",
@@ -15,6 +15,9 @@
                     "module": "BreadIndexSystem"
                 }
             ]
+        },
+        "BreadRSS.Icon":{
+            "function":"RSSIcon"
         }
     }
 }
