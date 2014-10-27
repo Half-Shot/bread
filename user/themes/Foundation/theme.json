@@ -13,7 +13,8 @@
                     [   
                         "Foundation/css/foundation.min.css",
                         "Foundation/css/normalize.css",
-                        "Foundation/css/bread.css"
+                        "Foundation/css/bread.css",
+                        "Foundation/css/foundation-icons.css"
                     ],
                 "js":
                     [  

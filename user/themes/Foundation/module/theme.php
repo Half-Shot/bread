@@ -55,21 +55,21 @@ class FoundationTheme extends Bread\Modules\Module
             switch($name){
                 //Buttons
                 case "Button.Success":
-                    return "btn-success";
+                    return "button-success";
                 case "Button.Warning":
-                    return "btn-warning";
+                    return "button-warning";
                 case "Button.Info":
-                    return "btn-info";
+                    return "button-info";
                 case "Button.Danger":
-                    return "btn-danger";
+                    return "button-danger";
                 case "Button.Primary":
-                    return "btn-primary";
+                    return "button-primary";
                 case "Button.Large":
-                    return "btn-lg";
+                    return "button-lg";
                 case "Button.Small":
-                    return "btn-sm";
+                    return "button-sm";
                 case "Button.ExtraSmall":
-                    return "btn-xs";
+                    return "button-xs";
                 //Alerts
                 case "Alert.Success":
                     return "alert-success";
@@ -119,7 +119,7 @@ class FoundationTheme extends Bread\Modules\Module
                         if(isset($link->hidden))
                             if($link->hidden)
                                 continue;
-                        $link->active = (Site::getRequest()->requestType == $link->request);
+                        $link->active = (Site::getRequest()->requestName == $link->request);
                         if(isset($link->args) && $link->active )
                             $link->active = (Site::getRequest()->arguments == $link->args);
                         if(!isset($link->url))
@@ -230,10 +230,10 @@ class FoundationTheme extends Bread\Modules\Module
         }
         
         function ButtonGroupVertical($args){
-           return $this->ButtonGroup($args, "btn-group-vertical");
+           return $this->ButtonGroup($args, "stack button-group");
         }
         
-        function ButtonGroup($args,$class = "btn-group")
+        function ButtonGroup($args,$class = "button-group")
         {
             $HTML = "";
             if(is_array($args)){
@@ -264,7 +264,7 @@ class FoundationTheme extends Bread\Modules\Module
         
         function ButtonToolbar($args)
         {
-            return '<div class="btn-toolbar" role="toolbar">' . $args . '</div>';
+            return '<div class="button-bar" role="toolbar">' . $args . '</div>';
         }
         
         function DrawIcon($args)
@@ -272,15 +272,15 @@ class FoundationTheme extends Bread\Modules\Module
             switch($args)
             {
                 case "audio":
-                    return '<span class="glyphicon glyphicon-volume-up"></span>';
+                    return '<span class="fi-volume"></span>';
                 case "video":
-                    return '<span class="glyphicon glyphicon-film"></span>';
+                    return '<span class="fi-video"></span>';
                 case "close":
-                    return '<span class="glyphicon glyphicon-remove-circle"></span>';
+                    return '<span class="fi-x-circle"></span>';
                 case "megaphone":
-                    return '<span class="glyphicon glyphicon-bullhorn"></span>';
+                    return '<span class="fi-bullhorn"></span>';
                 default:
-                    return '<span class="glyphicon glyphicon-' . $args . '"></span>';
+                    return '<span class="fi-' . $args . '"></span>';
             }
         }
         

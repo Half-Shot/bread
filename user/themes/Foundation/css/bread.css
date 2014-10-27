@@ -19,3 +19,16 @@ img{
 .top-bar li{
     padding: 0px 5px;
 }
+
+.modal-header .close{
+    float:right;
+}
+
+.modal-footer{
+    float:right;
+}
+
+.navbar-text{
+    color:white;
+    margin-top: 8%;
+}

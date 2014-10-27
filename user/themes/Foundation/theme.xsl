@@ -128,7 +128,9 @@
                 <button>
                     <xsl:attribute name="action"><xsl:value-of select="./action"/></xsl:attribute>
                     <xsl:attribute name="onclick"><xsl:value-of select="./onclick"/></xsl:attribute>
-                    <xsl:attribute name="id"><xsl:value-of select="./id"/></xsl:attribute>
+                    <xsl:if test="./id != 0">
+                        <xsl:attribute name="id"><xsl:value-of select="./id"/></xsl:attribute>
+                    </xsl:if>
                     <xsl:if test="./form != 0">
                         <xsl:attribute name="form"><xsl:value-of select="./form"/></xsl:attribute>
                     </xsl:if>
@@ -148,7 +150,7 @@
                     <xsl:if test="./toggle = 1">
                         <xsl:attribute name="data-toggle">button</xsl:attribute>
                     </xsl:if>
-                    <xsl:attribute name="class">btn form-control <xsl:value-of select="./class"/></xsl:attribute>
+                    <xsl:attribute name="class">button form-control <xsl:value-of select="./class"/></xsl:attribute>
                     <xsl:value-of select="./value"/>
                     <xsl:if test="./variable/tooltip = 1">
                         <xsl:attribute name="data-toggle">tooltip</xsl:attribute>
@@ -162,26 +164,34 @@
                     <xsl:if test="./form != 0">
                         <xsl:attribute name="form"><xsl:value-of select="./form"/></xsl:attribute>
                     </xsl:if>
+                    
                     <xsl:if test="./pattern != 0">
                         <xsl:attribute name="pattern"><xsl:value-of select="./pattern"/></xsl:attribute>
                         <xsl:if test="./pattern_help != 0">
                             <xsl:attribute name="title"><xsl:value-of select="./pattern_help"/></xsl:attribute>
                         </xsl:if>
                     </xsl:if>
+                    
                     <xsl:choose>
+                        
                         <xsl:when test="./name = ''">
                             <xsl:attribute name="name"><xsl:value-of select="./id"/></xsl:attribute>
                         </xsl:when>
+                        
                         <xsl:otherwise>
                             <xsl:attribute name="name"><xsl:value-of select="./name"/></xsl:attribute>
                         </xsl:otherwise>
+                        
                     </xsl:choose>
+                    
                     <xsl:attribute name="onclick"><xsl:value-of select="./onclick"/></xsl:attribute>
                     <xsl:attribute name="value"><xsl:value-of select="./value"/></xsl:attribute>
                     <xsl:if test="./multiple = 1">
                         <xsl:attribute name="multiple"/>
                     </xsl:if>
-                    <xsl:attribute name="id"><xsl:value-of select="./id"/></xsl:attribute>
+                    <xsl:if test="./id != ''">
+                        <xsl:attribute name="id"><xsl:value-of select="./id"/></xsl:attribute>
+                    </xsl:if>
                     <xsl:attribute name="class">form-control <xsl:value-of select="./class"/></xsl:attribute>
                     <xsl:for-each select="./dataset/variable">
                         <option>
@@ -209,7 +219,9 @@
                 <xsl:attribute name="type"><xsl:value-of select="./type"/></xsl:attribute>
                 <xsl:attribute name="value"><xsl:value-of select="./value"/></xsl:attribute>
                 <xsl:attribute name="onclick"><xsl:value-of select="./onclick"/></xsl:attribute>
-                <xsl:attribute name="id"><xsl:value-of select="./id"/></xsl:attribute>
+                <xsl:if test="./id != ''">
+                    <xsl:attribute name="id"><xsl:value-of select="./id"/></xsl:attribute>
+                </xsl:if>
                 <xsl:if test="./form != 0">
                     <xsl:attribute name="form"><xsl:value-of select="./form"/></xsl:attribute>
                 </xsl:if>
@@ -291,7 +303,7 @@
                 width:<xsl:value-of select="./variable/width"/>%;
             </xsl:attribute>
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove-circle"></span></button>
+                <a class="close-reveal-modal" data-dismiss="modal" aria-hidden="true"><i class="fi-x-circle medium"></i></a>
                 <h4 class="modal-title"><xsl:value-of select="./variable/title"/></h4>
             </div>
             <div class="modal-body">
@@ -306,7 +318,9 @@
     <xsl:template name="Button" match="telement[@id='Button']">
           <a>
                 <xsl:attribute name="name"><xsl:value-of select="./variable/name"/></xsl:attribute>
-                <xsl:attribute name="id"><xsl:value-of select="./variable/id"/></xsl:attribute>
+                <xsl:if test="./variable/id != ''">
+                    <xsl:attribute name="id"><xsl:value-of select="./variable/id"/></xsl:attribute>
+                </xsl:if>
                 <xsl:attribute name="class">button <xsl:value-of select="./variable/class"/></xsl:attribute>
                 <xsl:attribute name="onclick"><xsl:value-of select="./variable/onclick"/></xsl:attribute>
                 <xsl:if test="./variable/form != ''">
