@@ -26,6 +26,7 @@
         "./Structures/BreadPanel",
         "./Structures/BreadCommentStructure",
         "./Structures/BreadFile",
+        "./Structures/BreadNotification",
         "./Themes/thememan",
         "./Themes/breadxml"
     ]

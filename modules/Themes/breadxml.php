@@ -58,8 +58,8 @@ class BreadXML {
         $objRoot = $doc->createElement($en);
         if(is_object($obj) || is_array($obj))
         {
-            if($id !== NULL)
-                $objRoot->setAttribute ("id", $id);
+            //if($id !== NULL)
+            //    $objRoot->setAttribute ("id", $id);
             foreach($obj as $objtype => $value){
                 if(is_numeric($objtype))
                     $objtype = NULL;
@@ -86,8 +86,8 @@ class BreadXML {
             {
                 $objRoot->nodeValue = (string)$obj;
             }
-            if($id !== NULL)
-                $objRoot->setAttribute ("id", $id);
+            //if($id !== NULL)
+            //    $objRoot->setAttribute ("id", $id);
             return $objRoot;
         }
     }
@@ -108,6 +108,23 @@ class BreadXML {
         $proc = new \XSLTProcessor();
         $proc->importStylesheet($this->xsldoc);
         $output = $proc->transformToXML($xmldoc);
+        if($ElementId == "Table"){
+            $xmldoc->preserveWhiteSpace = true;
+            $xmldoc->formatOutput = true;
+            $xmldoc->save(Site::ResolvePath("%system-temp/table.xml"));
+        }
+        $errors = libxml_get_errors();
+        if(!empty($errors)){
+            foreach($errors as $error){
+                $ErrorString = "Error occured during XSLT Transform:";
+                $ErrorString .= "<p><b>Level:</b> $error->level</p>";
+                $ErrorString .= "<p><b>Code:</b> $error->code</p>";
+                $ErrorString .= "<p><b>Pos:</b> $error->line :: $error->column</p>";
+                $ErrorString .= "<p><b>Message:</b> $error->m</p>";
+                Site::$Logger->writeError($ErrorString, \Bread\Logger::SEVERITY_MEDIUM); 
+            }
+            libxml_clear_errors ();
+        }
         $properoutput = htmlspecialchars_decode($output);
         return $properoutput;
     }

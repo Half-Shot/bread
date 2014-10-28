@@ -193,7 +193,7 @@ class BreadPageSystem extends Module
                 $E_TimeReleased->class = "bps-editorinfo-input";
                 $E_TimeReleased->type = "datetime-local";
                 $E_TimeReleased->label = "Release On";
-                $E_TimeReleased->required = true;
+                $E_TimeReleased->required = false;
                 $E_TimeReleased->readonly = true;
                 if(!$this->isnewpost && $this->IsPostReleased($Post->time_released)){
                     $E_TimeReleased->value = date ("Y-m-d\TH:i:s\Z",  $Post->time_released);
@@ -208,7 +208,7 @@ class BreadPageSystem extends Module
             $E_Author->label = "Author";
             $E_Author->readonly = true;
             $E_Author->class = "";
-            $E_Author->required = true;
+            $E_Author->required = false;
             if(!$this->isnewpost){
                 $author = $Post->author;
                 if(is_int($author)){
@@ -917,8 +917,36 @@ class BreadPageSystem extends Module
                  return "0";
              }
              
-             Site::$Logger->writeMessage("Modified " . $JSONURL . " with new data.","breadpagesystem");
-             return Site::getBaseURL() . "?request=" . $this->settings->postRequest . "&post=" . $id;
+            $AuthorName = $this->manager->FireEvent("Bread.Security.GetUser",$pageData->author)->information->Name;
+            $notification = new \Bread\Structures\BreadNotification();
+            $notification->rights[] = "BreadPageSystem.Editor";
+            $notification->URL = Site::CondenseURLParams(false,array("request"=>$this->settings->postRequest,"post"=>$pageData->id));
+            if(isset($url_data["newpost"])){
+                $notification->ignoreUsers[] = $pageData->author;
+                $notification->title = "A new post was written.";
+                $notification->description = "'$title' by $AuthorName ";
+                if($pageData->time_released == false){
+                   $notification->description .= "is awaiting review.";
+                   $notification->duration = 60*60*24; // A day
+                }
+                else if($pageData->time_released > time()){
+                   $notification->description .= "will be published soon.";
+                   $notification->duration = $pageData->time_released - time(); //Notify until published.
+                }
+                else{
+                   $notification->description .= "has been published";
+                   //Keep to a standard 6 hour.
+                }
+            }
+            else{
+                $notification->ignoreUsers[] = $this->manager->FireEvent("Bread.Security.GetCurrentUser")->uid;
+                $notification->title = "Edits were made to a post";
+                $notification->description = "Post '$title' by $AuthorName was edited by " . $this->manager->FireEvent("Bread.Security.GetCurrentUser")->information->Name;
+            }
+            $this->manager->FireEvent("BreadNotify.WriteNotification",$notification);
+             
+            Site::$Logger->writeMessage("Modified " . $JSONURL . " with new data.","breadpagesystem");
+            return Site::getBaseURL() . "?request=" . $this->settings->postRequest . "&post=" . $id;
         }
         
         function DeletePost()

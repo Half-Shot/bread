@@ -589,7 +589,7 @@ class Site
                 }
                 
                 foreach(static::$Request->events as $event){
-                    static::$moduleManager->FireEvent($event);
+                    static::$moduleManager->FireEvent($event,static::$Request->arguments);
                 }
                 
                 header('Content-type: ' . static::$ContentType);

@@ -53,8 +53,12 @@
             "file": "JQuery\/module.json"
         },
         {
-            "name": "BreadRSSFeed",
-            "file": "BreadRSSFeed\/module.json"
+            "name": "BreadRSS",
+            "file": "BreadRSS\/module.json"
+        },
+        {
+            "name": "BreadNotify",
+            "file": "BreadNotify\/module.json"
         }
     ]
 }

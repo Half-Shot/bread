@@ -37,6 +37,7 @@ class BreadFormElement
     public $readonly = false;
     public $options = array();
     public $dataset = array();
+    public $multiple = false;
     public $action = "";
     public $required = false;
     public $hidden = false;

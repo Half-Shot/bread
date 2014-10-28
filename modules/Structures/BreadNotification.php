@@ -57,24 +57,42 @@ class BreadNotification {
     /**
      * @var string Title of the information.
      */
-    public $title;
+    public $title = "";
+    
     /**
      * @var string Detailed information about the notification.
      */
-    public $description;
+    public $description = "";
+    
     /**
      * @var array Only send users with these rights.
      */
     public $rights = [];
+    
     /**
      * How long should the notification be on the stack for in seconds? Defaults to 6 hours.
      * @var integer 
      */
     public $duration = 21600; //6 hours
+    
     /**
      * Time when the notification was sent.
      * @var integer
      */
     public $timesent = 0;
     
+    /**
+     * URL when clicked.
+     */
+    public $URL = "";
+    
+    /**
+     * Thumbnail
+     */
+    public $thumbnail = false;
+    
+    /**
+     * Users who don't want to see any of this crap.
+     */
+    public $ignoreUsers = array();
 }

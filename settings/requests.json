@@ -24,7 +24,6 @@
         "layout":"search"
     },
     "rss":{
-        "Content-Type":"text/html",
         "events":[
             "BreadRSS.ShowFeed"
         ]

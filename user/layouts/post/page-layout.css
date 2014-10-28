@@ -11,25 +11,25 @@
     height:50%;
     overflow-y:scroll;
 }
+
 .bps-html{
     height:auto;
-    overflow:auto;
     transition: all 0.5s ease;
-    
 }
+
 #contents{
-	margin-top:2%;
+    margin-top:2%;
+    width:70%;
+}
+
+#midsection{
+    margin-right:5%;
+    margin-left:5%;
 }
 
 .breadcrumb{
     margin-top:3%;
 }
-
-#contents
-{
-    width:70%;
-}
-
 
 .navbar-collapse.collapsing{
     margin-right: 5%;
@@ -112,4 +112,14 @@
 
 #bps-editor-toolbar .btn{
     height:30px;
+}
+
+#bps-title{
+    min-height:30px;
+    min-width: 10px;
+}
+
+#bps-subtitle{
+    min-height:30px;
+    min-width: 10px;
 }

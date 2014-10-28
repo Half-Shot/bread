@@ -1,0 +1,19 @@
+{
+    "name": "BreadNotify",
+    "entryclass": "BreadNotify",
+    "entryfile": "BreadNotify\/BreadNotify.php",
+    "events": {
+        "Bread.ProcessRequest": {
+            "function": "Setup",
+            "security": 0
+        },
+        "BreadNotify.WriteNotification": {
+            "function": "WriteNotification",
+            "security": 0
+        },
+        "BreadNotify.GetNotificationNavbarWidget": {
+            "function": "GetNotificationNavbarWidget",
+            "security": 0
+        }
+    }
+}
