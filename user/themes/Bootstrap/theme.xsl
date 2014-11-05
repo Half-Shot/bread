@@ -781,4 +781,27 @@
             </ul>
         </div>
     </xsl:template>
+    
+    <xsl:template match="telement[@id='InlineList']">
+        <ul class="list-inline">
+            <xsl:for-each select="./variable/variable">
+                <xsl:choose>
+                    <xsl:when test="./link = ''">
+                        <li><xsl:value-of select="./text" /></li>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <li>
+                            <a>
+                                <xsl:attribute name="href">
+                                    <xsl:value-of select="./link"/>
+                                </xsl:attribute>
+                                <xsl:value-of select="./text" />
+                            </a>
+                        </li>
+                    </xsl:otherwise>
+                </xsl:choose>
+                
+            </xsl:for-each>
+        </ul>
+    </xsl:template>
 </xsl:stylesheet>

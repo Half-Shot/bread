@@ -49,6 +49,8 @@ class FoundationTheme extends Bread\Modules\Module
             $this->manager->RegisterHook($this->name,"Theme.Dropdown","Dropdown");
             
             $this->manager->RegisterHook($this->name,"Theme.GetClass","GetClass");
+            $this->manager->RegisterHook($this->name,"Theme.Class","GetClass");
+            $this->manager->RegisterHook($this->name,"Theme.InlineList","InlineList");
 	}
     
         function GetClass($name){
@@ -147,6 +149,11 @@ class FoundationTheme extends Bread\Modules\Module
         {
             unset($args["_inner"]);//Useful practise for theme elements that do not do layout processing.
             return $this->breadXML->GetHTMLOfElement("VerticalNavbar",$args);
+        }
+        
+        function InlineList($args){
+            unset($args["_inner"]);//Useful practise for theme elements that do not do layout processing.
+            return $this->breadXML->GetHTMLOfElement("InlineList",$args);
         }
         
         function Dropdown($args)
