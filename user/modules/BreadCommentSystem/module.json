@@ -27,6 +27,9 @@
             "BreadCommentSystem.DeleteComment":{
                 "function":"DeleteComment",
                 "security":1
+            },
+            "BreadCommentSystem.GetComments":{
+                "function":"GetCommentList"
             }
 	}
 }

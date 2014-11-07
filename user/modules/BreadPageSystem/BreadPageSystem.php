@@ -661,15 +661,18 @@ class BreadPageSystem extends Module
            return Site::$moduleManager->FireEvent("Theme.Post.Title",array("<div id='bps-title'>" . $page->title . "</div>","<div id='bps-subtitle'>" . $page->subtitle . "</div>"));
         }
         
-        function GetUniqueID(){
-            $id = $this->GetActivePostPageId();
+        function GetUniqueID($id = false)
+        {
+            if($id === false){
+                $id = $this->GetActivePostPageId();
+            }
+            
             if($id === -1 || $this->isnewpost){
                 return false;
             }
             else{
                 return "breadpagesystem_" . $id;
             }
-
         }
         
         function GetActivePostPageId()
@@ -1010,6 +1013,7 @@ class BreadPageSystem extends Module
                 $parts["post"] = $post->id;
                 $Page->Url = Site::CondenseURLParams(false,$parts);
                 $Page->PublishTime = $post->time_released;
+                $Page->UniqueId = $this->GetUniqueID();
                 $Pages[] = $Page;
             }
             return $Pages;

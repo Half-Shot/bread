@@ -432,6 +432,13 @@ class BreadCommentSystem extends Module{
         return $this->KarmaVote(false);
     }
     
+    function GetCommentList($args){
+        $path = Util::ResolvePath("%user-content/comments/" . $args . ".json");
+        if(!file_exists($path)){
+            return false;
+        }
+        return array_values((array)Site::$settingsManager->RetriveSettings($path)->comments);
+    }
 }
 
 class BreadCommentSystemSettings {

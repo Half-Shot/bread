@@ -35,6 +35,7 @@ class BreadSearchItem {
     public $Content = "";
     public $Url = "";
     public $PublishTime = 0;
+    public $UniqueId = "";
 }
 
 class BreadSearchRequest {
