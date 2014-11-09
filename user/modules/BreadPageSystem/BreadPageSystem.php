@@ -663,7 +663,7 @@ class BreadPageSystem extends Module
         
         function GetUniqueID($id = false)
         {
-            if($id === false){
+            if($id === false || $id === null){
                 $id = $this->GetActivePostPageId();
             }
             
