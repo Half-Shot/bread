@@ -670,7 +670,7 @@ class BreadPageSystem extends Module
             if($id === -1 || $this->isnewpost){
                 return false;
             }
-            else{
+            elseif(is_string($id) || is_numeric($id)){
                 return "breadpagesystem_" . $id;
             }
         }
