@@ -666,14 +666,11 @@
             <xsl:attribute name="name">
                 <xsl:value-of select="./variable/name" />
             </xsl:attribute>
-            <xsl:attribute name="class">
-                table
-                <xsl:value-of select="./variable/class" />
-            </xsl:attribute>
+            <xsl:attribute name="class">table<xsl:value-of select="./variable/class" /></xsl:attribute>
             <thead>
-                <xsl:attribute name="id">
-                    <xsl:value-of select="./variable/headingRow/id" />
-                </xsl:attribute>
+                <xsl:if test="./variable/headingRow/id != ''">
+                <xsl:attribute name="id"><xsl:value-of select="./variable/headingRow/id" /></xsl:attribute>
+                </xsl:if>
                 <xsl:attribute name="name">
                     <xsl:value-of select="./variable/headingRow/name" />
                 </xsl:attribute>
