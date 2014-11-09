@@ -628,24 +628,16 @@
                 <xsl:value-of select="./variable/name" />
             </xsl:attribute>
             <xsl:attribute name="class">
-                panel-group
-                <xsl:value-of select="./variable/class" />
+                panel-group <xsl:value-of select="./variable/class" />
             </xsl:attribute>
             <xsl:for-each select="./variable/panels/variable">
                 <div class="panel panel-default">
                     <a data-toggle="collapse" data-parent="#accordion">
-                        <xsl:attribute name="href">
-                            #
-                            <xsl:value-of select="./id" />
-                        </xsl:attribute>
-                        <div class="panel-heading">
-                            <xsl:attribute name="id">
-                                <xsl:value-of select="./id" />
-                                -header
-                            </xsl:attribute>
-                            <h4 class="panel-title">
-                                <xsl:value-of select="./header" />
-                            </h4>
+                        <xsl:attribute name="href">#<xsl:value-of select="./id" /></xsl:attribute>
+                        <div>
+                            <xsl:attribute name="class">panel-heading<xsl:value-of select="./variable/class" /></xsl:attribute>
+                            <xsl:attribute name="id"><xsl:value-of select="./id" />-header</xsl:attribute>
+                            <h4 class="panel-title"><xsl:value-of select="./header" /></h4>
                         </div>
                     </a>
                     <div class="panel-collapse collapse">
@@ -666,9 +658,11 @@
     
     <xsl:template match="telement[@id='Table']">
         <table>
-            <xsl:attribute name="id">
-                <xsl:value-of select="./variable/id" />
-            </xsl:attribute>
+            <xsl:if test="./variable/id != ''">
+                <xsl:attribute name="id">
+                    <xsl:value-of select="./id" />
+                </xsl:attribute>
+            </xsl:if>
             <xsl:attribute name="name">
                 <xsl:value-of select="./variable/name" />
             </xsl:attribute>
