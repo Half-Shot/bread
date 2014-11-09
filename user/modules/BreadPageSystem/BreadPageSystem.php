@@ -1013,7 +1013,7 @@ class BreadPageSystem extends Module
                 $parts["post"] = $post->id;
                 $Page->Url = Site::CondenseURLParams(false,$parts);
                 $Page->PublishTime = $post->time_released;
-                $Page->UniqueId = $this->GetUniqueID();
+                $Page->UniqueId = $this->GetUniqueID($post->id);
                 $Pages[] = $Page;
             }
             return $Pages;
